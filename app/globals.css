@@ -5,15 +5,20 @@
   social content read as one brand. See infographics/what-is-machine-learning.
 */
 @theme {
-  --color-canvas: #f8f8f8;
-  --color-dot: #d8d8d8;
-  --color-ash: #e8e8e8;
-  --color-ink: #080808;
-  --color-ink-soft: #4a4a4a;
-  --color-ink-faint: #8a8a8a;
-  --color-brand: #7898c8;
-  --color-brand-deep: #6888c8;
-  --color-brand-wash: #eef2f9;
+  --color-canvas: #f7f5ef;
+  --color-dot: #ddd8cc;
+  --color-ash: #e7e2d7;
+  --color-ink: #171713;
+  --color-ink-soft: #55544d;
+  --color-ink-faint: #8b897f;
+  --color-brand: #6f91c5;
+  --color-brand-deep: #4f72aa;
+  --color-brand-wash: #eaf0f8;
+  --color-brand-muted: #c9d7eb;
+  --color-surface: #fffefa;
+  --color-surface-elevated: #ffffff;
+  --color-warm: #e7a765;
+  --color-warm-wash: #fbefe1;
   --color-good: #5f9e77;
   --color-good-wash: #edf5f0;
   --color-bad: #c1706b;
@@ -31,8 +36,8 @@
 
   body {
     background-color: var(--color-canvas);
-    background-image: radial-gradient(circle, var(--color-dot) 1.2px, transparent 1.2px);
-    background-size: 28px 28px;
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--color-dot) 72%, transparent) 1px, transparent 1px);
+    background-size: 30px 30px;
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -51,9 +56,47 @@
 }
 
 @utility card {
-  background: #ffffff;
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-ash);
-  border-radius: 14px;
+  border-radius: 18px;
+  box-shadow: 0 1px 0 rgb(23 23 19 / 0.03), 0 12px 32px rgb(23 23 19 / 0.035);
+}
+
+@utility card-interactive {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-ash);
+  border-radius: 18px;
+  box-shadow: 0 1px 0 rgb(23 23 19 / 0.03);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.card-interactive:hover {
+  border-color: var(--color-brand-muted);
+  box-shadow: 0 14px 34px rgb(23 23 19 / 0.07);
+  transform: translateY(-2px);
+}
+
+@utility focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 28%, transparent);
+}
+
+@utility eyebrow {
+  color: var(--color-brand-deep);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@utility display-title {
+  font-size: clamp(1.85rem, 4.6vw, 3.15rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  line-height: 1.12;
 }
 
 @keyframes pop-in {

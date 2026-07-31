@@ -155,4 +155,4 @@ related edits. See `CLAUDE.md` for the rules that govern edits here.
   reactive local adapter with 80ms fake latency (`lib/data/local.ts`);
   routes `/`, `/today`, `/practice`, `/review`, `/settings`, `/bytes`, `/bytes/[slug]`;
   three Season 1 bytes (`precision-and-recall`, `gradient-descent`, `tensors-and-shapes`);
-  lazy Pyodide `CodeCell`. See `docs/03-phase-0-frontend-first.md` for exit criteria.
+  lazy Pyodide `CodeCell`. See `plans/historical/03-phase-0-frontend-first.md` for exit criteria.

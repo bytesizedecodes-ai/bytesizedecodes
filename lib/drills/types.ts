@@ -34,6 +34,8 @@ export interface GeneratedQuestion {
   seed: number;
   difficulty: Difficulty;
   topic: string;
+  /** Canonical skill ids; filled from the generator registry when missing. */
+  skillIds?: readonly string[];
   interviewTags: readonly string[];
   prompt: readonly Block[];
   answer: AnswerSpec;
@@ -50,6 +52,7 @@ export interface Generator {
   /** One line shown on the practice picker. */
   blurb: string;
   topic: string;
+  skillIds: readonly string[];
   supportedDifficulties: readonly Difficulty[];
   generate(seed: number, difficulty: Difficulty): GeneratedQuestion;
 }

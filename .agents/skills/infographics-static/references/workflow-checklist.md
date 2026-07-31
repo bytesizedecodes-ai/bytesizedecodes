@@ -92,7 +92,7 @@ message = "ok"
   principle #2 — if the objective is "distinguish X from Y", at least one
   question must ask the learner to distinguish them). The `explanation` must
   teach — name the specific misconception behind each wrong answer (mirrors
-  `docs/02-drill-generators.md`'s "every distractor is a named misconception"
+  `plans/historical/02-drill-generators.md`'s "every distractor is a named misconception"
   philosophy).
 - **`exercise.testCode`**: MUST set `ok = True` (and optionally `message`) on
   success. That's the contract `components/CodeCell.tsx` reads. Test multiple

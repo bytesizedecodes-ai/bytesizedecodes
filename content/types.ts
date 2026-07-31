@@ -13,6 +13,17 @@ export interface ByteQuestion {
   explanation: string;
 }
 
+export type SkillId =
+  | "ai-literacy"
+  | "ai-ml-dl"
+  | "learning-paradigms"
+  | "supervised-learning"
+  | "classification-metrics"
+  | "gradient-descent"
+  | "tensor-shapes"
+  | "output-heads"
+  | "python-basics";
+
 export interface CodeExercise {
   id: string;
   title: string;
@@ -31,6 +42,9 @@ export interface Byte {
   order: number;
   difficulty: 1 | 2 | 3 | 4 | 5;
   interviewTags: readonly string[];
+  skillIds?: readonly SkillId[];
+  /** Plain-language capability earned by completing the unit. */
+  capability?: string;
   /** Estimated minutes. */
   minutes: number;
   /** Sections of the lesson body. */

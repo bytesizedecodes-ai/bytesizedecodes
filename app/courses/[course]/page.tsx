@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
 import { allCourseSlugs, courseLessonKey, getCourse } from "@/content/courses";
 import { LessonStatus } from "./LessonStatus";
+import { CourseResumeButton } from "./CourseResumeButton";
 
 export function generateStaticParams() {
   return allCourseSlugs().map((course) => ({ course }));
@@ -20,7 +21,7 @@ export default async function CourseIndexPage({
   return (
     <Shell active={`/courses/${courseSlug}`}>
       <div className="mx-auto max-w-3xl">
-        <Link href="/today" className="text-sm text-ink-faint hover:text-ink-soft">
+        <Link href="/learn" className="text-sm text-ink-faint hover:text-ink-soft">
           ← All courses
         </Link>
 
@@ -70,17 +71,12 @@ export default async function CourseIndexPage({
 
         {course.lessons[0] && (
           <div className="mt-8">
-            <Link
-              href={`/courses/${courseSlug}/${course.lessons[0].slug}`}
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-medium text-canvas transition-colors hover:bg-brand-deep"
-            >
-              Start the course →
-            </Link>
+            <CourseResumeButton course={course} />
           </div>
         )}
 
         <p className="mt-8 text-xs text-ink-faint">
-          Phase 0 preview · more lessons land as the season progresses.
+          Each lesson combines a visual explanation with an active check and saved progress.
         </p>
       </div>
     </Shell>

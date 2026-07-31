@@ -1,0 +1,24 @@
+import type { ReactNode } from "react";
+
+export function Badge({
+  children,
+  tone = "brand",
+}: {
+  children: ReactNode;
+  tone?: "brand" | "warm" | "neutral" | "good";
+}) {
+  const tones = {
+    brand: "bg-brand-wash text-brand-deep",
+    warm: "bg-warm-wash text-[#9a642f]",
+    neutral: "bg-ash/70 text-ink-soft",
+    good: "bg-good-wash text-good",
+  } as const;
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${tones[tone]}`}
+    >
+      {children}
+    </span>
+  );
+}

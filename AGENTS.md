@@ -1,3 +1,13 @@
+# AGENTS.md
+
+Start here for AI agents:
+
+1. [`CLAUDE.md`](CLAUDE.md) — rules and commands
+2. [`docs/README.md`](docs/README.md) — project understanding docs
+3. [`plans/README.md`](plans/README.md) — product plans by phase (not codebase truth)
+
+When working on Convex code, also read `convex/_generated/ai/guidelines.md`.
+
 <!-- convex-ai-start -->
 
 This project uses [Convex](https://convex.dev) as its backend.

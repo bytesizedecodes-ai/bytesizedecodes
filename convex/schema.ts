@@ -15,12 +15,25 @@
 
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 const track = v.union(
   v.literal("grad"),
   v.literal("beginner"),
   v.literal("engineer"),
   v.literal("founder"),
+);
+
+const startingLevel = v.union(
+  v.literal("new"),
+  v.literal("some"),
+  v.literal("comfortable"),
+);
+
+const timeMode = v.union(
+  v.literal("quick"),
+  v.literal("standard"),
+  v.literal("deep"),
 );
 
 const practiceMode = v.union(
@@ -43,16 +56,46 @@ const profiles = defineTable({
   lastPracticeDay: v.union(v.string(), v.null()),
   streakFreezes: v.number(),
   createdAt: v.number(),
+  startingLevel: v.optional(startingLevel),
+  weeklyMinutes: v.optional(v.number()),
+  preferredTimeMode: v.optional(timeMode),
+  onboardingCompletedAt: v.optional(v.number()),
   /**
    * True for demo/seed profiles created by seedDemoProfiles. Lets us clear and re-seed
    * without touching real users. Drop the whole field once real auth exists.
    */
   seed: v.optional(v.boolean()),
+  /** Previous browser UUID, kept so anonymous→auth claim can migrate progress once. */
+  legacyAnonId: v.optional(v.string()),
 })
   .index("by_user", ["userId"])
   // Top-N leaderboard read. At dev scale (~20 profiles) a full collect+sort is fine;
   // this index pays off once real volume arrives.
-  .index("by_xp", ["xpTotal"]);
+  .index("by_xp", ["xpTotal"])
+  .index("by_legacy_anon", ["legacyAnonId"]);
+
+/** Learner project artifacts (Build track). Private by default. */
+const projects = defineTable({
+  userId: v.string(),
+  slug: v.string(),
+  title: v.string(),
+  summary: v.string(),
+  status: v.union(
+    v.literal("draft"),
+    v.literal("in_progress"),
+    v.literal("submitted"),
+    v.literal("published"),
+  ),
+  visibility: v.union(v.literal("private"), v.literal("unlisted"), v.literal("public")),
+  checkpoint: v.string(),
+  /** JSON blob of artifact fields (problem brief, notes, demo URL, etc.). */
+  artifactJson: v.string(),
+  updatedAt: v.number(),
+  createdAt: v.number(),
+})
+  .index("by_user", ["userId"])
+  .index("by_user_slug", ["userId", "slug"])
+  .index("by_visibility", ["visibility"]);
 
 /** 1/(user, itemKey). The SM-2 scheduling state for a drill. */
 const srsCards = defineTable({
@@ -79,6 +122,14 @@ const byteProgress = defineTable({
   status: byteStatus,
   completedDay: v.union(v.string(), v.null()),
   xpEarned: v.number(),
+  /** In-progress MCQ selections keyed by question id (JSON object string). */
+  draftAnswers: v.optional(v.string()),
+  /** Question ids already checked this session (JSON string array). */
+  draftChecked: v.optional(v.string()),
+  /** In-progress code cell contents. */
+  draftCode: v.optional(v.string()),
+  /** True after hidden Pyodide tests pass for this unit's exercise. */
+  exercisePassed: v.optional(v.boolean()),
 })
   .index("by_user", ["userId"])
   .index("by_user_key", ["userId", "key"]);
@@ -113,10 +164,46 @@ const xpEvents = defineTable({
   .index("by_user_day", ["userId", "day"])
   .index("by_user_at", ["userId", "at"]);
 
+/** Privacy-safe product analytics for loop milestones. */
+const analyticsEvents = defineTable({
+  userId: v.string(),
+  name: v.string(),
+  /** ISO YYYY-MM-DD in IST. */
+  day: v.string(),
+  at: v.number(),
+  refKey: v.optional(v.string()),
+  track: v.optional(track),
+  mode: v.optional(v.string()),
+})
+  .index("by_user", ["userId"])
+  .index("by_user_name", ["userId", "name"]);
+
+/** Verified skill evidence (e.g. passing a code exercise). */
+const skillEvidence = defineTable({
+  userId: v.string(),
+  skillId: v.string(),
+  sourceKey: v.string(),
+  kind: v.union(
+    v.literal("code_test"),
+    v.literal("byte_complete"),
+    v.literal("attempt"),
+  ),
+  /** ISO YYYY-MM-DD in IST. */
+  day: v.string(),
+  at: v.number(),
+})
+  .index("by_user", ["userId"])
+  .index("by_user_skill", ["userId", "skillId"])
+  .index("by_user_source", ["userId", "sourceKey"]);
+
 export default defineSchema({
+  ...authTables,
   profiles,
   srsCards,
   byteProgress,
   attempts,
   xpEvents,
+  analyticsEvents,
+  skillEvidence,
+  projects,
 });

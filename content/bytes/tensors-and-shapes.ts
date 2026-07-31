@@ -9,6 +9,8 @@ const byte: Byte = {
   order: 3,
   difficulty: 2,
   interviewTags: ["shapes", "cnn", "pytorch"],
+  skillIds: ["tensor-shapes"],
+  capability: "Read tensor axes and calculate common convolution output shapes.",
   minutes: 5,
   sections: [
     {

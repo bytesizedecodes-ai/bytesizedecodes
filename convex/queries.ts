@@ -19,6 +19,8 @@ import { settleOnRollover, type StreakFields } from "./lib/streak";
 import { levelProgress } from "./lib/xp";
 import { hashToSeed } from "./lib/rng";
 import { parseDrillKey } from "./lib/parseDrillKey";
+import { assembleDailyPlan, nextUnitForTrack } from "./lib/dailyPlan";
+import { parseReviewKey } from "./lib/reviewKey";
 
 // ---------- export-shape types (for exportProgress action) ----------
 
@@ -31,6 +33,10 @@ export interface ProfileExport {
   lastPracticeDay: string | null;
   streakFreezes: number;
   createdAt: number;
+  startingLevel?: "new" | "some" | "comfortable";
+  weeklyMinutes?: number;
+  preferredTimeMode?: "quick" | "standard" | "deep";
+  onboardingCompletedAt?: number;
 }
 
 export interface SrsExport {
@@ -65,6 +71,10 @@ interface ProfileView {
   lastPracticeDay: string | null;
   streakFreezes: number;
   createdAt: number;
+  startingLevel: "new" | "some" | "comfortable" | null;
+  weeklyMinutes: number | null;
+  preferredTimeMode: "quick" | "standard" | "deep" | null;
+  onboardingCompletedAt: number | null;
 }
 
 interface DayProgressView {
@@ -75,22 +85,41 @@ interface DayProgressView {
   practised: boolean;
 }
 
-interface ReviewCardView {
+interface ReviewCardBase {
   itemKey: string;
   topic: string;
-  generatorId: string;
-  difficulty: 1 | 2 | 3 | 4 | 5;
-  seed: number;
   ease: number;
   reps: number;
   lapses: number;
 }
+
+interface GeneratorReviewCardView extends ReviewCardBase {
+  kind: "generator";
+  generatorId: string;
+  difficulty: 1 | 2 | 3 | 4 | 5;
+  seed: number;
+}
+
+interface AuthoredReviewCardView extends ReviewCardBase {
+  kind: "authored";
+  source: "byte" | "course";
+  slug: string | null;
+  courseSlug: string | null;
+  lessonSlug: string | null;
+  questionId: string;
+}
+
+type ReviewCardView = GeneratorReviewCardView | AuthoredReviewCardView;
 
 interface ByteProgressView {
   slug: string;
   status: "unseen" | "started" | "completed";
   completedDay: string | null;
   xpEarned: number;
+  draftAnswers: Record<string, string> | null;
+  draftChecked: string[] | null;
+  draftCode: string | null;
+  exercisePassed: boolean;
 }
 
 interface TopicMasteryView {
@@ -105,6 +134,125 @@ interface DayXpView {
   xp: number;
   practised: boolean;
 }
+
+function parseDraftAnswers(raw: string | undefined): Record<string, string> | null {
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+    const out: Record<string, string> = {};
+    for (const [key, value] of Object.entries(parsed)) {
+      if (typeof value === "string") out[key] = value;
+    }
+    return out;
+  } catch {
+    return null;
+  }
+}
+
+function parseDraftChecked(raw: string | undefined): string[] | null {
+  if (!raw) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    return parsed.filter((item): item is string => typeof item === "string");
+  } catch {
+    return null;
+  }
+}
+
+function toByteProgressView(row: Doc<"byteProgress">): ByteProgressView {
+  return {
+    slug: row.key,
+    status: row.status,
+    completedDay: row.completedDay,
+    xpEarned: row.xpEarned,
+    draftAnswers: parseDraftAnswers(row.draftAnswers),
+    draftChecked: parseDraftChecked(row.draftChecked),
+    draftCode: row.draftCode ?? null,
+    exercisePassed: row.exercisePassed ?? false,
+  };
+}
+
+const timeModeValidator = v.union(
+  v.literal("quick"),
+  v.literal("standard"),
+  v.literal("deep"),
+);
+
+const dailyPlanStepValidator = v.union(
+  v.object({
+    kind: v.literal("review"),
+    label: v.string(),
+    detail: v.string(),
+    href: v.string(),
+    minutes: v.number(),
+    count: v.number(),
+  }),
+  v.object({
+    kind: v.literal("drill"),
+    label: v.string(),
+    detail: v.string(),
+    href: v.string(),
+    minutes: v.number(),
+    generatorId: v.string(),
+    difficulty: v.union(
+      v.literal(1),
+      v.literal(2),
+      v.literal(3),
+      v.literal(4),
+      v.literal(5),
+    ),
+  }),
+  v.object({
+    kind: v.literal("unit"),
+    label: v.string(),
+    detail: v.string(),
+    href: v.string(),
+    minutes: v.number(),
+    progressKey: v.string(),
+  }),
+);
+
+const dailyPlanValidator = v.object({
+  timeMode: timeModeValidator,
+  estimatedMinutes: v.number(),
+  focus: v.string(),
+  steps: v.array(dailyPlanStepValidator),
+});
+
+const reviewCardValidator = v.union(
+  v.object({
+    kind: v.literal("generator"),
+    itemKey: v.string(),
+    topic: v.string(),
+    generatorId: v.string(),
+    difficulty: v.union(
+      v.literal(1),
+      v.literal(2),
+      v.literal(3),
+      v.literal(4),
+      v.literal(5),
+    ),
+    seed: v.number(),
+    ease: v.number(),
+    reps: v.number(),
+    lapses: v.number(),
+  }),
+  v.object({
+    kind: v.literal("authored"),
+    itemKey: v.string(),
+    topic: v.string(),
+    source: v.union(v.literal("byte"), v.literal("course")),
+    slug: v.union(v.string(), v.null()),
+    courseSlug: v.union(v.string(), v.null()),
+    lessonSlug: v.union(v.string(), v.null()),
+    questionId: v.string(),
+    ease: v.number(),
+    reps: v.number(),
+    lapses: v.number(),
+  }),
+);
 
 // ---------- helpers ----------
 
@@ -173,6 +321,10 @@ export const getProfile = query({
       lastPracticeDay: settled.lastPracticeDay,
       streakFreezes: settled.streakFreezes,
       createdAt: profile.createdAt,
+      startingLevel: profile.startingLevel ?? null,
+      weeklyMinutes: profile.weeklyMinutes ?? null,
+      preferredTimeMode: profile.preferredTimeMode ?? null,
+      onboardingCompletedAt: profile.onboardingCompletedAt ?? null,
     };
   },
 });
@@ -204,8 +356,65 @@ export const getDayProgress = query({
   },
 });
 
+export const getDailyPlan = query({
+  args: {
+    userId: v.string(),
+    today: v.string(),
+    timeMode: v.optional(timeModeValidator),
+  },
+  returns: dailyPlanValidator,
+  handler: async (ctx, { userId, today, timeMode }) => {
+    const uid = await getUserId(ctx, { userId });
+    const day = asDayKey(today);
+    const [profile, cards, progressRows] = await Promise.all([
+      loadProfile(ctx, uid),
+      ctx.db
+        .query("srsCards")
+        .withIndex("by_user", (q) => q.eq("userId", uid))
+        .collect(),
+      ctx.db
+        .query("byteProgress")
+        .withIndex("by_user", (q) => q.eq("userId", uid))
+        .collect(),
+    ]);
+
+    const dueCount = cards.filter((card) => card.dueDay <= day).length;
+    const generatorStates = cards
+      .filter((card) => parseDrillKey(card.itemKey) !== null)
+      .map(srsDocToState);
+    const byTopic = new Map<string, SrsState[]>();
+    for (const state of generatorStates) {
+      const items = byTopic.get(state.topic) ?? [];
+      items.push(state);
+      byTopic.set(state.topic, items);
+    }
+    const weakTopic =
+      [...byTopic.entries()]
+        .map(([topic, items]) => ({
+          topic,
+          score: items.reduce((sum, item) => sum + mastery(item), 0) / items.length,
+        }))
+        .sort((a, b) => a.score - b.score)[0]?.topic ?? null;
+
+    const progress: Record<string, "started" | "completed"> = {};
+    for (const row of progressRows) progress[row.key] = row.status;
+    const track = profile?.track ?? "beginner";
+    const selectedMode = timeMode ?? profile?.preferredTimeMode ?? "standard";
+    const nextUnit = nextUnitForTrack(track, progress);
+
+    return assembleDailyPlan({
+      track,
+      timeMode: selectedMode,
+      dueCount,
+      weakTopic,
+      nextUnit,
+    });
+  },
+});
+
 export const getReviewQueue = query({
   args: { userId: v.string(), today: v.string() },
+  returns: v.array(reviewCardValidator),
   handler: async (ctx, { userId, today }): Promise<ReviewCardView[]> => {
     const uid = await getUserId(ctx, { userId });
     const day = asDayKey(today);
@@ -214,22 +423,50 @@ export const getReviewQueue = query({
       .withIndex("by_user", (q) => q.eq("userId", uid))
       .collect();
     const states = cards.map(srsDocToState);
-    return dueQueue(states, day).flatMap((s) => {
-      const parsed = parseDrillKey(s.itemKey);
-      if (!parsed) return [];
-      return [
-        {
-          itemKey: s.itemKey,
-          topic: s.topic,
-          generatorId: parsed.generatorId,
-          difficulty: parsed.difficulty,
-          seed: hashToSeed(`${uid}:${day}:${s.itemKey}`),
-          ease: s.ease,
-          reps: s.reps,
-          lapses: s.lapses,
-        },
-      ];
-    });
+    const out: ReviewCardView[] = [];
+    for (const s of dueQueue(states, day)) {
+      const parsed = parseReviewKey(s.itemKey);
+      if (!parsed) continue;
+      const common = {
+        itemKey: s.itemKey,
+        topic: s.topic,
+        ease: s.ease,
+        reps: s.reps,
+        lapses: s.lapses,
+      };
+      if (parsed.kind === "authored") {
+        out.push(
+          parsed.source === "byte"
+            ? {
+                ...common,
+                kind: "authored" as const,
+                source: "byte" as const,
+                slug: parsed.slug,
+                courseSlug: null,
+                lessonSlug: null,
+                questionId: parsed.questionId,
+              }
+            : {
+                ...common,
+                kind: "authored" as const,
+                source: "course" as const,
+                slug: null,
+                courseSlug: parsed.courseSlug,
+                lessonSlug: parsed.lessonSlug,
+                questionId: parsed.questionId,
+              },
+        );
+        continue;
+      }
+      out.push({
+        ...common,
+        kind: "generator",
+        generatorId: parsed.generatorId,
+        difficulty: parsed.difficulty,
+        seed: hashToSeed(`${uid}:${day}:${s.itemKey}`),
+      });
+    }
+    return out;
   },
 });
 
@@ -241,13 +478,19 @@ export const getByteProgress = query({
       .query("byteProgress")
       .withIndex("by_user_key", (q) => q.eq("userId", uid).eq("key", slug))
       .unique();
-    if (!row) return { slug, status: "unseen", completedDay: null, xpEarned: 0 };
-    return {
-      slug,
-      status: row.status,
-      completedDay: row.completedDay,
-      xpEarned: row.xpEarned,
-    };
+    if (!row) {
+      return {
+        slug,
+        status: "unseen",
+        completedDay: null,
+        xpEarned: 0,
+        draftAnswers: null,
+        draftChecked: null,
+        draftCode: null,
+        exercisePassed: false,
+      };
+    }
+    return toByteProgressView(row);
   },
 });
 
@@ -261,12 +504,7 @@ export const getAllByteProgress = query({
       .collect();
     const out: Record<string, ByteProgressView> = {};
     for (const row of rows) {
-      out[row.key] = {
-        slug: row.key,
-        status: row.status,
-        completedDay: row.completedDay,
-        xpEarned: row.xpEarned,
-      };
+      out[row.key] = toByteProgressView(row);
     }
     return out;
   },
@@ -423,6 +661,10 @@ export const getProfileForExport = query({
       lastPracticeDay: profile.lastPracticeDay,
       streakFreezes: profile.streakFreezes,
       createdAt: profile.createdAt,
+      startingLevel: profile.startingLevel,
+      weeklyMinutes: profile.weeklyMinutes,
+      preferredTimeMode: profile.preferredTimeMode,
+      onboardingCompletedAt: profile.onboardingCompletedAt,
     };
   },
 });
@@ -498,5 +740,66 @@ export const getXpEvents = query({
       day: e.day,
       at: e.at,
     }));
+  },
+});
+
+export const listProjects = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const uid = await getUserId(ctx, { userId });
+    const rows = await ctx.db
+      .query("projects")
+      .withIndex("by_user", (q) => q.eq("userId", uid))
+      .collect();
+    return rows
+      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .map((row) => ({
+        slug: row.slug,
+        title: row.title,
+        summary: row.summary,
+        status: row.status,
+        visibility: row.visibility,
+        checkpoint: row.checkpoint,
+        updatedAt: row.updatedAt,
+      }));
+  },
+});
+
+export const listPublicProjects = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(
+    v.object({
+      slug: v.string(),
+      title: v.string(),
+      summary: v.string(),
+      checkpoint: v.string(),
+      updatedAt: v.number(),
+      displayName: v.string(),
+    }),
+  ),
+  handler: async (ctx, { limit }) => {
+    const rows = await ctx.db
+      .query("projects")
+      .withIndex("by_visibility", (q) => q.eq("visibility", "public"))
+      .collect();
+    const capped = rows
+      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .slice(0, limit ?? 24);
+    const out = [];
+    for (const row of capped) {
+      const profile = await ctx.db
+        .query("profiles")
+        .withIndex("by_user", (q) => q.eq("userId", row.userId))
+        .unique();
+      out.push({
+        slug: row.slug,
+        title: row.title,
+        summary: row.summary,
+        checkpoint: row.checkpoint,
+        updatedAt: row.updatedAt,
+        displayName: profile?.displayName ?? "Learner",
+      });
+    }
+    return out;
   },
 });

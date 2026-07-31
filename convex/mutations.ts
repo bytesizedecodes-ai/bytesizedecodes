@@ -9,7 +9,7 @@
  * sends a trusted localStorage UUID; Phase 2 replaces that with ctx.auth.
  */
 
-import { MutationCtx, mutation, action } from "./_generated/server";
+import { MutationCtx, mutation, internalMutation, action } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
 import { Doc, Id } from "./_generated/dataModel";
@@ -18,6 +18,7 @@ import { asDayKey, todayKey, type DayKey } from "./lib/day";
 import { describeInterval, newSrsState, review, type SrsState } from "./lib/srs";
 import { settleOnPractice, settleOnRollover, type StreakFields } from "./lib/streak";
 import {
+  applyRepeatDiminishing,
   freezesEarnedAt,
   levelFromXp,
   levelProgress,
@@ -64,6 +65,25 @@ const reviewInput = v.object({
     v.literal("easy"),
   ),
 });
+
+const trackValidator = v.union(
+  v.literal("grad"),
+  v.literal("beginner"),
+  v.literal("engineer"),
+  v.literal("founder"),
+);
+
+const startingLevelValidator = v.union(
+  v.literal("new"),
+  v.literal("some"),
+  v.literal("comfortable"),
+);
+
+const timeModeValidator = v.union(
+  v.literal("quick"),
+  v.literal("standard"),
+  v.literal("deep"),
+);
 
 export interface AttemptResult {
   xpAwarded: number;
@@ -275,6 +295,9 @@ async function wipeUser(ctx: MutationCtx, userId: string): Promise<void> {
     "byteProgress",
     "attempts",
     "xpEvents",
+    "analyticsEvents",
+    "skillEvidence",
+    "projects",
   ] as const) {
     const docs = await ctx.db
       .query(table)
@@ -288,6 +311,172 @@ async function wipeUser(ctx: MutationCtx, userId: string): Promise<void> {
 
 // ---------- mutations ----------
 
+export const updateOnboarding = mutation({
+  args: {
+    userId: v.string(),
+    track: trackValidator,
+    startingLevel: startingLevelValidator,
+    weeklyMinutes: v.number(),
+    preferredTimeMode: timeModeValidator,
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    if (!Number.isFinite(args.weeklyMinutes) || args.weeklyMinutes < 15 || args.weeklyMinutes > 600) {
+      throw new Error("Weekly learning time must be between 15 and 600 minutes");
+    }
+    const userId = await getUserId(ctx, { userId: args.userId });
+    const profile = await loadOrCreateProfile(ctx, userId);
+    await ctx.db.patch(profile._id, {
+      track: args.track,
+      startingLevel: args.startingLevel,
+      weeklyMinutes: Math.round(args.weeklyMinutes),
+      preferredTimeMode: args.preferredTimeMode,
+      onboardingCompletedAt: Date.now(),
+    });
+    await ctx.db.insert("analyticsEvents", {
+      userId,
+      name: "onboarding_completed",
+      day: todayKey(),
+      at: Date.now(),
+      track: args.track,
+      mode: args.preferredTimeMode,
+    });
+    return null;
+  },
+});
+
+export const trackEvent = mutation({
+  args: {
+    userId: v.string(),
+    name: v.string(),
+    today: v.string(),
+    refKey: v.optional(v.string()),
+    track: v.optional(trackValidator),
+    mode: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await getUserId(ctx, { userId: args.userId });
+    await loadOrCreateProfile(ctx, userId);
+    const allowed = new Set([
+      "onboarding_started",
+      "daily_plan_continued",
+      "unit_completed",
+      "review_graded",
+      "practice_answered",
+      "repair_link_clicked",
+      "code_test_passed",
+    ]);
+    if (!allowed.has(args.name)) {
+      throw new Error(`Unknown analytics event: ${args.name}`);
+    }
+    await ctx.db.insert("analyticsEvents", {
+      userId,
+      name: args.name,
+      day: serverToday(args.today),
+      at: Date.now(),
+      refKey: args.refKey,
+      track: args.track,
+      mode: args.mode,
+    });
+    return null;
+  },
+});
+
+export const saveLessonDraft = mutation({
+  args: {
+    userId: v.string(),
+    slug: v.string(),
+    draftAnswers: v.optional(v.string()),
+    draftChecked: v.optional(v.string()),
+    draftCode: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await getUserId(ctx, { userId: args.userId });
+    await loadOrCreateProfile(ctx, userId);
+    const existing = await ctx.db
+      .query("byteProgress")
+      .withIndex("by_user_key", (q) => q.eq("userId", userId).eq("key", args.slug))
+      .unique();
+    const patch = {
+      ...(args.draftAnswers !== undefined ? { draftAnswers: args.draftAnswers } : {}),
+      ...(args.draftChecked !== undefined ? { draftChecked: args.draftChecked } : {}),
+      ...(args.draftCode !== undefined ? { draftCode: args.draftCode } : {}),
+    };
+    if (existing) {
+      if (existing.status === "completed") return null;
+      await ctx.db.patch(existing._id, patch);
+      return null;
+    }
+    await ctx.db.insert("byteProgress", {
+      userId,
+      key: args.slug,
+      status: "started",
+      completedDay: null,
+      xpEarned: 0,
+      ...patch,
+    });
+    return null;
+  },
+});
+
+export const recordCodeTestPass = mutation({
+  args: {
+    userId: v.string(),
+    slug: v.string(),
+    today: v.string(),
+    skillIds: v.array(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await getUserId(ctx, { userId: args.userId });
+    await loadOrCreateProfile(ctx, userId);
+    const day = serverToday(args.today);
+    const existing = await ctx.db
+      .query("byteProgress")
+      .withIndex("by_user_key", (q) => q.eq("userId", userId).eq("key", args.slug))
+      .unique();
+    if (existing) {
+      await ctx.db.patch(existing._id, { exercisePassed: true });
+    } else {
+      await ctx.db.insert("byteProgress", {
+        userId,
+        key: args.slug,
+        status: "started",
+        completedDay: null,
+        xpEarned: 0,
+        exercisePassed: true,
+      });
+    }
+    for (const skillId of args.skillIds) {
+      const prior = await ctx.db
+        .query("skillEvidence")
+        .withIndex("by_user_source", (q) =>
+          q.eq("userId", userId).eq("sourceKey", `${args.slug}:code_test:${skillId}`),
+        )
+        .unique();
+      if (prior) continue;
+      await ctx.db.insert("skillEvidence", {
+        userId,
+        skillId,
+        sourceKey: `${args.slug}:code_test:${skillId}`,
+        kind: "code_test",
+        day,
+        at: Date.now(),
+      });
+    }
+    await ctx.db.insert("analyticsEvents", {
+      userId,
+      name: "code_test_passed",
+      day,
+      at: Date.now(),
+      refKey: args.slug,
+    });
+    return null;
+  },
+});
+
 /**
  * Practice drill: record the answer; if correct, roll drill XP (deterministic per
  * user/day/item), award it, and ensure an SRS card exists (created only — advancing the
@@ -299,6 +488,12 @@ export const submitAttempt = mutation({
     const userId = await getUserId(ctx, { userId: input.userId });
     const today = serverToday(input.today);
     const profile = await loadOrCreateProfile(ctx, userId);
+    const alreadyCorrectToday = (
+      await ctx.db
+        .query("attempts")
+        .withIndex("by_user_day", (q) => q.eq("userId", userId).eq("day", today))
+        .collect()
+    ).some((attempt) => attempt.itemKey === input.itemKey && attempt.correct);
 
     await recordAttempt(ctx, userId, { ...input, today });
 
@@ -308,7 +503,10 @@ export const submitAttempt = mutation({
     let leveledUp = false;
 
     if (input.correct) {
-      const roll = rollDrillXp(userId, today, input.itemKey);
+      const roll = applyRepeatDiminishing(
+        rollDrillXp(userId, today, input.itemKey),
+        alreadyCorrectToday,
+      );
       xpAwarded = roll.amount;
       critical = roll.critical;
       const refreshed = (await ctx.db.get(profile._id))!;
@@ -316,7 +514,7 @@ export const submitAttempt = mutation({
         ctx,
         userId,
         refreshed,
-        roll.amount,
+        xpAwarded,
         roll.reason,
         input.itemKey,
         today,
@@ -442,8 +640,13 @@ export const startByte = mutation({
  * already done. Otherwise rolls byte XP, awards it, sets status completed, settles streak.
  */
 export const completeByte = mutation({
-  args: { userId: v.string(), slug: v.string(), today: v.string() },
-  handler: async (ctx, { userId, slug, today }): Promise<AttemptResult> => {
+  args: {
+    userId: v.string(),
+    slug: v.string(),
+    today: v.string(),
+    requireExercise: v.optional(v.boolean()),
+  },
+  handler: async (ctx, { userId, slug, today, requireExercise }): Promise<AttemptResult> => {
     const uid = await getUserId(ctx, { userId });
     const day = serverToday(today);
     const profile = await loadOrCreateProfile(ctx, uid);
@@ -468,6 +671,10 @@ export const completeByte = mutation({
       };
     }
 
+    if (requireExercise && !existing?.exercisePassed) {
+      throw new Error("Pass the code exercise before completing this lesson");
+    }
+
     const roll = rollByteXp(uid, day, slug);
     const refreshed = (await ctx.db.get(profile._id))!;
     const award = await awardXp(
@@ -485,6 +692,9 @@ export const completeByte = mutation({
         status: "completed",
         completedDay: day,
         xpEarned: roll.amount,
+        draftAnswers: undefined,
+        draftChecked: undefined,
+        draftCode: undefined,
       });
     } else {
       await ctx.db.insert("byteProgress", {
@@ -495,6 +705,15 @@ export const completeByte = mutation({
         xpEarned: roll.amount,
       });
     }
+
+    await ctx.db.insert("analyticsEvents", {
+      userId: uid,
+      name: "unit_completed",
+      day,
+      at: Date.now(),
+      refKey: slug,
+      track: profile.track,
+    });
 
     const currentProfile = (await ctx.db.get(profile._id))!;
     const { extended, freezeEarned } = await applyPractice(ctx, uid, currentProfile, day);
@@ -514,12 +733,189 @@ export const completeByte = mutation({
   },
 });
 
-/** Wipe all progress for a user across the five tables. */
+/** Wipe all progress for a user across learner tables. */
 export const resetProgress = mutation({
   args: { userId: v.string() },
   handler: async (ctx, { userId }) => {
     const uid = await getUserId(ctx, { userId });
     await wipeUser(ctx, uid);
+  },
+});
+
+/**
+ * Move progress from a pre-auth browser UUID onto the authenticated subject.
+ * Idempotent and skips when the legacy id has no profile.
+ */
+export const claimLegacyProgress = mutation({
+  args: { legacyUserId: v.string() },
+  returns: v.object({ claimed: v.boolean() }),
+  handler: async (ctx, { legacyUserId }) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity?.subject) throw new Error("Not authenticated");
+    const newId = identity.subject;
+    if (!legacyUserId || legacyUserId === "ssr" || legacyUserId === newId) {
+      return { claimed: false };
+    }
+
+    const legacyProfile = await ctx.db
+      .query("profiles")
+      .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
+      .unique();
+    if (!legacyProfile) return { claimed: false };
+
+    const moveSimple = async (
+      table: "attempts" | "xpEvents" | "analyticsEvents" | "skillEvidence",
+    ) => {
+      const docs = await ctx.db
+        .query(table)
+        .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
+        .collect();
+      for (const doc of docs) {
+        await ctx.db.patch(doc._id, { userId: newId });
+      }
+    };
+    await moveSimple("attempts");
+    await moveSimple("xpEvents");
+    await moveSimple("analyticsEvents");
+    await moveSimple("skillEvidence");
+
+    const srsDocs = await ctx.db
+      .query("srsCards")
+      .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
+      .collect();
+    for (const doc of srsDocs) {
+      const existing = await ctx.db
+        .query("srsCards")
+        .withIndex("by_user_item", (q) => q.eq("userId", newId).eq("itemKey", doc.itemKey))
+        .unique();
+      if (existing) await ctx.db.delete(doc._id);
+      else await ctx.db.patch(doc._id, { userId: newId });
+    }
+
+    const byteDocs = await ctx.db
+      .query("byteProgress")
+      .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
+      .collect();
+    for (const doc of byteDocs) {
+      const existing = await ctx.db
+        .query("byteProgress")
+        .withIndex("by_user_key", (q) => q.eq("userId", newId).eq("key", doc.key))
+        .unique();
+      if (existing) await ctx.db.delete(doc._id);
+      else await ctx.db.patch(doc._id, { userId: newId });
+    }
+
+    const projectDocs = await ctx.db
+      .query("projects")
+      .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
+      .collect();
+    for (const doc of projectDocs) {
+      const existing = await ctx.db
+        .query("projects")
+        .withIndex("by_user_slug", (q) => q.eq("userId", newId).eq("slug", doc.slug))
+        .unique();
+      if (existing) await ctx.db.delete(doc._id);
+      else await ctx.db.patch(doc._id, { userId: newId });
+    }
+
+    const newProfile = await ctx.db
+      .query("profiles")
+      .withIndex("by_user", (q) => q.eq("userId", newId))
+      .unique();
+
+    if (newProfile) {
+      await ctx.db.patch(newProfile._id, {
+        displayName:
+          newProfile.displayName === "You" ? legacyProfile.displayName : newProfile.displayName,
+        track: newProfile.onboardingCompletedAt ? newProfile.track : legacyProfile.track,
+        xpTotal: Math.max(newProfile.xpTotal, legacyProfile.xpTotal),
+        currentStreak: Math.max(newProfile.currentStreak, legacyProfile.currentStreak),
+        longestStreak: Math.max(newProfile.longestStreak, legacyProfile.longestStreak),
+        streakFreezes: Math.max(newProfile.streakFreezes, legacyProfile.streakFreezes),
+        lastPracticeDay: newProfile.lastPracticeDay ?? legacyProfile.lastPracticeDay,
+        startingLevel: newProfile.startingLevel ?? legacyProfile.startingLevel,
+        weeklyMinutes: newProfile.weeklyMinutes ?? legacyProfile.weeklyMinutes,
+        preferredTimeMode: newProfile.preferredTimeMode ?? legacyProfile.preferredTimeMode,
+        onboardingCompletedAt:
+          newProfile.onboardingCompletedAt ?? legacyProfile.onboardingCompletedAt,
+        legacyAnonId: legacyUserId,
+      });
+      await ctx.db.delete(legacyProfile._id);
+    } else {
+      await ctx.db.patch(legacyProfile._id, {
+        userId: newId,
+        legacyAnonId: legacyUserId,
+      });
+    }
+
+    return { claimed: true };
+  },
+});
+
+export const upsertProject = mutation({
+  args: {
+    userId: v.string(),
+    slug: v.string(),
+    title: v.string(),
+    summary: v.string(),
+    checkpoint: v.string(),
+    artifactJson: v.optional(v.string()),
+    status: v.optional(
+      v.union(
+        v.literal("draft"),
+        v.literal("in_progress"),
+        v.literal("submitted"),
+        v.literal("published"),
+      ),
+    ),
+    visibility: v.optional(
+      v.union(v.literal("private"), v.literal("unlisted"), v.literal("public")),
+    ),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await getUserId(ctx, { userId: args.userId });
+    await loadOrCreateProfile(ctx, userId);
+    const existing = await ctx.db
+      .query("projects")
+      .withIndex("by_user_slug", (q) => q.eq("userId", userId).eq("slug", args.slug))
+      .unique();
+    const now = Date.now();
+    if (existing) {
+      await ctx.db.patch(existing._id, {
+        title: args.title,
+        summary: args.summary,
+        checkpoint: args.checkpoint,
+        artifactJson: args.artifactJson ?? existing.artifactJson,
+        status: args.status ?? existing.status,
+        visibility: args.visibility ?? existing.visibility,
+        updatedAt: now,
+      });
+      return null;
+    }
+    await ctx.db.insert("projects", {
+      userId,
+      slug: args.slug,
+      title: args.title,
+      summary: args.summary,
+      checkpoint: args.checkpoint,
+      artifactJson: args.artifactJson ?? "{}",
+      status: args.status ?? "draft",
+      visibility: args.visibility ?? "private",
+      createdAt: now,
+      updatedAt: now,
+    });
+    return null;
+  },
+});
+
+export const deleteAccountData = mutation({
+  args: { userId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, { userId }) => {
+    const uid = await getUserId(ctx, { userId });
+    await wipeUser(ctx, uid);
+    return null;
   },
 });
 
@@ -553,6 +949,10 @@ export const exportProgress = action({
       longestStreak: profile?.longestStreak ?? 0,
       lastPracticeDay: profile?.lastPracticeDay ?? null,
       streakFreezes: profile?.streakFreezes ?? 1,
+      startingLevel: profile?.startingLevel,
+      weeklyMinutes: profile?.weeklyMinutes,
+      preferredTimeMode: profile?.preferredTimeMode,
+      onboardingCompletedAt: profile?.onboardingCompletedAt,
       srs: Object.fromEntries(srs.map((s) => [s.itemKey, s])),
       bytes: Object.fromEntries(
         bytes.map((b) => [
@@ -590,6 +990,10 @@ export const importProgress = mutation({
       lastPracticeDay: parsed.lastPracticeDay,
       streakFreezes: parsed.streakFreezes,
       createdAt: parsed.createdAt,
+      startingLevel: parsed.startingLevel,
+      weeklyMinutes: parsed.weeklyMinutes,
+      preferredTimeMode: parsed.preferredTimeMode,
+      onboardingCompletedAt: parsed.onboardingCompletedAt,
     });
 
     for (const s of Object.values(parsed.srs)) {
@@ -707,10 +1111,11 @@ export const seedDemoProfiles = mutation({
 
 /**
  * Midnight cron target — settle streaks for everyone who hasn't practised today.
- * Wired in crons.ts; harmless to call manually.
+ * Only callable from the backend scheduler.
  */
-export const runRollover = mutation({
+export const runRollover = internalMutation({
   args: {},
+  returns: v.null(),
   handler: async (ctx) => {
     const today = todayKey();
     const profiles = await ctx.db.query("profiles").collect();
@@ -737,5 +1142,6 @@ export const runRollover = mutation({
         });
       }
     }
+    return null;
   },
 });

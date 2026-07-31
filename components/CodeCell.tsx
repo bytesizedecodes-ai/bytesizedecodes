@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * Lazy Pyodide runner. The runtime is loaded on first "Run" click — never on page load —
- * because the WASM bundle is multi-megabyte.
+ * Lazy Pyodide runner in a Web Worker. First Run downloads the WASM runtime;
+ * later runs stay off the main thread with a hard timeout.
  */
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Status = "idle" | "loading" | "ready" | "running" | "error";
 
@@ -15,89 +15,97 @@ interface RunResult {
   message: string;
 }
 
-declare global {
-  interface Window {
-    loadPyodide?: (opts: { indexURL: string }) => Promise<PyodideInterface>;
-  }
-}
-
-interface PyodideInterface {
-  runPythonAsync: (code: string) => Promise<unknown>;
-  setStdout: (opts: { batched: (s: string) => void }) => void;
-  setStderr: (opts: { batched: (s: string) => void }) => void;
-}
-
-const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/";
-
-let shared: Promise<PyodideInterface> | null = null;
-
-function loadRuntime(): Promise<PyodideInterface> {
-  if (shared) return shared;
-  shared = (async () => {
-    if (!window.loadPyodide) {
-      await new Promise<void>((resolve, reject) => {
-        const s = document.createElement("script");
-        s.src = `${PYODIDE_URL}pyodide.js`;
-        s.onload = () => resolve();
-        s.onerror = () => reject(new Error("Failed to load Pyodide"));
-        document.head.appendChild(s);
-      });
-    }
-    if (!window.loadPyodide) throw new Error("Pyodide global missing");
-    return window.loadPyodide({ indexURL: PYODIDE_URL });
-  })();
-  return shared;
-}
+const RUN_TIMEOUT_MS = 12_000;
 
 export function CodeCell({
   starterCode,
   testCode,
   title,
+  onCodeChange,
+  onTestResult,
 }: {
   starterCode: string;
   testCode?: string;
   title?: string;
+  onCodeChange?: (code: string) => void;
+  onTestResult?: (ok: boolean) => void;
 }) {
   const [code, setCode] = useState(starterCode);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<RunResult | null>(null);
-  const abortRef = useRef(0);
+  const workerRef = useRef<Worker | null>(null);
+  const requestId = useRef(0);
+
+  useEffect(() => {
+    setCode(starterCode);
+  }, [starterCode]);
+
+  useEffect(() => {
+    return () => {
+      workerRef.current?.terminate();
+      workerRef.current = null;
+    };
+  }, []);
+
+  const updateCode = (next: string) => {
+    setCode(next);
+    onCodeChange?.(next);
+  };
+
+  const ensureWorker = useCallback(() => {
+    if (workerRef.current) return workerRef.current;
+    const worker = new Worker("/pyodide-worker.js");
+    workerRef.current = worker;
+    return worker;
+  }, []);
+
+  const reset = useCallback(() => {
+    workerRef.current?.terminate();
+    workerRef.current = null;
+    setStatus("idle");
+    setResult(null);
+  }, []);
 
   const run = useCallback(async () => {
-    const token = ++abortRef.current;
+    const id = ++requestId.current;
     setStatus("loading");
     setResult(null);
-    try {
-      const py = await loadRuntime();
-      if (token !== abortRef.current) return;
+    const worker = ensureWorker();
+
+    await new Promise<void>((resolve) => {
+      const timer = window.setTimeout(() => {
+        if (requestId.current !== id) return;
+        worker.terminate();
+        workerRef.current = null;
+        setResult({
+          ok: false,
+          stdout: "",
+          message: `Timed out after ${RUN_TIMEOUT_MS / 1000}s. Reset and try a smaller program.`,
+        });
+        setStatus("error");
+        onTestResult?.(false);
+        resolve();
+      }, RUN_TIMEOUT_MS);
+
+      const onMessage = (event: MessageEvent<RunResult & { id: number }>) => {
+        if (event.data.id !== id) return;
+        window.clearTimeout(timer);
+        worker.removeEventListener("message", onMessage);
+        setResult({
+          ok: event.data.ok,
+          stdout: event.data.stdout,
+          message: event.data.message,
+        });
+        setStatus(event.data.ok ? "ready" : "error");
+        onTestResult?.(event.data.ok);
+        resolve();
+      };
+
+      worker.addEventListener("message", onMessage);
       setStatus("running");
-
-      let stdout = "";
-      py.setStdout({ batched: (s) => { stdout += s + "\n"; } });
-      py.setStderr({ batched: (s) => { stdout += s + "\n"; } });
-
-      // Wrap user code + optional tests. Tests set `ok` and optional `message`.
-      const wrapped = testCode
-        ? `${code}\n\nok = False\nmessage = "tests did not run"\n${testCode}\n`
-        : `${code}\n\nok = True\nmessage = "ran"\n`;
-
-      await py.runPythonAsync(wrapped);
-      if (token !== abortRef.current) return;
-
-      const ok = Boolean(await py.runPythonAsync("ok"));
-      const message = String(await py.runPythonAsync("message"));
-      setResult({ ok, stdout: stdout.trim(), message });
-      setStatus("ready");
-    } catch (e) {
-      if (token !== abortRef.current) return;
-      setResult({
-        ok: false,
-        stdout: "",
-        message: e instanceof Error ? e.message : String(e),
-      });
-      setStatus("error");
-    }
-  }, [code, testCode]);
+      worker.postMessage({ id, code, testCode });
+    });
+  }, [code, ensureWorker, onTestResult, testCode]);
 
   return (
     <div className="card overflow-hidden">
@@ -105,22 +113,31 @@ export function CodeCell({
         <p className="text-xs font-medium uppercase tracking-wide text-ink-faint">
           {title ?? "Try it"}
         </p>
-        <button
-          type="button"
-          onClick={run}
-          disabled={status === "loading" || status === "running"}
-          className="rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
-        >
-          {status === "loading"
-            ? "Loading Python…"
-            : status === "running"
-              ? "Running…"
-              : "Run"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={reset}
+            className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-ink-soft hover:bg-ash/70"
+          >
+            Reset
+          </button>
+          <button
+            type="button"
+            onClick={() => void run()}
+            disabled={status === "loading" || status === "running"}
+            className="rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
+          >
+            {status === "loading"
+              ? "Loading Python…"
+              : status === "running"
+                ? "Running…"
+                : "Run"}
+          </button>
+        </div>
       </div>
       <textarea
         value={code}
-        onChange={(e) => setCode(e.target.value)}
+        onChange={(e) => updateCode(e.target.value)}
         spellCheck={false}
         className="block h-48 w-full resize-y bg-ink px-4 py-3 font-mono text-[13px] leading-relaxed text-canvas outline-none"
       />
@@ -143,7 +160,8 @@ export function CodeCell({
       )}
       {status === "idle" && (
         <p className="border-t border-ash px-4 py-2 text-[11px] text-ink-faint">
-          Python runs in your browser via Pyodide — first run downloads ~10 MB.
+          Python runs in a Web Worker via Pyodide — first run downloads ~10 MB, with a
+          12s timeout.
         </p>
       )}
     </div>

@@ -9,6 +9,8 @@ const byte: Byte = {
   order: 1,
   difficulty: 2,
   interviewTags: ["metrics", "imbalance", "precision", "recall"],
+  skillIds: ["classification-metrics"],
+  capability: "Choose precision or recall based on the cost of false alarms and misses.",
   minutes: 5,
   sections: [
     {

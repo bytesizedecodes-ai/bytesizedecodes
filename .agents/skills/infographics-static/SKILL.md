@@ -136,7 +136,7 @@ A lesson isn't just a picture. Each entry in `content/courses.ts` should have:
 - **`questions`**: 2-3 MCQs. Each wrong answer must teach something — the
   `explanation` field should say *why* the right answer is right and name the
   specific misconception behind each plausible distractor. (This mirrors the
-  generator philosophy in `docs/02-drill-generators.md`.)
+  generator philosophy in `plans/historical/02-drill-generators.md`.)
 - **`exercise`** (optional): a `CodeExercise` with `starterCode` + `testCode`.
   The `testCode` MUST set `ok = True` (and optionally `message`) on success —
   that's the contract `components/CodeCell.tsx` reads back. See the existing

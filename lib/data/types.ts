@@ -10,6 +10,15 @@ import type { Difficulty } from "../drills/types";
 export type UserId = string & { readonly __brand: "UserId" };
 
 export type Track = "grad" | "beginner" | "engineer" | "founder";
+export type StartingLevel = "new" | "some" | "comfortable";
+export type TimeMode = "quick" | "standard" | "deep";
+
+export interface OnboardingInput {
+  track: Track;
+  startingLevel: StartingLevel;
+  weeklyMinutes: number;
+  preferredTimeMode: TimeMode;
+}
 
 export interface Profile {
   userId: UserId;
@@ -24,6 +33,10 @@ export interface Profile {
   lastPracticeDay: DayKey | null;
   streakFreezes: number;
   createdAt: number;
+  startingLevel: StartingLevel | null;
+  weeklyMinutes: number | null;
+  preferredTimeMode: TimeMode | null;
+  onboardingCompletedAt: number | null;
 }
 
 export type PracticeMode = "byte" | "review" | "practice";
@@ -66,24 +79,76 @@ export interface DayProgress {
   practised: boolean;
 }
 
-export interface ReviewCard {
+export type DailyPlanStep =
+  | {
+      kind: "review";
+      label: string;
+      detail: string;
+      href: string;
+      minutes: number;
+      count: number;
+    }
+  | {
+      kind: "drill";
+      label: string;
+      detail: string;
+      href: string;
+      minutes: number;
+      generatorId: string;
+      difficulty: Difficulty;
+    }
+  | {
+      kind: "unit";
+      label: string;
+      detail: string;
+      href: string;
+      minutes: number;
+      progressKey: string;
+    };
+
+export interface DailyPlan {
+  timeMode: TimeMode;
+  estimatedMinutes: number;
+  focus: string;
+  steps: DailyPlanStep[];
+}
+
+interface ReviewCardBase {
   itemKey: string;
   topic: string;
-  /** Generator id and difficulty parsed back out of the item key. */
-  generatorId: string;
-  difficulty: Difficulty;
-  /** Stable per-day seed so a card looks the same if the page is reloaded. */
-  seed: number;
   ease: number;
   reps: number;
   lapses: number;
 }
+
+export interface GeneratorReviewCard extends ReviewCardBase {
+  kind: "generator";
+  generatorId: string;
+  difficulty: Difficulty;
+  /** Stable per-day seed so a card looks the same if the page is reloaded. */
+  seed: number;
+}
+
+export interface AuthoredReviewCard extends ReviewCardBase {
+  kind: "authored";
+  source: "byte" | "course";
+  slug: string | null;
+  courseSlug: string | null;
+  lessonSlug: string | null;
+  questionId: string;
+}
+
+export type ReviewCard = GeneratorReviewCard | AuthoredReviewCard;
 
 export interface ByteProgress {
   slug: string;
   status: "unseen" | "started" | "completed";
   completedDay: DayKey | null;
   xpEarned: number;
+  draftAnswers: Record<string, string> | null;
+  draftChecked: string[] | null;
+  draftCode: string | null;
+  exercisePassed: boolean;
 }
 
 export interface TopicMastery {
@@ -119,6 +184,30 @@ export interface UserCounts {
   avgStreak: number;
 }
 
+export type AnalyticsEventName =
+  | "onboarding_started"
+  | "daily_plan_continued"
+  | "unit_completed"
+  | "review_graded"
+  | "practice_answered"
+  | "repair_link_clicked"
+  | "code_test_passed";
+
+export interface TrackEventInput {
+  name: AnalyticsEventName;
+  today: DayKey;
+  refKey?: string;
+  track?: Track;
+  mode?: string;
+}
+
+export interface LessonDraftInput {
+  slug: string;
+  draftAnswers?: Record<string, string>;
+  draftChecked?: string[];
+  draftCode?: string;
+}
+
 /** Persisted shape. Matches the anonymous-progress blob the backend will accept. */
 export interface PersistedStateV1 {
   version: 1;
@@ -131,6 +220,10 @@ export interface PersistedStateV1 {
   longestStreak: number;
   lastPracticeDay: string | null;
   streakFreezes: number;
+  startingLevel?: StartingLevel;
+  weeklyMinutes?: number;
+  preferredTimeMode?: TimeMode;
+  onboardingCompletedAt?: number;
   srs: Record<string, SrsState>;
   bytes: Record<string, { status: "started" | "completed"; completedDay: string | null; xpEarned: number }>;
   /** Newest first, capped. */

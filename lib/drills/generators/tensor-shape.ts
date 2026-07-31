@@ -221,7 +221,7 @@ function conv(r: Rng, difficulty: Difficulty): GeneratedQuestion {
     prompt,
     answer: { kind: "mcq", choices, correctId },
     explanation,
-    relatedBytes: ["tensors-and-shapes", "convolutions"],
+    relatedBytes: ["tensors-and-shapes"],
     estimatedSeconds: 60,
   };
 }
@@ -231,6 +231,7 @@ export const tensorShape: Generator = {
   title: "Output shapes",
   blurb: "Matmuls, pooling and convolutions — the classic screening question.",
   topic: TOPIC,
+  skillIds: ["tensor-shapes"],
   supportedDifficulties: [1, 2, 3, 4, 5],
 
   generate(seed: number, difficulty: Difficulty): GeneratedQuestion {

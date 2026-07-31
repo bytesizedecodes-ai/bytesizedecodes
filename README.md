@@ -1,8 +1,8 @@
-# ByteSizedCodes
+# bytesizedecodes
 
 Learn AI visually. Practise it. Build something real.
 
-ByteSizedCodes is an early learning-platform prototype for curious beginners,
+bytesizedecodes is an early learning-platform prototype for curious beginners,
 students, working professionals, and aspiring AI founders. It combines visual
 lessons, procedural practice, spaced review, executable Python, and project-based
 learning.
@@ -30,7 +30,8 @@ npm run build
 
 | Area | Path |
 | --- | --- |
-| Plan docs | `docs/` |
+| Agent docs | `docs/` |
+| Product plans | `plans/` |
 | Drill generators | `lib/drills/` |
 | Spaced repetition | `lib/srs.ts` |
 | Day keys (IST) | `lib/day.ts` |
@@ -54,15 +55,11 @@ npm run build
 - [ ] Put the coherent learning loop in front of real testers
 - [ ] Measure byte authoring time (target ≤ 90 min)
 
-## Product planning
+## Docs and plans
 
-Current findings and recommendations:
-
-- `docs/04-repository-product-audit.md`
-- `docs/05-hooked-engagement-strategy.md`
-- `docs/06-course-and-track-roadmap.md`
-- `docs/07-interactive-learning-design.md`
-- `docs/08-product-execution-roadmap.md`
-
-Documents `00`–`03` record earlier planning assumptions and remain useful as
-historical context.
+- Agent-facing project docs: [`docs/`](docs/) (start at [`docs/README.md`](docs/README.md))
+- Agent entrypoint: [`CLAUDE.md`](CLAUDE.md)
+- Product plans by phase: [`plans/`](plans/)
+  - Current direction: [`plans/coherent-v1/`](plans/coherent-v1/)
+  - Delivery phases: [`plans/coherent-v1/phases/`](plans/coherent-v1/phases/)
+  - Historical: [`plans/historical/`](plans/historical/)

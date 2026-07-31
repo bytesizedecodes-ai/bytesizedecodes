@@ -18,6 +18,7 @@ export function ByteRunner({ byte }: { byte: Byte }) {
       topic={byte.topic}
       questions={byte.questions}
       exercise={byte.exercise}
+      skillIds={byte.skillIds}
     />
   );
 }

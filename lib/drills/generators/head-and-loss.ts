@@ -258,6 +258,7 @@ export const headAndLoss: Generator = {
   title: "Output layer and loss",
   blurb: "Match the task to its final activation and loss function.",
   topic: TOPIC,
+  skillIds: ["output-heads"],
   supportedDifficulties: [1, 2, 3, 4, 5],
 
   generate(seed: number, difficulty: Difficulty): GeneratedQuestion {
@@ -309,7 +310,7 @@ export const headAndLoss: Generator = {
       prompt,
       answer: { kind: "mcq", choices, correctId },
       explanation,
-      relatedBytes: ["loss-functions", "classification-vs-regression"],
+      relatedBytes: ["tensors-and-shapes"],
       estimatedSeconds: 40,
     };
   },

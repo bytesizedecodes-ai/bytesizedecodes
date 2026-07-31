@@ -7,14 +7,15 @@
  */
 
 import type { DayKey } from "../day";
-import type { AttemptInput, AttemptResult, ReviewInput } from "./types";
+import type { AttemptInput, AttemptResult, OnboardingInput, ReviewInput } from "./types";
 
 export interface DataMutations {
   submitAttempt(input: AttemptInput): Promise<AttemptResult>;
   gradeReview(input: ReviewInput): Promise<AttemptResult>;
   startByte(slug: string): Promise<void>;
   completeByte(slug: string, today: DayKey): Promise<AttemptResult>;
+  updateOnboarding(input: OnboardingInput): Promise<void>;
   resetProgress(): Promise<void>;
-  exportProgress(): string;
+  exportProgress(): Promise<string>;
   importProgress(json: string): Promise<void>;
 }

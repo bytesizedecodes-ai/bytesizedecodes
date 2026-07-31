@@ -16,7 +16,7 @@
  * (3) appending an entry to the right course's `lessons` array here.
  */
 
-import type { ByteQuestion, CodeExercise } from "./types";
+import type { ByteQuestion, CodeExercise, SkillId } from "./types";
 
 export type Lesson = {
   /** Folder/component slug. Must match a key in components/infographic/index.tsx. */
@@ -26,14 +26,20 @@ export type Lesson = {
   blurb: string;
   /** Topic tag, for future filtering and mastery grouping. */
   topic: string;
+  skillIds?: readonly SkillId[];
+  capability?: string;
   /** Estimated minutes to read + attempt. Shown in the byte chip. */
   minutes?: number;
+  /** Guess-first MCQ shown before the infographic (local only). */
+  prediction?: ByteQuestion;
   /** ~100-200 words of explanation, rendered as paragraphs under the infographic. */
   prose?: string[];
   /** Optional runnable Python exercise (Pyodide). */
   exercise?: CodeExercise;
   /** 2-3 self-check MCQs. All must be answered correctly to complete the byte. */
   questions?: ByteQuestion[];
+  /** Short real-world transfer prompt after the checks. */
+  application?: { title: string; prompt: string };
 };
 
 export type Course = {
@@ -49,17 +55,32 @@ export type Course = {
 export const COURSES: readonly Course[] = [
   {
     slug: "machine-learning",
-    title: "Machine Learning",
-    subtitle: "From AI fundamentals to neural networks — one byte at a time.",
+    title: "AI Foundations: Core Concepts",
+    subtitle: "AI, machine learning, and deep learning — connected clearly.",
     description:
-      "A visual, byte-by-byte path through ML. Each lesson is an infographic plus a short explainer, an optional code exercise, and self-check questions. Use the arrows to walk the course in order.",
+      "A visual path through the concepts every AI learner needs. Each lesson combines an infographic, a concise explanation, an active check, and saved progress.",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
         title: "What is Artificial Intelligence?",
         blurb: "What makes a machine intelligent — and what doesn't.",
         topic: "ai-foundations",
+        skillIds: ["ai-literacy", "ai-ml-dl"],
+        capability: "Distinguish adaptive AI systems from fixed-rule software.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: which machine is acting more 'intelligently'?",
+          choices: [
+            { id: "a", label: "A microwave with fixed cook times" },
+            { id: "b", label: "A recommendation system that changes after your clicks" },
+            { id: "c", label: "A wall clock that always ticks the same way" },
+          ],
+          answer: "b",
+          explanation:
+            "Intelligence here means adapting from experience. Fixed timers and clocks don't update their behaviour from data.",
+        },
         prose: [
           "Artificial Intelligence is the branch of computer science that tries to build machines which can act intelligently — reason, learn, perceive, and decide — instead of only executing fixed instructions.",
           "The key divide is between a machine that follows rules and one that figures things out. A calculator is not intelligent: the same input always yields the same output, and it never adapts. A spam filter that improves as it sees more email is.",
@@ -109,13 +130,33 @@ export const COURSES: readonly Course[] = [
               "Determinism alone isn't intelligence. Intelligence implies the system can change its behaviour based on data or experience; a fixed lookup cannot.",
           },
         ],
+        application: {
+          title: "Spot adaptive systems around you",
+          prompt:
+            "List two apps you use daily. For each, write one sentence: does it follow fixed rules, or does it change from your behaviour? If you're unsure, name what evidence would convince you.",
+        },
       },
       {
         slug: "what-is-machine-learning",
         title: "What is Machine Learning?",
         blurb: "Teaching machines to learn from data instead of rules.",
         topic: "ml-foundations",
+        skillIds: ["ai-literacy", "learning-paradigms"],
+        capability: "Explain how ML learns patterns and identify its three main families.",
         minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: how does a spam filter usually get better over time?",
+          choices: [
+            { id: "a", label: "A programmer rewrites every rule by hand each night" },
+            { id: "b", label: "It learns patterns from labelled examples of spam and not-spam" },
+            { id: "c", label: "It randomly guesses until users give up" },
+          ],
+          answer: "b",
+          explanation:
+            "ML systems improve by fitting patterns in data. Hand-rewriting every rule is traditional programming, not learning from examples.",
+        },
         prose: [
           "Machine Learning is a technique for building AI systems that learn patterns from data themselves, rather than relying on a programmer to hand-code every rule.",
           "The classic framing: instead of writing a program that says 'if an email contains these words, it's spam', you show the system thousands of labelled spam and non-spam emails and let it discover the patterns. The more data it sees, the better it gets.",
@@ -195,13 +236,33 @@ for task, expected in cases:
               "No labels and no rewards means unsupervised: the algorithm discovers inherent structure (like clusters) in the raw data.",
           },
         ],
+        application: {
+          title: "Name the learning family",
+          prompt:
+            "Pick one problem at work or school (fraud, recommendations, grouping customers, a game bot). Write which family fits — supervised, unsupervised, or reinforcement — and one sentence why.",
+        },
       },
       {
         slug: "what-is-deep-learning",
         title: "What is Deep Learning?",
         blurb: "Multi-layer neural networks, drawn out.",
         topic: "deep-learning",
+        skillIds: ["ai-ml-dl"],
+        capability: "Explain what makes a neural network deep and why layers help.",
         minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: what does 'deep' most precisely mean here?",
+          choices: [
+            { id: "a", label: "The model has many stacked layers" },
+            { id: "b", label: "The training data is philosophically profound" },
+            { id: "c", label: "The GPU is physically deep underground" },
+          ],
+          answer: "a",
+          explanation:
+            "'Deep' counts layers in the network. It is an architecture word, not a claim about understanding.",
+        },
         prose: [
           "Deep Learning is a subfield of machine learning that uses artificial neural networks — structures loosely inspired by the brain — with many layers stacked one after another.",
           "'Deep' simply refers to the number of layers. A network with one or two layers is shallow; a deep network might have dozens. Each layer transforms its input into a slightly more abstract representation: early layers might detect edges, middle layers detect shapes, and later layers detect whole objects.",
@@ -251,13 +312,33 @@ for task, expected in cases:
               "Deep learning sits inside ML — it's one technique (multi-layer neural networks) within the broader field of learning from data, which in turn sits inside AI.",
           },
         ],
+        application: {
+          title: "Feature hierarchy in plain words",
+          prompt:
+            "Describe a photo app that tags 'dog'. In one sentence each, invent what an early layer, a middle layer, and a late layer might notice — even if you are guessing.",
+        },
       },
       {
         slug: "ai-vs-ml-vs-dl",
         title: "AI vs ML vs Deep Learning",
         blurb: "How the three nested worlds fit together.",
         topic: "ai-foundations",
+        skillIds: ["ai-ml-dl"],
+        capability: "Place AI, machine learning, and deep learning in the correct relationship.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: which nesting is correct?",
+          choices: [
+            { id: "a", label: "DL contains ML, which contains AI" },
+            { id: "b", label: "AI contains ML, which contains DL" },
+            { id: "c", label: "The three fields are unrelated" },
+          ],
+          answer: "b",
+          explanation:
+            "AI is the broad goal; ML is one path; DL is one ML technique. Circles nest AI ⊃ ML ⊃ DL.",
+        },
         prose: [
           "These three terms are constantly confused, but they're just nested circles. AI is the largest; machine learning is a part of AI; deep learning is a part of machine learning.",
           "Artificial Intelligence is the goal: build machines that can act intelligently. Machine learning is one way to pursue that goal — let the system learn from data. Deep learning is one specific technique within ML — use many-layered neural networks.",
@@ -307,51 +388,141 @@ for task, expected in cases:
               "It can act intelligently (AI) but it never learns — a human wrote every rule. So it's AI but not ML, and therefore not DL either.",
           },
         ],
+        application: {
+          title: "Place a real system in the circles",
+          prompt:
+            "Take ChatGPT, a spam filter, or a medical expert system with hand-written rules. Write which circles it sits in (AI / ML / DL) and one reason for each boundary you draw.",
+        },
       },
     ],
   },
   {
     slug: "machine-learning-for-layman",
-    title: "Machine Learning for Layman",
+    title: "AI Foundations: Visual Start",
     subtitle:
-      "ML taught almost entirely through pictures — no maths, no jargon, no quizzes.",
+      "Start with pictures and everyday decisions — no maths or jargon required.",
     description:
-      "A picture-led path through what machine learning actually is. Each lesson is one infographic that explains the idea visually — built so you remember it as a picture. No prose, no questions; just look and absorb.",
+      "A picture-led path through what learning and machine learning actually mean. Every lesson ends with one small active check so the idea becomes more than something you scrolled past.",
     lessons: [
       {
         slug: "how-humans-learn",
         title: "How a human learns",
         blurb: "A child, a car, and a bike — the original learning machine.",
         topic: "layman-foundations",
+        skillIds: ["ai-literacy"],
+        capability: "Explain learning as using experience to improve a future decision.",
         minutes: 3,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What makes an experience useful for learning?",
+            choices: [
+              { id: "a", label: "It changes how you respond to a similar situation later" },
+              { id: "b", label: "It is repeated without noticing the result" },
+              { id: "c", label: "Someone writes every future instruction in advance" },
+            ],
+            answer: "a",
+            explanation:
+              "Learning means experience changes a future response. Repetition alone is not enough if nothing is updated.",
+          },
+        ],
       },
       {
         slug: "humans-vs-machines",
         title: "Why a machine can't do that (yet)",
         blurb: "Machines follow instructions — they don't decide on their own.",
         topic: "layman-foundations",
+        skillIds: ["ai-literacy"],
+        capability: "Contrast fixed instructions with systems that adapt from examples.",
         minutes: 3,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Which system is adapting rather than only following fixed instructions?",
+            choices: [
+              { id: "a", label: "A timer that rings after exactly ten minutes" },
+              { id: "b", label: "A filter that improves after users mark unwanted messages" },
+              { id: "c", label: "A calculator evaluating the same formula" },
+            ],
+            answer: "b",
+            explanation:
+              "The filter changes from feedback. The timer and calculator execute predetermined instructions.",
+          },
+        ],
       },
       {
         slug: "what-is-ml-layman",
         title: "What is Machine Learning, really?",
         blurb: "Give the machine experience, and let it find the patterns itself.",
         topic: "layman-foundations",
+        skillIds: ["ai-literacy", "learning-paradigms"],
+        capability: "Describe machine learning as finding useful patterns in examples.",
         minutes: 4,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "In machine learning, who discovers the detailed pattern?",
+            choices: [
+              { id: "a", label: "The learning algorithm, from examples" },
+              { id: "b", label: "A programmer, by writing every possible rule" },
+              { id: "c", label: "The user, after the prediction is made" },
+            ],
+            answer: "a",
+            explanation:
+              "A programmer defines the learning process, but the model discovers the detailed pattern from data.",
+          },
+        ],
       },
       {
         slug: "three-ml-paradigms",
         title: "The three families of ML",
         blurb: "Supervised, unsupervised, reinforcement — what each is for.",
         topic: "layman-paradigms",
+        skillIds: ["learning-paradigms"],
+        capability: "Choose supervised, unsupervised, or reinforcement learning for a simple task.",
         minutes: 4,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "An agent learns a game from rewards after each action. Which family is this?",
+            choices: [
+              { id: "a", label: "Supervised learning" },
+              { id: "b", label: "Unsupervised learning" },
+              { id: "c", label: "Reinforcement learning" },
+            ],
+            answer: "c",
+            explanation:
+              "Reinforcement learning uses rewards or penalties to improve a sequence of decisions.",
+          },
+        ],
       },
       {
         slug: "supervised-learning-deep-dive",
         title: "Inside supervised learning",
         blurb: "Samples + labels → a function → classification or regression.",
         topic: "layman-paradigms",
+        skillIds: ["supervised-learning", "learning-paradigms"],
+        capability: "Recognize labelled examples and distinguish classification from regression.",
         minutes: 5,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Predicting a house price from examples of houses and their sale prices is:",
+            choices: [
+              { id: "a", label: "Classification, because houses have categories" },
+              { id: "b", label: "Regression, because the output is a number" },
+              { id: "c", label: "Unsupervised learning, because prices vary" },
+            ],
+            answer: "b",
+            explanation:
+              "A continuous numeric output such as price makes this supervised regression.",
+          },
+        ],
       },
     ],
   },

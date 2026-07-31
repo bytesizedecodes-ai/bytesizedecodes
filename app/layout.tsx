@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { DataProvider } from "@/lib/data/provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ByteSizedCodes — five minutes a day to an ML interview",
+  title: "bytesizedecodes — Learn AI visually. Practise it. Build something real.",
   description:
-    "Daily ML practice for Indian college grads. Drills, spaced review, and bite-sized lessons. Not another course.",
+    "Visual AI lessons, intelligent practice, spaced review, and goal-based paths for beginners, students, professionals, and founders.",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <DataProvider>{children}</DataProvider>
+        <ConvexAuthNextjsServerProvider>
+          <DataProvider>{children}</DataProvider>
+        </ConvexAuthNextjsServerProvider>
       </body>
     </html>
   );

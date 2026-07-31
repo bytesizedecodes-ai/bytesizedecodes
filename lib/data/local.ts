@@ -10,6 +10,7 @@ import type { Difficulty } from "../drills/types";
 import { describeInterval, dueQueue, mastery, newSrsState, review, type SrsState } from "../srs";
 import { settleOnPractice, settleOnRollover } from "./streak";
 import {
+  applyRepeatDiminishing,
   freezesEarnedAt,
   levelFromXp,
   levelProgress,
@@ -179,6 +180,10 @@ export class LocalStore {
         : null,
       streakFreezes: this.state.streakFreezes,
       createdAt: this.state.createdAt,
+      startingLevel: null,
+      weeklyMinutes: null,
+      preferredTimeMode: null,
+      onboardingCompletedAt: null,
     };
   }
 
@@ -204,6 +209,7 @@ export class LocalStore {
       if (!parsed) return [];
       return [
         {
+          kind: "generator" as const,
           itemKey: s.itemKey,
           topic: s.topic,
           generatorId: parsed.generatorId,
@@ -220,13 +226,26 @@ export class LocalStore {
   getByteProgress(slug: string): ByteProgress {
     const row = this.state.bytes[slug];
     if (!row) {
-      return { slug, status: "unseen", completedDay: null, xpEarned: 0 };
+      return {
+        slug,
+        status: "unseen",
+        completedDay: null,
+        xpEarned: 0,
+        draftAnswers: null,
+        draftChecked: null,
+        draftCode: null,
+        exercisePassed: false,
+      };
     }
     return {
       slug,
       status: row.status,
       completedDay: row.completedDay ? asDayKey(row.completedDay) : null,
       xpEarned: row.xpEarned,
+      draftAnswers: null,
+      draftChecked: null,
+      draftCode: null,
+      exercisePassed: false,
     };
   }
 
@@ -365,6 +384,12 @@ export class LocalStore {
 
   async submitAttempt(input: AttemptInput): Promise<AttemptResult> {
     await this.gate();
+    const alreadyCorrectToday = this.state.attempts.some(
+      (attempt) =>
+        attempt.day === input.today &&
+        attempt.itemKey === input.itemKey &&
+        attempt.correct,
+    );
     this.recordAttempt(input);
 
     let xpAwarded = 0;
@@ -373,7 +398,10 @@ export class LocalStore {
 
     let leveledUp = false;
     if (input.correct) {
-      const roll = rollDrillXp(this.state.userId, input.today, input.itemKey);
+      const roll = applyRepeatDiminishing(
+        rollDrillXp(this.state.userId, input.today, input.itemKey),
+        alreadyCorrectToday,
+      );
       xpAwarded = roll.amount;
       critical = roll.critical;
       const award = this.awardXp(roll.amount, roll.reason, input.itemKey, input.today);

@@ -4,18 +4,44 @@ Guide for AI agents working on this repo. Read before editing.
 
 ## What this is
 
-**ByteSizedCodes** — “Learn AI visually. Practise it. Build something real.” A
+**bytesizedecodes** — “Learn AI visually. Practise it. Build something real.” A
 goal-based AI learning platform for curious beginners, students and graduates,
 working professionals, and aspiring founders.
 
-The current prototype uses **Convex persistence** behind the `DataLayer` seam.
-Identity is still an anonymous browser UUID trusted by the backend; production auth,
-cross-device accounts, scheduled email, and public social features are not ready.
+The current prototype uses **Convex Auth** (anonymous by default; Google when
+`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` are set) behind the `DataLayer` seam.
+Legacy browser UUIDs can be claimed onto an auth subject. **No email OTP /
+Resend** — cross-device identity is Google when configured. Opt-in project
+gallery is available; full social features are not.
 `lib/data/local.ts` is the retained legacy adapter, not the active provider.
 
-Read `docs/04-repository-product-audit.md` through
-`docs/08-product-execution-roadmap.md` for the current direction. Documents
-`00`–`03` capture earlier planning assumptions.
+## Docs for agents (read these)
+
+| Doc | Why |
+| --- | --- |
+| [`docs/overview.md`](docs/overview.md) | Product, audience, what is / isn’t shipped |
+| [`docs/architecture.md`](docs/architecture.md) | Stack, folders, request flow |
+| [`docs/data-layer.md`](docs/data-layer.md) | DataLayer seam, identity, practice vs review |
+| [`docs/content-model.md`](docs/content-model.md) | Bytes, courses, tracks, skills, catalog |
+| [`docs/conventions.md`](docs/conventions.md) | Hard engineering rules |
+| [`docs/README.md`](docs/README.md) | Index of agent docs |
+
+## Product plans (not codebase truth)
+
+Whenever you create or update product plans, roadmaps, audits, or phased
+delivery docs, put them under [`plans/`](plans/) (not `docs/`). Keep `docs/` for
+agent-facing project understanding only.
+
+Planning lives under [`plans/`](plans/), separated by planning phase:
+
+| Phase | Path |
+| --- | --- |
+| Historical (frontend-first) | [`plans/historical/`](plans/historical/) |
+| Coherent V1 (current direction) | [`plans/coherent-v1/`](plans/coherent-v1/) |
+| Coherent V1 delivery phases | [`plans/coherent-v1/phases/`](plans/coherent-v1/phases/) |
+
+Start with [`plans/coherent-v1/README.md`](plans/coherent-v1/README.md) when you
+need roadmap context.
 
 ## Commands
 
@@ -79,8 +105,8 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 
 | Area | Path | Notes |
 | --- | --- | --- |
-| Current product direction | `docs/04-*.md`–`docs/08-*.md` | Audit, engagement, curriculum, interaction design, execution |
-| Historical plans | `docs/00-*.md`–`docs/03-*.md` | Earlier product, architecture, generator, and Phase-0 assumptions |
+| Agent docs | `docs/` | Overview, architecture, data layer, content, conventions |
+| Product plans | `plans/` | Historical + Coherent V1 strategy and delivery phases |
 | App routes | `app/` | Server components by default; `"use client"` only where needed |
 | React data hooks | `lib/data/provider.tsx` | Active Convex-backed provider |
 | Data mutation contract | `lib/data/contract.ts` | Spec for the mutation surface |

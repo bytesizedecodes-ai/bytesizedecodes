@@ -9,6 +9,8 @@
 export type Track = "grad" | "beginner" | "engineer" | "founder";
 
 export type PracticeMode = "byte" | "review" | "practice";
+export type StartingLevel = "new" | "some" | "comfortable";
+export type TimeMode = "quick" | "standard" | "deep";
 
 export interface PersistedSrsEntry {
   itemKey: string;
@@ -56,6 +58,10 @@ export interface PersistedStateV1 {
   longestStreak: number;
   lastPracticeDay: string | null;
   streakFreezes: number;
+  startingLevel?: StartingLevel;
+  weeklyMinutes?: number;
+  preferredTimeMode?: TimeMode;
+  onboardingCompletedAt?: number;
   srs: Record<string, PersistedSrsEntry>;
   bytes: Record<string, PersistedByteEntry>;
   /** Newest first, capped. */

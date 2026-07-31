@@ -14,6 +14,15 @@ export interface XpRoll {
   reason: string;
 }
 
+export function applyRepeatDiminishing(roll: XpRoll, repeated: boolean): XpRoll {
+  if (!repeated) return roll;
+  return {
+    amount: Math.max(1, Math.round(roll.amount * 0.2)),
+    critical: false,
+    reason: "practice_repeat",
+  };
+}
+
 const BASE = {
   drill: 10,
   review: 8,

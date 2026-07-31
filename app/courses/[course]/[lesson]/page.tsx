@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ApplicationCase } from "@/components/ApplicationCase";
 import { Shell } from "@/components/Shell";
 import { CoursePager } from "@/components/CoursePager";
+import { PredictionCard } from "@/components/PredictionCard";
 import { getInfographicComponent } from "@/components/infographic";
 import {
   allCourseSlugs,
@@ -60,8 +62,13 @@ export default async function LessonPage({
             {lesson.title}
           </h1>
           <p className="mt-2 text-sm text-ink-soft sm:text-[15px]">{lesson.blurb}</p>
+          {lesson.capability && (
+            <p className="mt-4 rounded-xl border border-brand-muted bg-brand-wash px-4 py-3 text-sm text-ink-soft">
+              <span className="font-semibold text-ink">By the end:</span>{" "}
+              {lesson.capability}
+            </p>
+          )}
 
-          {/* Byte chip — signals this is a Hook-loop Action, not just reading */}
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-brand-wash px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-deep">
               Byte · {lesson.minutes ?? 5} min
@@ -79,21 +86,30 @@ export default async function LessonPage({
           </div>
         </header>
 
-        {/* Infographic — the visual core of the byte */}
+        {lesson.prediction && (
+          <div className="mt-6">
+            <PredictionCard question={lesson.prediction} />
+          </div>
+        )}
+
         <div className="mt-6">
           <Infographic />
         </div>
 
-        {/* Prose + interactive byte body (questions, code, XP) */}
         <div className="mt-10 space-y-6">
-          {lesson.prose && lesson.prose.length > 0 && (
-            <LessonBody
-              progressKey={progressKey}
-              attemptPrefix={progressKey}
-              topic={lesson.topic}
-              prose={lesson.prose}
-              exercise={lesson.exercise}
-              questions={lesson.questions ?? []}
+          <LessonBody
+            progressKey={progressKey}
+            attemptPrefix={progressKey}
+            topic={lesson.topic}
+            prose={lesson.prose ?? []}
+            exercise={lesson.exercise}
+            questions={lesson.questions ?? []}
+            skillIds={lesson.skillIds}
+          />
+          {lesson.application && (
+            <ApplicationCase
+              title={lesson.application.title}
+              prompt={lesson.application.prompt}
             />
           )}
         </div>

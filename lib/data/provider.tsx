@@ -1,52 +1,76 @@
 "use client";
 
 /**
- * React bindings — Convex-backed.
+ * React bindings — Convex-backed with Convex Auth.
  *
- * Components import hooks from here and nowhere else. This file is the documented swap
- * point: it was localStorage in Phase 0, it is Convex now, and every page kept its
- * imports identical. Reads go through useQuery (reactive subscriptions replace the old
- * useSyncExternalStore fingerprint); mutations through useMutation.
- *
- * Identity: getUserId() returns a localStorage UUID for the dev user. When Convex Auth
- * ships, only lib/data/identity.ts + convex/lib/getUser.ts change — not this file.
- *
- * The one signature break vs Phase 0: useExportProgress now returns a Promise<string>
- * because Convex actions are async. The single consumer (app/settings) was updated.
+ * Components import hooks from here and nowhere else. Identity resolves on the
+ * server from the auth session when present; the browser UUID is only used to
+ * keep legacy progress readable until anonymous auth claims it.
  */
 
-import { useCallback, useMemo, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, type ReactNode } from "react";
 import {
-  ConvexProvider,
   ConvexReactClient,
   useAction,
   useMutation,
   useQuery,
 } from "convex/react";
+import { ConvexAuthNextjsProvider } from "@convex-dev/auth/nextjs";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { todayKey, type DayKey } from "../day";
-import { getUserId } from "./identity";
+import { getUserId, peekLegacyAnonId } from "./identity";
 import type {
   AttemptInput,
   AttemptResult,
   ByteProgress,
+  DailyPlan,
   DayProgress,
   DayXp,
   LeaderboardRow,
+  OnboardingInput,
   Profile,
   ReviewCard,
   ReviewInput,
   TopicMastery,
+  TrackEventInput,
   UserCounts,
+  TimeMode,
+  LessonDraftInput,
 } from "./types";
 
-// Convex client is constructed once at module scope. The URL is written into
-// .env.local by `npx convex dev` (NEXT_PUBLIC_CONVEX_URL).
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-/** Mounts the Convex client. Replaces the old localStore.hydrate() call. */
+function AuthBootstrap({ children }: { children: ReactNode }) {
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  const { signIn } = useAuthActions();
+  const claim = useMutation(api.mutations.claimLegacyProgress);
+
+  useEffect(() => {
+    if (isLoading || isAuthenticated) return;
+    void signIn("anonymous").then(async () => {
+      const legacy = peekLegacyAnonId();
+      if (legacy) {
+        try {
+          await claim({ legacyUserId: legacy });
+        } catch {
+          // Claim is best-effort; learning still works under the new subject.
+        }
+      }
+    });
+  }, [isLoading, isAuthenticated, signIn, claim]);
+
+  return <>{children}</>;
+}
+
+/** Mounts Convex Auth + the Convex client. */
 export function DataProvider({ children }: { children: ReactNode }) {
-  return <ConvexProvider client={convex}>{children}</ConvexProvider>;
+  return (
+    <ConvexAuthNextjsProvider client={convex}>
+      <AuthBootstrap>{children}</AuthBootstrap>
+    </ConvexAuthNextjsProvider>
+  );
 }
 
 /** Current IST day, stable for the component's lifetime. */
@@ -60,11 +84,6 @@ function useUserId(): string {
 }
 
 // ---------- reads ----------
-//
-// Each query returns undefined while loading — the same "not hydrated" semantics every
-// page already gates on. Loaded-empty states are preserved by returning the value as-is.
-// Convex's reactivity invalidates these automatically after a mutation, so the manual
-// useVersion() fingerprint from Phase 0 is gone.
 
 export function useCurrentUser(): Profile | undefined | null {
   const userId = useUserId();
@@ -79,6 +98,19 @@ export function useDayProgress(today: DayKey): DayProgress | undefined {
   const userId = useUserId();
   const data = useQuery(api.queries.getDayProgress, { userId, today });
   return data as DayProgress | undefined;
+}
+
+export function useDailyPlan(
+  today: DayKey,
+  timeMode?: TimeMode,
+): DailyPlan | undefined {
+  const userId = useUserId();
+  const data = useQuery(api.queries.getDailyPlan, {
+    userId,
+    today,
+    ...(timeMode ? { timeMode } : {}),
+  });
+  return data as DailyPlan | undefined;
 }
 
 export function useReviewQueue(today: DayKey): ReviewCard[] | undefined {
@@ -112,11 +144,6 @@ export function useRecentXp(days: number, today: DayKey): DayXp[] | undefined {
   return data as DayXp[] | undefined;
 }
 
-// ---------- global reads (no userId) ----------
-//
-// The first hooks that don't resolve a per-browser userId — these read across all
-// profiles for the leaderboard and homepage stat board.
-
 export function useLeaderboard(limit?: number): LeaderboardRow[] | undefined {
   const data = useQuery(api.queries.getLeaderboard, limit ? { limit } : {});
   return data as LeaderboardRow[] | undefined;
@@ -127,10 +154,33 @@ export function useUserCounts(): UserCounts | undefined {
   return data as UserCounts | undefined;
 }
 
+export function useProjects():
+  | Array<{
+      slug: string;
+      title: string;
+      summary: string;
+      status: string;
+      visibility: string;
+      checkpoint: string;
+      updatedAt: number;
+    }>
+  | undefined {
+  const userId = useUserId();
+  const data = useQuery(api.queries.listProjects, { userId });
+  return data as
+    | Array<{
+        slug: string;
+        title: string;
+        summary: string;
+        status: string;
+        visibility: string;
+        checkpoint: string;
+        updatedAt: number;
+      }>
+    | undefined;
+}
+
 // ---------- mutations ----------
-//
-// Each wraps a Convex mutation, injecting the dev userId. Signatures match the Phase 0
-// DataMutations contract — callers in components/ and app/ are unchanged.
 
 export function useSubmitAttempt(): (input: AttemptInput) => Promise<AttemptResult> {
   const userId = useUserId();
@@ -161,13 +211,85 @@ export function useStartByte(): (slug: string) => Promise<void> {
   );
 }
 
-export function useCompleteByte(): (slug: string, today: DayKey) => Promise<AttemptResult> {
+export function useCompleteByte(): (
+  slug: string,
+  today: DayKey,
+  opts?: { requireExercise?: boolean },
+) => Promise<AttemptResult> {
   const userId = useUserId();
   const complete = useMutation(api.mutations.completeByte);
   return useCallback(
-    (slug: string, today: DayKey) =>
-      complete({ userId, slug, today }) as Promise<AttemptResult>,
+    (slug: string, today: DayKey, opts?: { requireExercise?: boolean }) =>
+      complete({
+        userId,
+        slug,
+        today,
+        ...(opts?.requireExercise ? { requireExercise: true } : {}),
+      }) as Promise<AttemptResult>,
     [complete, userId],
+  );
+}
+
+export function useUpdateOnboarding(): (input: OnboardingInput) => Promise<void> {
+  const userId = useUserId();
+  const update = useMutation(api.mutations.updateOnboarding);
+  return useCallback(
+    async (input: OnboardingInput) => {
+      await update({ userId, ...input });
+    },
+    [update, userId],
+  );
+}
+
+export function useTrackEvent(): (input: TrackEventInput) => Promise<void> {
+  const userId = useUserId();
+  const track = useMutation(api.mutations.trackEvent);
+  return useCallback(
+    async (input: TrackEventInput) => {
+      await track({
+        userId,
+        name: input.name,
+        today: input.today,
+        refKey: input.refKey,
+        track: input.track,
+        mode: input.mode,
+      });
+    },
+    [track, userId],
+  );
+}
+
+export function useSaveLessonDraft(): (input: LessonDraftInput) => Promise<void> {
+  const userId = useUserId();
+  const save = useMutation(api.mutations.saveLessonDraft);
+  return useCallback(
+    async (input: LessonDraftInput) => {
+      await save({
+        userId,
+        slug: input.slug,
+        draftAnswers:
+          input.draftAnswers !== undefined ? JSON.stringify(input.draftAnswers) : undefined,
+        draftChecked:
+          input.draftChecked !== undefined ? JSON.stringify(input.draftChecked) : undefined,
+        draftCode: input.draftCode,
+      });
+    },
+    [save, userId],
+  );
+}
+
+export function useRecordCodeTestPass(): (
+  slug: string,
+  today: DayKey,
+  skillIds: string[],
+) => Promise<void> {
+  const userId = useUserId();
+  const record = useMutation(api.mutations.recordCodeTestPass);
+  return useCallback(
+    async (slug: string, today: DayKey, skillIds: string[]) => {
+      await record({ userId, slug, today, skillIds });
+    },
+    [record, userId],
   );
 }
 
@@ -179,10 +301,6 @@ export function useResetProgress(): () => Promise<void> {
   }, [reset, userId]);
 }
 
-/**
- * NOTE: now async (returns Promise<string>). Phase 0 returned string synchronously;
- * Convex actions are async by nature. The single consumer, app/settings, was updated.
- */
 export function useExportProgress(): () => Promise<string> {
   const userId = useUserId();
   const exportAction = useAction(api.mutations.exportProgress);
@@ -201,4 +319,47 @@ export function useImportProgress(): (json: string) => Promise<void> {
     },
     [importProgress, userId],
   );
+}
+
+export function useUpsertProject(): (input: {
+  slug: string;
+  title: string;
+  summary: string;
+  checkpoint: string;
+  artifactJson?: string;
+  status?: "draft" | "in_progress" | "submitted" | "published";
+  visibility?: "private" | "unlisted" | "public";
+}) => Promise<void> {
+  const userId = useUserId();
+  const upsert = useMutation(api.mutations.upsertProject);
+  return useCallback(
+    async (input) => {
+      await upsert({ userId, ...input });
+    },
+    [upsert, userId],
+  );
+}
+
+export function usePublicProjects(limit?: number) {
+  const data = useQuery(api.queries.listPublicProjects, {
+    ...(limit ? { limit } : {}),
+  });
+  return data as
+    | Array<{
+        slug: string;
+        title: string;
+        summary: string;
+        checkpoint: string;
+        updatedAt: number;
+        displayName: string;
+      }>
+    | undefined;
+}
+
+export function useDeleteAccountData(): () => Promise<void> {
+  const userId = useUserId();
+  const wipe = useMutation(api.mutations.deleteAccountData);
+  return useCallback(async () => {
+    await wipe({ userId });
+  }, [wipe, userId]);
 }

@@ -9,6 +9,8 @@ const byte: Byte = {
   order: 2,
   difficulty: 2,
   interviewTags: ["gradients", "learning-rate", "optimisation"],
+  skillIds: ["gradient-descent"],
+  capability: "Compute a gradient update and diagnose an unsafe learning rate.",
   minutes: 5,
   sections: [
     {

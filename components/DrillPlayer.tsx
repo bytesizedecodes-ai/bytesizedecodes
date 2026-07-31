@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { BlockList } from "@/components/BlockList";
 import { RewardBanner } from "@/components/RewardBanner";
@@ -91,18 +92,35 @@ function QuestionCard({
         difficulty: question.difficulty,
       };
 
-      const rewardResult =
-        mode === "review"
-          ? await gradeReview({
-              ...base,
-              mode: "review",
-              grade: srsGradeFrom(graded.correct),
-            })
-          : await submit({ ...base, mode: "practice" });
-
-      setReward(rewardResult);
+      if (mode === "practice") {
+        const rewardResult = await submit({ ...base, mode: "practice" });
+        setReward(rewardResult);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  async function submitReviewGrade(grade: SrsGrade) {
+    if (mode !== "review" || !result || pending || reward) return;
+    setPending(true);
+    setError(null);
+    try {
+      const rewardResult = await gradeReview({
+        itemKey: drillItemKey(question.generatorId, question.difficulty),
+        topic: question.topic,
+        correct: result.correct,
+        msTaken: Date.now() - startedAt,
+        today,
+        difficulty: question.difficulty,
+        mode: "review",
+        grade,
+      });
+      setReward(rewardResult);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not save this review");
     } finally {
       setPending(false);
     }
@@ -208,9 +226,50 @@ function QuestionCard({
             </div>
           </details>
 
+          {!result.correct && question.relatedBytes.length > 0 && (
+            <div className="rounded-xl border border-brand-muted bg-brand-wash px-4 py-3">
+              <p className="text-xs font-semibold text-ink">Repair this idea</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {question.relatedBytes.map((slug) => (
+                  <Link
+                    key={slug}
+                    href={`/bytes/${slug}`}
+                    className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-deep hover:underline"
+                  >
+                    Revisit {slug.replaceAll("-", " ")}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {mode === "review" && !reward && (
+            <div>
+              <p className="text-xs font-semibold text-ink">How hard was that to remember?</p>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {(["again", "hard", "good", "easy"] as const).map((grade) => (
+                  <button
+                    key={grade}
+                    type="button"
+                    disabled={pending || (!result.correct && grade !== "again")}
+                    onClick={() => void submitReviewGrade(grade)}
+                    className="focus-ring rounded-xl border border-ash bg-white px-3 py-2.5 text-xs font-semibold capitalize text-ink hover:border-brand disabled:opacity-35"
+                  >
+                    {grade}
+                  </button>
+                ))}
+              </div>
+              {!result.correct && (
+                <p className="mt-2 text-[11px] text-ink-faint">
+                  Incorrect answers return soon, so this review is graded Again.
+                </p>
+              )}
+            </div>
+          )}
+
           {reward && <RewardBanner result={reward} />}
 
-          {onDone && (
+          {onDone && (mode === "practice" || reward) && (
             <button
               type="button"
               onClick={onDone}
@@ -257,9 +316,4 @@ function NumericInput({
       )}
     </div>
   );
-}
-
-function srsGradeFrom(correct: boolean): SrsGrade {
-  // Phase 0: binary grade. Phase 1 can expose Again/Hard/Good/Easy buttons.
-  return correct ? "good" : "again";
 }

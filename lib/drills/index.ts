@@ -29,5 +29,7 @@ export function generateQuestion(
   seed: number,
   difficulty: Difficulty,
 ): GeneratedQuestion {
-  return getGenerator(generatorId).generate(seed, difficulty);
+  const generator = getGenerator(generatorId);
+  const question = generator.generate(seed, difficulty);
+  return { ...question, skillIds: question.skillIds ?? generator.skillIds };
 }

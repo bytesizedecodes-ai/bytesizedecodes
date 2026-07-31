@@ -1,7 +1,7 @@
 "use client";
 
 import { ByteBody } from "@/components/ByteBody";
-import type { ByteQuestion, CodeExercise } from "@/content";
+import type { ByteQuestion, CodeExercise, SkillId } from "@/content";
 
 /**
  * Renders the prose + interactive byte body for a course lesson.
@@ -17,6 +17,7 @@ export function LessonBody({
   prose,
   exercise,
   questions,
+  skillIds,
 }: {
   progressKey: string;
   attemptPrefix: string;
@@ -24,6 +25,7 @@ export function LessonBody({
   prose: string[];
   exercise?: CodeExercise;
   questions: ByteQuestion[];
+  skillIds?: readonly SkillId[];
 }) {
   return (
     <>
@@ -35,15 +37,14 @@ export function LessonBody({
         ))}
       </section>
 
-      {questions.length > 0 && (
-        <ByteBody
-          progressSlug={progressKey}
-          attemptPrefix={attemptPrefix}
-          topic={topic}
-          questions={questions}
-          exercise={exercise}
-        />
-      )}
+      <ByteBody
+        progressSlug={progressKey}
+        attemptPrefix={attemptPrefix}
+        topic={topic}
+        questions={questions}
+        exercise={exercise}
+        skillIds={skillIds}
+      />
     </>
   );
 }

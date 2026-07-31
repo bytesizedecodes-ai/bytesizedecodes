@@ -1,16 +1,48 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DrillPlayer } from "@/components/DrillPlayer";
+import { RequireOnboarding } from "@/components/RequireOnboarding";
 import { Shell } from "@/components/Shell";
 import { GENERATORS, type Difficulty } from "@/lib/drills";
 import { useToday } from "@/lib/data/provider";
 
 export default function PracticePage() {
+  return (
+    <Suspense fallback={<PracticeSkeleton />}>
+      <PracticeContent />
+    </Suspense>
+  );
+}
+
+function PracticeContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const today = useToday();
-  const [generatorId, setGeneratorId] = useState(GENERATORS[0]!.id);
-  const [difficulty, setDifficulty] = useState<Difficulty>(2);
   const [nudge, setNudge] = useState(0);
+  const requestedTopic = searchParams.get("topic");
+  const requestedDifficulty = Number(searchParams.get("difficulty"));
+  const selectedGenerator =
+    GENERATORS.find(
+      (generator) =>
+        generator.id === requestedTopic || generator.topic === requestedTopic,
+    ) ?? GENERATORS[0]!;
+  const generatorId = selectedGenerator.id;
+  const difficulty = selectedGenerator.supportedDifficulties.includes(
+    requestedDifficulty as Difficulty,
+  )
+    ? (requestedDifficulty as Difficulty)
+    : 2;
+
+  function updateSelection(nextGeneratorId: string, nextDifficulty: Difficulty) {
+    const generator = GENERATORS.find((item) => item.id === nextGeneratorId)!;
+    router.replace(
+      `/practice?topic=${encodeURIComponent(generator.topic)}&difficulty=${nextDifficulty}`,
+      { scroll: false },
+    );
+    setNudge(0);
+  }
 
   const seed = useMemo(() => {
     let h = 2166136261;
@@ -26,6 +58,7 @@ export default function PracticePage() {
 
   return (
     <Shell active="/practice">
+      <RequireOnboarding>
       <div className="mx-auto max-w-2xl space-y-6">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Practice</h1>
@@ -45,8 +78,7 @@ export default function PracticePage() {
                   key={g.id}
                   type="button"
                   onClick={() => {
-                    setGeneratorId(g.id);
-                    setNudge(0);
+                    updateSelection(g.id, difficulty);
                   }}
                   className={`rounded-full px-3 py-1.5 text-sm ${
                     g.id === generatorId
@@ -71,8 +103,7 @@ export default function PracticePage() {
                   key={d}
                   type="button"
                   onClick={() => {
-                    setDifficulty(d);
-                    setNudge(0);
+                    updateSelection(generatorId, d);
                   }}
                   className={`h-9 w-9 rounded-full text-sm font-semibold ${
                     d === difficulty
@@ -94,6 +125,19 @@ export default function PracticePage() {
           mode="practice"
           onDone={() => setNudge((n) => n + 1)}
         />
+      </div>
+      </RequireOnboarding>
+    </Shell>
+  );
+}
+
+function PracticeSkeleton() {
+  return (
+    <Shell active="/practice">
+      <div className="mx-auto max-w-2xl space-y-5">
+        <div className="h-16 w-64 animate-pulse rounded-xl bg-ash/70" />
+        <div className="h-40 animate-pulse rounded-[18px] bg-ash/70" />
+        <div className="h-80 animate-pulse rounded-[18px] bg-ash/70" />
       </div>
     </Shell>
   );

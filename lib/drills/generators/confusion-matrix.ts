@@ -133,7 +133,7 @@ function build(r: Rng, difficulty: Difficulty): GeneratedQuestion {
     prompt,
     answer: { kind: "mcq", choices, correctId },
     explanation,
-    relatedBytes: ["precision-and-recall", "why-accuracy-lies"],
+    relatedBytes: ["precision-and-recall"],
     estimatedSeconds: 60,
   };
 }
@@ -210,6 +210,7 @@ export const confusionMatrix: Generator = {
   title: "Confusion matrix metrics",
   blurb: "Precision, recall, F1 and why accuracy lies on imbalanced data.",
   topic: TOPIC,
+  skillIds: ["classification-metrics"],
   supportedDifficulties: [1, 2, 3, 4, 5],
 
   generate(seed: number, difficulty: Difficulty): GeneratedQuestion {

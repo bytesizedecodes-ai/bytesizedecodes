@@ -1,115 +1,133 @@
 "use client";
 
 import Link from "next/link";
+import { CalendarCheck2 } from "lucide-react";
+import { useState } from "react";
+import { DailyPlanCard } from "@/components/DailyPlanCard";
+import { RequireOnboarding } from "@/components/RequireOnboarding";
 import { Shell } from "@/components/Shell";
 import { StatsHud } from "@/components/StatsHud";
-import { BYTES } from "@/content";
+import { TIME_MODES, getLearningTrack } from "@/content/tracks";
 import {
-  useAllByteProgress,
   useCurrentUser,
+  useDailyPlan,
   useDayProgress,
   useRecentXp,
   useReviewQueue,
   useToday,
 } from "@/lib/data/provider";
+import type { TimeMode } from "@/lib/data/types";
 
 export default function TodayPage() {
   const today = useToday();
   const profile = useCurrentUser();
+  const [modeOverride, setModeOverride] = useState<TimeMode | null>(null);
+  const mode = modeOverride ?? profile?.preferredTimeMode ?? "standard";
+  const plan = useDailyPlan(today, mode);
   const day = useDayProgress(today);
   const queue = useReviewQueue(today);
-  const bytes = useAllByteProgress();
   const recent = useRecentXp(7, today);
-
-  const nextByte = BYTES.find((b) => bytes?.[b.slug]?.status !== "completed") ?? BYTES[0];
-  const completedCount = BYTES.filter((b) => bytes?.[b.slug]?.status === "completed").length;
+  const track = getLearningTrack(profile?.track ?? "beginner");
 
   return (
     <Shell active="/today">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Today</h1>
-          <p className="mt-1 text-sm text-ink-soft">
-            A short session. Drills, review, or a byte — any of them counts.
-          </p>
-        </div>
+      <RequireOnboarding>
+        <div className="mx-auto max-w-5xl space-y-7">
+          <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="eyebrow">{today}</p>
+              <h1 className="mt-1 text-3xl font-semibold tracking-[-0.04em] text-ink sm:text-4xl">
+                {day?.practised ? "Nice work today." : "Make one idea stick."}
+              </h1>
+              <p className="mt-2 text-sm text-ink-soft">
+                {track.shortTitle} · your plan prioritizes memory, weak skills, then progress.
+              </p>
+            </div>
+            <div className="inline-flex self-start rounded-xl border border-ash bg-white p-1">
+              {TIME_MODES.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setModeOverride(item.id)}
+                  aria-pressed={mode === item.id}
+                  className={`focus-ring rounded-lg px-3 py-2 text-xs font-semibold transition ${
+                    mode === item.id ? "bg-ink text-white" : "text-ink-soft hover:bg-ash/60"
+                  }`}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+          </header>
 
-        <StatsHud profile={profile} dueCount={queue?.length} />
+          <StatsHud profile={profile} dueCount={queue?.length} />
 
-        {day && day.practised && (
-          <div className="rounded-xl border border-good/30 bg-good-wash px-4 py-3 text-sm text-ink">
-            Practised today · {day.itemsCorrect}/{day.itemsAnswered} correct · +{day.xpEarned} XP
-          </div>
-        )}
+          {plan ? <DailyPlanCard plan={plan} /> : <PlanSkeleton />}
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Action
-            href="/practice"
-            eyebrow="Unlimited"
-            title="Do a drill"
-            body="Interview-shaped questions, generated and auto-graded."
-          />
-          <Action
-            href="/review"
-            eyebrow={queue === undefined ? "…" : `${queue.length} due`}
-            title="Review"
-            body="Spaced repetition of what you've already seen."
-            disabled={queue !== undefined && queue.length === 0}
-          />
-          <Action
-            href={nextByte ? `/bytes/${nextByte.slug}` : "/bytes"}
-            eyebrow={`${completedCount}/${BYTES.length} done`}
-            title={nextByte ? nextByte.title : "All bytes done"}
-            body={nextByte ? "Next bite-sized lesson." : "Come back when Season 1 grows."}
-          />
-        </div>
-
-        {recent && (
-          <div className="card p-5">
-            <h2 className="text-sm font-semibold text-ink">Last 7 days</h2>
-            <div className="mt-4 flex items-end gap-1.5">
-              {recent.map((d) => {
-                const height = d.xp === 0 ? 4 : Math.min(64, 8 + d.xp / 2);
-                return (
-                  <div key={d.day} className="flex flex-1 flex-col items-center gap-1">
-                    <div
-                      className={`w-full rounded-t ${d.practised ? "bg-brand" : "bg-ash"}`}
-                      style={{ height }}
-                      title={`${d.day}: ${d.xp} XP`}
-                    />
-                    <span className="text-[10px] text-ink-faint">{d.day.slice(8)}</span>
+          <div className="grid gap-4 lg:grid-cols-[1fr_0.75fr]">
+            {recent && (
+              <div className="card p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-sm font-semibold text-ink">Learning rhythm</h2>
+                    <p className="mt-1 text-xs text-ink-faint">Last seven days</p>
                   </div>
-                );
-              })}
+                  <Link
+                    href="/progress"
+                    className="text-xs font-semibold text-brand-deep hover:underline"
+                  >
+                    Full progress
+                  </Link>
+                </div>
+                <div className="mt-5 flex h-20 items-end gap-2">
+                  {recent.map((d) => {
+                    const height = d.xp === 0 ? 5 : Math.min(72, 10 + d.xp / 2);
+                    return (
+                      <div key={d.day} className="flex flex-1 flex-col items-center gap-1.5">
+                        <div
+                          className={`w-full rounded-md ${d.practised ? "bg-brand" : "bg-ash"}`}
+                          style={{ height }}
+                          title={`${d.day}: ${d.xp} XP`}
+                        />
+                        <span className="text-[10px] text-ink-faint">{d.day.slice(8)}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="card flex items-start gap-4 p-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-good-wash text-good">
+                <CalendarCheck2 className="h-5 w-5" />
+              </span>
+              <div>
+                <h2 className="text-sm font-semibold text-ink">
+                  {day?.practised ? "Today counts" : "Progress without pressure"}
+                </h2>
+                <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">
+                  {day?.practised
+                    ? `${day.itemsCorrect}/${day.itemsAnswered} answers correct · +${day.xpEarned} XP earned.`
+                    : "A quick review is enough on a busy day. Missing a day never removes mastery or completed work."}
+                </p>
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      </RequireOnboarding>
     </Shell>
   );
 }
 
-function Action({
-  href,
-  eyebrow,
-  title,
-  body,
-  disabled,
-}: {
-  href: string;
-  eyebrow: string;
-  title: string;
-  body: string;
-  disabled?: boolean;
-}) {
-  const className = `card block p-5 transition ${
-    disabled ? "opacity-50 pointer-events-none" : "hover:border-brand/40"
-  }`;
+function PlanSkeleton() {
   return (
-    <Link href={href} className={className} aria-disabled={disabled}>
-      <p className="text-[11px] font-medium uppercase tracking-wide text-brand-deep">{eyebrow}</p>
-      <h3 className="mt-1 text-base font-semibold text-ink">{title}</h3>
-      <p className="mt-1 text-[13px] leading-relaxed text-ink-soft">{body}</p>
-    </Link>
+    <div className="card overflow-hidden">
+      <div className="h-44 animate-pulse bg-ink/90" />
+      <div className="space-y-px bg-ash">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className="h-20 animate-pulse bg-white" />
+        ))}
+      </div>
+    </div>
   );
 }

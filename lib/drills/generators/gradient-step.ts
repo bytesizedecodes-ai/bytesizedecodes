@@ -213,6 +213,7 @@ export const gradientStep: Generator = {
   title: "One gradient descent step",
   blurb: "Compute the update by hand — signs, factors of two, and the x term.",
   topic: TOPIC,
+  skillIds: ["gradient-descent"],
   supportedDifficulties: [1, 2, 3, 4, 5],
 
   generate(seed: number, difficulty: Difficulty): GeneratedQuestion {
