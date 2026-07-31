@@ -10,6 +10,7 @@ editing product or Convex code.
 | [`data-layer.md`](./data-layer.md) | DataLayer seam, Convex provider, identity, loading rules |
 | [`content-model.md`](./content-model.md) | Bytes, courses, tracks, skills, catalog, review keys |
 | [`conventions.md`](./conventions.md) | Hard rules: purity, generators, SRS, DayKey, TS |
+| [`release.md`](./release.md) | `dev` → `main`, CI, Netlify, Convex prod deploy |
 
 Product **plans** (roadmaps, audits, phased delivery) live under
 [`../plans/`](../plans/), not here.

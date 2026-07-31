@@ -10,6 +10,7 @@ delivery docs, put them under this `plans/` folder (not `docs/`).
 | --- | --- | --- |
 | Historical (frontend-first prototype) | [`historical/`](./historical/) | Early product, architecture, generators, Phase-0 localStorage plan |
 | Coherent V1 (current direction) | [`coherent-v1/`](./coherent-v1/) | Audit, engagement, curriculum, interaction design, phased execution |
+| Release / deploy | [`coherent-v1/release-and-deploy.md`](./coherent-v1/release-and-deploy.md) | `dev` → `main`, CI, Netlify, Convex prod |
 
 Execution work inside Coherent V1 is split by delivery phase under
 [`coherent-v1/phases/`](./coherent-v1/phases/).

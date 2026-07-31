@@ -1,0 +1,50 @@
+name: Deploy Convex production
+
+# Couples Convex production backend to main (Netlify production branch).
+# Requires repository secret CONVEX_DEPLOY_KEY from the Convex production deployment.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: convex-prod
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check deploy key
+        id: key
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: |
+          if [ -z "$CONVEX_DEPLOY_KEY" ]; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "CONVEX_DEPLOY_KEY is not set — skipping Convex production deploy."
+            echo "Add the secret from the Convex production deployment before cutover."
+          else
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.key.outputs.present == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.key.outputs.present == 'true'
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install
+        if: steps.key.outputs.present == 'true'
+        run: npm ci
+
+      - name: Deploy Convex production
+        if: steps.key.outputs.present == 'true'
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: npx convex deploy

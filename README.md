@@ -26,6 +26,13 @@ npm run typecheck
 npm run build
 ```
 
+## Branches and production
+
+- **`dev`** — day-to-day development
+- **`main`** — production (Netlify production branch)
+- Promote with a PR: `dev` → `main` (see [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md))
+- Full release ritual: [`plans/coherent-v1/release-and-deploy.md`](plans/coherent-v1/release-and-deploy.md)
+
 ## What's in here
 
 | Area | Path |
@@ -61,5 +68,6 @@ npm run build
 - Agent entrypoint: [`CLAUDE.md`](CLAUDE.md)
 - Product plans by phase: [`plans/`](plans/)
   - Current direction: [`plans/coherent-v1/`](plans/coherent-v1/)
+  - Release / deploy: [`plans/coherent-v1/release-and-deploy.md`](plans/coherent-v1/release-and-deploy.md)
   - Delivery phases: [`plans/coherent-v1/phases/`](plans/coherent-v1/phases/)
   - Historical: [`plans/historical/`](plans/historical/)

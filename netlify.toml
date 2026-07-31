@@ -1,0 +1,24 @@
+# Netlify site config. In the Netlify UI also set:
+# - Production branch: main
+# - Branch deploys / Deploy Previews: enabled for pull requests
+# - Env: NEXT_PUBLIC_CONVEX_URL (production Convex URL), optional NEXT_PUBLIC_AUTH_GOOGLE_ENABLED
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # NEXT_PUBLIC_* values belong in the Netlify UI / env, not committed here.
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[context.production]
+  # Built from main after a promote PR merges.
+
+[context.deploy-preview]
+  # Built for every PR (including dev → main). Use the preview URL before merge.
+
+[context.branch-deploy]
+  # Optional non-PR branch builds (e.g. if you enable branch deploys for `dev`).

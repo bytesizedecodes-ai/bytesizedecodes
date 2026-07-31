@@ -13,6 +13,7 @@ Current product direction: one coherent learning journey —
 | [`03-course-and-track-roadmap.md`](./03-course-and-track-roadmap.md) | Tracks, skills, curriculum |
 | [`04-interactive-learning-design.md`](./04-interactive-learning-design.md) | Active learning interaction patterns |
 | [`05-product-execution-roadmap.md`](./05-product-execution-roadmap.md) | Strategy overview, shared backend/metrics, decision gates |
+| [`release-and-deploy.md`](./release-and-deploy.md) | `dev` → `main`, CI, Netlify, Convex production |
 
 ## Delivery phases
 

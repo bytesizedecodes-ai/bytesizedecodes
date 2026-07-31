@@ -24,6 +24,7 @@ gallery is available; full social features are not.
 | [`docs/data-layer.md`](docs/data-layer.md) | DataLayer seam, identity, practice vs review |
 | [`docs/content-model.md`](docs/content-model.md) | Bytes, courses, tracks, skills, catalog |
 | [`docs/conventions.md`](docs/conventions.md) | Hard engineering rules |
+| [`docs/release.md`](docs/release.md) | `dev` → `main` promote, CI, Netlify, Convex |
 | [`docs/README.md`](docs/README.md) | Index of agent docs |
 
 ## Product plans (not codebase truth)
