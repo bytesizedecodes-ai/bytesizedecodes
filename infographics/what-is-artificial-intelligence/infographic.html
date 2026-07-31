@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is Artificial Intelligence?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F8F8F8;
+    --dot: #D8D8D8;
+    --blue: #7898C8;
+    --blue-deep: #6888C8;
+    --ash: #E8E8E8;
+    --white: #FFFFFF;
+    --text: #080808;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    width: 1200px;
+    padding: 55px 65px 65px 65px;
+    color: var(--text);
+  }
+
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 38px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 6px;
+  }
+  .header h1::after {
+    content: ""; display: block; width: 180px; height: 4px; background: var(--blue);
+    margin: 10px auto 0; border-radius: 2px; opacity: 0.7;
+  }
+  .header p { font-family: 'Inter', -apple-system, sans-serif; font-size: 17px; color: var(--blue-deep); font-weight: 500; }
+
+  /* DEFINITION CARD */
+  .definition {
+    background: var(--blue); color: var(--text);
+    border-radius: 16px; padding: 26px 32px; margin-bottom: 36px;
+    box-shadow: 0 4px 16px rgba(120,152,200,0.25); transform: rotate(-0.3deg);
+    display: flex; align-items: center; gap: 22px;
+  }
+  .definition .big-icon { font-size: 52px; flex-shrink: 0; }
+  .definition p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 19px; font-weight: 600;
+    line-height: 1.45;
+  }
+  .definition b { font-weight: 800; }
+
+  /* COMPARISON */
+  .comparison-wrapper { position: relative; }
+  .comparison {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .comp-side {
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  }
+  .comp-side:first-child { transform: rotate(-0.5deg); }
+  .comp-side:last-child { transform: rotate(0.5deg); }
+  .comp-header { padding: 20px 24px; text-align: center; }
+  .comp-header h2 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 24px; font-weight: 700;
+  }
+  .comp-header p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 400;
+    margin-top: 4px; opacity: 0.9;
+  }
+  .comp-body { padding: 18px 24px 22px; }
+  .comp-body .examples {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
+  }
+  .comp-body .tag {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 12.5px; font-weight: 600;
+    padding: 5px 12px; border-radius: 999px; background: var(--white); border: 1px solid var(--ash);
+  }
+  .comp-body ul { list-style: none; padding: 0; }
+  .comp-body li {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 500;
+    padding: 9px 0 9px 26px; border-bottom: 1px solid var(--dot); line-height: 1.5; position: relative;
+  }
+  .comp-body li:last-child { border-bottom: none; }
+  .comp-body li::before {
+    position: absolute; left: 0; top: 8px; font-size: 16px; font-weight: 800;
+  }
+  .comp-intelligent li::before { content: "✓"; color: var(--blue-deep); }
+  .comp-dumb li::before { content: "✕"; color: #999; }
+
+  .vs-badge {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-3deg);
+    background: var(--bg); border: 3px solid var(--blue);
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700; color: var(--blue-deep);
+    z-index: 10;
+  }
+
+  /* GOAL STRIP */
+  .goal {
+    margin-top: 36px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  }
+  .goal-card {
+    background: var(--white); border: 1px solid var(--ash); border-radius: 14px;
+    padding: 22px 22px; box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+    transform: rotate(0.4deg);
+  }
+  .goal-card:nth-child(2) { transform: rotate(-0.4deg); }
+  .goal-card:nth-child(3) { transform: rotate(0.4deg); }
+  .goal-card .gi { font-size: 30px; margin-bottom: 8px; }
+  .goal-card h4 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px;
+  }
+  .goal-card p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 13px; font-weight: 500; color: #4a4a4a; line-height: 1.5;
+  }
+
+  .footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 45px; padding-top: 22px; border-top: 2px dashed var(--dot);
+  }
+  .footer-left { font-family: 'Inter', -apple-system, sans-serif; font-size: 13px; color: #999; }
+  .footer-brand { display: flex; align-items: center; gap: 8px; }
+  .footer-brand .stamp {
+    background: var(--blue); color: var(--white);
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 700;
+    padding: 4px 14px; border-radius: 8px; transform: rotate(-2deg);
+  }
+  .footer-brand .brand-name {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>What is Artificial Intelligence?</h1>
+  <p>Teaching machines to think — the branch of CS that builds smart computers</p>
+</div>
+
+<!-- DEFINITION -->
+<div class="definition">
+  <div class="big-icon">🤖</div>
+  <p><b>Artificial Intelligence</b> is a branch of Computer Science concerned with building machines that are <b>smart &amp; intelligent</b> — ones that can reason, learn, and decide like a human would.</p>
+</div>
+
+<!-- COMPARISON -->
+<div class="comparison-wrapper">
+  <div class="comparison">
+    <!-- DUMB MACHINES -->
+    <div class="comp-side">
+      <div class="comp-header" style="background: var(--ash);">
+        <h2>Non-intelligent Machines</h2>
+        <p>They follow instructions — nothing more</p>
+      </div>
+      <div class="comp-body comp-dumb" style="background: var(--white); border: 1px solid var(--ash); border-top: none;">
+        <ul>
+          <li>Do <b>only</b> what they're programmed to</li>
+          <li>Can't learn from new data on their own</li>
+          <li>Same input → same output, always</li>
+          <li>No understanding, no reasoning</li>
+        </ul>
+        <div class="examples">
+          <span class="tag">Calculator</span>
+          <span class="tag">Washing machine</span>
+          <span class="tag">Traditional software</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTELLIGENT MACHINES -->
+    <div class="comp-side">
+      <div class="comp-header" style="background: var(--blue);">
+        <h2>Intelligent Machines</h2>
+        <p>They think, learn, and adapt</p>
+      </div>
+      <div class="comp-body comp-intelligent" style="background: var(--white); border: 1px solid var(--ash); border-top: none;">
+        <ul>
+          <li>Learn from data &amp; experience</li>
+          <li>Reason and make decisions</li>
+          <li>Understand language, images, speech</li>
+          <li>Improve without being reprogrammed</li>
+        </ul>
+        <div class="examples">
+          <span class="tag">ChatGPT</span>
+          <span class="tag">Face recognition</span>
+          <span class="tag">Self-driving cars</span>
+          <span class="tag">Recommendation systems</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="vs-badge">VS</div>
+</div>
+
+<!-- GOAL -->
+<div class="goal">
+  <div class="goal-card">
+    <div class="gi">🧠</div>
+    <h4>Think</h4>
+    <p>Reason through problems the way a person would.</p>
+  </div>
+  <div class="goal-card">
+    <div class="gi">📚</div>
+    <h4>Learn</h4>
+    <p>Pick up patterns from data instead of explicit rules.</p>
+  </div>
+  <div class="goal-card">
+    <div class="gi">🎯</div>
+    <h4>Act</h4>
+    <p>Make smart decisions to reach a goal.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Making AI simple, one byte at a time</div>
+  <div class="footer-brand">
+    <span class="stamp">BSD</span>
+    <span class="brand-name">ByteSized Decodes</span>
+  </div>
+</div>
+
+</body>
+</html>

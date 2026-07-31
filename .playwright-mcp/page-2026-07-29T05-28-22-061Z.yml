@@ -1,0 +1,103 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "ByteSizedCodes" [ref=e5] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e7]:
+          - generic [ref=e9]:
+            - link "Courses" [ref=e10] [cursor=pointer]:
+              - /url: /courses
+            - button "Courses menu" [ref=e11]
+          - link "Today" [ref=e14] [cursor=pointer]:
+            - /url: /today
+          - link "Practice" [ref=e15] [cursor=pointer]:
+            - /url: /practice
+          - link "Review" [ref=e16] [cursor=pointer]:
+            - /url: /review
+          - link "Bytes" [ref=e17] [cursor=pointer]:
+            - /url: /bytes
+    - main [ref=e18]:
+      - generic [ref=e19]:
+        - link "← Machine Learning for Layman" [ref=e20] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=e21]:
+          - paragraph [ref=e22]: Lesson 3 of 5 · Machine Learning for Layman
+          - heading "What is Machine Learning, really?" [level=1] [ref=e23]
+          - paragraph [ref=e24]: Give the machine experience, and let it find the patterns itself.
+          - generic [ref=e25]: Byte · 4 min
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - heading "What is Machine Learning, really?" [level=2] [ref=e30]
+            - paragraph [ref=e31]: Give the machine experience, and let it find the patterns itself
+          - figure "① Give the machine the same job we gave the child" [ref=e33]:
+            - generic [ref=e35]:
+              - generic [ref=e44]: machine
+              - generic [ref=e54]: learn from data
+            - paragraph [ref=e55]: The machine's “experience” is data.
+          - figure "② The recipe, built up one piece at a time" [ref=e56]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e60]: 📊
+                - generic [ref=e61]: Dataset
+                - generic [ref=e62]: the experience
+              - generic [ref=e63]: +
+              - generic [ref=e64]:
+                - generic [ref=e65]: ⚙️
+                - generic [ref=e66]: Algorithm
+                - generic [ref=e67]: runs on the data
+              - generic [ref=e68]: +
+              - generic [ref=e69]:
+                - generic [ref=e70]: 🔍
+                - generic [ref=e71]: Rules
+                - generic [ref=e72]: what it learns
+            - paragraph [ref=e73]: data + algorithm → the machine derives rules itself.
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - generic [ref=e76]: 🔗
+                - generic [ref=e77]: Patterns
+                - generic [ref=e78]: in the data
+              - generic [ref=e79]: +
+              - generic [ref=e80]:
+                - generic [ref=e81]: 🤝
+                - generic [ref=e82]: Relations
+                - generic [ref=e83]: between things
+              - generic [ref=e84]: =
+              - generic [ref=e85]:
+                - generic [ref=e86]: ✅
+                - generic [ref=e87]: Decision
+                - generic [ref=e88]: on new input
+            - paragraph [ref=e89]: …finds patterns and relations → decides on something new.
+          - figure "③ Now the machine can do things only humans could" [ref=e90]:
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: 🚗
+                - generic [ref=e95]: Identify objects
+              - generic [ref=e96]:
+                - generic [ref=e97]: 📈
+                - generic [ref=e98]: Predict prices
+              - generic [ref=e99]:
+                - generic [ref=e100]: 💬
+                - generic [ref=e101]: Understand language
+              - generic [ref=e102]:
+                - generic [ref=e103]: 😀
+                - generic [ref=e104]: Recognise faces
+          - paragraph [ref=e106]: Data in → patterns found → decision out. That's machine learning.
+        - navigation [ref=e107]:
+          - link "← Previous Why a machine can't do that (yet)" [ref=e108] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/humans-vs-machines
+            - generic [ref=e109]: ←
+            - generic [ref=e110]:
+              - generic [ref=e111]: Previous
+              - generic [ref=e112]: Why a machine can't do that (yet)
+          - link "Next The three families of ML →" [ref=e113] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/three-ml-paradigms
+            - generic [ref=e114]:
+              - generic [ref=e115]: Next
+              - generic [ref=e116]: The three families of ML
+            - generic [ref=e117]: →
+    - contentinfo [ref=e118]:
+      - text: Phase 0 preview · progress lives in this browser ·
+      - link "export / reset" [ref=e119] [cursor=pointer]:
+        - /url: /settings
+  - button "Open Next.js Dev Tools" [ref=e125] [cursor=pointer]

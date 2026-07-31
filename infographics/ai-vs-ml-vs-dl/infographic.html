@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI vs ML vs DL</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F8F8F8;
+    --dot: #D8D8D8;
+    --blue: #7898C8;
+    --blue-deep: #6888C8;
+    --blue-wash: #EEF2F9;
+    --ash: #E8E8E8;
+    --white: #FFFFFF;
+    --text: #080808;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    width: 1200px;
+    padding: 55px 65px 65px 65px;
+    color: var(--text);
+  }
+
+  .header { text-align: center; margin-bottom: 45px; }
+  .header h1 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 38px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 6px;
+  }
+  .header h1::after {
+    content: ""; display: block; width: 180px; height: 4px; background: var(--blue);
+    margin: 10px auto 0; border-radius: 2px; opacity: 0.7;
+  }
+  .header p { font-family: 'Inter', -apple-system, sans-serif; font-size: 17px; color: var(--blue-deep); font-weight: 500; }
+
+  .layout { display: grid; grid-template-columns: 1fr 1.15fr; gap: 50px; align-items: center; }
+
+  /* NESTED CIRCLES */
+  .nest-wrap { position: relative; display: flex; align-items: center; justify-content: center; height: 520px; }
+  .ring {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    border-radius: 50%; display: flex; align-items: flex-start; justify-content: center;
+    font-family: 'Inter', -apple-system, sans-serif; font-weight: 800;
+  }
+  .ring .ring-label {
+    margin-top: 18px; font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .ring-ai   { width: 520px; height: 520px; background: var(--blue-wash); border: 2px dashed var(--blue); }
+  .ring-ai .ring-label { color: var(--blue-deep); }
+  .ring-ml   { width: 360px; height: 360px; background: var(--blue); box-shadow: 0 6px 24px rgba(120,152,200,0.35); }
+  .ring-ml .ring-label { color: #F8F8F8; }
+  .ring-dl   {
+    width: 200px; height: 200px; background: var(--blue-deep);
+    align-items: center; box-shadow: 0 6px 24px rgba(104,136,200,0.45);
+  }
+  .ring-dl .ring-label { margin-top: 0; font-size: 15px; color: #F8F8F8; }
+  .ring-dl .core { font-size: 30px; margin-bottom: 6px; }
+
+  /* RIGHT COLUMN */
+  .stack { display: flex; flex-direction: column; gap: 18px; }
+  .tier {
+    border-radius: 14px; padding: 20px 24px; position: relative;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  }
+  .tier .tier-head {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+  .tier .tier-num {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 800;
+  }
+  .tier h2 { font-size: 20px; font-weight: 800; }
+  .tier p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 500;
+    line-height: 1.55; padding-left: 40px;
+  }
+  .tier-ai   { background: var(--blue-wash); border: 1px solid var(--blue); transform: rotate(-0.4deg); }
+  .tier-ai .tier-num { background: var(--blue-deep); color: #F8F8F8; }
+  .tier-ml   { background: var(--blue); transform: rotate(0.4deg); }
+  .tier-ml .tier-num { background: var(--white); color: var(--blue-deep); }
+  .tier-ml p { color: var(--text); }
+  .tier-dl   { background: var(--blue-deep); color: #F8F8F8; transform: rotate(-0.4deg); }
+  .tier-dl .tier-num { background: #F8F8F8; color: var(--blue-deep); }
+  .tier-dl p { color: #F8F8F8; }
+
+  .takeaway {
+    margin-top: 38px; background: var(--white); border: 1px solid var(--ash);
+    border-radius: 16px; padding: 26px 30px; box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+    transform: rotate(0.3deg);
+  }
+  .takeaway h3 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .takeaway .rows { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .takeaway .row {
+    border-left: 3px solid var(--blue); padding: 4px 0 4px 14px;
+  }
+  .takeaway .row b {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px;
+  }
+  .takeaway .row span {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 12.5px; font-weight: 500; color: #4a4a4a; line-height: 1.5;
+  }
+
+  .footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 45px; padding-top: 22px; border-top: 2px dashed var(--dot);
+  }
+  .footer-left { font-family: 'Inter', -apple-system, sans-serif; font-size: 13px; color: #999; }
+  .footer-brand { display: flex; align-items: center; gap: 8px; }
+  .footer-brand .stamp {
+    background: var(--blue); color: var(--white);
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 700;
+    padding: 4px 14px; border-radius: 8px; transform: rotate(-2deg);
+  }
+  .footer-brand .brand-name {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>AI vs Machine Learning vs Deep Learning</h1>
+  <p>Three nested worlds — each one a slice of the next</p>
+</div>
+
+<div class="layout">
+  <!-- NESTED CIRCLES -->
+  <div class="nest-wrap">
+    <div class="ring ring-ai"><span class="ring-label">Artificial Intelligence</span></div>
+    <div class="ring ring-ml"><span class="ring-label">Machine Learning</span></div>
+    <div class="ring ring-dl">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <span class="core">🧠</span>
+        <span class="ring-label">Deep Learning</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="stack">
+    <div class="tier tier-ai">
+      <div class="tier-head">
+        <div class="tier-num">1</div>
+        <h2>Artificial Intelligence</h2>
+      </div>
+      <p>Making machines smart — the whole field. Anything that lets a computer act "intelligent" lives here.</p>
+    </div>
+    <div class="tier tier-ml">
+      <div class="tier-head">
+        <div class="tier-num">2</div>
+        <h2>Machine Learning</h2>
+      </div>
+      <p>A subset of AI where machines learn patterns from data themselves — no hard-coded rules required.</p>
+    </div>
+    <div class="tier tier-dl">
+      <div class="tier-head">
+        <div class="tier-num">3</div>
+        <h2>Deep Learning</h2>
+      </div>
+      <p>A subset of ML that uses multi-layer neural networks to learn from data.</p>
+    </div>
+  </div>
+</div>
+
+<!-- TAKEAWAY -->
+<div class="takeaway">
+  <h3>💡 How to remember it</h3>
+  <div class="rows">
+    <div class="row">
+      <b>AI</b>
+      <span>The outermost circle — the goal of building smart machines.</span>
+    </div>
+    <div class="row">
+      <b>ML</b>
+      <span>Inside AI — the way we reach that goal by learning from data.</span>
+    </div>
+    <div class="row">
+      <b>DL</b>
+      <span>Inside ML — one powerful technique: deep neural networks.</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Making AI simple, one byte at a time</div>
+  <div class="footer-brand">
+    <span class="stamp">BSD</span>
+    <span class="brand-name">ByteSized Decodes</span>
+  </div>
+</div>
+
+</body>
+</html>

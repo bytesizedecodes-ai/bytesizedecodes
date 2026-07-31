@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/*
+  Palette carried over from the existing infographic generator so the site and the
+  social content read as one brand. See infographics/what-is-machine-learning.
+*/
+@theme {
+  --color-canvas: #f8f8f8;
+  --color-dot: #d8d8d8;
+  --color-ash: #e8e8e8;
+  --color-ink: #080808;
+  --color-ink-soft: #4a4a4a;
+  --color-ink-faint: #8a8a8a;
+  --color-brand: #7898c8;
+  --color-brand-deep: #6888c8;
+  --color-brand-wash: #eef2f9;
+  --color-good: #5f9e77;
+  --color-good-wash: #edf5f0;
+  --color-bad: #c1706b;
+  --color-bad-wash: #f9efee;
+  --color-gold: #c9a961;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    background-image: radial-gradient(circle, var(--color-dot) 1.2px, transparent 1.2px);
+    background-size: 28px 28px;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Respect users who don't want motion; several reward animations are decorative. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility card {
+  background: #ffffff;
+  border: 1px solid var(--color-ash);
+  border-radius: 14px;
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@utility animate-pop {
+  animation: pop-in 220ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}

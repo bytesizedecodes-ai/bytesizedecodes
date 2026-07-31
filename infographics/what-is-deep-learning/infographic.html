@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What is Deep Learning?</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F8F8F8;
+    --dot: #D8D8D8;
+    --blue: #7898C8;
+    --blue-deep: #6888C8;
+    --blue-wash: #EEF2F9;
+    --ash: #E8E8E8;
+    --white: #FFFFFF;
+    --text: #080808;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    width: 1200px;
+    padding: 55px 65px 65px 65px;
+    color: var(--text);
+  }
+
+  .header { text-align: center; margin-bottom: 36px; }
+  .header h1 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 38px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 6px;
+  }
+  .header h1::after {
+    content: ""; display: block; width: 180px; height: 4px; background: var(--blue);
+    margin: 10px auto 0; border-radius: 2px; opacity: 0.7;
+  }
+  .header p { font-family: 'Inter', -apple-system, sans-serif; font-size: 17px; color: var(--blue-deep); font-weight: 500; }
+
+  /* DEFINITION */
+  .definition {
+    background: var(--blue); color: var(--text);
+    border-radius: 16px; padding: 24px 30px; margin-bottom: 30px;
+    box-shadow: 0 4px 16px rgba(120,152,200,0.25); transform: rotate(-0.3deg);
+    display: flex; align-items: center; gap: 20px;
+  }
+  .definition .big-icon { font-size: 46px; flex-shrink: 0; }
+  .definition p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 600; line-height: 1.45;
+  }
+  .definition b { font-weight: 800; }
+
+  /* NETWORK DIAGRAM */
+  .net-card {
+    background: var(--white); border: 1px solid var(--ash); border-radius: 16px;
+    padding: 26px 30px 18px; box-shadow: 2px 3px 8px rgba(0,0,0,0.06); transform: rotate(0.3deg);
+    margin-bottom: 30px;
+  }
+  .net-card h3 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 14px;
+  }
+  .net-svg { display: block; width: 100%; height: 320px; }
+  .layer-labels {
+    display: flex; justify-content: space-between; margin-top: 8px;
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 12.5px; font-weight: 600; color: var(--blue-deep);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* FLOW */
+  .flow {
+    background: var(--blue-wash); border: 1px dashed var(--blue); border-radius: 14px;
+    padding: 18px 26px; display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin-bottom: 30px; flex-wrap: wrap;
+  }
+  .flow-step {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 700;
+    background: var(--white); border: 1px solid var(--blue); border-radius: 10px; padding: 10px 16px;
+  }
+  .flow-step b { display: block; font-size: 12px; font-weight: 600; color: var(--blue-deep); text-transform: uppercase; letter-spacing: 0.5px; }
+  .flow-arrow { font-size: 22px; color: var(--blue-deep); font-weight: 700; }
+
+  /* WHY GRID */
+  .why-title {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 18px;
+  }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .why-card {
+    border-radius: 14px; padding: 22px 24px; box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+    position: relative;
+  }
+  .why-card.w1 { background: var(--white); border: 1px solid var(--ash); transform: rotate(-0.4deg); }
+  .why-card.w2 { background: var(--blue); transform: rotate(0.4deg); }
+  .why-card h4 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .why-card p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.55; color: #4a4a4a;
+  }
+  .why-card.w2 p { color: var(--text); }
+  .why-card ul { list-style: none; padding: 0; }
+  .why-card li {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.55;
+    padding: 6px 0 6px 24px; position: relative; color: #4a4a4a;
+  }
+  .why-card li::before { content: "✦"; position: absolute; left: 0; top: 6px; font-size: 12px; color: var(--blue-deep); }
+  .why-card.w2 li { color: var(--text); }
+  .why-card.w2 li::before { color: #F8F8F8; }
+
+  .footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 38px; padding-top: 22px; border-top: 2px dashed var(--dot);
+  }
+  .footer-left { font-family: 'Inter', -apple-system, sans-serif; font-size: 13px; color: #999; }
+  .footer-brand { display: flex; align-items: center; gap: 8px; }
+  .footer-brand .stamp {
+    background: var(--blue); color: var(--white);
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 700;
+    padding: 4px 14px; border-radius: 8px; transform: rotate(-2deg);
+  }
+  .footer-brand .brand-name {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>What is Deep Learning?</h1>
+  <p>The engine behind modern AI — multi-layer neural networks</p>
+</div>
+
+<!-- DEFINITION -->
+<div class="definition">
+  <div class="big-icon">🕸️</div>
+  <p><b>Deep Learning</b> is a subfield of Machine Learning that uses <b>Artificial Neural Networks</b> — many layers of them — to learn patterns directly from data.</p>
+</div>
+
+<!-- NEURAL NETWORK -->
+<div class="net-card">
+  <h3>A Neural Network, drawn out</h3>
+  <svg class="net-svg" viewBox="0 0 1040 320" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <style>
+        .node { fill: #FFFFFF; stroke: #6888C8; stroke-width: 2; }
+        .node-in { fill: #EEF2F9; }
+        .node-out { fill: #6888C8; stroke: #6888C8; }
+        .link { stroke: #7898C8; stroke-width: 1.2; opacity: 0.35; }
+      </style>
+    </defs>
+
+    <!-- Connections first (so they sit behind nodes) -->
+    <!-- Layer x-centres: input 130, h1 360, h2 590, h3 820 (output uses 910) -->
+    <!-- Input(4) y: 50,120,200,270  | h1(5) y: 40,100,160,220,280 | h2(5) | output(3) y: 100,160,220 -->
+    <g class="links">
+      <!-- input -> h1 -->
+      <g class="link">
+        <line x1="130" y1="50"  x2="360" y2="40"/>  <line x1="130" y1="50"  x2="360" y2="100"/>
+        <line x1="130" y1="50"  x2="360" y2="160"/> <line x1="130" y1="50"  x2="360" y2="220"/>
+        <line x1="130" y1="50"  x2="360" y2="280"/>
+        <line x1="130" y1="120" x2="360" y2="40"/>  <line x1="130" y1="120" x2="360" y2="100"/>
+        <line x1="130" y1="120" x2="360" y2="160"/> <line x1="130" y1="120" x2="360" y2="220"/>
+        <line x1="130" y1="120" x2="360" y2="280"/>
+        <line x1="130" y1="200" x2="360" y2="40"/>  <line x1="130" y1="200" x2="360" y2="100"/>
+        <line x1="130" y1="200" x2="360" y2="160"/> <line x1="130" y1="200" x2="360" y2="220"/>
+        <line x1="130" y1="200" x2="360" y2="280"/>
+        <line x1="130" y1="270" x2="360" y2="40"/>  <line x1="130" y1="270" x2="360" y2="100"/>
+        <line x1="130" y1="270" x2="360" y2="160"/> <line x1="130" y1="270" x2="360" y2="220"/>
+        <line x1="130" y1="270" x2="360" y2="280"/>
+      </g>
+      <!-- h1 -> h2 -->
+      <g class="link">
+        <line x1="360" y1="40"  x2="590" y2="40"/>  <line x1="360" y1="40"  x2="590" y2="100"/>
+        <line x1="360" y1="40"  x2="590" y2="160"/> <line x1="360" y1="40"  x2="590" y2="220"/>
+        <line x1="360" y1="40"  x2="590" y2="280"/>
+        <line x1="360" y1="100" x2="590" y2="40"/>  <line x1="360" y1="100" x2="590" y2="100"/>
+        <line x1="360" y1="100" x2="590" y2="160"/> <line x1="360" y1="100" x2="590" y2="220"/>
+        <line x1="360" y1="100" x2="590" y2="280"/>
+        <line x1="360" y1="160" x2="590" y2="40"/>  <line x1="360" y1="160" x2="590" y2="100"/>
+        <line x1="360" y1="160" x2="590" y2="160"/> <line x1="360" y1="160" x2="590" y2="220"/>
+        <line x1="360" y1="160" x2="590" y2="280"/>
+        <line x1="360" y1="220" x2="590" y2="40"/>  <line x1="360" y1="220" x2="590" y2="100"/>
+        <line x1="360" y1="220" x2="590" y2="160"/> <line x1="360" y1="220" x2="590" y2="220"/>
+        <line x1="360" y1="220" x2="590" y2="280"/>
+        <line x1="360" y1="280" x2="590" y2="40"/>  <line x1="360" y1="280" x2="590" y2="100"/>
+        <line x1="360" y1="280" x2="590" y2="160"/> <line x1="360" y1="280" x2="590" y2="220"/>
+        <line x1="360" y1="280" x2="590" y2="280"/>
+      </g>
+      <!-- h2 -> output -->
+      <g class="link">
+        <line x1="590" y1="40"  x2="820" y2="100"/> <line x1="590" y1="40"  x2="820" y2="160"/>
+        <line x1="590" y1="40"  x2="820" y2="220"/>
+        <line x1="590" y1="100" x2="820" y2="100"/> <line x1="590" y1="100" x2="820" y2="160"/>
+        <line x1="590" y1="100" x2="820" y2="220"/>
+        <line x1="590" y1="160" x2="820" y2="100"/> <line x1="590" y1="160" x2="820" y2="160"/>
+        <line x1="590" y1="160" x2="820" y2="220"/>
+        <line x1="590" y1="220" x2="820" y2="100"/> <line x1="590" y1="220" x2="820" y2="160"/>
+        <line x1="590" y1="220" x2="820" y2="220"/>
+        <line x1="590" y1="280" x2="820" y2="100"/> <line x1="590" y1="280" x2="820" y2="160"/>
+        <line x1="590" y1="280" x2="820" y2="220"/>
+      </g>
+    </g>
+
+    <!-- Nodes -->
+    <!-- input layer -->
+    <g>
+      <circle class="node node-in" cx="130" cy="50"  r="16"/>
+      <circle class="node node-in" cx="130" cy="120" r="16"/>
+      <circle class="node node-in" cx="130" cy="200" r="16"/>
+      <circle class="node node-in" cx="130" cy="270" r="16"/>
+    </g>
+    <!-- hidden layer 1 -->
+    <g>
+      <circle class="node" cx="360" cy="40"  r="16"/>
+      <circle class="node" cx="360" cy="100" r="16"/>
+      <circle class="node" cx="360" cy="160" r="16"/>
+      <circle class="node" cx="360" cy="220" r="16"/>
+      <circle class="node" cx="360" cy="280" r="16"/>
+    </g>
+    <!-- hidden layer 2 -->
+    <g>
+      <circle class="node" cx="590" cy="40"  r="16"/>
+      <circle class="node" cx="590" cy="100" r="16"/>
+      <circle class="node" cx="590" cy="160" r="16"/>
+      <circle class="node" cx="590" cy="220" r="16"/>
+      <circle class="node" cx="590" cy="280" r="16"/>
+    </g>
+    <!-- output layer -->
+    <g>
+      <circle class="node node-out" cx="820" cy="100" r="18"/>
+      <circle class="node node-out" cx="820" cy="160" r="18"/>
+      <circle class="node node-out" cx="820" cy="220" r="18"/>
+    </g>
+
+    <!-- "many layers" ellipsis between h2 and output -->
+    <text x="705" y="170" text-anchor="middle" font-family="Inter, sans-serif" font-size="34" font-weight="700" fill="#6888C8">···</text>
+
+    <!-- Layer captions -->
+    <text x="130" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#080808">Input Layer</text>
+    <text x="475" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#080808">Hidden Layers</text>
+    <text x="820" y="312" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#080808">Output Layer</text>
+  </svg>
+  <div class="layer-labels">
+    <span>data in</span>
+    <span>where the "deep" happens</span>
+    <span>prediction out</span>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div class="flow">
+  <div class="flow-step"><b>Step 1</b>Feed in data</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step"><b>Step 2</b>Pass through layers</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step"><b>Step 3</b>Each layer learns a feature</div>
+  <span class="flow-arrow">→</span>
+  <div class="flow-step"><b>Step 4</b>Output a prediction</div>
+</div>
+
+<!-- WHY -->
+<div class="why-title">Why "deep"? And why does it matter?</div>
+<div class="why-grid">
+  <div class="why-card w1">
+    <h4>🧱 "Deep" = many hidden layers</h4>
+    <p>A traditional network has one or two layers. A <b>deep</b> network stacks many — each layer learning something more abstract than the one before.</p>
+    <ul>
+      <li>Early layers spot edges &amp; colours</li>
+      <li>Middle layers spot shapes &amp; parts</li>
+      <li>Later layers spot full objects</li>
+    </ul>
+  </div>
+  <div class="why-card w2">
+    <h4>🚀 Why it wins on hard tasks</h4>
+    <p>Deep networks learn features straight from raw data — no manual feature engineering. That's why they dominate the hard stuff.</p>
+    <ul>
+      <li>Image recognition (faces, medical scans)</li>
+      <li>Language — ChatGPT, translation</li>
+      <li>Speech → text</li>
+      <li>Self-driving perception</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Making AI simple, one byte at a time</div>
+  <div class="footer-brand">
+    <span class="stamp">BSD</span>
+    <span class="brand-name">ByteSized Decodes</span>
+  </div>
+</div>
+
+</body>
+</html>

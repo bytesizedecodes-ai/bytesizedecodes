@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F8F8F8;
+    --dot: #D8D8D8;
+    --blue: #7192CC;
+    --blue-deep: #6888C8;
+    --ash: #E8E8E8;
+    --white: #FFFFFF;
+    --text: #080808;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg);
+    background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+    background-size: 28px 28px;
+    width: 1200px;
+    padding: 55px 65px 65px 65px;
+    color: var(--text);
+  }
+
+  .header { text-align: center; margin-bottom: 50px; }
+  .header h1 {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 38px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 6px;
+  }
+  .header h1::after {
+    content: ""; display: block; width: 180px; height: 4px; background: var(--blue);
+    margin: 10px auto 0; border-radius: 2px; opacity: 0.7;
+  }
+  .header p { font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; color: var(--blue-deep); font-weight: 400; }
+
+  .comparison-wrapper { position: relative; }
+  .comparison {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+  }
+  .comp-side {
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  }
+  .comp-side:first-child { transform: rotate(-0.5deg); }
+  .comp-side:last-child { transform: rotate(0.5deg); }
+  .comp-header {
+    padding: 20px 24px; text-align: center;
+  }
+  .comp-header h2 {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 26px; font-weight: 700; color: var(--text);
+  }
+  .comp-header p {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 14px; font-weight: 400;
+    margin-top: 4px; opacity: 0.85;
+  }
+  .comp-body {
+    padding: 20px 24px;
+  }
+  .comp-body table { width: 100%; border-collapse: collapse; }
+  .comp-body td {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; font-weight: 400;
+    padding: 12px 8px; border-bottom: 1px solid var(--dot); line-height: 1.5;
+  }
+  .comp-body td:first-child { font-weight: 700; width: 35%; }
+  .comp-body tr:last-child td { border-bottom: none; }
+
+  .vs-badge {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%) rotate(-3deg);
+    background: var(--bg); border: 3px solid var(--blue);
+    width: 60px; height: 60px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700; color: var(--blue-deep);
+    z-index: 10;
+  }
+
+  .footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 45px; padding-top: 22px; border-top: 2px dashed var(--dot);
+  }
+  .footer-left { font-family: 'Inter', -apple-system, sans-serif; font-size: 13px; color: #999; }
+  .footer-brand { display: flex; align-items: center; gap: 8px; }
+  .footer-brand .stamp {
+    background: var(--blue); color: var(--white);
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 16px; font-weight: 700;
+    padding: 4px 14px; border-radius: 8px; transform: rotate(-2deg);
+  }
+  .footer-brand .brand-name {
+    font-family: 'Inter', -apple-system, sans-serif; font-size: 18px; font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Encryption vs Hashing</h1>
+  <p>Two security concepts that always get confused</p>
+</div>
+
+<div class="comparison-wrapper">
+  <div class="comparison">
+    <!-- LEFT SIDE -->
+    <div class="comp-side">
+      <div class="comp-header" style="background: var(--blue);">
+        <h2>Encryption</h2>
+        <p>Reversible — you can get the original back</p>
+      </div>
+      <div class="comp-body" style="background: var(--white); border: 1px solid #E8E8E8; border-top: none;">
+        <table>
+          <tr><td>Purpose</td><td>Keep data secret</td></tr>
+          <tr><td>Reversible?</td><td>Yes — with a key</td></tr>
+          <tr><td>Example</td><td>HTTPS, WhatsApp messages</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="comp-side">
+      <div class="comp-header" style="background: var(--blue-deep);">
+        <h2>Hashing</h2>
+        <p>One-way — you can't reverse it</p>
+      </div>
+      <div class="comp-body" style="background: var(--ash); border: 1px solid #D8D8D8; border-top: none;">
+        <table>
+          <tr><td>Purpose</td><td>Verify data integrity</td></tr>
+          <tr><td>Reversible?</td><td>No — it's a fingerprint</td></tr>
+          <tr><td>Example</td><td>Passwords, file checksums</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- VS BADGE -->
+  <div class="vs-badge">VS</div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-left">Making AI simple, one byte at a time</div>
+  <div class="footer-brand">
+    <span class="stamp">BSD</span>
+    <span class="brand-name">ByteSized Decodes</span>
+  </div>
+</div>
+
+</body>
+</html>

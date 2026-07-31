@@ -1,0 +1,54 @@
+- generic [active] [ref=f7e1]:
+  - generic [ref=f7e2]:
+    - banner [ref=f7e3]:
+      - generic [ref=f7e4]:
+        - link "ByteSizedCodes" [ref=f7e5] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=f7e7]:
+          - generic [ref=f7e9]:
+            - link "Courses" [ref=f7e10] [cursor=pointer]:
+              - /url: /courses
+            - button "Courses menu" [ref=f7e11]
+          - link "Today" [ref=f7e14] [cursor=pointer]:
+            - /url: /today
+          - link "Practice" [ref=f7e15] [cursor=pointer]:
+            - /url: /practice
+          - link "Review" [ref=f7e16] [cursor=pointer]:
+            - /url: /review
+          - link "Mastery" [ref=f7e17] [cursor=pointer]:
+            - /url: /mastery
+          - link "Bytes" [ref=f7e18] [cursor=pointer]:
+            - /url: /bytes
+    - main [ref=f7e19]:
+      - generic [ref=f7e20]:
+        - generic [ref=f7e22]:
+          - heading "Mastery" [level=1] [ref=f7e23]
+          - paragraph [ref=f7e24]: How durable your knowledge is in each area. Bars rise as your review intervals grow — not from clicking lessons, but from remembering over time.
+        - generic [ref=f7e25]:
+          - generic [ref=f7e26]:
+            - paragraph [ref=f7e27]: Level
+            - generic [ref=f7e28]: Lv 1
+            - paragraph [ref=f7e30]: 0 / 50 XP
+          - generic [ref=f7e31]:
+            - paragraph [ref=f7e32]: XP
+            - generic [ref=f7e33]: "0"
+          - generic [ref=f7e34]:
+            - paragraph [ref=f7e35]: Streak
+            - generic [ref=f7e37]:
+              - text: "0"
+              - generic [ref=f7e41]: 1❄
+          - generic [ref=f7e42]:
+            - paragraph [ref=f7e43]: Due today
+            - generic [ref=f7e44]: "0"
+        - generic [ref=f7e46]:
+          - generic [ref=f7e47]: 🌱
+          - heading "Nothing to measure yet" [level=2] [ref=f7e48]
+          - paragraph [ref=f7e49]: Mastery grows from spaced review. Do a few drills first — once they're in your review queue, this page will show how durable each area is becoming.
+          - link "Do a drill" [ref=f7e50] [cursor=pointer]:
+            - /url: /practice
+    - contentinfo [ref=f7e51]:
+      - text: Phase 0 preview · progress lives in this browser ·
+      - link "export / reset" [ref=f7e52] [cursor=pointer]:
+        - /url: /settings
+  - button "Open Next.js Dev Tools" [ref=f7e58] [cursor=pointer]
+  - alert [ref=f7e62]
