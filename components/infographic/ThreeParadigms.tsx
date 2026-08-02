@@ -1,13 +1,24 @@
-import { Infographic, InfographicHeader } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Scene } from "./scenes";
+import { Infographic, InfographicHeader, Card } from "./primitives";
+import {
+  CarShape,
+  BikeShape,
+  MachineFigure,
+  PictureCard,
+  Scene,
+} from "./scenes";
+import { Stagger, MotionChild } from "./motion";
 
 /**
  * Layman course — Lesson 4: "The three families of ML".
  *
- * Layout: three side-by-side illustrated scenes, one per paradigm. Each scene
- * shows the *visual essence* of that family — labelled examples (supervised),
- * a cluster (unsupervised), a reward loop (reinforcement). Brand blue only.
- * No prose/questions (course rule).
+ * Three side-by-side scenes, one per paradigm — but now all three use the SAME
+ * car/bike objects, so a layman sees one consistent example handled three ways:
+ *  - Supervised: labelled cars & bikes (we give the answers).
+ *  - Unsupervised: the SAME shapes unlabelled, grouped into two clusters.
+ *  - Reinforcement: the shared MachineFigure trying an action, getting reward
+ *    or penalty (no 🤖 emoji, no green/red SVG arrows — brand blue + the
+ *    semantic good/bad tokens used elsewhere).
+ * Brand blue only. No prose/questions (course rule).
  *
  * Faithful to source: Lesson 1.pdf slides 28, 38-43, 44-51.
  */
@@ -19,92 +30,87 @@ export function ThreeParadigms() {
         subtitle="Different problems → different ways of learning"
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-4">
-        {/* SUPERVISED */}
-        <Scene caption="① Supervised">
-          <div className="flex flex-col items-center gap-3">
-            <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
-              with labels
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <PictureCard picture={<CarShape />} label="car" tone="brand" />
-              <PictureCard picture={<BikeShape />} label="bike" tone="brand" />
+      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-4">
+        {/* SUPERVISED — labelled examples */}
+        <MotionChild>
+          <Scene caption="① Supervised">
+            <div className="flex flex-col items-center gap-3">
+              <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
+                with labels
+              </span>
+              <div className="grid grid-cols-2 gap-2">
+                <PictureCard picture={<CarShape className="!h-10" />} label="car" tone="brand" />
+                <PictureCard picture={<BikeShape className="!h-10" />} label="bike" tone="brand" />
+              </div>
+              <p className="text-center text-xs font-medium text-ink">
+                We give the answers during training.
+              </p>
             </div>
-            <p className="text-center text-xs font-medium text-ink">
-              We give the answers during training.
-            </p>
-          </div>
-        </Scene>
+          </Scene>
+        </MotionChild>
 
-        {/* UNSUPERVISED */}
-        <Scene caption="② Unsupervised">
-          <div className="flex flex-col items-center gap-3">
-            <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
-              no labels
-            </span>
-            {/* A clustering picture: scattered dots grouped into 2 clusters */}
-            <svg viewBox="0 0 200 140" className="h-auto w-full max-w-[14rem]" aria-hidden="true">
-              <ellipse cx="60" cy="50" rx="42" ry="32" fill="none" stroke="#6888c8" strokeWidth="2" strokeDasharray="4 3" />
-              <ellipse cx="145" cy="90" rx="42" ry="32" fill="none" stroke="#6888c8" strokeWidth="2" strokeDasharray="4 3" />
-              {/* cluster A dots */}
-              <circle cx="48" cy="42" r="4" fill="#7898c8" />
-              <circle cx="70" cy="38" r="4" fill="#7898c8" />
-              <circle cx="58" cy="60" r="4" fill="#7898c8" />
-              <circle cx="42" cy="55" r="4" fill="#7898c8" />
-              <circle cx="74" cy="56" r="4" fill="#7898c8" />
-              {/* cluster B dots */}
-              <circle cx="138" cy="80" r="4" fill="#6888c8" />
-              <circle cx="155" cy="78" r="4" fill="#6888c8" />
-              <circle cx="145" cy="100" r="4" fill="#6888c8" />
-              <circle cx="160" cy="95" r="4" fill="#6888c8" />
-              <circle cx="132" cy="98" r="4" fill="#6888c8" />
-            </svg>
-            <p className="text-center text-xs font-medium text-ink">
-              It groups similar things together.
-            </p>
-          </div>
-        </Scene>
+        {/* UNSUPERVISED — same objects, no labels, grouped */}
+        <MotionChild>
+          <Scene caption="② Unsupervised">
+            <div className="flex flex-col items-center gap-3">
+              <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
+                no labels
+              </span>
+              <div className="grid w-full max-w-[14rem] grid-cols-2 gap-2">
+                <div className="rounded-xl border border-dashed border-brand-muted bg-brand-wash/50 p-2">
+                  <div className="flex items-center justify-center gap-1">
+                    <CarShape className="!h-8" />
+                    <CarShape className="!h-8" />
+                  </div>
+                </div>
+                <div className="rounded-xl border border-dashed border-brand-muted bg-brand-wash/50 p-2">
+                  <div className="flex items-center justify-center gap-1">
+                    <BikeShape className="!h-8" />
+                    <BikeShape className="!h-8" />
+                  </div>
+                </div>
+              </div>
+              <p className="text-center text-xs font-medium text-ink">
+                It groups similar things together — on its own.
+              </p>
+            </div>
+          </Scene>
+        </MotionChild>
 
-        {/* REINFORCEMENT */}
-        <Scene caption="③ Reinforcement">
-          <div className="flex flex-col items-center gap-3">
-            <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
-              trial &amp; error
-            </span>
-            {/* The reward loop: agent → action → reward/penalty → back to agent */}
-            <svg viewBox="0 0 200 140" className="h-auto w-full max-w-[14rem]" aria-hidden="true">
-              {/* nodes */}
-              <circle cx="100" cy="32" r="18" fill="#7898c8" />
-              <text x="100" y="36" textAnchor="middle" fontSize="14" fill="#080808" fontWeight="bold">🤖</text>
-              <rect x="20" y="92" width="50" height="36" rx="6" fill="#edf5f0" stroke="#5f9e77" strokeWidth="2" />
-              <text x="45" y="115" textAnchor="middle" fontSize="14">👍</text>
-              <rect x="130" y="92" width="50" height="36" rx="6" fill="#f9efee" stroke="#c1706b" strokeWidth="2" />
-              <text x="155" y="115" textAnchor="middle" fontSize="14">👎</text>
-              {/* arrows */}
-              <path d="M88 46 L48 90" stroke="#5f9e77" strokeWidth="2" fill="none" markerEnd="url(#arrowGood)" />
-              <path d="M112 46 L152 90" stroke="#c1706b" strokeWidth="2" fill="none" markerEnd="url(#arrowBad)" />
-              <path d="M70 110 Q100 130 130 110" stroke="#6888c8" strokeWidth="2" fill="none" strokeDasharray="4 3" markerEnd="url(#arrowBrand)" />
-              <defs>
-                <marker id="arrowGood" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#5f9e77" /></marker>
-                <marker id="arrowBad" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#c1706b" /></marker>
-                <marker id="arrowBrand" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#6888c8" /></marker>
-              </defs>
-            </svg>
-            <p className="text-center text-xs font-medium text-ink">
-              Rewards good moves, penalises bad ones.
-            </p>
-          </div>
-        </Scene>
-      </div>
+        {/* REINFORCEMENT — MachineFigure + reward/penalty, no emoji */}
+        <MotionChild>
+          <Scene caption="③ Reinforcement">
+            <div className="flex flex-col items-center gap-3">
+              <span className="rounded-full bg-brand-wash px-3 py-1 text-xs font-bold text-ink">
+                trial &amp; error
+              </span>
+              <div className="flex flex-col items-center gap-2">
+                <MachineFigure className="!h-20" />
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-good px-2.5 py-1 text-[11px] font-bold text-white">
+                    ⭐ reward
+                  </span>
+                  <span className="rounded-full bg-bad px-2.5 py-1 text-[11px] font-bold text-white">
+                    ⛔ penalty
+                  </span>
+                </div>
+              </div>
+              <p className="text-center text-xs font-medium text-ink">
+                Rewards good moves, penalises bad ones.
+              </p>
+            </div>
+          </Scene>
+        </MotionChild>
+      </Stagger>
 
       {/* One-line summary */}
-      <div className="rounded-2xl bg-brand px-5 py-4 text-center shadow-sm">
-        <p className="text-sm font-bold leading-relaxed text-ink sm:text-base">
+      <Card tone="brand" rotate={0}>
+        <p className="text-center text-sm font-bold leading-relaxed text-ink sm:text-base">
           Labels? <span className="font-extrabold">Supervised</span>. No labels?{" "}
           <span className="font-extrabold">Unsupervised</span>. Trial &amp; error?{" "}
           <span className="font-extrabold">Reinforcement</span>.
         </p>
-      </div>
+      </Card>
     </Infographic>
   );
 }

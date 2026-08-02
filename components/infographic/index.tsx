@@ -8,6 +8,20 @@ import { HumansVsMachines } from "./HumansVsMachines";
 import { WhatIsMLLayman } from "./WhatIsMLLayman";
 import { ThreeParadigms } from "./ThreeParadigms";
 import { SupervisedDeepDive } from "./SupervisedDeepDive";
+import { UnsupervisedDeepDive } from "./UnsupervisedDeepDive";
+import { ReinforcementDeepDive } from "./ReinforcementDeepDive";
+import { FeaturesAndVectors } from "./FeaturesAndVectors";
+import { FirstClassifier } from "./FirstClassifier";
+import { MultipleFeatures } from "./MultipleFeatures";
+import { KnnNeighbors } from "./KnnNeighbors";
+import { CentroidClassifier } from "./CentroidClassifier";
+import { DecisionTreeRules } from "./DecisionTreeRules";
+import { BestSplit } from "./BestSplit";
+import { MLInYourPhone } from "./MLInYourPhone";
+import { WhenMLFails } from "./WhenMLFails";
+import { TrainTestSplit } from "./TrainTestSplit";
+import { Overfitting } from "./Overfitting";
+import { DataQuality } from "./DataQuality";
 
 /**
  * Maps an infographic slug to its React component.
@@ -28,6 +42,20 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "what-is-ml-layman": WhatIsMLLayman,
   "three-ml-paradigms": ThreeParadigms,
   "supervised-learning-deep-dive": SupervisedDeepDive,
+  "unsupervised-learning-deep-dive": UnsupervisedDeepDive,
+  "reinforcement-learning-deep-dive": ReinforcementDeepDive,
+  "features-and-vectors": FeaturesAndVectors,
+  "first-classifier": FirstClassifier,
+  "multiple-features": MultipleFeatures,
+  "knn-neighbors": KnnNeighbors,
+  "centroid-classifier": CentroidClassifier,
+  "decision-tree-rules": DecisionTreeRules,
+  "best-split": BestSplit,
+  "ml-in-your-phone": MLInYourPhone,
+  "when-ml-fails": WhenMLFails,
+  "train-test-split": TrainTestSplit,
+  "overfitting": Overfitting,
+  "data-quality": DataQuality,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

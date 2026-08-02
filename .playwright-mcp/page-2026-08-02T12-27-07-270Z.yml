@@ -1,0 +1,71 @@
+- generic [active] [ref=f38e1]:
+  - generic [ref=f38e2]:
+    - banner [ref=f38e3]:
+      - generic [ref=f38e4]:
+        - link "ByteSizeDecodes" [ref=f38e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f38e6]: BSD
+        - navigation [ref=f38e10]:
+          - link "Courses" [ref=f38e11] [cursor=pointer]:
+            - /url: /courses
+          - link "Learn" [ref=f38e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Start free" [ref=f38e13] [cursor=pointer]:
+            - /url: /onboarding
+    - generic [ref=f38e14]:
+      - generic [ref=f38e15]:
+        - generic [ref=f38e16]: The visual way to learn AI
+        - heading "Learn AI the way your brain actually works." [level=1] [ref=f38e20]: Learn AI the way yourbrain actually works.
+        - paragraph [ref=f38e21]: Picture-led lessons. Real practice. Spaced review. One daily plan that fits the time you have — from 3 minutes to a deep session.
+        - generic [ref=f38e22]:
+          - link "Start free — no login" [ref=f38e23] [cursor=pointer]:
+            - /url: /onboarding
+          - link "Browse courses" [ref=f38e26] [cursor=pointer]:
+            - /url: /courses
+        - generic [ref=f38e27]:
+          - generic [ref=f38e28]: 100% free to learn
+          - generic [ref=f38e32]: No login required
+          - generic [ref=f38e36]: Track your progress
+      - generic [ref=f38e41]:
+        - generic [ref=f38e42]: today · machine learning for layman
+        - generic [ref=f38e47]:
+          - paragraph [ref=f38e48]: Today · 5 minutes
+          - 'heading "Find its neighbors: k-Nearest Neighbors" [level=2] [ref=f38e49]'
+          - generic [ref=f38e50]:
+            - generic [ref=f38e51]:
+              - generic [ref=f38e52]: "1"
+              - generic [ref=f38e53]: Recall one fading concept
+            - generic [ref=f38e57]:
+              - generic [ref=f38e58]: "2"
+              - generic [ref=f38e59]: Practise one generated case
+            - generic [ref=f38e60]:
+              - generic [ref=f38e61]: "3"
+              - generic [ref=f38e62]: Apply it to a real example
+          - generic [ref=f38e64]:
+            - generic [ref=f38e65]: Today's progress
+            - generic [ref=f38e66]: 1 of 3
+    - generic [ref=f38e70]:
+      - generic [ref=f38e71]:
+        - paragraph [ref=f38e72]: How it works
+        - heading "Three steps, every day" [level=2] [ref=f38e73]
+      - generic [ref=f38e74]:
+        - generic [ref=f38e75]:
+          - generic [ref=f38e76]: "01"
+          - heading "See it" [level=3] [ref=f38e82]
+          - paragraph [ref=f38e83]: A visual lesson makes the concept click — in 5 minutes, no jargon.
+        - generic [ref=f38e84]:
+          - generic [ref=f38e85]: "02"
+          - heading "Practise it" [level=3] [ref=f38e92]
+          - paragraph [ref=f38e93]: Generated problems and spaced review turn the click into a skill.
+        - generic [ref=f38e94]:
+          - generic [ref=f38e95]: "03"
+          - heading "Make it yours" [level=3] [ref=f38e104]
+          - paragraph [ref=f38e105]: Progress, streaks, and evidence you can point to and trust.
+    - generic [ref=f38e106]:
+      - heading "Your first AI concept is one click away." [level=2] [ref=f38e107]
+      - paragraph [ref=f38e108]: Free forever. No login to learn. Pick a goal and start in under a minute.
+      - link "Find my learning path" [ref=f38e110] [cursor=pointer]:
+        - /url: /onboarding
+    - contentinfo [ref=f38e113]: ByteSizeDecodes — Learn AI visually. Practise it. Build something real.
+  - button "Open Next.js Dev Tools" [ref=f38e119] [cursor=pointer]
+  - alert [ref=f38e123]

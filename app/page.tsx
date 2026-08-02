@@ -1,12 +1,40 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowRight, BrainCircuit, BriefcaseBusiness, GraduationCap, Lightbulb } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: { absolute: `${SITE_NAME} — ${SITE_TAGLINE}` },
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+};
 
 export default function HomePage() {
   return (
     <Shell active="/">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: SITE_NAME,
+          url: SITE_URL,
+          description: SITE_DESCRIPTION,
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          name: SITE_NAME,
+          url: SITE_URL,
+          description: SITE_DESCRIPTION,
+          slogan: SITE_TAGLINE,
+        }}
+      />
       <section className="mx-auto grid max-w-6xl items-center gap-10 py-7 lg:grid-cols-[1.06fr_0.94fr] lg:py-16">
         <div>
           <Badge tone="warm">Visual, active, built for your goal</Badge>

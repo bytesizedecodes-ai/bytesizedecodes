@@ -1,0 +1,62 @@
+- generic [active] [ref=f37e1]:
+  - generic [ref=f37e2]:
+    - generic [ref=f37e3]:
+      - generic [ref=f37e4]:
+        - link "ByteSizeDecodes" [ref=f37e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f37e6]: BSD
+        - navigation [ref=f37e9]:
+          - link "Courses" [ref=f37e10] [cursor=pointer]:
+            - /url: /courses
+          - link "Learn" [ref=f37e11] [cursor=pointer]:
+            - /url: /learn
+          - link "Start free" [ref=f37e12] [cursor=pointer]:
+            - /url: /onboarding
+      - generic [ref=f37e13]:
+        - generic [ref=f37e14]: Learn AI the visual way — no maths required
+        - heading "Learn AI visually. Practise it. Build something real." [level=1] [ref=f37e18]: Learn AI visually.Practise it. Build something real.
+        - paragraph [ref=f37e19]: Short visual lessons, intelligent practice, and real project thinking — for anyone curious about AI, from first concepts to your first useful product.
+        - generic [ref=f37e20]:
+          - link "Find my learning path" [ref=f37e21] [cursor=pointer]:
+            - /url: /onboarding
+          - link "Explore courses" [ref=f37e24] [cursor=pointer]:
+            - /url: /courses
+        - paragraph [ref=f37e25]: Start anonymously. No login required to learn.
+    - generic [ref=f37e27]:
+      - generic [ref=f37e28]:
+        - generic [ref=f37e29]: "19"
+        - generic [ref=f37e30]: visual lessons
+      - generic [ref=f37e31]:
+        - generic [ref=f37e32]: "2"
+        - generic [ref=f37e33]: full courses
+      - generic [ref=f37e34]:
+        - generic [ref=f37e35]: 100%
+        - generic [ref=f37e36]: free to learn
+      - generic [ref=f37e37]:
+        - generic [ref=f37e38]: ∞
+        - generic [ref=f37e39]: practice drills
+    - generic [ref=f37e40]:
+      - generic [ref=f37e41]:
+        - paragraph [ref=f37e42]: Why it works
+        - heading "A learning loop your brain actually likes" [level=2] [ref=f37e43]
+      - generic [ref=f37e44]:
+        - generic [ref=f37e45]:
+          - heading "See it clearly" [level=3] [ref=f37e50]
+          - paragraph [ref=f37e51]: Visual explanations turn abstract AI ideas into concrete mental models — no jargon, no prerequisites.
+        - generic [ref=f37e52]:
+          - heading "Practise the hard parts" [level=3] [ref=f37e57]
+          - paragraph [ref=f37e58]: Generated problems adapt while targeted feedback repairs misconceptions. Spaced review keeps it.
+        - generic [ref=f37e59]:
+          - heading "Build something real" [level=3] [ref=f37e64]
+          - paragraph [ref=f37e65]: Progress toward a useful artifact — the kind you can show, explain, and trust.
+    - generic [ref=f37e66]:
+      - paragraph [ref=f37e78]: “I finally understand what a model actually learns — and why it can be wrong. The pictures made it click.”
+      - paragraph [ref=f37e79]: A learner, after the foundations course
+    - generic [ref=f37e81]:
+      - heading "Start in under a minute" [level=2] [ref=f37e82]
+      - paragraph [ref=f37e83]: Pick a goal, get a daily plan, and learn your first AI concept today — free.
+      - link "Begin learning" [ref=f37e85] [cursor=pointer]:
+        - /url: /onboarding
+    - contentinfo [ref=f37e88]: ByteSizeDecodes — Learn AI visually. Practise it. Build something real.
+  - button "Open Next.js Dev Tools" [ref=f37e94] [cursor=pointer]
+  - alert [ref=f37e98]

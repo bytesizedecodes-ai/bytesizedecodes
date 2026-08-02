@@ -1,0 +1,123 @@
+- generic [active] [ref=f21e1]:
+  - generic [ref=f21e2]:
+    - banner [ref=f21e3]:
+      - generic [ref=f21e4]:
+        - link "ByteSizeDecodes" [ref=f21e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f21e6]: BSD
+        - navigation "Primary navigation" [ref=f21e10]:
+          - link "Today" [ref=f21e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f21e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f21e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f21e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f21e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f21e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f21e17]:
+      - generic [ref=f21e18]:
+        - link "← Machine Learning for Layman" [ref=f21e19] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f21e20]:
+          - paragraph [ref=f21e21]: Lesson 16 of 16 · Machine Learning for Layman
+          - heading "When ML gets it wrong" [level=1] [ref=f21e22]
+          - paragraph [ref=f21e23]: It’s powerful and it makes mistakes — here’s how to think about both.
+          - paragraph [ref=f21e24]: "By the end: Explain why ML can be confidently wrong and name one safeguard against it."
+          - generic [ref=f21e25]:
+            - generic [ref=f21e26]: Byte · 5 min
+            - generic [ref=f21e27]: 1 questions
+            - generic [ref=f21e28]: +XP on complete
+        - generic [ref=f21e30]:
+          - generic [ref=f21e32]:
+            - heading "When ML gets it wrong" [level=2] [ref=f21e33]
+            - paragraph [ref=f21e34]: It's powerful — and it makes mistakes. Here's how to think about both.
+          - figure "① ML can be confidently wrong — three real cases" [ref=f21e36]:
+            - generic [ref=f21e38]:
+              - generic [ref=f21e40]:
+                - img [ref=f21e42]:
+                  - generic [ref=f21e44]: STOP
+                - generic [ref=f21e45]: Misread sign
+                - paragraph [ref=f21e46]: a self-driving system misses a dented stop sign
+              - generic [ref=f21e48]:
+                - generic [ref=f21e54]: Odd recommendation
+                - paragraph [ref=f21e55]: you get suggested something unrelated
+              - generic [ref=f21e57]:
+                - generic [ref=f21e65]: False face match
+                - paragraph [ref=f21e66]: an innocent person is flagged incorrectly
+          - figure "② Usually it's a gap in the training data" [ref=f21e67]:
+            - generic [ref=f21e69]:
+              - generic [ref=f21e70]:
+                - generic [ref=f21e71]: seen in training
+                - generic [ref=f21e72]:
+                  - img [ref=f21e73]:
+                    - generic [ref=f21e75]: STOP
+                  - img [ref=f21e76]:
+                    - generic [ref=f21e78]: STOP
+                  - img [ref=f21e79]:
+                    - generic [ref=f21e81]: STOP
+                - paragraph [ref=f21e82]: clean signs — handled well
+              - generic [ref=f21e83]:
+                - generic [ref=f21e84]: never seen
+                - img [ref=f21e86]:
+                  - generic [ref=f21e89]: STOP
+                - paragraph [ref=f21e90]: a dented, snowy sign — a guess
+          - figure "③ Careful teams build in safety nets" [ref=f21e91]:
+            - generic [ref=f21e93]:
+              - generic [ref=f21e95]:
+                - generic [ref=f21e96]: "1"
+                - generic [ref=f21e97]: Diverse data
+                - paragraph [ref=f21e98]: train on edge cases, not just the common ones
+              - generic [ref=f21e100]:
+                - generic [ref=f21e101]: "2"
+                - generic [ref=f21e102]: Human review
+                - paragraph [ref=f21e103]: a person checks high-stakes calls
+              - generic [ref=f21e105]:
+                - generic [ref=f21e106]: "3"
+                - generic [ref=f21e107]: Confidence check
+                - paragraph [ref=f21e108]: if unsure, say “I don't know”
+          - paragraph [ref=f21e110]: Trust ML where it's been tested, and keep a human where the stakes are high.
+        - generic [ref=f21e111]:
+          - generic [ref=f21e112]:
+            - generic [ref=f21e113]:
+              - heading "Check yourself" [level=2] [ref=f21e114]
+              - generic [ref=f21e115]:
+                - paragraph [ref=f21e116]: A face-unlock system fails on a person it was never trained on. What’s the most likely cause?
+                - generic [ref=f21e117]:
+                  - button "a The model is broken and must be replaced" [ref=f21e118]:
+                    - generic [ref=f21e119]: a
+                    - text: The model is broken and must be replaced
+                  - button "b A gap in the training data — it never saw similar faces" [ref=f21e120]:
+                    - generic [ref=f21e121]: b
+                    - text: A gap in the training data — it never saw similar faces
+                  - button "c The user is holding the phone wrong" [ref=f21e122]:
+                    - generic [ref=f21e123]: c
+                    - text: The user is holding the phone wrong
+                - button "Check" [disabled] [ref=f21e124]
+            - button "Answer all questions to finish" [disabled] [ref=f21e126]
+          - generic [ref=f21e127]:
+            - paragraph [ref=f21e128]: Application
+            - heading "Spot a likely failure case" [level=2] [ref=f21e129]
+            - paragraph [ref=f21e130]: Name one ML feature you rely on. Describe one input or situation where you’d distrust its output, and one reason your training-data knowledge gives for that doubt.
+        - navigation [ref=f21e131]:
+          - link "← Previous ML you already use every day" [ref=f21e132] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/ml-in-your-phone
+            - generic [ref=f21e133]: ←
+            - generic [ref=f21e134]:
+              - generic [ref=f21e135]: Previous
+              - generic [ref=f21e136]: ML you already use every day
+          - link "Course complete Back to Machine Learning For Layman ✓" [ref=f21e137] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman
+            - generic [ref=f21e138]:
+              - generic [ref=f21e139]: Course complete
+              - generic [ref=f21e140]: Back to Machine Learning For Layman
+            - generic [ref=f21e141]: ✓
+    - contentinfo [ref=f21e142]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f21e143] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f21e149] [cursor=pointer]

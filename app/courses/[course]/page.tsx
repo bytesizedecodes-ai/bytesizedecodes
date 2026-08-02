@@ -1,12 +1,30 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
+import { JsonLd } from "@/components/JsonLd";
 import { allCourseSlugs, courseLessonKey, getCourse } from "@/content/courses";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import { LessonStatus } from "./LessonStatus";
 import { CourseResumeButton } from "./CourseResumeButton";
 
 export function generateStaticParams() {
   return allCourseSlugs().map((course) => ({ course }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ course: string }>;
+}): Promise<Metadata> {
+  const { course: courseSlug } = await params;
+  const course = getCourse(courseSlug);
+  if (!course) return {};
+  return {
+    title: course.title,
+    description: course.subtitle,
+    alternates: { canonical: `/courses/${courseSlug}` },
+  };
 }
 
 export default async function CourseIndexPage({
@@ -20,14 +38,35 @@ export default async function CourseIndexPage({
 
   return (
     <Shell active={`/courses/${courseSlug}`}>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: course.title,
+          description: course.subtitle,
+          provider: {
+            "@type": "EducationalOrganization",
+            name: SITE_NAME,
+            url: absoluteUrl("/"),
+          },
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "online",
+            courseWorkload: `PT${course.lessons.reduce(
+              (sum, lesson) => sum + (lesson.minutes ?? 5),
+              0,
+            )}M`,
+          },
+        }}
+      />
       <div className="mx-auto max-w-3xl">
-        <Link href="/learn" className="text-sm text-ink-faint hover:text-ink-soft">
+        <Link href="/courses" className="text-sm text-ink-faint hover:text-ink-soft">
           ← All courses
         </Link>
 
         <header className="mt-4 flex flex-col gap-2">
-          <p className="text-sm font-medium uppercase tracking-wide text-brand">
-            Course
+          <p className="text-sm font-medium capitalize tracking-wide text-brand">
+            Course · {course.domain} · {course.level}
           </p>
           <h1 className="text-3xl font-semibold tracking-tight text-ink">
             {course.title}

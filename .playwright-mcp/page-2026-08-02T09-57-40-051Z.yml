@@ -1,0 +1,91 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "ByteSizeDecodes" [ref=e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e6]: BSD
+        - navigation "Primary navigation" [ref=e10]:
+          - link "Today" [ref=e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Build" [ref=e13] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=e14] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=e15] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - generic [ref=e19]: Visual, active, built for your goal
+          - heading "Learn AI visually. Practise it. Build something real." [level=1] [ref=e20]: Learn AI visually.Practise it. Build something real.
+          - paragraph [ref=e21]: Short visual lessons, intelligent practice, and real project thinking for anyone curious about AI—from first concepts to your first useful product.
+          - generic [ref=e22]:
+            - link "Find my learning path" [ref=e23] [cursor=pointer]:
+              - /url: /onboarding
+            - link "Explore lessons" [ref=e26] [cursor=pointer]:
+              - /url: /learn
+          - paragraph [ref=e27]: Start anonymously. Choose a goal in under a minute. No account required.
+        - generic [ref=e31]:
+          - paragraph [ref=e32]: Today · 9 minutes
+          - heading "Understand why accuracy can lie" [level=2] [ref=e33]
+          - generic [ref=e34]:
+            - generic [ref=e35]:
+              - generic [ref=e36]: "1"
+              - generic [ref=e37]: Recall
+              - generic [ref=e38]: 2 due concepts
+            - generic [ref=e39]:
+              - generic [ref=e40]: "2"
+              - generic [ref=e41]: Practise
+              - generic [ref=e42]: one generated case
+            - generic [ref=e43]:
+              - generic [ref=e44]: "3"
+              - generic [ref=e45]: Apply
+              - generic [ref=e46]: choose a metric
+          - paragraph [ref=e49]: Small steps. Durable skill.
+      - generic [ref=e50]:
+        - generic [ref=e51]:
+          - paragraph [ref=e52]: Choose your outcome
+          - heading "One skill graph. A path that fits you." [level=2] [ref=e53]
+        - generic [ref=e54]:
+          - link [ref=e55] [cursor=pointer]:
+            - /url: /onboarding?goal=beginner
+            - heading "Understand AI clearly" [level=3] [ref=e59]
+            - paragraph [ref=e60]: Build confident AI literacy without jargon or a coding prerequisite.
+            - generic [ref=e61]: Start here
+          - link [ref=e64] [cursor=pointer]:
+            - /url: /onboarding?goal=grad
+            - heading "Build technical skills" [level=3] [ref=e69]
+            - paragraph [ref=e70]: Move from concepts to Python, ML practice, and portfolio-ready proof.
+            - generic [ref=e71]: Start here
+          - link [ref=e74] [cursor=pointer]:
+            - /url: /onboarding?goal=engineer
+            - heading "Prepare for an AI/ML role" [level=3] [ref=e80]
+            - paragraph [ref=e81]: Learn the models, evaluation, and system choices relevant to your role.
+            - generic [ref=e82]: Start here
+          - link [ref=e85] [cursor=pointer]:
+            - /url: /onboarding?goal=founder
+            - heading "Launch an AI product" [level=3] [ref=e99]
+            - paragraph [ref=e100]: Validate the problem, evaluate the system, and build the smallest useful MVP.
+            - generic [ref=e101]: Start here
+      - generic [ref=e104]:
+        - generic [ref=e105]:
+          - paragraph [ref=e106]: "01"
+          - heading "See it clearly" [level=2] [ref=e107]
+          - paragraph [ref=e108]: Visual explanations turn abstract AI ideas into concrete mental models.
+        - generic [ref=e109]:
+          - paragraph [ref=e110]: "02"
+          - heading "Practise the hard parts" [level=2] [ref=e111]
+          - paragraph [ref=e112]: Generated problems adapt the scenario while targeted feedback repairs misconceptions.
+        - generic [ref=e113]:
+          - paragraph [ref=e114]: "03"
+          - heading "Remember and apply" [level=2] [ref=e115]
+          - paragraph [ref=e116]: Spaced review brings ideas back before they fade, then connects them to a useful decision.
+    - contentinfo [ref=e117]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=e118] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=e124] [cursor=pointer]

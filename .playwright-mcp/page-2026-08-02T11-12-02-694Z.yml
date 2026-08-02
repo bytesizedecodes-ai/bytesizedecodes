@@ -1,0 +1,138 @@
+- generic [active] [ref=f15e1]:
+  - generic [ref=f15e2]:
+    - banner [ref=f15e3]:
+      - generic [ref=f15e4]:
+        - link "ByteSizeDecodes" [ref=f15e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f15e6]: BSD
+        - navigation "Primary navigation" [ref=f15e10]:
+          - link "Today" [ref=f15e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f15e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f15e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f15e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f15e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f15e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f15e17]:
+      - generic [ref=f15e18]:
+        - link "← Machine Learning for Layman" [ref=f15e19] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f15e20]:
+          - paragraph [ref=f15e21]: Lesson 14 of 14 · Machine Learning for Layman
+          - heading "Which split is best?" [level=1] [ref=f15e22]
+          - paragraph [ref=f15e23]: The best question is the one that leaves each side mostly one class.
+          - paragraph [ref=f15e24]: "By the end: Judge a good split as one whose branches are mostly pure."
+          - generic [ref=f15e25]:
+            - generic [ref=f15e26]: Byte · 5 min
+            - generic [ref=f15e27]: 1 questions
+            - generic [ref=f15e28]: +XP on complete
+        - generic [ref=f15e30]:
+          - generic [ref=f15e32]:
+            - heading "Which split is best?" [level=2] [ref=f15e33]
+            - paragraph [ref=f15e34]: The best question is the one that leaves each answer mostly decided
+          - figure "① After a split, we want each side to be mostly one class" [ref=f15e36]:
+            - generic [ref=f15e38]:
+              - generic [ref=f15e39]:
+                - generic [ref=f15e40]: pure side
+                - generic [ref=f15e41]:
+                  - generic [ref=f15e42]: "yes"
+                  - generic [ref=f15e43]: "yes"
+                  - generic [ref=f15e44]: "yes"
+                  - generic [ref=f15e45]: "yes"
+                - paragraph [ref=f15e46]: all the same — decided
+              - generic [ref=f15e47]:
+                - generic [ref=f15e48]: mixed side
+                - generic [ref=f15e49]:
+                  - generic [ref=f15e50]: "yes"
+                  - generic [ref=f15e51]: "no"
+                  - generic [ref=f15e52]: "yes"
+                  - generic [ref=f15e53]: "no"
+                - paragraph [ref=f15e54]: still unsure
+          - figure "② Compare two candidate questions — pick the purer one" [ref=f15e55]:
+            - generic [ref=f15e57]:
+              - generic [ref=f15e59]:
+                - generic [ref=f15e60]:
+                  - generic [ref=f15e61]: question
+                  - text: split on "windy"?
+                  - generic [ref=f15e62]: mixed
+                - generic [ref=f15e63]:
+                  - generic [ref=f15e64]:
+                    - generic [ref=f15e65]: not windy
+                    - generic [ref=f15e66]:
+                      - generic [ref=f15e67]: "yes"
+                      - generic [ref=f15e68]: "no"
+                      - generic [ref=f15e69]: "yes"
+                      - generic [ref=f15e70]: "no"
+                  - generic [ref=f15e71]:
+                    - generic [ref=f15e72]: windy
+                    - generic [ref=f15e73]:
+                      - generic [ref=f15e74]: "no"
+                      - generic [ref=f15e75]: "yes"
+                      - generic [ref=f15e76]: "no"
+                      - generic [ref=f15e77]: "yes"
+              - generic [ref=f15e79]:
+                - generic [ref=f15e80]:
+                  - generic [ref=f15e81]: question
+                  - text: split on "humidity"?
+                  - generic [ref=f15e82]: pure
+                - generic [ref=f15e83]:
+                  - generic [ref=f15e84]:
+                    - generic [ref=f15e85]: high humidity
+                    - generic [ref=f15e86]:
+                      - generic [ref=f15e87]: "no"
+                      - generic [ref=f15e88]: "no"
+                      - generic [ref=f15e89]: "no"
+                      - generic [ref=f15e90]: "no"
+                  - generic [ref=f15e91]:
+                    - generic [ref=f15e92]: normal humidity
+                    - generic [ref=f15e93]:
+                      - generic [ref=f15e94]: "yes"
+                      - generic [ref=f15e95]: "yes"
+                      - generic [ref=f15e96]: "yes"
+                      - generic [ref=f15e97]: "yes"
+          - figure "③ The tree picks the feature that makes the purest split" [ref=f15e98]:
+            - paragraph [ref=f15e101]: Try every feature, measure how pure each split is, choose the purest. Repeat for each branch.
+            - paragraph [ref=f15e102]: That measure of purity is called information gain — the math behind it just counts the mixing.
+          - paragraph [ref=f15e104]: The best split is the one that untangles the classes — no formula needed to see why.
+        - generic [ref=f15e106]:
+          - generic [ref=f15e107]:
+            - heading "Check yourself" [level=2] [ref=f15e108]
+            - generic [ref=f15e109]:
+              - paragraph [ref=f15e110]: One split leaves both sides evenly mixed (yes/no). Another leaves each side all-yes or all-no. Which does the tree prefer?
+              - generic [ref=f15e111]:
+                - button "a The mixed one — more information" [ref=f15e112]:
+                  - generic [ref=f15e113]: a
+                  - text: The mixed one — more information
+                - button "b The pure one — each side is decided" [ref=f15e114]:
+                  - generic [ref=f15e115]: b
+                  - text: The pure one — each side is decided
+                - button "c Either — purity does not matter" [ref=f15e116]:
+                  - generic [ref=f15e117]: c
+                  - text: Either — purity does not matter
+              - button "Check" [disabled] [ref=f15e118]
+          - button "Answer all questions to finish" [disabled] [ref=f15e120]
+        - navigation [ref=f15e121]:
+          - 'link "← Previous Rules as a tree: the decision tree" [ref=f15e122] [cursor=pointer]':
+            - /url: /courses/machine-learning-for-layman/decision-tree-rules
+            - generic [ref=f15e123]: ←
+            - generic [ref=f15e124]:
+              - generic [ref=f15e125]: Previous
+              - generic [ref=f15e126]: "Rules as a tree: the decision tree"
+          - link "Course complete Back to Machine Learning For Layman ✓" [ref=f15e127] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman
+            - generic [ref=f15e128]:
+              - generic [ref=f15e129]: Course complete
+              - generic [ref=f15e130]: Back to Machine Learning For Layman
+            - generic [ref=f15e131]: ✓
+    - contentinfo [ref=f15e132]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f15e133] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f15e139] [cursor=pointer]
+  - alert [ref=f15e143]

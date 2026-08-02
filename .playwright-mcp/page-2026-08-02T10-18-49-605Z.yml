@@ -1,0 +1,86 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e2]:
+    - banner [ref=f5e3]:
+      - generic [ref=f5e4]:
+        - link "ByteSizeDecodes" [ref=f5e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f5e6]: BSD
+        - navigation "Primary navigation" [ref=f5e10]:
+          - link "Today" [ref=f5e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f5e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f5e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f5e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f5e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f5e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f5e17]:
+      - generic [ref=f5e18]:
+        - generic [ref=f5e20]:
+          - paragraph [ref=f5e21]: Courses
+          - heading "Find your next course" [level=1] [ref=f5e22]
+          - paragraph [ref=f5e23]: Visual lessons, active checks, and saved progress across Machine Learning, Cybersecurity, and AI. Filter by field and level, follow /learn's pick, or explore on your own.
+        - generic [ref=f5e25]:
+          - generic [ref=f5e26]:
+            - generic [ref=f5e27]:
+              - generic [ref=f5e28]: Domain
+              - button "All" [pressed] [ref=f5e29]
+              - button "Machine Learning" [ref=f5e30]
+              - button "Cybersecurity" [ref=f5e31]
+              - button "Artificial Intelligence" [ref=f5e32]
+            - generic [ref=f5e33]:
+              - generic [ref=f5e34]: Level
+              - button "All" [pressed] [ref=f5e35]
+              - button "beginner" [ref=f5e36]
+              - button "intermediate" [ref=f5e37]
+              - button "expert" [ref=f5e38]
+          - generic [ref=f5e39]: 2 courses
+          - generic [ref=f5e40]:
+            - link "Matches your path intermediate Machine Learning Machine Learning AI, machine learning, and deep learning — connected clearly. 4 lessons · ~18 min Not started 0% Start course" [ref=f5e124] [cursor=pointer]:
+              - /url: /courses/machine-learning
+              - generic [ref=f5e126]:
+                - generic [ref=f5e127]: Matches your path
+                - generic [ref=f5e131]: intermediate
+              - paragraph [ref=f5e132]: Machine Learning
+              - heading "Machine Learning" [level=2] [ref=f5e133]
+              - paragraph [ref=f5e134]: AI, machine learning, and deep learning — connected clearly.
+              - generic [ref=f5e135]:
+                - generic [ref=f5e136]: 4 lessons
+                - generic [ref=f5e137]: ·
+                - generic [ref=f5e141]: ~18 min
+              - generic [ref=f5e143]:
+                - generic [ref=f5e144]: Not started
+                - generic [ref=f5e145]: 0%
+              - generic [ref=f5e147]: Start course
+            - link "Matches your path beginner Artificial Intelligence Machine Learning for Layman Start with pictures and everyday decisions — no maths or jargon required. 5 lessons · ~19 min Not started 0% Start course" [ref=f5e150] [cursor=pointer]:
+              - /url: /courses/machine-learning-for-layman
+              - generic [ref=f5e152]:
+                - generic [ref=f5e153]: Matches your path
+                - generic [ref=f5e157]: beginner
+              - paragraph [ref=f5e158]: Artificial Intelligence
+              - heading "Machine Learning for Layman" [level=2] [ref=f5e159]
+              - paragraph [ref=f5e160]: Start with pictures and everyday decisions — no maths or jargon required.
+              - generic [ref=f5e161]:
+                - generic [ref=f5e162]: 5 lessons
+                - generic [ref=f5e163]: ·
+                - generic [ref=f5e167]: ~19 min
+              - generic [ref=f5e169]:
+                - generic [ref=f5e170]: Not started
+                - generic [ref=f5e171]: 0%
+              - generic [ref=f5e173]: Start course
+        - paragraph [ref=f5e55]:
+          - text: Not sure where to start?
+          - link "Let /learn pick" [ref=f5e56] [cursor=pointer]:
+            - /url: /learn
+          - text: based on your current level.
+    - contentinfo [ref=f5e57]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f5e58] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f5e64] [cursor=pointer]
+  - alert [ref=f5e68]

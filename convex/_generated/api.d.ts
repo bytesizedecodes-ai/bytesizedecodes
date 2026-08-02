@@ -8,9 +8,12 @@
  * @module
  */
 
+import type * as admin_mutations from "../admin/mutations.js";
+import type * as admin_queries from "../admin/queries.js";
 import type * as auth from "../auth.js";
 import type * as crons from "../crons.js";
 import type * as http from "../http.js";
+import type * as lib_admin from "../lib/admin.js";
 import type * as lib_dailyPlan from "../lib/dailyPlan.js";
 import type * as lib_day from "../lib/day.js";
 import type * as lib_getUser from "../lib/getUser.js";
@@ -31,9 +34,12 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "admin/mutations": typeof admin_mutations;
+  "admin/queries": typeof admin_queries;
   auth: typeof auth;
   crons: typeof crons;
   http: typeof http;
+  "lib/admin": typeof lib_admin;
   "lib/dailyPlan": typeof lib_dailyPlan;
   "lib/day": typeof lib_day;
   "lib/getUser": typeof lib_getUser;

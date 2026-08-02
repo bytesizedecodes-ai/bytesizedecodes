@@ -1,0 +1,185 @@
+- generic [active] [ref=f13e1]:
+  - generic [ref=f13e2]:
+    - banner [ref=f13e3]:
+      - link "ByteSizeDecodes" [ref=f13e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f13e6]: BSD
+    - main [ref=f13e10]:
+      - generic [ref=f13e11]:
+        - link "← Machine Learning" [ref=f13e12] [cursor=pointer]:
+          - /url: /courses/machine-learning
+        - generic [ref=f13e13]:
+          - paragraph [ref=f13e14]: Lesson 1 of 4 · Machine Learning
+          - heading "What is Artificial Intelligence?" [level=1] [ref=f13e15]
+          - paragraph [ref=f13e16]: What makes a machine intelligent — and what doesn't.
+          - paragraph [ref=f13e17]: "By the end: Distinguish adaptive AI systems from fixed-rule software."
+          - generic [ref=f13e18]:
+            - generic [ref=f13e19]: Byte · 4 min
+            - generic [ref=f13e20]: 3 questions
+            - generic [ref=f13e21]: +XP on complete
+        - generic [ref=f13e23]:
+          - paragraph [ref=f13e24]: Predict before you look
+          - paragraph [ref=f13e25]: "Before the visual: which machine is acting more 'intelligently'?"
+          - list [ref=f13e26]:
+            - listitem [ref=f13e27]:
+              - button "A microwave with fixed cook times" [ref=f13e28]
+            - listitem [ref=f13e29]:
+              - button "A recommendation system that changes after your clicks" [ref=f13e30]
+            - listitem [ref=f13e31]:
+              - button "A wall clock that always ticks the same way" [ref=f13e32]
+        - generic [ref=f13e34]:
+          - generic [ref=f13e36]:
+            - heading "What is Artificial Intelligence?" [level=2] [ref=f13e37]
+            - paragraph [ref=f13e38]: The branch of CS that builds machines which can think
+          - generic [ref=f13e41]:
+            - generic [ref=f13e42]: 🤖
+            - paragraph [ref=f13e43]:
+              - strong [ref=f13e44]: Artificial Intelligence
+              - text: is a branch of Computer Science concerned with building machines that are
+              - strong [ref=f13e45]: smart & intelligent
+              - text: — ones that can reason, learn, and decide like a human would.
+          - generic [ref=f13e46]:
+            - generic [ref=f13e48]:
+              - generic [ref=f13e49]:
+                - heading "Non-intelligent Machines" [level=3] [ref=f13e50]
+                - paragraph [ref=f13e51]: They follow instructions — nothing more
+              - list [ref=f13e52]:
+                - listitem [ref=f13e53]:
+                  - generic [ref=f13e54]: ✕
+                  - text: Do only what they're programmed to
+                - listitem [ref=f13e55]:
+                  - generic [ref=f13e56]: ✕
+                  - text: Can't learn from new data on their own
+                - listitem [ref=f13e57]:
+                  - generic [ref=f13e58]: ✕
+                  - text: Same input → same output, always
+                - listitem [ref=f13e59]:
+                  - generic [ref=f13e60]: ✕
+                  - text: No understanding, no reasoning
+              - generic [ref=f13e61]:
+                - generic [ref=f13e62]: Calculator
+                - generic [ref=f13e63]: Washing machine
+                - generic [ref=f13e64]: Plain software
+            - generic [ref=f13e66]:
+              - generic [ref=f13e67]:
+                - heading "Intelligent Machines" [level=3] [ref=f13e68]
+                - paragraph [ref=f13e69]: They think, learn, and adapt
+              - list [ref=f13e70]:
+                - listitem [ref=f13e71]:
+                  - generic [ref=f13e72]: ✓
+                  - text: Learn from data & experience
+                - listitem [ref=f13e73]:
+                  - generic [ref=f13e74]: ✓
+                  - text: Reason and make decisions
+                - listitem [ref=f13e75]:
+                  - generic [ref=f13e76]: ✓
+                  - text: Understand language, images, speech
+                - listitem [ref=f13e77]:
+                  - generic [ref=f13e78]: ✓
+                  - text: Improve without being reprogrammed
+              - generic [ref=f13e79]:
+                - generic [ref=f13e80]: ChatGPT
+                - generic [ref=f13e81]: Face unlock
+                - generic [ref=f13e82]: Self-driving cars
+                - generic [ref=f13e83]: Recommendations
+          - generic [ref=f13e84]:
+            - generic [ref=f13e85]:
+              - generic [ref=f13e86]: 🧠
+              - heading "Think" [level=3] [ref=f13e87]
+              - paragraph [ref=f13e88]: Reason through problems the way a person would.
+            - generic [ref=f13e89]:
+              - generic [ref=f13e90]: 📚
+              - heading "Learn" [level=3] [ref=f13e91]
+              - paragraph [ref=f13e92]: Pick up patterns from data instead of explicit rules.
+            - generic [ref=f13e93]:
+              - generic [ref=f13e94]: 🎯
+              - heading "Act" [level=3] [ref=f13e95]
+              - paragraph [ref=f13e96]: Make smart decisions to reach a goal.
+        - generic [ref=f13e97]:
+          - generic [ref=f13e98]:
+            - paragraph [ref=f13e99]: Artificial Intelligence is the branch of computer science that tries to build machines which can act intelligently — reason, learn, perceive, and decide — instead of only executing fixed instructions.
+            - paragraph [ref=f13e100]: "The key divide is between a machine that follows rules and one that figures things out. A calculator is not intelligent: the same input always yields the same output, and it never adapts. A spam filter that improves as it sees more email is."
+            - paragraph [ref=f13e101]: AI is the broadest label. Everything underneath it — machine learning, deep learning, large language models — is a technique for reaching that goal. Think of AI as the destination, and ML/DL as vehicles for getting there.
+          - generic [ref=f13e102]:
+            - generic [ref=f13e103]:
+              - heading "Check yourself" [level=2] [ref=f13e104]
+              - generic [ref=f13e105]:
+                - paragraph [ref=f13e106]: Which of these is the clearest example of an intelligent (non-dumb) machine?
+                - generic [ref=f13e107]:
+                  - button "a A washing machine with 12 preset cycles" [ref=f13e108]:
+                    - generic [ref=f13e109]: a
+                    - text: A washing machine with 12 preset cycles
+                  - button "b An email spam filter that improves as it sees more mail" [ref=f13e110]:
+                    - generic [ref=f13e111]: b
+                    - text: An email spam filter that improves as it sees more mail
+                  - button "c A calculator that always returns the exact same answer" [ref=f13e112]:
+                    - generic [ref=f13e113]: c
+                    - text: A calculator that always returns the exact same answer
+                  - button "d A digital clock" [ref=f13e114]:
+                    - generic [ref=f13e115]: d
+                    - text: A digital clock
+                - button "Check" [disabled] [ref=f13e116]
+              - generic [ref=f13e117]:
+                - paragraph [ref=f13e118]: "AI, ML, and DL are best described as:"
+                - generic [ref=f13e119]:
+                  - button "a Three unrelated fields that happen to sound similar" [ref=f13e120]:
+                    - generic [ref=f13e121]: a
+                    - text: Three unrelated fields that happen to sound similar
+                  - button "b Three names for the exact same thing" [ref=f13e122]:
+                    - generic [ref=f13e123]: b
+                    - text: Three names for the exact same thing
+                  - 'button "c Nested: DL is a subset of ML, which is a subset of AI" [ref=f13e124]':
+                    - generic [ref=f13e125]: c
+                    - text: "Nested: DL is a subset of ML, which is a subset of AI"
+                  - button "d Competing products from different companies" [ref=f13e126]:
+                    - generic [ref=f13e127]: d
+                    - text: Competing products from different companies
+                - button "Check" [disabled] [ref=f13e128]
+              - generic [ref=f13e129]:
+                - paragraph [ref=f13e130]: "A traditional program where 'same input → same output, always' is:"
+                - generic [ref=f13e131]:
+                  - button "a Intelligent, because it's deterministic" [ref=f13e132]:
+                    - generic [ref=f13e133]: a
+                    - text: Intelligent, because it's deterministic
+                  - button "b Non-intelligent — it cannot learn or adapt" [ref=f13e134]:
+                    - generic [ref=f13e135]: b
+                    - text: Non-intelligent — it cannot learn or adapt
+                  - button "c A neural network" [ref=f13e136]:
+                    - generic [ref=f13e137]: c
+                    - text: A neural network
+                  - button "d An example of deep learning" [ref=f13e138]:
+                    - generic [ref=f13e139]: d
+                    - text: An example of deep learning
+                - button "Check" [disabled] [ref=f13e140]
+            - button "Answer all questions to finish" [disabled] [ref=f13e142]
+          - generic [ref=f13e143]:
+            - paragraph [ref=f13e144]: Application
+            - heading "Spot adaptive systems around you" [level=2] [ref=f13e145]
+            - paragraph [ref=f13e146]: "List two apps you use daily. For each, write one sentence: does it follow fixed rules, or does it change from your behaviour? If you're unsure, name what evidence would convince you."
+        - navigation [ref=f13e147]:
+          - link "Next What is Machine Learning? →" [ref=f13e148] [cursor=pointer]:
+            - /url: /courses/machine-learning/what-is-machine-learning
+            - generic [ref=f13e149]:
+              - generic [ref=f13e150]: Next
+              - generic [ref=f13e151]: What is Machine Learning?
+            - generic [ref=f13e152]: →
+    - contentinfo [ref=f13e153]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f13e154] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+    - navigation "Primary navigation" [ref=f13e155]:
+      - link "Today" [ref=f13e156] [cursor=pointer]:
+        - /url: /today
+      - link "Learn" [ref=f13e159] [cursor=pointer]:
+        - /url: /learn
+      - link "Courses" [ref=f13e162] [cursor=pointer]:
+        - /url: /courses
+      - link "Build" [ref=f13e165] [cursor=pointer]:
+        - /url: /build
+      - link "Progress" [ref=f13e170] [cursor=pointer]:
+        - /url: /progress
+      - link "Profile" [ref=f13e173] [cursor=pointer]:
+        - /url: /profile
+  - button "Open Next.js Dev Tools" [ref=f13e182] [cursor=pointer]
+  - alert [ref=f13e186]

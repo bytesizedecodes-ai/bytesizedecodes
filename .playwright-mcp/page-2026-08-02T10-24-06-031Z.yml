@@ -1,0 +1,53 @@
+- generic [active] [ref=f15e1]:
+  - generic [ref=f15e2]:
+    - banner [ref=f15e3]:
+      - generic [ref=f15e4]:
+        - link "ByteSizeDecodes" [ref=f15e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f15e6]: BSD
+        - navigation "Primary navigation" [ref=f15e10]:
+          - link "Today" [ref=f15e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f15e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f15e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f15e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f15e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f15e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f15e17]:
+      - generic [ref=f15e18]:
+        - generic [ref=f15e20]:
+          - paragraph [ref=f15e21]: Courses
+          - heading "Find your next course" [level=1] [ref=f15e22]
+          - paragraph [ref=f15e23]: Visual lessons, active checks, and saved progress across Machine Learning, Cybersecurity, and AI. Filter by field and level, follow /learn's pick, or explore on your own.
+        - generic [ref=f15e25]:
+          - generic [ref=f15e26]:
+            - generic [ref=f15e27]:
+              - generic [ref=f15e28]: Domain
+              - button "All" [pressed] [ref=f15e29]
+              - button "Machine Learning" [ref=f15e30]
+              - button "Cybersecurity" [ref=f15e31]
+              - button "Artificial Intelligence" [ref=f15e32]
+            - generic [ref=f15e33]:
+              - generic [ref=f15e34]: Level
+              - button "All" [pressed] [ref=f15e35]
+              - button "beginner" [ref=f15e36]
+              - button "intermediate" [ref=f15e37]
+              - button "expert" [ref=f15e38]
+          - generic [ref=f15e39]: 2 courses
+        - paragraph [ref=f15e55]:
+          - text: Not sure where to start?
+          - link "Let /learn pick" [ref=f15e56] [cursor=pointer]:
+            - /url: /learn
+          - text: based on your current level.
+    - contentinfo [ref=f15e57]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f15e58] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f15e64] [cursor=pointer]
+  - alert [ref=f15e68]

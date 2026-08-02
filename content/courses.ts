@@ -42,6 +42,32 @@ export type Lesson = {
   application?: { title: string; prompt: string };
 };
 
+/**
+ * Skill depth of a course, used for browse/filter on `/courses`.
+ *
+ * Note: this is a *skill-level* axis (how technical the material is), distinct
+ * from the `trackPriority` persona axis in `catalog.ts` (beginner/grad/
+ * engineer/founder, which drives `/learn`'s recommendation). The two are
+ * intentionally separate — do not conflate them.
+ */
+export type CourseLevel = "beginner" | "intermediate" | "expert";
+
+/**
+ * Top-level field a course belongs to. Drives the domain filter on `/courses`.
+ * Add a new value here when you introduce a new field of study.
+ */
+export type CourseDomain = "Machine Learning" | "Cybersecurity" | "Artificial Intelligence";
+
+/** Ordered list of levels, for filter UIs. */
+export const COURSE_LEVELS: readonly CourseLevel[] = ["beginner", "intermediate", "expert"];
+
+/** Ordered list of domains, for filter UIs. */
+export const COURSE_DOMAINS: readonly CourseDomain[] = [
+  "Machine Learning",
+  "Cybersecurity",
+  "Artificial Intelligence",
+];
+
 export type Course = {
   /** URL segment under `/courses/`. */
   slug: string;
@@ -49,16 +75,22 @@ export type Course = {
   subtitle: string;
   /** Optional longer description for the course landing page. */
   description?: string;
+  /** Skill depth — drives the level filter and badge on `/courses`. */
+  level: CourseLevel;
+  /** Field of study — drives the domain filter and grouping on `/courses`. */
+  domain: CourseDomain;
   lessons: Lesson[];
 };
 
 export const COURSES: readonly Course[] = [
   {
     slug: "machine-learning",
-    title: "AI Foundations: Core Concepts",
+    title: "Machine Learning",
     subtitle: "AI, machine learning, and deep learning — connected clearly.",
     description:
       "A visual path through the concepts every AI learner needs. Each lesson combines an infographic, a concise explanation, an active check, and saved progress.",
+    level: "intermediate",
+    domain: "Machine Learning",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
@@ -398,11 +430,13 @@ for task, expected in cases:
   },
   {
     slug: "machine-learning-for-layman",
-    title: "AI Foundations: Visual Start",
+    title: "Machine Learning for Layman",
     subtitle:
       "Start with pictures and everyday decisions — no maths or jargon required.",
     description:
       "A picture-led path through what learning and machine learning actually mean. Every lesson ends with one small active check so the idea becomes more than something you scrolled past.",
+    level: "beginner",
+    domain: "Machine Learning",
     lessons: [
       {
         slug: "how-humans-learn",
@@ -412,6 +446,19 @@ for task, expected in cases:
         skillIds: ["ai-literacy"],
         capability: "Explain learning as using experience to improve a future decision.",
         minutes: 3,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a child has never seen a bike. You show them three, each labelled ‘bike’. Next time they see a new one, what’s most likely?",
+          choices: [
+            { id: "a", label: "They recognise it as a bike" },
+            { id: "b", label: "They still have no idea" },
+            { id: "c", label: "They forget everything" },
+          ],
+          answer: "a",
+          explanation:
+            "Experience with examples is what turns ‘no idea’ into recognition — that’s the core of learning, for humans and machines alike.",
+        },
         questions: [
           {
             id: "q1",
@@ -460,6 +507,19 @@ for task, expected in cases:
         skillIds: ["ai-literacy", "learning-paradigms"],
         capability: "Describe machine learning as finding useful patterns in examples.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: to make a machine recognise cars, who works out the detailed rule for ‘what is a car’?",
+          choices: [
+            { id: "a", label: "A programmer writes every rule by hand" },
+            { id: "b", label: "The machine figures it out from examples" },
+            { id: "c", label: "Nobody — it happens by accident" },
+          ],
+          answer: "b",
+          explanation:
+            "That hand-off — the programmer gives examples, the machine finds the rule — is the whole idea of machine learning.",
+        },
         questions: [
           {
             id: "q1",
@@ -484,6 +544,19 @@ for task, expected in cases:
         skillIds: ["learning-paradigms"],
         capability: "Choose supervised, unsupervised, or reinforcement learning for a simple task.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a robot learns to win a game by getting points for good moves and losing points for bad ones. Does it need labelled examples of ‘correct moves’?",
+          choices: [
+            { id: "a", label: "Yes — it needs someone to label each move" },
+            { id: "b", label: "No — the points are enough feedback" },
+            { id: "c", label: "It needs both" },
+          ],
+          answer: "b",
+          explanation:
+            "Learning from reward/penalty without labelled answers is its own family — reinforcement learning. The picture ahead shows all three families side by side.",
+        },
         questions: [
           {
             id: "q1",
@@ -521,6 +594,485 @@ for task, expected in cases:
             answer: "b",
             explanation:
               "A continuous numeric output such as price makes this supervised regression.",
+          },
+        ],
+        application: {
+          title: "Spot supervised learning around you",
+          prompt:
+            "Name two predictions an app makes for you (a price, a label, a yes/no). For each, write what the labelled ‘answers’ in its training data might have been.",
+        },
+      },
+      {
+        slug: "unsupervised-learning-deep-dive",
+        title: "Inside unsupervised learning",
+        blurb: "No labels → the algorithm finds its own groups and patterns.",
+        topic: "layman-paradigms",
+        skillIds: ["unsupervised-learning", "learning-paradigms"],
+        capability: "Recognize that unsupervised learning finds structure without labels.",
+        minutes: 5,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A store groups shoppers by buying habits, with no pre-assigned labels. Which family is this?",
+            choices: [
+              { id: "a", label: "Supervised, because shoppers are categorised" },
+              { id: "b", label: "Unsupervised, because no labels were given" },
+              { id: "c", label: "Reinforcement, because habits change over time" },
+            ],
+            answer: "b",
+            explanation:
+              "With no ground-truth labels, discovering groups (clustering) is unsupervised learning.",
+          },
+        ],
+        application: {
+          title: "Find a cluster in your day",
+          prompt:
+            "Think of the people or items around you. Describe one group that ‘belongs together’ by behaviour or habit — with nobody having assigned the labels. That grouping is unsupervised.",
+        },
+      },
+      {
+        slug: "reinforcement-learning-deep-dive",
+        title: "Inside reinforcement learning",
+        blurb: "Agent → action → reward or penalty → a better strategy.",
+        topic: "layman-paradigms",
+        skillIds: ["reinforcement-learning", "learning-paradigms"],
+        capability: "Recognize trial-and-error learning guided by reward.",
+        minutes: 5,
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A robot learns to walk by being rewarded for staying upright longer. Which family is this?",
+            choices: [
+              { id: "a", label: "Supervised, because it improves over time" },
+              { id: "b", label: "Unsupervised, because there is no teacher" },
+              { id: "c", label: "Reinforcement, because it learns from reward" },
+            ],
+            answer: "c",
+            explanation:
+              "Learning a sequence of actions from reward/penalty feedback is reinforcement learning.",
+          },
+        ],
+        application: {
+          title: "Notice reward-shaped learning",
+          prompt:
+            "Name one game, app, or habit of yours that gives you points or streaks. Write one sentence: what ‘move’ does it reward, and what did you learn to do more of?",
+        },
+      },
+      {
+        slug: "features-and-vectors",
+        title: "Representing samples as features",
+        blurb: "Turn a real object into numbers a machine can read — and keep only useful features.",
+        topic: "layman-first-model",
+        skillIds: ["feature-engineering", "supervised-learning"],
+        capability: "Represent an object as a feature vector and spot useless features.",
+        minutes: 5,
+        prose: [
+          "A machine can’t ‘see’ a car the way you do — it only reads numbers. So the first job is to describe each object with measurable features: number of wheels, height, weight, colour.",
+          "One object becomes a list of values, called a vector. The whole learning step that follows depends on this translation being right.",
+          "Not every feature helps. A feature only earns its place if it separates the classes — colour doesn’t, because cars and bikes come in every colour.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: to teach a machine to tell cars from bikes, which feature would be least helpful?",
+          choices: [
+            { id: "a", label: "Number of wheels" },
+            { id: "b", label: "Height" },
+            { id: "c", label: "Paint colour" },
+          ],
+          answer: "c",
+          explanation:
+            "Cars and bikes come in any colour, so it can’t separate them. The picture ahead turns each object into a list of useful features.",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Classifying car vs. bike, which feature is least useful?",
+            choices: [
+              { id: "a", label: "Number of wheels" },
+              { id: "b", label: "Height" },
+              { id: "c", label: "Color" },
+            ],
+            answer: "c",
+            explanation:
+              "Cars and bikes come in any color, so color does not separate the classes — it's a bad feature.",
+          },
+        ],
+      },
+      {
+        slug: "first-classifier",
+        title: "Your first classifier",
+        blurb: "Count the data → a probability → a simple decision rule.",
+        topic: "layman-first-model",
+        skillIds: ["classification-basics", "supervised-learning"],
+        capability: "Build a classifier by counting outcomes and picking the more likely class.",
+        minutes: 5,
+        prose: [
+          "Once your samples are vectors with labels, you can build your first classifier with nothing more than counting.",
+          "Look at all the 4-wheel examples: if every one is a car, then a new 4-wheel sample is almost certainly a car too. That ‘probability from counting’ is the whole rule.",
+          "Pick the class that’s more likely given the feature, and you have a working classifier — built from scratch, no maths beyond counting.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: in your data, every 4-wheel sample is a car and every 2-wheel sample is a bike. A new sample has 4 wheels. What would you guess?",
+          choices: [
+            { id: "a", label: "Car" },
+            { id: "b", label: "Bike" },
+            { id: "c", label: "Can’t tell" },
+          ],
+          answer: "a",
+          explanation:
+            "You just counted the data and picked the more likely class — that’s exactly what the classifier ahead does, mechanically.",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Every 4-wheel sample in your data is a car, every 2-wheel sample is a bike. A new sample has 2 wheels. What does your classifier say?",
+            choices: [
+              { id: "a", label: "CAR, because it might be" },
+              { id: "b", label: "BIKE, because Pr(BIKE | 2 wheels) = 100%" },
+              { id: "c", label: "Unsure — ask for more features" },
+            ],
+            answer: "b",
+            explanation:
+              "The data says 2 wheels → bike every time (100%), so the rule classifies it as a bike.",
+          },
+        ],
+      },
+      {
+        slug: "multiple-features",
+        title: "When one feature isn’t enough",
+        blurb: "Ambiguity → add a feature → a decision tree of splits.",
+        topic: "layman-first-model",
+        skillIds: ["classification-basics", "feature-engineering", "supervised-learning"],
+        capability: "Resolve an ambiguous classification by adding a second good feature.",
+        minutes: 5,
+        prose: [
+          "A single feature often isn’t enough. Wheel count might leave you 75% sure it’s a bike — better than a coin flip, but not a clean call.",
+          "The fix is to add a second good feature. With height as well as wheel count, a tricky sample that was ambiguous becomes decided.",
+          "Stack several ‘if this, then that’ splits and you get a decision tree — each feature asks a question that narrows the answer further.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Wheel count alone gives a 75/25 split for a sample. What most reliably fixes the ambiguity?",
+            choices: [
+              { id: "a", label: "Collect more samples of the same single feature" },
+              { id: "b", label: "Add a second good feature, like Height" },
+              { id: "c", label: "Remove the wheel-count feature entirely" },
+            ],
+            answer: "b",
+            explanation:
+              "A second informative feature gives the model another way to separate the classes, turning 75/25 into a clean call.",
+          },
+        ],
+      },
+      {
+        slug: "knn-neighbors",
+        title: "Find its neighbors: k-Nearest Neighbors",
+        blurb: "A new sample takes the class most of its closest neighbors belong to.",
+        topic: "layman-classifiers",
+        skillIds: ["k-nearest-neighbors", "classification-basics", "supervised-learning"],
+        capability: "Classify a sample by the majority class among its k nearest neighbors.",
+        minutes: 5,
+        prose: [
+          "Instead of counting the whole dataset, k-Nearest-Neighbors only looks at the samples closest to the new one.",
+          "‘Closest’ means most similar in their features — the same idea as physical nearness, just measured in numbers.",
+          "Take a vote among those k neighbours: whichever class is the majority wins. Simple, and surprisingly effective.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a new sample is surrounded by mostly cars. If you had to guess its class from its neighbours, what would you pick?",
+          choices: [
+            { id: "a", label: "Car — go with the majority nearby" },
+            { id: "b", label: "Bike — go with the minority" },
+            { id: "c", label: "Neither — ignore the neighbours" },
+          ],
+          answer: "a",
+          explanation:
+            "Going with the majority of nearby examples is the k-Nearest-Neighbors idea — the picture ahead shows it visually.",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "With k=5, a new sample’s 5 closest neighbors are 3 cars and 2 bikes. What class does kNN assign?",
+            choices: [
+              { id: "a", label: "Bike, because there are bikes nearby" },
+              { id: "b", label: "Car, because the majority (3 of 5) are cars" },
+              { id: "c", label: "Unsure — ask for more neighbors" },
+            ],
+            answer: "b",
+            explanation:
+              "kNN takes a majority vote among the k closest neighbors; 3 cars beats 2 bikes, so the class is car.",
+          },
+        ],
+      },
+      {
+        slug: "centroid-classifier",
+        title: "The class center: the centroid classifier",
+        blurb: "Each class has a typical member — assign the sample to the nearest center.",
+        topic: "layman-classifiers",
+        skillIds: ["centroid-classifier", "classification-basics", "supervised-learning"],
+        capability: "Classify a sample by comparing it to each class’s average member.",
+        minutes: 5,
+        prose: [
+          "Comparing a new sample to every single example is a lot of work. The centroid classifier has a shortcut: summarise each class by one average member.",
+          "That average — the centroid — stands in for the whole group. You only compare the new sample to one car-centre and one bike-centre.",
+          "Whichever centre is closer wins. It’s faster than kNN, and it captures the ‘typical’ idea of each class.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A new sample is closer to the car class center than to the bike class center. What does the centroid classifier decide?",
+            choices: [
+              { id: "a", label: "Bike, because some bikes are nearby" },
+              { id: "b", label: "Car, because it’s nearest the car center" },
+              { id: "c", label: "Compare it to every single sample first" },
+            ],
+            answer: "b",
+            explanation:
+              "The centroid classifier compares the sample only to each class’s average (center); nearest center wins, so it’s a car.",
+          },
+        ],
+      },
+      {
+        slug: "decision-tree-rules",
+        title: "Rules as a tree: the decision tree",
+        blurb: "A list of if/then rules is just a tree you walk down to a prediction.",
+        topic: "layman-classifiers",
+        skillIds: ["decision-trees", "classification-basics", "supervised-learning"],
+        capability: "Read a decision tree as a set of rules and follow it to a prediction.",
+        minutes: 5,
+        prose: [
+          "A decision tree is just a list of if/then rules, drawn as a path. Start at the top, answer each question, and you land on a prediction.",
+          "For the tennis example, the rules look like ‘if sunny and humid, no match’. Drawn as a tree, that same rule is a branch you walk down.",
+          "Many different trees could give the same answers on your data — so the real question is: which tree is best? That’s the next lesson.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "In the tennis tree, a day that is sunny with high humidity leads to which outcome?",
+            choices: [
+              { id: "a", label: "Play — sunny days are usually fine" },
+              { id: "b", label: "No play — sunny + high humidity → no" },
+              { id: "c", label: "Ask another question first" },
+            ],
+            answer: "b",
+            explanation:
+              "Walking the tree: outlook=sunny → humidity=high → leaf says 'no'. The tree and the rule give the same answer.",
+          },
+        ],
+      },
+      {
+        slug: "best-split",
+        title: "Which split is best?",
+        blurb: "The best question is the one that leaves each side mostly one class.",
+        topic: "layman-classifiers",
+        skillIds: ["decision-trees", "classification-basics", "supervised-learning"],
+        capability: "Judge a good split as one whose branches are mostly pure.",
+        minutes: 5,
+        prose: [
+          "When a tree asks a question, it splits the data into branches. A good split leaves each branch mostly one class — that’s called ‘pure’.",
+          "A bad split leaves the branches jumbled. The tree-building rule is simple: at every step, pick the feature whose split is purest.",
+          "That purity has a name — information gain — but the intuition needs no formula: the best question is the one that untangles the classes the most.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "One split leaves both sides evenly mixed (yes/no). Another leaves each side all-yes or all-no. Which does the tree prefer?",
+            choices: [
+              { id: "a", label: "The mixed one — more information" },
+              { id: "b", label: "The pure one — each side is decided" },
+              { id: "c", label: "Either — purity does not matter" },
+            ],
+            answer: "b",
+            explanation:
+              "A pure split (each side mostly one class) is preferred; that purity is what 'information gain' measures.",
+          },
+        ],
+      },
+      {
+        slug: "train-test-split",
+        title: "Don't grade on what you studied",
+        blurb: "Split your data — train on one part, test on a part it's never seen.",
+        topic: "layman-evaluation",
+        skillIds: ["train-test-split", "classification-basics"],
+        capability: "Explain why a model must be evaluated on data it was not trained on.",
+        minutes: 4,
+        prose: [
+          "Once you've built a classifier, the obvious question is: is it any good? The trap is checking the same data it learned from.",
+          "If you graded a student on the exact exam questions they studied, you'd learn nothing about whether they understood the ideas — only whether they memorized.",
+          "The fix is to split your data: a training pile the model learns from, and a separate test pile it never sees. Only the test score tells you if it generalizes.",
+        ],
+        application: {
+          title: "Feel the split in your own life",
+          prompt:
+            "Think of a test or interview you prepared for. Write one sentence: what would ‘training data’ be for you, and what would ‘test data’ be? Why can't they be the same questions?",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Your model scores 100% on the data it trained on, but only 60% on new data. What's the most honest read?",
+            choices: [
+              { id: "a", label: "It's a great model — 100% is the real score" },
+              { id: "b", label: "60% on unseen data is the honest measure; 100% may be memorization" },
+              { id: "c", label: "It's broken and should be deleted" },
+            ],
+            answer: "b",
+            explanation:
+              "The test-set score reflects real-world performance; a perfect training score can mean it memorized rather than learned.",
+          },
+        ],
+      },
+      {
+        slug: "overfitting",
+        title: "Memorizing vs. understanding",
+        blurb: "A model can be perfect on training data — and still be wrong on new data.",
+        topic: "layman-evaluation",
+        skillIds: ["overfitting", "train-test-split"],
+        capability: "Recognise overfitting as memorizing training data instead of learning the pattern.",
+        minutes: 5,
+        prose: [
+          "Overfitting is when a model learns its training data so precisely — every quirk and noise — that it fails on anything new.",
+          "It's the difference between a student who memorized past exams and one who understood the ideas. The memorizer aces the old papers and flops a fresh question.",
+          "The goal is the sweet spot: simple enough to generalize, complex enough to capture the real pattern.",
+        ],
+        application: {
+          title: "Spot overfitting around you",
+          prompt:
+            "Name a time you (or someone) memorized something word-for-word but couldn't use it in a new situation. Write one sentence: what was the ‘training data’, and what was the ‘new data’ it failed on?",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Two models: one is 100% on training data and 50% on test data; the other is 85% on both. Which is likely better in the real world?",
+            choices: [
+              { id: "a", label: "The 100%-on-training one — perfection is best" },
+              { id: "b", label: "The 85%-on-both one — it generalizes, not memorizes" },
+              { id: "c", label: "They're equally good" },
+            ],
+            answer: "b",
+            explanation:
+              "Consistent train and test scores mean the model learned a real pattern; a perfect training score with a poor test score is a classic sign of overfitting.",
+          },
+        ],
+      },
+      {
+        slug: "data-quality",
+        title: "Garbage in, garbage out",
+        blurb: "A model is only as good as the data it learns from — fix the data first.",
+        topic: "layman-evaluation",
+        skillIds: ["data-quality", "ml-limits"],
+        capability: "Explain how biased or incomplete data leads to biased predictions.",
+        minutes: 5,
+        prose: [
+          "The single biggest influence on a model isn't the algorithm — it's the data. A fancy model trained on bad data still gives bad answers.",
+          "If a model only ever saw red cars, it would ‘learn’ that cars are red — and then fail on a blue one. That's not a broken model; it's broken data.",
+          "Before tuning the algorithm, ask: is the data varied, balanced, and representative of the real world the model will meet?",
+        ],
+        application: {
+          title: "Audit a dataset's bias",
+          prompt:
+            "Pick an ML feature you use (recommendations, search, spam). Write one way its training data could be biased — and one prediction that bias would produce.",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A hiring model was trained only on past hires, who were mostly from one demographic. What's the likely result?",
+            choices: [
+              { id: "a", label: "It'll be perfectly fair, because data is neutral" },
+              { id: "b", label: "It'll reproduce the existing bias, favouring that demographic" },
+              { id: "c", label: "It'll fix the bias automatically" },
+            ],
+            answer: "b",
+            explanation:
+              "Models learn the patterns in their training data — including historical bias. Garbage (biased data) in, garbage (biased predictions) out.",
+          },
+        ],
+      },
+      {
+        slug: "ml-in-your-phone",
+        title: "ML you already use every day",
+        blurb: "Spam filters, recommendations, face unlock — ML is already in your pocket.",
+        topic: "layman-real-world",
+        skillIds: ["ml-applications", "ai-literacy"],
+        capability: "Recognise everyday apps that use machine learning and name the family they belong to.",
+        minutes: 4,
+        application: {
+          title: "Audit your own phone",
+          prompt:
+            "Open the apps you used today. Pick two and write one sentence each: what does it predict or sort for you, and what past behaviour of yours is it learning from?",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Your email moves a message to spam after you’ve marked similar ones as junk before. Which ML family is this?",
+            choices: [
+              { id: "a", label: "Supervised — it learned from your labelled examples" },
+              { id: "b", label: "Unsupervised — it grouped mail with no labels" },
+              { id: "c", label: "Reinforcement — it tried actions for rewards" },
+            ],
+            answer: "a",
+            explanation:
+              "Your ‘this is junk’ marks are labels; learning to sort future mail from those labelled examples is supervised learning.",
+          },
+        ],
+      },
+      {
+        slug: "when-ml-fails",
+        title: "When ML gets it wrong",
+        blurb: "It’s powerful and it makes mistakes — here’s how to think about both.",
+        topic: "layman-real-world",
+        skillIds: ["ml-limits", "ai-literacy"],
+        capability: "Explain why ML can be confidently wrong and name one safeguard against it.",
+        minutes: 5,
+        application: {
+          title: "Spot a likely failure case",
+          prompt:
+            "Name one ML feature you rely on. Describe one input or situation where you’d distrust its output, and one reason your training-data knowledge gives for that doubt.",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A face-unlock system fails on a person it was never trained on. What’s the most likely cause?",
+            choices: [
+              { id: "a", label: "The model is broken and must be replaced" },
+              { id: "b", label: "A gap in the training data — it never saw similar faces" },
+              { id: "c", label: "The user is holding the phone wrong" },
+            ],
+            answer: "b",
+            explanation:
+              "Most ML failures on new inputs come from gaps in training data — the model is guessing outside what it has seen.",
           },
         ],
       },

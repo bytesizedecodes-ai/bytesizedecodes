@@ -363,3 +363,47 @@ export function useDeleteAccountData(): () => Promise<void> {
     await wipe({ userId });
   }, [wipe, userId]);
 }
+
+/* ------------------------------------------------------------------ */
+/* Admin + feedback (the user→admin loop).                            */
+/* ------------------------------------------------------------------ */
+
+export function useAdminStats() {
+  return useQuery(api.admin.queries.getStats, {});
+}
+
+export function useAdminUsers(limit = 50) {
+  return useQuery(api.admin.queries.listUsers, { limit });
+}
+
+export function useAdminFeedback(status?: string) {
+  return useQuery(api.admin.queries.listFeedback, status ? { status } : {});
+}
+
+export function useUpdateFeedbackStatus() {
+  return useMutation(api.admin.mutations.updateFeedbackStatus);
+}
+
+/** Attempt to promote the calling authenticated user to admin (idempotent). */
+export function useBootstrapAdminRole(): () => Promise<{ promoted: boolean; reason: string }> {
+  const bootstrap = useMutation(api.admin.mutations.bootstrapAdminRole);
+  return useCallback(async () => {
+    return (await bootstrap({})) as { promoted: boolean; reason: string };
+  }, [bootstrap]);
+}
+
+/** PUBLIC — submit user feedback (no admin role needed). */
+export function useSubmitFeedback() {
+  const userId = useUserId();
+  const submit = useMutation(api.admin.mutations.submitFeedback);
+  return useCallback(
+    async (input: {
+      kind: "bug" | "content_error" | "idea" | "praise" | "other";
+      body: string;
+      url?: string;
+    }) => {
+      await submit({ userId, ...input });
+    },
+    [submit, userId],
+  );
+}

@@ -23,6 +23,9 @@ gallery is available; full social features are not.
 | [`docs/architecture.md`](docs/architecture.md) | Stack, folders, request flow |
 | [`docs/data-layer.md`](docs/data-layer.md) | DataLayer seam, identity, practice vs review |
 | [`docs/content-model.md`](docs/content-model.md) | Bytes, courses, tracks, skills, catalog |
+| [`docs/engagement-and-retention.md`](docs/engagement-and-retention.md) | Habit-formation: what's built vs missing, leaderboard decision, pre-launch checklist |
+| [`docs/monetization-and-subscription.md`](docs/monetization-and-subscription.md) | Business model: free learning → login-to-build → paid-advanced |
+| [`docs/admin-and-feedback.md`](docs/admin-and-feedback.md) | /admin console, admin role + requireAdmin guard, feedback loop, email scheduling plan |
 | [`docs/conventions.md`](docs/conventions.md) | Hard engineering rules |
 | [`docs/release.md`](docs/release.md) | `dev` → `main` promote, CI, Netlify, Convex |
 | [`docs/README.md`](docs/README.md) | Index of agent docs |
@@ -46,9 +49,35 @@ need roadmap context.
 
 ## Commands
 
+Prerequisites: `npm install`, and a `.env.local` containing
+`CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL` (pointing at a dev
+deployment created via `npx convex dev`).
+
+### Run the app locally (two terminals)
+
+The frontend and backend are separate processes. **Start Convex first**, then
+Next.js. Both watch for changes.
+
 ```bash
-npm install
-npm run dev          # Next.js dev server → http://localhost:3000
+# Terminal 1 — Convex dev backend (live-syncs convex/ to the dev deployment)
+npx convex dev
+
+# Terminal 2 — Next.js dev server → http://localhost:3000
+npm run dev
+```
+
+Notes:
+- `npx convex dev` takes no flags when a deployment is already configured —
+  `--configure` only accepts `new`/`existing`, and `--configure=never` will
+  error. Run `npx convex dev` bare.
+- `npm run dev` alone will boot Next.js but the app will have no working
+  backend (queries hang) until Convex is running.
+- If `CONVEX_DEPLOYMENT` is unset, `npx convex dev` will offer to provision a
+  cloud dev deployment and write `.env.local` for you.
+
+### Other
+
+```bash
 npm test             # vitest run (colocated *.test.ts)
 npm run test:watch
 npm run typecheck    # tsc --noEmit
@@ -101,6 +130,18 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
+
+11. **Use the `infographics-animation` skill when creating or editing courses.**
+    Any new lesson, course page, or infographic **must** be built with the
+    `infographics-animation` skill (`.agents/skills/infographics-animation/SKILL.md`) —
+    read it first. Its rules override any default: lessons are **picture-led**,
+    built from the shared scene vocabulary (`CarShape`, `BikeShape`,
+    `PictureCard`, `Operator`, `Scene`, `PersonFigure`, `MachineFigure`) in
+    `components/infographic/scenes.tsx`, with motion inherited from
+    `Stagger`/`MotionChild`/`Reveal` — never tables, raw text blocks, or
+    hand-rolled per-lesson animation. Brand blue only; text stays `text-ink`/
+    `text-canvas`; `MotionConfig reducedMotion="user"` is non-negotiable. A
+    lesson that "works" but explains via a table instead of pictures is a bug.
 
 ## Where things live
 

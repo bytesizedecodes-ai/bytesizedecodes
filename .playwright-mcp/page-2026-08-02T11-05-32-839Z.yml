@@ -1,0 +1,100 @@
+- generic [active] [ref=f12e1]:
+  - generic [ref=f12e2]:
+    - banner [ref=f12e3]:
+      - generic [ref=f12e4]:
+        - link "ByteSizeDecodes" [ref=f12e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f12e6]: BSD
+        - navigation "Primary navigation" [ref=f12e10]:
+          - link "Today" [ref=f12e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f12e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f12e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f12e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f12e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f12e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f12e17]:
+      - generic [ref=f12e18]:
+        - link "← Machine Learning for Layman" [ref=f12e19] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f12e20]:
+          - paragraph [ref=f12e21]: Lesson 12 of 12 · Machine Learning for Layman
+          - 'heading "The class center: the centroid classifier" [level=1] [ref=f12e22]'
+          - paragraph [ref=f12e23]: Each class has a typical member — assign the sample to the nearest center.
+          - paragraph [ref=f12e24]: "By the end: Classify a sample by comparing it to each class’s average member."
+          - generic [ref=f12e25]:
+            - generic [ref=f12e26]: Byte · 5 min
+            - generic [ref=f12e27]: 1 questions
+            - generic [ref=f12e28]: +XP on complete
+        - generic [ref=f12e30]:
+          - generic [ref=f12e32]:
+            - heading "The class center" [level=2] [ref=f12e33]
+            - paragraph [ref=f12e34]: Each class has a typical member — assign the new sample to the nearest one
+          - figure "① Each class is a cluster of samples" [ref=f12e36]:
+            - generic [ref=f12e38]:
+              - generic [ref=f12e39]: all cars
+              - generic [ref=f12e65]: all bikes
+          - figure "② Summarise each cluster by one average member — its center" [ref=f12e88]:
+            - generic [ref=f12e90]:
+              - generic [ref=f12e92]:
+                - generic [ref=f12e93]: ★
+                - generic [ref=f12e103]: typical car
+                - text: the car center
+              - generic [ref=f12e105]:
+                - generic [ref=f12e106]: ★
+                - generic [ref=f12e115]: typical bike
+                - text: the bike center
+            - paragraph [ref=f12e116]: One average stands for the whole class.
+          - figure "③ A new sample lands closer to one center — that’s its class" [ref=f12e117]:
+            - generic [ref=f12e119]:
+              - generic [ref=f12e120]: ★ car center
+              - generic [ref=f12e130]:
+                - generic [ref=f12e131]: "?"
+                - generic [ref=f12e132]: nearer ★
+              - generic [ref=f12e133]: ★ bike center
+            - generic [ref=f12e142]:
+              - generic [ref=f12e143]: closest to the car center
+              - generic [ref=f12e144]: →
+              - generic [ref=f12e146]: car
+          - paragraph [ref=f12e159]: Compare to one typical member per class — not to every sample.
+        - generic [ref=f12e161]:
+          - generic [ref=f12e162]:
+            - heading "Check yourself" [level=2] [ref=f12e163]
+            - generic [ref=f12e164]:
+              - paragraph [ref=f12e165]: A new sample is closer to the car class center than to the bike class center. What does the centroid classifier decide?
+              - generic [ref=f12e166]:
+                - button "a Bike, because some bikes are nearby" [ref=f12e167]:
+                  - generic [ref=f12e168]: a
+                  - text: Bike, because some bikes are nearby
+                - button "b Car, because it’s nearest the car center" [ref=f12e169]:
+                  - generic [ref=f12e170]: b
+                  - text: Car, because it’s nearest the car center
+                - button "c Compare it to every single sample first" [ref=f12e171]:
+                  - generic [ref=f12e172]: c
+                  - text: Compare it to every single sample first
+              - button "Check" [disabled] [ref=f12e173]
+          - button "Answer all questions to finish" [disabled] [ref=f12e175]
+        - navigation [ref=f12e176]:
+          - 'link "← Previous Find its neighbors: k-Nearest Neighbors" [ref=f12e177] [cursor=pointer]':
+            - /url: /courses/machine-learning-for-layman/knn-neighbors
+            - generic [ref=f12e178]: ←
+            - generic [ref=f12e179]:
+              - generic [ref=f12e180]: Previous
+              - generic [ref=f12e181]: "Find its neighbors: k-Nearest Neighbors"
+          - link "Course complete Back to Machine Learning For Layman ✓" [ref=f12e182] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman
+            - generic [ref=f12e183]:
+              - generic [ref=f12e184]: Course complete
+              - generic [ref=f12e185]: Back to Machine Learning For Layman
+            - generic [ref=f12e186]: ✓
+    - contentinfo [ref=f12e187]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f12e188] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f12e194] [cursor=pointer]

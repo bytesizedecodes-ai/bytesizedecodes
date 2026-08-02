@@ -1,0 +1,66 @@
+- generic [active] [ref=f39e1]:
+  - generic [ref=f39e2]:
+    - banner [ref=f39e3]:
+      - generic [ref=f39e4]:
+        - link "ByteSizeDecodes" [ref=f39e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f39e6]: BSD
+        - navigation [ref=f39e10]:
+          - link "Courses" [ref=f39e11] [cursor=pointer]:
+            - /url: /courses
+          - link "Start free" [ref=f39e12] [cursor=pointer]:
+            - /url: /onboarding
+    - generic [ref=f39e13]:
+      - generic [ref=f39e14]: For curious beginners to builders
+      - heading "From confused about AI to building with it." [level=1] [ref=f39e23]: From confused about AIto building with it.
+      - paragraph [ref=f39e24]: One guided path that takes you from “what even is a model?” to a real artifact you understand and can explain — in bite-sized visual lessons.
+      - generic [ref=f39e25]:
+        - link "Start free — no login" [ref=f39e26] [cursor=pointer]:
+          - /url: /onboarding
+        - link "See the courses" [ref=f39e29] [cursor=pointer]:
+          - /url: /courses
+    - generic [ref=f39e31]:
+      - generic [ref=f39e32]:
+        - paragraph [ref=f39e33]: The path
+        - heading "Three stages, one outcome" [level=2] [ref=f39e34]
+      - generic [ref=f39e35]:
+        - generic [ref=f39e36]:
+          - generic [ref=f39e40]: 01 · See it
+          - heading "Understand" [level=3] [ref=f39e41]
+          - paragraph [ref=f39e42]: Start with picture-led foundations. No maths, no jargon — the ideas click fast.
+        - generic [ref=f39e43]:
+          - generic [ref=f39e53]: 02 · Practise it
+          - heading "Internalise" [level=3] [ref=f39e54]
+          - paragraph [ref=f39e55]: Generated practice and spaced review turn understanding into durable skill.
+        - generic [ref=f39e56]:
+          - generic [ref=f39e62]: 03 · Build it
+          - heading "Apply" [level=3] [ref=f39e63]
+          - paragraph [ref=f39e64]: Take what you know and build a real AI/ML artifact you can show and explain.
+    - generic [ref=f39e66]:
+      - generic [ref=f39e67]:
+        - generic [ref=f39e68]: "19"
+        - generic [ref=f39e69]: lessons
+      - generic [ref=f39e70]:
+        - generic [ref=f39e71]: "2"
+        - generic [ref=f39e72]: courses
+      - generic [ref=f39e73]:
+        - generic [ref=f39e74]: 3 min
+        - generic [ref=f39e75]: shortest session
+      - generic [ref=f39e76]:
+        - generic [ref=f39e77]: $0
+        - generic [ref=f39e78]: to start learning
+    - generic [ref=f39e80]:
+      - paragraph [ref=f39e84]: “I'd read about machine learning a dozen times and it never stuck. The visual lessons — car vs bike, the neighbors voting — finally made it real. Now I can actually explain it.”
+      - generic [ref=f39e85]:
+        - generic [ref=f39e86]: A
+        - generic [ref=f39e87]:
+          - generic [ref=f39e88]: A learner
+          - generic [ref=f39e89]: after the Layman course
+    - generic [ref=f39e91]:
+      - heading "Stop reading about AI. Start understanding it." [level=2] [ref=f39e92]: Stop reading about AI.Start understanding it.
+      - paragraph [ref=f39e93]: Free forever to learn. Pick a goal and begin in under a minute.
+      - link "Find my learning path" [ref=f39e95] [cursor=pointer]:
+        - /url: /onboarding
+    - contentinfo [ref=f39e98]: ByteSizeDecodes — Learn AI visually. Practise it. Build something real.
+  - button "Open Next.js Dev Tools" [ref=f39e104] [cursor=pointer]
+  - alert [ref=f39e108]

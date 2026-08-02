@@ -184,6 +184,7 @@ export class LocalStore {
       weeklyMinutes: null,
       preferredTimeMode: null,
       onboardingCompletedAt: null,
+      role: null,
     };
   }
 

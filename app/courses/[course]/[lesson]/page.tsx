@@ -1,8 +1,10 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ApplicationCase } from "@/components/ApplicationCase";
 import { Shell } from "@/components/Shell";
 import { CoursePager } from "@/components/CoursePager";
+import { JsonLd } from "@/components/JsonLd";
 import { PredictionCard } from "@/components/PredictionCard";
 import { getInfographicComponent } from "@/components/infographic";
 import {
@@ -12,12 +14,28 @@ import {
   getLesson,
   type Course,
 } from "@/content/courses";
+import { absoluteUrl } from "@/lib/site";
 import { LessonBody } from "./LessonBody";
 
 export function generateStaticParams() {
   return allCourseSlugs().flatMap((course) =>
     getCourse(course)!.lessons.map((lesson) => ({ course, lesson: lesson.slug })),
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ course: string; lesson: string }>;
+}): Promise<Metadata> {
+  const { course: courseSlug, lesson: lessonSlug } = await params;
+  const found = getLesson(courseSlug, lessonSlug);
+  if (!found) return {};
+  return {
+    title: found.lesson.title,
+    description: found.lesson.blurb,
+    alternates: { canonical: `/courses/${courseSlug}/${lessonSlug}` },
+  };
 }
 
 export default async function LessonPage({
@@ -46,6 +64,41 @@ export default async function LessonPage({
 
   return (
     <Shell active={`/courses/${courseSlug}`}>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "LearningResource",
+          name: lesson.title,
+          description: lesson.blurb,
+          isPartOf: {
+            "@type": "Course",
+            name: course.title,
+            url: absoluteUrl(`/courses/${courseSlug}`),
+          },
+          url: absoluteUrl(`/courses/${courseSlug}/${lessonSlug}`),
+        }}
+      />
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Courses", item: absoluteUrl("/courses") },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: course.title,
+              item: absoluteUrl(`/courses/${courseSlug}`),
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: lesson.title,
+              item: absoluteUrl(`/courses/${courseSlug}/${lessonSlug}`),
+            },
+          ],
+        }}
+      />
       <div className="mx-auto max-w-3xl">
         <Link
           href={`/courses/${courseSlug}`}

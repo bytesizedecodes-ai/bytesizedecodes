@@ -1,16 +1,15 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { OnboardingForm } from "./OnboardingForm";
+import { BrandMark } from "@/components/BrandMark";
 
 export default function OnboardingPage() {
   return (
     <main className="min-h-dvh bg-canvas px-4 py-6 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-4xl">
         <Link href="/" className="focus-ring inline-flex items-center gap-2 rounded-lg font-semibold tracking-tight">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-ink text-xs font-bold text-white">
-            B
-          </span>
-          bytesizedecodes
+          <BrandMark />
+          ByteSizeDecodes
         </Link>
         <header className="mt-10 max-w-2xl sm:mt-14">
           <p className="eyebrow">Your learning path</p>

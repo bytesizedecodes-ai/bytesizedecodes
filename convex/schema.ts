@@ -44,6 +44,25 @@ const practiceMode = v.union(
 
 const byteStatus = v.union(v.literal("started"), v.literal("completed"));
 
+/** Authorization role. Absent = ordinary "user". "admin" gates /admin + admin endpoints. */
+const role = v.union(v.literal("user"), v.literal("admin"));
+
+const feedbackStatus = v.union(
+  v.literal("new"),
+  v.literal("viewed"),
+  v.literal("in_progress"),
+  v.literal("resolved"),
+  v.literal("wontfix"),
+);
+
+const feedbackKind = v.union(
+  v.literal("bug"),
+  v.literal("content_error"),
+  v.literal("idea"),
+  v.literal("praise"),
+  v.literal("other"),
+);
+
 /** 1/user. The derived profile view (level etc.) is computed in queries, not stored. */
 const profiles = defineTable({
   userId: v.string(),
@@ -67,6 +86,8 @@ const profiles = defineTable({
   seed: v.optional(v.boolean()),
   /** Previous browser UUID, kept so anonymous→auth claim can migrate progress once. */
   legacyAnonId: v.optional(v.string()),
+  /** Authorization role. Absent = ordinary "user". Promoted server-side via ADMIN_EMAILS. */
+  role: v.optional(role),
 })
   .index("by_user", ["userId"])
   // Top-N leaderboard read. At dev scale (~20 profiles) a full collect+sort is fine;
@@ -196,6 +217,26 @@ const skillEvidence = defineTable({
   .index("by_user_skill", ["userId", "skillId"])
   .index("by_user_source", ["userId", "sourceKey"]);
 
+/**
+ * User-submitted feedback (the user→admin loop). Public to submit (anonymous
+ * users can report issues), but only admins can read/triage (see convex/lib/admin.ts).
+ */
+const feedback = defineTable({
+  userId: v.string(),
+  kind: feedbackKind,
+  body: v.string(),
+  /** Page URL where the feedback was submitted, for context. */
+  url: v.optional(v.string()),
+  status: feedbackStatus,
+  /** Admin's reply shown back to the user (optional). */
+  adminReply: v.optional(v.string()),
+  createdAt: v.number(),
+  resolvedAt: v.optional(v.number()),
+})
+  .index("by_status", ["status"])
+  .index("by_user", ["userId"])
+  .index("by_created", ["createdAt"]);
+
 export default defineSchema({
   ...authTables,
   profiles,
@@ -206,4 +247,5 @@ export default defineSchema({
   analyticsEvents,
   skillEvidence,
   projects,
+  feedback,
 });

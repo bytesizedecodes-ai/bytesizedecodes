@@ -1,11 +1,15 @@
 import type { ReactNode } from "react";
 
+export type BadgeTone = "brand" | "warm" | "neutral" | "good";
+
 export function Badge({
   children,
   tone = "brand",
+  className = "",
 }: {
   children: ReactNode;
-  tone?: "brand" | "warm" | "neutral" | "good";
+  tone?: BadgeTone;
+  className?: string;
 }) {
   const tones = {
     brand: "bg-brand-wash text-brand-deep",
@@ -16,7 +20,7 @@ export function Badge({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${tones[tone]}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${tones[tone]} ${className}`}
     >
       {children}
     </span>

@@ -1,11 +1,29 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
+import { JsonLd } from "@/components/JsonLd";
 import { allSlugs, getByte } from "@/content";
+import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import { ByteRunner } from "./ByteRunner";
 
 export function generateStaticParams() {
   return allSlugs().map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const byte = getByte(slug);
+  if (!byte) return {};
+  return {
+    title: byte.title,
+    description: byte.subtitle,
+    alternates: { canonical: `/bytes/${slug}` },
+  };
 }
 
 export default async function BytePage({
@@ -19,6 +37,17 @@ export default async function BytePage({
 
   return (
     <Shell active="/bytes">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: byte.title,
+          description: byte.subtitle,
+          author: { "@type": "Organization", name: SITE_NAME },
+          publisher: { "@type": "Organization", name: SITE_NAME },
+          mainEntityOfPage: absoluteUrl(`/bytes/${slug}`),
+        }}
+      />
       <article className="mx-auto max-w-2xl">
         <Link href="/bytes" className="text-sm text-ink-faint hover:text-ink-soft">
           ← All bytes

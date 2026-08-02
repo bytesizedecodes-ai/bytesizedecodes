@@ -37,6 +37,8 @@ export interface Profile {
   weeklyMinutes: number | null;
   preferredTimeMode: TimeMode | null;
   onboardingCompletedAt: number | null;
+  /** Authorization role. Absent/null = ordinary user. "admin" gates /admin. */
+  role: "user" | "admin" | null;
 }
 
 export type PracticeMode = "byte" | "review" | "practice";

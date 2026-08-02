@@ -1,0 +1,117 @@
+- generic [active] [ref=f23e1]:
+  - generic [ref=f23e2]:
+    - banner [ref=f23e3]:
+      - generic [ref=f23e4]:
+        - link "ByteSizeDecodes" [ref=f23e5] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f23e6]: BSD
+        - navigation "Primary navigation" [ref=f23e10]:
+          - link "Today" [ref=f23e11] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f23e12] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f23e13] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f23e14] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f23e15] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f23e16] [cursor=pointer]:
+            - /url: /profile
+    - main [ref=f23e17]:
+      - generic [ref=f23e18]:
+        - link "← Machine Learning for Layman" [ref=f23e19] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f23e20]:
+          - paragraph [ref=f23e21]: Lesson 5 of 16 · Machine Learning for Layman
+          - heading "Inside supervised learning" [level=1] [ref=f23e22]
+          - paragraph [ref=f23e23]: Samples + labels → a function → classification or regression.
+          - paragraph [ref=f23e24]: "By the end: Recognize labelled examples and distinguish classification from regression."
+          - generic [ref=f23e25]:
+            - generic [ref=f23e26]: Byte · 5 min
+            - generic [ref=f23e27]: 1 questions
+            - generic [ref=f23e28]: +XP on complete
+        - generic [ref=f23e30]:
+          - generic [ref=f23e32]:
+            - heading "Inside supervised learning" [level=2] [ref=f23e33]
+            - paragraph [ref=f23e34]: Samples + labels → a function → a category or a number
+          - figure "① Build a labelled training dataset" [ref=f23e36]:
+            - generic [ref=f23e38]:
+              - generic [ref=f23e40]:
+                - generic [ref=f23e57]: Samples
+                - generic [ref=f23e58]: the inputs
+              - generic [ref=f23e59]: +
+              - generic [ref=f23e62]:
+                - generic [ref=f23e63]:
+                  - generic [ref=f23e64]: car
+                  - generic [ref=f23e65]: bike
+                - generic [ref=f23e66]: Labels
+                - generic [ref=f23e67]: the answers
+              - generic [ref=f23e68]: =
+              - generic [ref=f23e71]:
+                - generic [ref=f23e73]:
+                  - generic [ref=f23e74]: car
+                  - generic [ref=f23e85]: bike
+                - generic [ref=f23e95]: Dataset
+                - generic [ref=f23e96]: inputs + answers
+          - figure "② The algorithm learns a function (a decision rule)" [ref=f23e97]:
+            - generic [ref=f23e99]:
+              - generic [ref=f23e100]: f( dataset, new sample ) → prediction
+              - paragraph [ref=f23e101]: Feed it the data and a new, unseen input → it outputs a prediction.
+          - figure "③ The prediction is one of two shapes" [ref=f23e102]:
+            - generic [ref=f23e104]:
+              - generic [ref=f23e105]:
+                - generic [ref=f23e106]: Classification — a category
+                - generic [ref=f23e107]:
+                  - generic [ref=f23e116]: →
+                  - generic [ref=f23e117]: CAR
+                - paragraph [ref=f23e118]: car / bike / truck / …
+              - generic [ref=f23e119]:
+                - generic [ref=f23e120]: Regression — a number
+                - generic [ref=f23e121]:
+                  - generic [ref=f23e122]: 🏠
+                  - generic [ref=f23e123]: →
+                  - generic [ref=f23e124]: ₹20,500
+                - paragraph [ref=f23e125]: any continuous real value
+          - paragraph [ref=f23e127]: Both depend on the labels you provided — that's what makes them supervised.
+        - generic [ref=f23e128]:
+          - generic [ref=f23e129]:
+            - generic [ref=f23e130]:
+              - heading "Check yourself" [level=2] [ref=f23e131]
+              - generic [ref=f23e132]:
+                - paragraph [ref=f23e133]: "Predicting a house price from examples of houses and their sale prices is:"
+                - generic [ref=f23e134]:
+                  - button "a Classification, because houses have categories" [ref=f23e135]:
+                    - generic [ref=f23e136]: a
+                    - text: Classification, because houses have categories
+                  - button "b Regression, because the output is a number" [ref=f23e137]:
+                    - generic [ref=f23e138]: b
+                    - text: Regression, because the output is a number
+                  - button "c Unsupervised learning, because prices vary" [ref=f23e139]:
+                    - generic [ref=f23e140]: c
+                    - text: Unsupervised learning, because prices vary
+                - button "Check" [disabled] [ref=f23e141]
+            - button "Answer all questions to finish" [disabled] [ref=f23e143]
+          - generic [ref=f23e144]:
+            - paragraph [ref=f23e145]: Application
+            - heading "Spot supervised learning around you" [level=2] [ref=f23e146]
+            - paragraph [ref=f23e147]: Name two predictions an app makes for you (a price, a label, a yes/no). For each, write what the labelled ‘answers’ in its training data might have been.
+        - navigation [ref=f23e148]:
+          - link "← Previous The three families of ML" [ref=f23e149] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/three-ml-paradigms
+            - generic [ref=f23e150]: ←
+            - generic [ref=f23e151]:
+              - generic [ref=f23e152]: Previous
+              - generic [ref=f23e153]: The three families of ML
+          - link "Next Inside unsupervised learning →" [ref=f23e154] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/unsupervised-learning-deep-dive
+            - generic [ref=f23e155]:
+              - generic [ref=f23e156]: Next
+              - generic [ref=f23e157]: Inside unsupervised learning
+            - generic [ref=f23e158]: →
+    - contentinfo [ref=f23e159]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f23e160] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f23e166] [cursor=pointer]

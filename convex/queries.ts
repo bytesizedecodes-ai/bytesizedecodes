@@ -75,6 +75,7 @@ interface ProfileView {
   weeklyMinutes: number | null;
   preferredTimeMode: "quick" | "standard" | "deep" | null;
   onboardingCompletedAt: number | null;
+  role: "user" | "admin" | null;
 }
 
 interface DayProgressView {
@@ -325,6 +326,7 @@ export const getProfile = query({
       weeklyMinutes: profile.weeklyMinutes ?? null,
       preferredTimeMode: profile.preferredTimeMode ?? null,
       onboardingCompletedAt: profile.onboardingCompletedAt ?? null,
+      role: profile.role ?? null,
     };
   },
 });

@@ -1,5 +1,5 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, Operator, Scene } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
@@ -54,10 +54,14 @@ export function SupervisedDeepDive() {
           {/* Dataset */}
           <MotionChild>
             <div className="flex-1 rounded-xl border border-brand bg-brand p-3 text-center shadow-sm">
-              <div className="mb-2 flex h-16 items-center justify-center">
-                <div className="grid grid-cols-2 gap-1">
-                  <PictureCard picture={<CarShape className="!h-8" />} label="car" tone="white" />
-                  <PictureCard picture={<BikeShape className="!h-8" />} label="bike" tone="white" />
+              <div className="mb-2 flex h-16 items-center justify-center gap-2">
+                <div className="flex flex-col items-center gap-0.5">
+                  <CarShape className="!h-8" />
+                  <span className="rounded-full bg-ink px-1.5 py-0.5 text-[10px] font-bold text-canvas">car</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <BikeShape className="!h-8" />
+                  <span className="rounded-full bg-ink px-1.5 py-0.5 text-[10px] font-bold text-canvas">bike</span>
                 </div>
               </div>
               <div className="text-sm font-bold">Dataset</div>
