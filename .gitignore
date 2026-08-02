@@ -21,13 +21,20 @@ dist
 
 # misc
 .DS_Store
+Thumbs.db
 *.pem
 .tmpcfg
+
+# editor / IDE
+.vscode/
+.idea/
+.history/
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
 # env
 .env
@@ -36,6 +43,9 @@ yarn-error.log*
 # typescript
 next-env.d.ts
 *.tsbuildinfo
+
+# Convex local dev state (CLI-generated; secrets may live in .env.local above)
+.convex/
 
 # Playwright MCP artifacts (console logs, snapshots, screenshots) — local only.
 # Screenshots captured via the Playwright MCP tooling land here by default.
