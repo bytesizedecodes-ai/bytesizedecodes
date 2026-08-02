@@ -9,23 +9,13 @@ import {
   ChartNoAxesCombined,
   Eye,
   Hammer,
-  Infinity as InfinityIcon,
-  Layers,
   Star,
   Target,
 } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { JsonLd } from "@/components/JsonLd";
 import { ButtonLink } from "@/components/ui/Button";
-import { BYTES } from "@/content";
-import { COURSES } from "@/content/courses";
-import { GENERATORS } from "@/lib/drills";
 import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_DESCRIPTION } from "@/lib/site";
-
-const LESSON_COUNT = COURSES.reduce((n, course) => n + course.lessons.length, 0);
-const COURSE_COUNT = COURSES.length;
-const BYTE_COUNT = BYTES.length;
-const DRILL_FAMILY_COUNT = GENERATORS.length;
 
 export const metadata = {
   title: { absolute: `${SITE_NAME} — ${SITE_TAGLINE}` },
@@ -112,66 +102,6 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
-
-      {/* ===== Live content inventory ===== */}
-      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              value: String(LESSON_COUNT),
-              label: "Visual lessons",
-              detail: "Infographics + active checks",
-              icon: Eye,
-              tone: "bg-brand-wash text-brand-deep ring-brand-muted/50",
-            },
-            {
-              value: String(COURSE_COUNT),
-              label: "Full courses",
-              detail: "Guided paths you can finish",
-              icon: Layers,
-              tone: "bg-warm-wash text-[#9a642f] ring-warm/30",
-            },
-            {
-              value: String(BYTE_COUNT),
-              label: "Technical bytes",
-              detail: "Practice units with code",
-              icon: BookOpen,
-              tone: "bg-good-wash text-good ring-good/25",
-            },
-            {
-              value: `${DRILL_FAMILY_COUNT}+`,
-              label: "Drill families",
-              detail: "Fresh problems every attempt",
-              icon: InfinityIcon,
-              tone: "bg-brand-wash text-brand ring-brand-muted/40",
-            },
-          ].map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={stat.label}
-                className="relative overflow-hidden rounded-2xl border border-ash bg-surface-elevated p-5 shadow-[0_12px_40px_-28px_rgba(23,23,19,0.55)]"
-              >
-                <div
-                  className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-brand/5 blur-xl"
-                  aria-hidden
-                />
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ring-1 ${stat.tone}`}>
-                  <Icon className="h-5 w-5" strokeWidth={1.75} aria-hidden />
-                </div>
-                <p className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-                  {stat.value}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-ink">{stat.label}</p>
-                <p className="mt-0.5 text-xs text-ink-faint">{stat.detail}</p>
-              </div>
-            );
-          })}
-        </div>
-        <p className="mt-4 text-center text-xs text-ink-faint">
-          Counts update automatically as courses and lessons ship.
-        </p>
       </section>
 
       {/* ===== Path value — five stages, not three prose cards ===== */}

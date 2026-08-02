@@ -2,127 +2,111 @@ import {
   Infographic,
   InfographicHeader,
   Card,
+  Tag,
+  Takeaway,
 } from "./primitives";
+import { Scene } from "./scenes";
+import { Stagger, MotionChild } from "./motion";
 
 /**
- * Lesson infographic: "AI vs ML vs Deep Learning"
+ * Lesson infographic: "AI vs ML vs Deep Learning" (intermediate course).
  *
- * The nested-circles concept is rendered as concentric SVG (scales with the
- * container). On phones the diagram sits above the tier stack; on >=lg they
- * sit side by side.
+ * One canonical visual — the nested AI ⊃ ML ⊃ DL circles, labelled — then the
+ * boundary check that makes the nesting *do work*: three dots placed in the
+ * three regions, each naming a model that sits there. No duplicated diagrams.
+ *
+ * The "aha" lands once: the resolution line states the nesting in one beat,
+ * then the boundary cases force the learner to *use* it (P7 — the inference is
+ * "where does logistic regression sit?").
+ *
+ * Picture-led vocabulary: Scene + Stagger + MotionChild (skill §4, §5).
  */
 export function AIVsMLVsDL() {
   return (
     <Infographic>
       <InfographicHeader
-        title="AI vs Machine Learning vs Deep Learning"
+        title="AI vs ML vs Deep Learning"
         subtitle="Three nested worlds — each one a slice of the next"
       />
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-10">
-        {/* Nested circles */}
+      {/* The single canonical visual: AI ⊃ ML ⊃ DL, labelled. */}
+      <Scene caption="The three fields, as nested circles">
         <div className="flex justify-center">
           <NestedCirclesSvg />
         </div>
+      </Scene>
 
-        {/* Tier stack */}
-        <div className="flex flex-col gap-3 sm:gap-4">
-          <Tier
-            num={1}
-            title="Artificial Intelligence"
-            text="Making machines smart — the whole field. Anything that lets a computer act &ldquo;intelligent&rdquo; lives here."
-            tone="brandWash"
-            rotate={-0.4}
-          />
-          <Tier
-            num={2}
-            title="Machine Learning"
-            text="A subset of AI where machines learn patterns from data themselves — no hard-coded rules required."
-            tone="brand"
-            rotate={0.4}
-          />
-          <Tier
-            num={3}
-            title="Deep Learning"
-            text="A subset of ML that uses multi-layer neural networks to learn from data."
-            tone="brandDeep"
-            rotate={-0.4}
-          />
-        </div>
-      </div>
+      {/* The resolution, stated once (P1). Shared Takeaway primitive. */}
+      <Takeaway>
+        <strong className="font-extrabold">AI ⊃ ML ⊃ DL.</strong> AI is the
+        goal; ML is how we reach it (learn from data); DL is one ML technique
+        (deep neural networks). Not all AI is ML; not all ML is DL.
+      </Takeaway>
 
-      {/* Takeaway */}
-      <Card tone="white" rotate={0.3}>
-        <h3 className="mb-3 flex items-center gap-2 text-base font-bold sm:text-lg">
-          <span aria-hidden="true">💡</span> How to remember it
-        </h3>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-          {[
-            { tag: "AI", text: "The outermost circle — the goal of building smart machines." },
-            { tag: "ML", text: "Inside AI — how we reach that goal by learning from data." },
-            { tag: "DL", text: "Inside ML — one powerful technique: deep neural networks." },
-          ].map((row) => (
-            <div key={row.tag} className="border-l-[3px] border-brand py-1 pl-3">
-              <b className="block text-sm font-bold sm:text-base">{row.tag}</b>
-              <span className="text-xs font-medium leading-snug text-ink sm:text-[13px]">
-                {row.text}
-              </span>
-            </div>
-          ))}
+      {/* The boundary check — the ONE place the nesting earns its keep.
+          Each region carries a dot + a real model that sits there, revealed
+          as a stagger so the learner reads region-by-region. */}
+      <Scene caption="Use it: where does each model actually sit?">
+        <div className="flex justify-center">
+          <BoundaryDotsSvg />
         </div>
-      </Card>
+        <Stagger className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+          <MotionChild>
+            <DotCase
+              dot="AI · not ML"
+              verdict="Expert system"
+              note="Hand-coded if/then rules. Acts smart, but never learns from data."
+            />
+          </MotionChild>
+          <MotionChild>
+            <DotCase
+              dot="ML · not DL"
+              verdict="Logistic regression"
+              note="Learns weights from data (ML), but no multi-layer network (not DL)."
+            />
+          </MotionChild>
+          <MotionChild>
+            <DotCase
+              dot="DL"
+              verdict="ResNet, GPT"
+              note="Multi-layer neural networks — the innermost circle."
+            />
+          </MotionChild>
+        </Stagger>
+      </Scene>
     </Infographic>
   );
 }
 
-function Tier({
-  num,
-  title,
-  text,
-  tone,
-  rotate,
-}: {
-  num: number;
-  title: string;
-  text: string;
-  tone: "brandWash" | "brand" | "brandDeep";
-  rotate: number;
-}) {
-  const toneClass = {
-    brandWash: "bg-brand-wash border border-brand text-ink",
-    brand: "bg-brand border border-brand text-ink",
-    brandDeep: "bg-brand-deep border border-brand-deep text-canvas",
-  }[tone];
-  const numBg =
-    tone === "brandDeep"
-      ? "bg-canvas text-ink"
-      : tone === "brand"
-        ? "bg-surface-elevated text-ink"
-        : "bg-brand-deep text-canvas";
-  const bodyText = tone === "brandDeep" ? "text-canvas" : "text-ink";
+/* ------------------------------------------------------------------ */
+/* Local helpers                                                        */
+/* ------------------------------------------------------------------ */
 
+function DotCase({
+  dot,
+  verdict,
+  note,
+}: {
+  dot: string;
+  verdict: string;
+  note: string;
+}) {
   return (
-    <div
-      className={`rounded-2xl px-5 py-4 shadow-sm sm:px-6 sm:py-5 ${toneClass}`}
-      style={{ transform: `rotate(${rotate}deg)` }}
-    >
-      <div className="mb-1 flex items-center gap-3">
-        <span
-          className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-sm font-extrabold ${numBg}`}
-        >
-          {num}
-        </span>
-        <h3 className="text-lg font-extrabold sm:text-xl">{title}</h3>
-      </div>
-      <p
-        className={`pl-10 text-sm font-medium leading-relaxed sm:text-[15px] ${bodyText}`}
-        dangerouslySetInnerHTML={{ __html: text }}
-      />
+    <div className="flex h-full flex-col rounded-xl border border-ash bg-surface-elevated px-4 py-3 shadow-sm">
+      <Tag tone="brand" dot>
+        {dot}
+      </Tag>
+      <span className="mt-2 text-sm font-extrabold text-ink sm:text-base">
+        {verdict}
+      </span>
+      <span className="mt-1 text-xs font-medium leading-snug text-ink-soft sm:text-[13px]">
+        {note}
+      </span>
     </div>
   );
 }
 
-/** Concentric circles showing AI ⊃ ML ⊃ DL. Responsive via viewBox. */
+/** The single canonical nested-circles diagram. AI ⊃ ML ⊃ DL, labelled. */
 function NestedCirclesSvg() {
   return (
     <svg
@@ -133,22 +117,59 @@ function NestedCirclesSvg() {
     >
       {/* AI ring */}
       <circle cx="260" cy="260" r="255" className="fill-brand-wash" stroke="var(--color-brand)" strokeWidth={2} strokeDasharray="6 6" />
+      {/* ML ring */}
+      <circle cx="260" cy="260" r="175" className="fill-brand" />
+      {/* DL core */}
+      <circle cx="260" cy="260" r="95" className="fill-brand-deep" />
+
       <text x="260" y="40" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={800} letterSpacing={1.5} fill="var(--color-brand-deep)">
         ARTIFICIAL INTELLIGENCE
       </text>
-      {/* ML ring */}
-      <circle cx="260" cy="260" r="175" className="fill-brand" />
       <text x="260" y="110" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="var(--color-canvas)">
         MACHINE LEARNING
       </text>
-      {/* DL core */}
-      <circle cx="260" cy="260" r="95" className="fill-brand-deep" />
       <text x="260" y="248" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={30}>
         🧠
       </text>
       <text x="260" y="288" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="var(--color-canvas)">
         DEEP LEARNING
       </text>
+    </svg>
+  );
+}
+
+/** The boundary case: ONE flatter diagram with three dots in the three regions.
+ *  Each dot maps to a card below. */
+function BoundaryDotsSvg() {
+  return (
+    <svg
+      viewBox="0 0 520 320"
+      className="h-auto w-full max-w-lg"
+      role="img"
+      aria-label="The AI/ML/DL nesting flattened, with three example dots: one in the AI-only ring, one in the ML-only ring, one in the DL core."
+    >
+      {/* AI ring */}
+      <circle cx="260" cy="160" r="150" className="fill-brand-wash" stroke="var(--color-brand)" strokeWidth={2} strokeDasharray="6 6" />
+      {/* ML ring */}
+      <circle cx="260" cy="160" r="100" className="fill-brand" />
+      {/* DL core */}
+      <circle cx="260" cy="160" r="52" className="fill-brand-deep" />
+
+      {/* region labels */}
+      <text x="260" y="24" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={12} fontWeight={700} fill="var(--color-brand-deep)">
+        AI · not ML
+      </text>
+      <text x="430" y="164" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={11} fontWeight={700} fill="var(--color-canvas)">
+        ML · not DL
+      </text>
+      <text x="260" y="164" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={11} fontWeight={700} fill="var(--color-canvas)">
+        DL
+      </text>
+
+      {/* the three example dots, colour-keyed to the cards (brand) */}
+      <circle cx="120" cy="70" r="8" className="fill-brand" />
+      <circle cx="345" cy="160" r="8" className="fill-brand" />
+      <circle cx="260" cy="160" r="8" className="fill-brand" />
     </svg>
   );
 }

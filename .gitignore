@@ -36,3 +36,16 @@ yarn-error.log*
 # typescript
 next-env.d.ts
 *.tsbuildinfo
+
+# Playwright MCP artifacts (console logs, snapshots, screenshots) — local only.
+# Screenshots captured via the Playwright MCP tooling land here by default.
+.playwright-mcp/
+
+# Stray screenshots and images at the repo root (dev artifacts, not assets).
+# Genuine project images live in infographics/, public/, and app/ — those stay tracked.
+/*.png
+/*.jpeg
+/*.jpg
+/*.gif
+/*.webp
+/*.svg

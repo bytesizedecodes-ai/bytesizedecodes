@@ -140,11 +140,83 @@ export function BulletList({
   );
 }
 
-/** A small pill tag, e.g. for example chips. */
-export function Tag({ children }: { children: ReactNode }) {
+/**
+ * A small pill tag, e.g. for example chips or region labels.
+ * `tone="brand"` + `dot` renders the accent pill used to key a label to a
+ * diagram element (e.g. the boundary-dot cases in AIVsMLVsDL).
+ */
+export function Tag({
+  children,
+  tone = "neutral",
+  dot = false,
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "brand";
+  dot?: boolean;
+}) {
+  const cls =
+    tone === "brand"
+      ? "border-brand bg-brand-wash text-brand"
+      : "border-ash bg-surface-elevated text-ink";
   return (
-    <span className="rounded-full border border-ash bg-surface-elevated px-3 py-1 text-xs font-semibold text-ink">
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${cls}`}
+    >
+      {dot && (
+        <span
+          aria-hidden="true"
+          className="h-1.5 w-1.5 rounded-full bg-current"
+        />
+      )}
       {children}
     </span>
+  );
+}
+
+/**
+ * A code surface for illustrative (non-runnable) snippets. Matches the app's
+ * canonical code style (`bg-ink` / `text-canvas` / `font-mono`, cf. CodeCell).
+ * Use `accent` to mark the "learned from data" / ML side of a contrast.
+ */
+export function CodePanel({
+  label,
+  caption,
+  code,
+  accent = false,
+}: {
+  label: string;
+  caption: string;
+  code: string;
+  accent?: boolean;
+}) {
+  return (
+    <div
+      className={`flex h-full flex-col rounded-xl border px-4 py-3 ${
+        accent ? "border-brand bg-brand-wash" : "border-ash bg-surface-elevated"
+      }`}
+    >
+      <span className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-ink-soft">
+        {label}
+      </span>
+      <span className="mb-2 text-xs font-medium text-ink sm:text-[13px]">
+        {caption}
+      </span>
+      <pre className="mt-auto overflow-x-auto rounded-lg bg-ink px-3 py-2.5 font-mono text-[12px] leading-relaxed text-canvas sm:text-[13px]">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+/**
+ * The recurring "aha" / resolution callout. One visual signature for the key
+ * insight of each lesson, so the course reads as one design. Brand-wash surface
+ * flips correctly in dark mode (it's rgba there).
+ */
+export function Takeaway({ children }: { children: ReactNode }) {
+  return (
+    <div className="rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center text-sm font-semibold text-ink sm:text-base">
+      {children}
+    </div>
   );
 }

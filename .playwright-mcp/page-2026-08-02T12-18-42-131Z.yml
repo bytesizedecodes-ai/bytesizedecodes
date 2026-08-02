@@ -1,4 +1,0 @@
-- generic [active] [ref=f35e1]:
-  - generic [ref=f35e2]: Checking admin access…
-  - button "Open Next.js Dev Tools" [ref=f35e9] [cursor=pointer]
-  - alert [ref=f35e13]
