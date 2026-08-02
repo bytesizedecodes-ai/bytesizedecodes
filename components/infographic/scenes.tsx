@@ -15,10 +15,17 @@
 import type { ReactNode } from "react";
 import { Reveal } from "./motion";
 
-const BRAND = "#7898c8";
-const BRAND_DEEP = "#6888c8";
-const BRAND_WASH = "#eef2f9";
-const INK = "#080808";
+/*
+  Theme-aware colors for the SVG vocabulary. The brand/ink shapes use
+  `currentColor` so they inherit the theme-aware text color set on each
+  component's wrapper (text-brand / text-ink / etc.) and flip in dark mode.
+  Structural dark accents (wheels, tires, hair) use a CSS variable so they
+  also adapt.
+*/
+const BRAND = "currentColor";
+const BRAND_DEEP = "currentColor";
+const TIRE = "var(--tire)";
+const HUB = "var(--hub)";
 
 /* ------------------------------------------------------------------ */
 /* Characters                                                         */
@@ -36,17 +43,17 @@ export function PersonFigure({
   skin?: string;
 }) {
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    <div className={`flex flex-col items-center text-brand ${className}`}>
       <svg viewBox="0 0 80 110" className="h-24 w-auto sm:h-28" aria-hidden="true">
         {/* head */}
         <circle cx="40" cy="22" r="16" fill={skin} />
         {/* hair */}
-        <path d="M24 18 Q40 2 56 18 Q56 10 40 8 Q24 10 24 18 Z" fill="#5a3a22" />
+        <path d="M24 18 Q40 2 56 18 Q56 10 40 8 Q24 10 24 18 Z" fill={TIRE} />
         {/* eyes */}
-        <circle cx="34" cy="22" r="1.8" fill="#3a2a1a" />
-        <circle cx="46" cy="22" r="1.8" fill="#3a2a1a" />
+        <circle cx="34" cy="22" r="1.8" fill={TIRE} />
+        <circle cx="46" cy="22" r="1.8" fill={TIRE} />
         {/* smile */}
-        <path d="M34 28 Q40 33 46 28" stroke="#3a2a1a" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        <path d="M34 28 Q40 33 46 28" stroke={TIRE} strokeWidth="1.5" fill="none" strokeLinecap="round" />
         {/* body — brand blue shirt */}
         <path d="M22 50 Q40 42 58 50 L62 95 Q40 102 18 95 Z" fill={BRAND} />
         {/* arms */}
@@ -73,12 +80,12 @@ export function MachineFigure({
   confused?: boolean;
 }) {
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    <div className={`flex flex-col items-center text-brand-deep ${className}`}>
       <svg viewBox="0 0 90 110" className="h-24 w-auto sm:h-28" aria-hidden="true">
         {/* monitor body */}
-        <rect x="8" y="14" width="74" height="56" rx="6" fill="#e8e8e8" stroke={BRAND_DEEP} strokeWidth="2" />
+        <rect x="8" y="14" width="74" height="56" rx="6" fill="var(--surface-elevated)" stroke={BRAND_DEEP} strokeWidth="2" />
         {/* screen */}
-        <rect x="14" y="20" width="62" height="40" rx="3" fill={INK} />
+        <rect x="14" y="20" width="62" height="40" rx="3" fill="var(--screen)" />
         {/* face on screen */}
         {confused ? (
           <>
@@ -113,18 +120,18 @@ export function MachineFigure({
 /** A car, drawn as a simple side-profile shape. */
 export function CarShape({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 120 70" className={`h-16 w-auto ${className}`} aria-hidden="true">
+    <svg viewBox="0 0 120 70" className={`h-16 w-auto text-brand ${className}`} aria-hidden="true">
       {/* body — brand blue */}
       <path d="M8 48 Q10 30 30 28 L42 18 Q60 14 78 18 L92 28 Q108 30 112 48 L112 54 Q112 58 108 58 L92 58 Q88 48 80 48 Q72 48 72 58 L48 58 Q44 48 40 48 Q32 48 32 58 L12 58 Q8 58 8 54 Z"
-        fill={BRAND} stroke={BRAND_DEEP} strokeWidth="2" />
+        fill={BRAND} stroke="currentColor" strokeWidth="2" />
       {/* windows */}
-      <path d="M42 20 L52 20 L52 30 L36 30 Z" fill="#cfe0f0" opacity="0.7" />
-      <path d="M56 20 L74 20 L82 30 L56 30 Z" fill="#cfe0f0" opacity="0.7" />
+      <path d="M42 20 L52 20 L52 30 L36 30 Z" fill="var(--window)" opacity="0.7" />
+      <path d="M56 20 L74 20 L82 30 L56 30 Z" fill="var(--window)" opacity="0.7" />
       {/* wheels */}
-      <circle cx="40" cy="56" r="9" fill="#3a2a1a" />
-      <circle cx="40" cy="56" r="3.5" fill="#8a7a6a" />
-      <circle cx="80" cy="56" r="9" fill="#3a2a1a" />
-      <circle cx="80" cy="56" r="3.5" fill="#8a7a6a" />
+      <circle cx="40" cy="56" r="9" fill={TIRE} />
+      <circle cx="40" cy="56" r="3.5" fill={HUB} />
+      <circle cx="80" cy="56" r="9" fill={TIRE} />
+      <circle cx="80" cy="56" r="3.5" fill={HUB} />
     </svg>
   );
 }
@@ -132,18 +139,18 @@ export function CarShape({ className = "" }: { className?: string }) {
 /** A bike, drawn as a simple side-profile shape. */
 export function BikeShape({ className = "" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 120 80" className={`h-16 w-auto ${className}`} aria-hidden="true">
+    <svg viewBox="0 0 120 80" className={`h-16 w-auto text-brand-deep ${className}`} aria-hidden="true">
       {/* wheels */}
-      <circle cx="28" cy="56" r="18" fill="none" stroke="#3a2a1a" strokeWidth="3" />
-      <circle cx="28" cy="56" r="3" fill="#3a2a1a" />
-      <circle cx="92" cy="56" r="18" fill="none" stroke="#3a2a1a" strokeWidth="3" />
-      <circle cx="92" cy="56" r="3" fill="#3a2a1a" />
+      <circle cx="28" cy="56" r="18" fill="none" stroke={TIRE} strokeWidth="3" />
+      <circle cx="28" cy="56" r="3" fill={TIRE} />
+      <circle cx="92" cy="56" r="18" fill="none" stroke={TIRE} strokeWidth="3" />
+      <circle cx="92" cy="56" r="3" fill={TIRE} />
       {/* frame — brand-deep */}
       <path d="M28 56 L55 30 L75 30 L92 56 M55 30 L70 56 M75 30 L70 56"
         stroke={BRAND_DEEP} strokeWidth="3" fill="none" strokeLinecap="round" />
       {/* seat + handlebar */}
-      <line x1="52" y1="28" x2="60" y2="28" stroke="#3a2a1a" strokeWidth="4" strokeLinecap="round" />
-      <line x1="75" y1="30" x2="82" y2="22" stroke="#3a2a1a" strokeWidth="3" strokeLinecap="round" />
+      <line x1="52" y1="28" x2="60" y2="28" stroke={TIRE} strokeWidth="4" strokeLinecap="round" />
+      <line x1="75" y1="30" x2="82" y2="22" stroke={TIRE} strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -165,12 +172,12 @@ export function SpeechBubble({
 }) {
   return (
     <div
-      className={`relative inline-block rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-ink shadow-sm border border-ash ${className}`}
+      className={`relative inline-block rounded-2xl bg-surface-elevated px-4 py-2.5 text-sm font-semibold text-ink shadow-sm border border-ash ${className}`}
     >
       {children}
       {/* tail */}
       <span
-        className={`absolute h-3 w-3 rotate-45 bg-white border-ash ${
+        className={`absolute h-3 w-3 rotate-45 bg-surface-elevated border-ash ${
           side === "top"
             ? "-top-1.5 left-1/2 -translate-x-1/2 border-t border-l"
             : side === "bottom"
@@ -209,7 +216,7 @@ export function PictureCard({
       ? "bg-brand-wash border-brand"
       : tone === "ash"
         ? "bg-ash border-dot"
-        : "bg-white border-ash";
+        : "bg-surface-elevated border-ash";
   return (
     <div className={`flex flex-col items-center gap-2 rounded-xl border px-4 py-4 ${bg}`}>
       <div className="flex h-20 items-center justify-center">{picture}</div>
@@ -234,7 +241,7 @@ export function Scene({
   return (
     <Reveal
       as="figure"
-      className={`rounded-2xl border border-ash bg-white px-4 py-5 shadow-sm sm:px-6 sm:py-6 ${className}`}
+      className={`rounded-2xl border border-ash bg-surface-elevated px-4 py-5 shadow-sm sm:px-6 sm:py-6 ${className}`}
     >
       {caption && (
         <figcaption className="mb-3 text-center text-sm font-bold text-ink sm:text-base">

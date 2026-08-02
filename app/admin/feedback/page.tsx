@@ -31,7 +31,7 @@ export default function AdminFeedbackPage() {
               setExpanded(null);
             }}
             className={`rounded-full px-3 py-1.5 text-sm font-medium ${
-              status === s ? "bg-ink text-white" : "bg-ash/70 text-ink-soft hover:bg-ash"
+              status === s ? "bg-ink text-canvas" : "bg-ash/70 text-ink-soft hover:bg-ash"
             }`}
           >
             {s.replace("_", " ")}
@@ -87,7 +87,7 @@ export default function AdminFeedbackPage() {
                     </p>
                   ) : null}
                   {f.adminReply ? (
-                    <p className="mt-2 rounded-lg bg-white px-3 py-2 text-xs text-ink-soft">
+                    <p className="mt-2 rounded-lg bg-surface-elevated px-3 py-2 text-xs text-ink-soft">
                       <span className="font-bold text-ink">Admin reply:</span> {f.adminReply}
                     </p>
                   ) : null}
@@ -139,10 +139,10 @@ function KindBadge({ kind }: { kind: string }) {
 function StatusBadge({ status }: { status: string }) {
   const tone =
     status === "new"
-      ? "bg-bad text-white"
+      ? "bg-bad text-canvas"
       : status === "resolved" || status === "wontfix"
-        ? "bg-good text-white"
-        : "bg-ink text-white";
+        ? "bg-good text-canvas"
+        : "bg-ink text-canvas";
   return (
     <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${tone}`}>
       {status.replace("_", " ")}
@@ -157,7 +157,7 @@ function TriageBtn({ label, active, onClick }: { label: string; active: boolean;
       onClick={onClick}
       disabled={active}
       className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
-        active ? "bg-ink text-white" : "border border-ash bg-white text-ink-soft hover:bg-brand-wash/40"
+        active ? "bg-ink text-canvas" : "border border-ash bg-surface-elevated text-ink-soft hover:bg-brand-wash/40"
       }`}
     >
       {label}

@@ -91,17 +91,17 @@ export function DecisionTreeRules() {
       <Scene caption="④ But many trees can give the same answers — which is best?">
         <Stagger className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-5">
           <MotionChild>
-            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-white text-sm font-semibold text-ink shadow-sm">
+            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-surface-elevated text-sm font-semibold text-ink shadow-sm">
               tree A
             </div>
           </MotionChild>
           <MotionChild>
-            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-white text-sm font-semibold text-ink shadow-sm">
+            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-surface-elevated text-sm font-semibold text-ink shadow-sm">
               tree B
             </div>
           </MotionChild>
           <MotionChild>
-            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-white text-sm font-semibold text-ink shadow-sm">
+            <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-surface-elevated text-sm font-semibold text-ink shadow-sm">
               tree C
             </div>
           </MotionChild>
@@ -138,7 +138,7 @@ function ConditionChip({ icon, label }: { icon: React.ReactNode; label: string }
 /** A single if/then rule row with a leading icon. */
 function RuleRow({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-ash bg-white px-3 py-2 text-xs font-medium text-ink shadow-sm">
+    <div className="flex items-center gap-2 rounded-lg border border-ash bg-surface-elevated px-3 py-2 text-xs font-medium text-ink shadow-sm">
       <span className="flex h-6 w-6 shrink-0 items-center justify-center">{icon}</span>
       <span className="flex flex-wrap items-center gap-1.5">{children}</span>
     </div>

@@ -13,7 +13,7 @@ export function Badge({
 }) {
   const tones = {
     brand: "bg-brand-wash text-brand-deep",
-    warm: "bg-warm-wash text-[#9a642f]",
+    warm: "bg-warm-wash text-warm",
     neutral: "bg-ash/70 text-ink-soft",
     good: "bg-good-wash text-good",
   } as const;

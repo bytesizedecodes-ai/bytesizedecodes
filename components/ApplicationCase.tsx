@@ -7,7 +7,7 @@ export function ApplicationCase({
   prompt: string;
 }) {
   return (
-    <section className="rounded-2xl border border-ash bg-white p-5">
+    <section className="rounded-2xl border border-ash bg-surface-elevated p-5">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-ink-faint">
         Application
       </p>

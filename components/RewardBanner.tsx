@@ -7,7 +7,7 @@ export function RewardBanner({ result }: { result: AttemptResult }) {
     <div
       className={`animate-pop rounded-xl border px-4 py-3 ${
         result.critical
-          ? "border-gold/40 bg-[#fbf6ea]"
+          ? "border-gold/40 bg-warm-wash"
           : "border-good/30 bg-good-wash"
       }`}
     >

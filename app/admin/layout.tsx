@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-40 border-b border-ash bg-canvas/90 backdrop-blur-xl">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
             <Link href="/admin" className="flex items-center gap-2 font-semibold tracking-tight">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-[10px] font-bold text-white">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-ink text-[10px] font-bold text-canvas">
                 BSD
               </span>
               <span>Admin</span>

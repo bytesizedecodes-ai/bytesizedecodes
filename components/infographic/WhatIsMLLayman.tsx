@@ -116,7 +116,7 @@ export function WhatIsMLLayman() {
 
 function DatasetIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <ellipse cx="24" cy="12" rx="14" ry="5" />
       <path d="M10 12 V24 Q10 29 24 29 Q38 29 38 24 V12" />
       <path d="M10 24 V36 Q10 41 24 41 Q38 41 38 36 V24" />
@@ -126,7 +126,7 @@ function DatasetIcon() {
 
 function AlgorithmIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="24" cy="24" r="7" />
       {Array.from({ length: 8 }).map((_, i) => {
         const a = (i * Math.PI) / 4;
@@ -138,7 +138,7 @@ function AlgorithmIcon() {
 
 function RulesIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#171713" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-ink)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <rect x="10" y="8" width="28" height="32" rx="3" />
       <line x1="16" y1="17" x2="32" y2="17" />
       <line x1="16" y1="24" x2="32" y2="24" />
@@ -149,7 +149,7 @@ function RulesIcon() {
 
 function PatternsIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="14" cy="16" r="4" />
       <circle cx="34" cy="16" r="4" />
       <circle cx="24" cy="32" r="4" />
@@ -160,7 +160,7 @@ function PatternsIcon() {
 
 function RelationsIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="14" cy="14" r="5" />
       <circle cx="34" cy="34" r="5" />
       <path d="M18 18 L30 30" />
@@ -172,7 +172,7 @@ function RelationsIcon() {
 
 function DecisionIcon() {
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#171713" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-ink)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="24" cy="24" r="14" />
       <path d="M17 24 L22 29 L32 19" />
     </svg>
@@ -182,9 +182,9 @@ function DecisionIcon() {
 function IdentifyIcon() {
   // an eye
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M6 24 Q24 10 42 24 Q24 38 6 24 Z" />
-      <circle cx="24" cy="24" r="5" fill="#4f72aa" />
+      <circle cx="24" cy="24" r="5" fill="var(--color-brand-deep)" />
     </svg>
   );
 }
@@ -192,7 +192,7 @@ function IdentifyIcon() {
 function PredictIcon() {
   // a rising line chart
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <line x1="8" y1="8" x2="8" y2="40" />
       <line x1="8" y1="40" x2="40" y2="40" />
       <polyline points="12,34 20,26 28,30 38,14" />
@@ -203,7 +203,7 @@ function PredictIcon() {
 function LanguageIcon() {
   // a speech bubble
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M8 10 H40 Q44 10 44 14 V28 Q44 32 40 32 H20 L12 38 V32 H8 Q4 32 4 28 V14 Q4 10 8 10 Z" />
       <line x1="12" y1="18" x2="36" y2="18" />
       <line x1="12" y1="24" x2="28" y2="24" />
@@ -214,10 +214,10 @@ function LanguageIcon() {
 function FaceIcon() {
   // a simple face
   return (
-    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2.5" strokeLinecap="round">
+    <svg viewBox="0 0 48 48" className="h-12 w-12" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2.5" strokeLinecap="round">
       <circle cx="24" cy="24" r="16" />
-      <circle cx="18" cy="21" r="1.6" fill="#4f72aa" />
-      <circle cx="30" cy="21" r="1.6" fill="#4f72aa" />
+      <circle cx="18" cy="21" r="1.6" fill="var(--color-brand-deep)" />
+      <circle cx="30" cy="21" r="1.6" fill="var(--color-brand-deep)" />
       <path d="M17 30 Q24 35 31 30" />
     </svg>
   );

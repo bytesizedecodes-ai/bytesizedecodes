@@ -32,7 +32,7 @@ export function ReinforcementDeepDive() {
             <span className="text-center text-xl font-bold text-ink">→</span>
           </MotionChild>
           <MotionChild>
-            <div className="rounded-xl border border-ash bg-white px-4 py-3 text-center">
+            <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-center">
               <div className="flex h-24 items-center justify-center">
                 <BikeShape className="!h-14" />
               </div>
@@ -44,7 +44,7 @@ export function ReinforcementDeepDive() {
             <span className="text-center text-xl font-bold text-ink">→</span>
           </MotionChild>
           <MotionChild>
-            <div className="rounded-xl border border-brand bg-brand px-4 py-3 text-center text-white shadow-sm">
+            <div className="rounded-xl border border-brand bg-brand px-4 py-3 text-center text-canvas shadow-sm">
               <div className="flex h-24 items-center justify-center text-3xl" aria-hidden="true">⚖️</div>
               <div className="text-sm font-bold">feedback</div>
               <div className="text-[11px]">reward / penalty</div>

@@ -82,7 +82,7 @@ function PracticeContent() {
                   }}
                   className={`rounded-full px-3 py-1.5 text-sm ${
                     g.id === generatorId
-                      ? "bg-ink text-white"
+                      ? "bg-ink text-canvas"
                       : "bg-ash/70 text-ink-soft hover:bg-ash"
                   }`}
                 >

@@ -14,7 +14,7 @@ export function LessonStatus({ progressKey }: { progressKey: string }) {
   return (
     <span
       aria-label="Completed"
-      className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-good text-xs font-bold text-white"
+      className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-good text-xs font-bold text-canvas"
     >
       ✓
     </span>

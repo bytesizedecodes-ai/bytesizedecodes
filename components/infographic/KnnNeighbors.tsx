@@ -75,7 +75,7 @@ export function KnnNeighbors() {
             </div>
           </MotionChild>
           <MotionChild>
-            <div className="rounded-xl border border-ash bg-white p-4 text-center shadow-sm">
+            <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
               <div className="mb-2 flex items-end justify-center gap-1">
                 <BikeShape className="!h-9" />
                 <BikeShape className="!h-9" />

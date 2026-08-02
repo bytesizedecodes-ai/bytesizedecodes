@@ -125,7 +125,7 @@ export function CodeCell({
             type="button"
             onClick={() => void run()}
             disabled={status === "loading" || status === "running"}
-            className="rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-40"
+            className="rounded-lg bg-ink px-3 py-1.5 text-xs font-semibold text-canvas disabled:opacity-40"
           >
             {status === "loading"
               ? "Loading Python…"

@@ -5,6 +5,7 @@ import { CalendarCheck2 } from "lucide-react";
 import { useState } from "react";
 import { DailyPlanCard } from "@/components/DailyPlanCard";
 import { RequireOnboarding } from "@/components/RequireOnboarding";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Shell } from "@/components/Shell";
 import { StatsHud } from "@/components/StatsHud";
 import { TIME_MODES, getLearningTrack } from "@/content/tracks";
@@ -31,6 +32,7 @@ export default function TodayPage() {
 
   return (
     <Shell active="/today">
+      <RequireAuth>
       <RequireOnboarding>
         <div className="mx-auto max-w-5xl space-y-7">
           <header className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -43,7 +45,7 @@ export default function TodayPage() {
                 {track.shortTitle} · your plan prioritizes memory, weak skills, then progress.
               </p>
             </div>
-            <div className="inline-flex self-start rounded-xl border border-ash bg-white p-1">
+            <div className="inline-flex self-start rounded-xl border border-ash bg-surface-elevated p-1">
               {TIME_MODES.map((item) => (
                 <button
                   key={item.id}
@@ -51,7 +53,7 @@ export default function TodayPage() {
                   onClick={() => setModeOverride(item.id)}
                   aria-pressed={mode === item.id}
                   className={`focus-ring rounded-lg px-3 py-2 text-xs font-semibold transition ${
-                    mode === item.id ? "bg-ink text-white" : "text-ink-soft hover:bg-ash/60"
+                    mode === item.id ? "bg-ink text-canvas" : "text-ink-soft hover:bg-ash/60"
                   }`}
                 >
                   {item.title}
@@ -115,6 +117,7 @@ export default function TodayPage() {
           </div>
         </div>
       </RequireOnboarding>
+      </RequireAuth>
     </Shell>
   );
 }
@@ -125,7 +128,7 @@ function PlanSkeleton() {
       <div className="h-44 animate-pulse bg-ink/90" />
       <div className="space-y-px bg-ash">
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="h-20 animate-pulse bg-white" />
+          <div key={index} className="h-20 animate-pulse bg-surface-elevated" />
         ))}
       </div>
     </div>

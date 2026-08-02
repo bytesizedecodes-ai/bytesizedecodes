@@ -19,7 +19,7 @@ export default function GalleryPage() {
           aside={
             <Link
               href="/build"
-              className="inline-flex min-h-11 items-center rounded-xl border border-ash bg-white px-4 text-sm font-semibold text-ink"
+              className="inline-flex min-h-11 items-center rounded-xl border border-ash bg-surface-elevated px-4 text-sm font-semibold text-ink"
             >
               My projects
             </Link>

@@ -26,14 +26,26 @@ export function MultipleFeatures() {
             <BikeShape className="!h-14" />
             <span className="absolute -right-6 top-2 text-3xl font-bold text-warm">?</span>
           </div>
-          <div className="flex items-center gap-3 rounded-xl border border-ash bg-white px-5 py-3 shadow-sm">
-            <span className="text-xs font-bold text-ink-soft">Pr(car | 2 wheels)</span>
-            <span className="font-mono text-lg font-bold text-warm">75%</span>
-            <span className="text-ink-faint">vs</span>
-            <span className="font-mono text-lg font-bold text-warm">25%</span>
+          <div className="rounded-xl border border-ash bg-surface-elevated px-5 py-3 shadow-sm">
+            <div className="mb-1.5 text-center text-[11px] font-bold text-ink-soft">
+              of 2-wheel samples in your data:
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <span className="flex items-center gap-1.5">
+                <CarShape className="!h-7" />
+                <CarShape className="!h-7" />
+                <CarShape className="!h-7" />
+                <span className="text-xs font-bold text-ink">3 cars</span>
+              </span>
+              <span className="text-ink-faint">vs</span>
+              <span className="flex items-center gap-1.5">
+                <BikeShape className="!h-7" />
+                <span className="text-xs font-bold text-ink">1 bike</span>
+              </span>
+            </div>
           </div>
           <p className="text-center text-xs font-medium text-ink">
-            Could still be a car — wheel count alone is not a clean call.
+            Mostly cars — but not all. Wheel count alone is not a clean call.
           </p>
         </div>
       </Scene>
@@ -57,7 +69,7 @@ export function MultipleFeatures() {
           </MotionChild>
         </Stagger>
         <p className="mt-3 text-center text-xs font-medium text-ink">
-          Two good features together separate the classes cleanly — 100%.
+          Two good features together separate the classes cleanly.
         </p>
       </Scene>
 

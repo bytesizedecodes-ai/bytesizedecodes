@@ -58,7 +58,7 @@ export function WhatIsDeepLearning() {
             { step: "Step 4", text: "Output a prediction" },
           ].map((item, i, arr) => (
             <li key={item.text} className="contents">
-              <div className="rounded-lg border border-brand bg-white px-4 py-2.5 text-center">
+              <div className="rounded-lg border border-brand bg-surface-elevated px-4 py-2.5 text-center">
                 <span className="block text-[10px] font-semibold uppercase tracking-wide text-ink sm:text-[11px]">
                   {item.step}
                 </span>
@@ -142,7 +142,7 @@ function NetworkSvg() {
       role="img"
       aria-label="A neural network: four input nodes, two columns of five hidden nodes, and three output nodes, fully connected."
     >
-      <g stroke="#7898c8" strokeWidth={1.2} opacity={0.35}>
+      <g stroke="var(--color-brand)" strokeWidth={1.2} opacity={0.35}>
         {links.map((l, i) => (
           <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
         ))}
@@ -155,7 +155,7 @@ function NetworkSvg() {
         fontFamily="Inter, sans-serif"
         fontSize={34}
         fontWeight={700}
-        fill="#6888c8"
+        fill="var(--color-brand-deep)"
       >
         ···
       </text>
@@ -176,13 +176,13 @@ function NetworkSvg() {
       ))}
 
       {/* layer captions */}
-      <text x="130" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="#080808">
+      <text x="130" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="var(--screen)">
         Input Layer
       </text>
-      <text x="475" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="#080808">
+      <text x="475" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="var(--screen)">
         Hidden Layers
       </text>
-      <text x="820" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="#080808">
+      <text x="820" y="312" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={700} fill="var(--screen)">
         Output Layer
       </text>
     </svg>

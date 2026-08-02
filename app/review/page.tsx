@@ -47,7 +47,7 @@ export default function ReviewPage() {
           </p>
           <Link
             href={completed ? "/today" : "/practice"}
-            className="inline-block rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-white"
+            className="inline-block rounded-xl bg-ink px-5 py-3 text-sm font-semibold text-canvas"
           >
             {completed ? "Back to Today" : "Go practise"}
           </Link>
@@ -117,7 +117,7 @@ function AuthoredReview({
         <button
           type="button"
           onClick={onDone}
-          className="mt-4 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white"
+          className="mt-4 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-canvas"
         >
           Next review
         </button>

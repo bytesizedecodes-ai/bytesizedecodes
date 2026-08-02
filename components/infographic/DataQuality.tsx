@@ -36,7 +36,7 @@ export function DataQuality() {
         </div>
         <div className="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-ink">
           <span>what it learns:</span>
-          <span className="rounded-full bg-bad px-2.5 py-1 text-white">&ldquo;a car is always red&rdquo;</span>
+          <span className="rounded-full bg-bad px-2.5 py-1 text-canvas">&ldquo;a car is always red&rdquo;</span>
         </div>
       </Scene>
 
@@ -77,7 +77,7 @@ export function DataQuality() {
         </div>
         <div className="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-ink">
           <span>now a blue car:</span>
-          <span className="rounded-full bg-good px-2.5 py-1 text-white">&ldquo;that&apos;s a car&rdquo;</span>
+          <span className="rounded-full bg-good px-2.5 py-1 text-canvas">&ldquo;that&apos;s a car&rdquo;</span>
         </div>
       </Scene>
 
@@ -97,9 +97,9 @@ function RedCar({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 70" className={`h-16 w-auto ${className}`} aria-hidden="true">
       <path d="M8 48 Q10 30 30 28 L42 18 Q60 14 78 18 L92 28 Q108 30 112 48 L112 54 Q112 58 108 58 L92 58 Q88 48 80 48 Q72 48 72 58 L48 58 Q44 48 40 48 Q32 48 32 58 L12 58 Q8 58 8 54 Z"
-        fill="#c1706b" stroke="#a55" strokeWidth="2" />
-      <circle cx="40" cy="56" r="9" fill="#3a2a1a" />
-      <circle cx="80" cy="56" r="9" fill="#3a2a1a" />
+        fill="var(--color-bad)" stroke="var(--color-bad)" strokeWidth="2" />
+      <circle cx="40" cy="56" r="9" fill="var(--tire)" />
+      <circle cx="80" cy="56" r="9" fill="var(--tire)" />
     </svg>
   );
 }
@@ -109,9 +109,9 @@ function BlueCar({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 120 70" className={`h-16 w-auto ${className}`} aria-hidden="true">
       <path d="M8 48 Q10 30 30 28 L42 18 Q60 14 78 18 L92 28 Q108 30 112 48 L112 54 Q112 58 108 58 L92 58 Q88 48 80 48 Q72 48 72 58 L48 58 Q44 48 40 48 Q32 48 32 58 L12 58 Q8 58 8 54 Z"
-        fill="#4f72aa" stroke="#3a5690" strokeWidth="2" />
-      <circle cx="40" cy="56" r="9" fill="#3a2a1a" />
-      <circle cx="80" cy="56" r="9" fill="#3a2a1a" />
+        fill="var(--color-brand-deep)" stroke="var(--color-brand-deep)" strokeWidth="2" />
+      <circle cx="40" cy="56" r="9" fill="var(--tire)" />
+      <circle cx="80" cy="56" r="9" fill="var(--tire)" />
     </svg>
   );
 }

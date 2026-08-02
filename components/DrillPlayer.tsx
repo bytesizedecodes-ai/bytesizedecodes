@@ -185,7 +185,7 @@ function QuestionCard({
           type="button"
           disabled={!selection || pending}
           onClick={check}
-          className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-canvas disabled:cursor-not-allowed disabled:opacity-40"
         >
           {pending ? "Checking…" : "Check answer"}
         </button>
@@ -234,7 +234,7 @@ function QuestionCard({
                   <Link
                     key={slug}
                     href={`/bytes/${slug}`}
-                    className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-brand-deep hover:underline"
+                    className="rounded-full bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-brand-deep hover:underline"
                   >
                     Revisit {slug.replaceAll("-", " ")}
                   </Link>
@@ -253,7 +253,7 @@ function QuestionCard({
                     type="button"
                     disabled={pending || (!result.correct && grade !== "again")}
                     onClick={() => void submitReviewGrade(grade)}
-                    className="focus-ring rounded-xl border border-ash bg-white px-3 py-2.5 text-xs font-semibold capitalize text-ink hover:border-brand disabled:opacity-35"
+                    className="focus-ring rounded-xl border border-ash bg-surface-elevated px-3 py-2.5 text-xs font-semibold capitalize text-ink hover:border-brand disabled:opacity-35"
                   >
                     {grade}
                   </button>
@@ -273,7 +273,7 @@ function QuestionCard({
             <button
               type="button"
               onClick={onDone}
-              className="w-full rounded-xl border border-ash bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-ash/40"
+              className="w-full rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-sm font-semibold text-ink hover:bg-ash/40"
             >
               Next
             </button>
@@ -309,7 +309,7 @@ function NumericInput({
           if (e.key === "Enter") onSubmit();
         }}
         placeholder="Your answer"
-        className="flex-1 rounded-xl border border-ash bg-white px-4 py-3 text-sm outline-none focus:border-brand"
+        className="flex-1 rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-sm outline-none focus:border-brand"
       />
       {unit && (
         <span className="flex items-center px-2 text-sm text-ink-faint">{unit}</span>

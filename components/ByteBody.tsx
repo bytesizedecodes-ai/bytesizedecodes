@@ -173,7 +173,7 @@ export function ByteBody({
                     type="button"
                     disabled={!answers[q.id]}
                     onClick={() => void checkQuestion(q.id)}
-                    className="rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                    className="rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-canvas disabled:opacity-40"
                   >
                     Check
                   </button>
@@ -241,7 +241,7 @@ export function ByteBody({
             type="button"
             disabled={!canComplete || pending}
             onClick={() => void finish()}
-            className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
+            className="w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-canvas disabled:opacity-40"
           >
             {canComplete
               ? pending

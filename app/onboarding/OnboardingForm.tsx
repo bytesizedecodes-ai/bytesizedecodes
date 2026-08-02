@@ -73,16 +73,16 @@ export function OnboardingForm() {
                 className={`focus-ring relative rounded-2xl border p-4 text-left transition ${
                   selected
                     ? "border-brand bg-brand-wash shadow-sm"
-                    : "border-ash bg-white hover:border-brand-muted"
+                    : "border-ash bg-surface-elevated hover:border-brand-muted"
                 }`}
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-deep">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-elevated text-brand-deep">
                   <Icon className="h-5 w-5" />
                 </span>
                 <span className="mt-4 block text-sm font-semibold text-ink">{item.title}</span>
                 <span className="mt-1 block text-xs leading-relaxed text-ink-soft">{item.promise}</span>
                 {selected && (
-                  <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-brand-deep text-white">
+                  <span className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-brand-deep text-canvas">
                     <Check className="h-3.5 w-3.5" />
                   </span>
                 )}
@@ -103,7 +103,7 @@ export function OnboardingForm() {
               className={`focus-ring rounded-2xl border p-4 text-left transition ${
                 item.id === level
                   ? "border-brand bg-brand-wash"
-                  : "border-ash bg-white hover:border-brand-muted"
+                  : "border-ash bg-surface-elevated hover:border-brand-muted"
               }`}
             >
               <span className="text-sm font-semibold text-ink">{item.title}</span>
@@ -125,8 +125,8 @@ export function OnboardingForm() {
               aria-pressed={item.id === timeMode}
               className={`focus-ring rounded-2xl border p-4 text-left transition ${
                 item.id === timeMode
-                  ? "border-ink bg-ink text-white"
-                  : "border-ash bg-white text-ink hover:border-brand-muted"
+                  ? "border-ink bg-ink text-canvas"
+                  : "border-ash bg-surface-elevated text-ink hover:border-brand-muted"
               }`}
             >
               <span className="flex items-center gap-2 text-sm font-semibold">
@@ -135,7 +135,7 @@ export function OnboardingForm() {
               </span>
               <span
                 className={`mt-1.5 block text-xs leading-relaxed ${
-                  item.id === timeMode ? "text-white/65" : "text-ink-soft"
+                  item.id === timeMode ? "text-canvas/65" : "text-ink-soft"
                 }`}
               >
                 {item.detail}
@@ -183,7 +183,7 @@ function ChoiceSection({
   return (
     <section>
       <div className="mb-4 flex items-center gap-3">
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-warm-wash text-xs font-bold text-[#9a642f]">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-warm-wash text-xs font-bold text-warm">
           {number}
         </span>
         <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>

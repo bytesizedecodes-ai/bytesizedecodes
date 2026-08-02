@@ -1,0 +1,280 @@
+[     111ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[     125ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  539577ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540066ms] [LOG] [Fast Refresh] done in 588ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540416ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540421ms] [LOG] [Fast Refresh] done in 106ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540641ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540693ms] [LOG] [Fast Refresh] done in 151ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  540978ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  541011ms] [LOG] [Fast Refresh] done in 134ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  541210ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  541322ms] [LOG] [Fast Refresh] done in 214ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  541423ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  541711ms] [LOG] [Fast Refresh] done in 389ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542558ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542573ms] [LOG] [Fast Refresh] done in 115ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542676ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542709ms] [LOG] [Fast Refresh] done in 134ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542813ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  542927ms] [LOG] [Fast Refresh] done in 215ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  543138ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  543930ms] [LOG] [Fast Refresh] done in 892ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  544034ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  544149ms] [LOG] [Fast Refresh] done in 216ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  559844ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  561189ms] [LOG] [Fast Refresh] done in 1446ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  587062ms] [ERROR] ./app/learn/page.tsx:33:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  31 |     </Shell>
+  32 |   );
+> 33 | }
+     | ^
+  34 |
+
+Parsing ecmascript source code failed @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  587105ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  601285ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  601361ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  650408ms] [ERROR] ./app/today/page.tsx:122:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  120 |     </Shell>
+  121 |   );
+> 122 | }
+      | ^
+  123 |
+  124 | function PlanSkeleton() {
+  125 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/today/page.tsx [Client Component Browser]
+    ./app/today/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/today/page.tsx [Client Component SSR]
+    ./app/today/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  650450ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  658986ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  659135ms] [LOG] [Fast Refresh] done in 49ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  679193ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  679244ms] [LOG] [Fast Refresh] done in 152ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  685845ms] [ERROR] ./app/build/page.tsx:121:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  119 |     </Shell>
+  120 |   );
+> 121 | }
+      | ^
+  122 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/build/page.tsx [Client Component Browser]
+    ./app/build/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/build/page.tsx [Client Component SSR]
+    ./app/build/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  685889ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  693114ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  693237ms] [LOG] [Fast Refresh] done in 74ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  713321ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  713335ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  713464ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  713464ms] [LOG] [Fast Refresh] done in 102ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  730005ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  730049ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  750505ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  750557ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  750623ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  751684ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  751740ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  751798ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  751940ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  751978ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  752197ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  752235ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  754200ms] [ERROR] ./app/progress/page.tsx:208:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  206 |     </Shell>
+  207 |   );
+> 208 | }
+      | ^
+  209 |
+  210 | function EmptyCapability() {
+  211 |   return (
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/progress/page.tsx [Client Component Browser]
+    ./app/progress/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/progress/page.tsx [Client Component SSR]
+    ./app/progress/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  754228ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  754351ms] [LOG] [Fast Refresh] done in 101ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  774641ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  774679ms] [LOG] [Fast Refresh] done in 139ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  797612ms] [ERROR] ./app/profile/page.tsx:190:1
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+  188 |     </Shell>
+  189 |   );
+> 190 | }
+      | ^
+  191 |
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./app/profile/page.tsx [Client Component Browser]
+    ./app/profile/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./app/profile/page.tsx [Client Component SSR]
+    ./app/profile/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:3330
+[  797644ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  811125ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  811202ms] [LOG] [Fast Refresh] done in 104ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  831523ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489
+[  831554ms] [LOG] [Fast Refresh] done in 132ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_1ybzpk2._.js:2489

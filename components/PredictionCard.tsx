@@ -18,13 +18,13 @@ export function PredictionCard({ question }: { question: ByteQuestion }) {
       <ul className="mt-4 space-y-2">
         {question.choices.map((choice) => {
           const selected = picked === choice.id;
-          let tone = "border-ash bg-white hover:border-brand-muted";
+          let tone = "border-ash bg-surface-elevated hover:border-brand-muted";
           if (revealed && choice.id === question.answer) {
             tone = "border-good bg-good-wash";
           } else if (revealed && selected && !correct) {
             tone = "border-bad bg-bad-wash";
           } else if (selected) {
-            tone = "border-brand bg-white";
+            tone = "border-brand bg-surface-elevated";
           }
           return (
             <li key={choice.id}>

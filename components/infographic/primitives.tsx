@@ -60,7 +60,7 @@ export function InfographicHeader({
 type CardTone = "white" | "ash" | "brand" | "brandDeep" | "brandWash";
 
 const CARD_TONES: Record<CardTone, string> = {
-  white: "bg-white border border-ash text-ink",
+  white: "bg-surface-elevated border border-ash text-ink",
   ash: "bg-ash border border-dot text-ink",
   brand: "bg-brand border border-brand text-ink",
   brandDeep: "bg-brand-deep border border-brand-deep text-canvas",
@@ -143,7 +143,7 @@ export function BulletList({
 /** A small pill tag, e.g. for example chips. */
 export function Tag({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-full border border-ash bg-white px-3 py-1 text-xs font-semibold text-ink">
+    <span className="rounded-full border border-ash bg-surface-elevated px-3 py-1 text-xs font-semibold text-ink">
       {children}
     </span>
   );

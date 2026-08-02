@@ -1,0 +1,207 @@
+- generic [active] [ref=f63e1]:
+  - generic [ref=f63e2]:
+    - banner [ref=f63e3]:
+      - generic [ref=f63e4]:
+        - link "ByteSizeDecodes" [ref=f63e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f63e7]: BSD
+        - navigation "Primary navigation" [ref=f63e11]:
+          - link "Courses" [ref=f63e12] [cursor=pointer]:
+            - /url: /courses
+          - link "Learn" [ref=f63e13] [cursor=pointer]:
+            - /url: /learn
+          - link "Start free" [ref=f63e14] [cursor=pointer]:
+            - /url: /login
+        - button "Switch to dark theme" [ref=f63e15]
+    - main [ref=f63e18]:
+      - generic [ref=f63e20]:
+        - generic [ref=f63e21]: Learn AI the visual way — no maths required
+        - heading "Learn AI visually. Practise it. Build something real." [level=1] [ref=f63e25]: Learn AI visually.Practise it. Build something real.
+        - paragraph [ref=f63e26]: Short visual lessons, intelligent practice, and real project thinking — for anyone curious about AI, from first concepts to your first useful product.
+        - generic [ref=f63e27]:
+          - link "Find my learning path" [ref=f63e28] [cursor=pointer]:
+            - /url: /onboarding
+          - link "Explore courses" [ref=f63e31] [cursor=pointer]:
+            - /url: /courses
+        - paragraph [ref=f63e32]: Start anonymously. No login required to learn.
+      - generic [ref=f63e34]:
+        - generic [ref=f63e35]:
+          - generic [ref=f63e36]: "19"
+          - generic [ref=f63e37]: visual lessons
+        - generic [ref=f63e38]:
+          - generic [ref=f63e39]: "2"
+          - generic [ref=f63e40]: full courses
+        - generic [ref=f63e41]:
+          - generic [ref=f63e42]: 100%
+          - generic [ref=f63e43]: free to learn
+        - generic [ref=f63e44]:
+          - generic [ref=f63e45]: ∞
+          - generic [ref=f63e46]: practice drills
+      - generic [ref=f63e47]:
+        - generic [ref=f63e48]:
+          - paragraph [ref=f63e49]: Why it works
+          - heading "A learning loop your brain actually likes" [level=2] [ref=f63e50]
+        - generic [ref=f63e51]:
+          - generic [ref=f63e52]:
+            - heading "See it clearly" [level=3] [ref=f63e57]
+            - paragraph [ref=f63e58]: Visual explanations turn abstract AI ideas into concrete mental models — no jargon, no prerequisites.
+          - generic [ref=f63e59]:
+            - heading "Practise the hard parts" [level=3] [ref=f63e64]
+            - paragraph [ref=f63e65]: Generated problems adapt while targeted feedback repairs misconceptions. Spaced review keeps it.
+          - generic [ref=f63e66]:
+            - heading "Build something real" [level=3] [ref=f63e71]
+            - paragraph [ref=f63e72]: Progress toward a useful artifact — the kind you can show, explain, and trust.
+      - generic [ref=f63e73]:
+        - generic [ref=f63e74]:
+          - paragraph [ref=f63e75]: Loved by learners
+          - heading "What people are saying" [level=2] [ref=f63e76]
+        - generic [ref=f63e78]:
+          - figure "PS Priya Sharma Marketing Manager" [ref=f63e79]:
+            - blockquote [ref=f63e91]: “I finally understand what a model actually learns — and why it can be wrong. The pictures made it click.”
+            - generic [ref=f63e92]:
+              - generic [ref=f63e93]: PS
+              - generic [ref=f63e94]:
+                - generic [ref=f63e95]: Priya Sharma
+                - generic [ref=f63e96]: Marketing Manager
+          - figure "DO Daniel Okafor Product Designer" [ref=f63e97]:
+            - blockquote [ref=f63e109]: “Tried so many AI courses. This is the first one that didn't lose me in the first 10 minutes.”
+            - generic [ref=f63e110]:
+              - generic [ref=f63e111]: DO
+              - generic [ref=f63e112]:
+                - generic [ref=f63e113]: Daniel Okafor
+                - generic [ref=f63e114]: Product Designer
+          - figure "ML Mei Lin CS Student" [ref=f63e115]:
+            - blockquote [ref=f63e127]: “The car-vs-bike examples are silly simple, but that's exactly why they work. I finally get classification.”
+            - generic [ref=f63e128]:
+              - generic [ref=f63e129]: ML
+              - generic [ref=f63e130]:
+                - generic [ref=f63e131]: Mei Lin
+                - generic [ref=f63e132]: CS Student
+          - figure "RC Robert Chen Operations Lead" [ref=f63e133]:
+            - blockquote [ref=f63e145]: “I'm 52 and thought AI was beyond me. Three lessons in and I'm explaining ML to my colleagues.”
+            - generic [ref=f63e146]:
+              - generic [ref=f63e147]: RC
+              - generic [ref=f63e148]:
+                - generic [ref=f63e149]: Robert Chen
+                - generic [ref=f63e150]: Operations Lead
+          - figure "AP Aisha Patel Healthcare Analyst" [ref=f63e151]:
+            - blockquote [ref=f63e163]: “No math, no jargon, no shame. Just clear pictures and one idea at a time. Exactly what I needed.”
+            - generic [ref=f63e164]:
+              - generic [ref=f63e165]: AP
+              - generic [ref=f63e166]:
+                - generic [ref=f63e167]: Aisha Patel
+                - generic [ref=f63e168]: Healthcare Analyst
+          - figure "MW Marcus Webb Startup Founder" [ref=f63e169]:
+            - blockquote [ref=f63e181]: “The spaced review is sneaky good. I keep coming back because the streak makes it feel like a game.”
+            - generic [ref=f63e182]:
+              - generic [ref=f63e183]: MW
+              - generic [ref=f63e184]:
+                - generic [ref=f63e185]: Marcus Webb
+                - generic [ref=f63e186]: Startup Founder
+          - figure "ER Elena Rossi Project Manager" [ref=f63e187]:
+            - blockquote [ref=f63e199]: “My team builds ML products. Now I can actually follow what they're talking about in standup.”
+            - generic [ref=f63e200]:
+              - generic [ref=f63e201]: ER
+              - generic [ref=f63e202]:
+                - generic [ref=f63e203]: Elena Rossi
+                - generic [ref=f63e204]: Project Manager
+          - figure "JC James Carter Teacher" [ref=f63e205]:
+            - blockquote [ref=f63e217]: “Every lesson takes 5 minutes and I walk away actually remembering the idea. That's rare.”
+            - generic [ref=f63e218]:
+              - generic [ref=f63e219]: JC
+              - generic [ref=f63e220]:
+                - generic [ref=f63e221]: James Carter
+                - generic [ref=f63e222]: Teacher
+          - figure "FA Fatima Al-Sayed Recent Graduate" [ref=f63e223]:
+            - blockquote [ref=f63e235]: “I was scared of AI. Now I'm curious. That shift happened in one afternoon on this site.”
+            - generic [ref=f63e236]:
+              - generic [ref=f63e237]: FA
+              - generic [ref=f63e238]:
+                - generic [ref=f63e239]: Fatima Al-Sayed
+                - generic [ref=f63e240]: Recent Graduate
+          - figure "TB Tom Becker Software Engineer" [ref=f63e241]:
+            - blockquote [ref=f63e253]: “The 'when ML gets it wrong' lesson should be required viewing for everyone using AI tools.”
+            - generic [ref=f63e254]:
+              - generic [ref=f63e255]: TB
+              - generic [ref=f63e256]:
+                - generic [ref=f63e257]: Tom Becker
+                - generic [ref=f63e258]: Software Engineer
+          - figure "PS Priya Sharma Marketing Manager" [ref=f63e259]:
+            - blockquote [ref=f63e271]: “I finally understand what a model actually learns — and why it can be wrong. The pictures made it click.”
+            - generic [ref=f63e272]:
+              - generic [ref=f63e273]: PS
+              - generic [ref=f63e274]:
+                - generic [ref=f63e275]: Priya Sharma
+                - generic [ref=f63e276]: Marketing Manager
+          - figure "DO Daniel Okafor Product Designer" [ref=f63e277]:
+            - blockquote [ref=f63e289]: “Tried so many AI courses. This is the first one that didn't lose me in the first 10 minutes.”
+            - generic [ref=f63e290]:
+              - generic [ref=f63e291]: DO
+              - generic [ref=f63e292]:
+                - generic [ref=f63e293]: Daniel Okafor
+                - generic [ref=f63e294]: Product Designer
+          - figure "ML Mei Lin CS Student" [ref=f63e295]:
+            - blockquote [ref=f63e307]: “The car-vs-bike examples are silly simple, but that's exactly why they work. I finally get classification.”
+            - generic [ref=f63e308]:
+              - generic [ref=f63e309]: ML
+              - generic [ref=f63e310]:
+                - generic [ref=f63e311]: Mei Lin
+                - generic [ref=f63e312]: CS Student
+          - figure "RC Robert Chen Operations Lead" [ref=f63e313]:
+            - blockquote [ref=f63e325]: “I'm 52 and thought AI was beyond me. Three lessons in and I'm explaining ML to my colleagues.”
+            - generic [ref=f63e326]:
+              - generic [ref=f63e327]: RC
+              - generic [ref=f63e328]:
+                - generic [ref=f63e329]: Robert Chen
+                - generic [ref=f63e330]: Operations Lead
+          - figure "AP Aisha Patel Healthcare Analyst" [ref=f63e331]:
+            - blockquote [ref=f63e343]: “No math, no jargon, no shame. Just clear pictures and one idea at a time. Exactly what I needed.”
+            - generic [ref=f63e344]:
+              - generic [ref=f63e345]: AP
+              - generic [ref=f63e346]:
+                - generic [ref=f63e347]: Aisha Patel
+                - generic [ref=f63e348]: Healthcare Analyst
+          - figure "MW Marcus Webb Startup Founder" [ref=f63e349]:
+            - blockquote [ref=f63e361]: “The spaced review is sneaky good. I keep coming back because the streak makes it feel like a game.”
+            - generic [ref=f63e362]:
+              - generic [ref=f63e363]: MW
+              - generic [ref=f63e364]:
+                - generic [ref=f63e365]: Marcus Webb
+                - generic [ref=f63e366]: Startup Founder
+          - figure "ER Elena Rossi Project Manager" [ref=f63e367]:
+            - blockquote [ref=f63e379]: “My team builds ML products. Now I can actually follow what they're talking about in standup.”
+            - generic [ref=f63e380]:
+              - generic [ref=f63e381]: ER
+              - generic [ref=f63e382]:
+                - generic [ref=f63e383]: Elena Rossi
+                - generic [ref=f63e384]: Project Manager
+          - figure "JC James Carter Teacher" [ref=f63e385]:
+            - blockquote [ref=f63e397]: “Every lesson takes 5 minutes and I walk away actually remembering the idea. That's rare.”
+            - generic [ref=f63e398]:
+              - generic [ref=f63e399]: JC
+              - generic [ref=f63e400]:
+                - generic [ref=f63e401]: James Carter
+                - generic [ref=f63e402]: Teacher
+          - figure "FA Fatima Al-Sayed Recent Graduate" [ref=f63e403]:
+            - blockquote [ref=f63e415]: “I was scared of AI. Now I'm curious. That shift happened in one afternoon on this site.”
+            - generic [ref=f63e416]:
+              - generic [ref=f63e417]: FA
+              - generic [ref=f63e418]:
+                - generic [ref=f63e419]: Fatima Al-Sayed
+                - generic [ref=f63e420]: Recent Graduate
+          - figure "TB Tom Becker Software Engineer" [ref=f63e421]:
+            - blockquote [ref=f63e433]: “The 'when ML gets it wrong' lesson should be required viewing for everyone using AI tools.”
+            - generic [ref=f63e434]:
+              - generic [ref=f63e435]: TB
+              - generic [ref=f63e436]:
+                - generic [ref=f63e437]: Tom Becker
+                - generic [ref=f63e438]: Software Engineer
+      - generic [ref=f63e440]:
+        - heading "Start in under a minute" [level=2] [ref=f63e441]
+        - paragraph [ref=f63e442]: Pick a goal, get a daily plan, and learn your first AI concept today — free.
+        - link "Begin learning" [ref=f63e444] [cursor=pointer]:
+          - /url: /onboarding
+        - paragraph [ref=f63e447]: No login required. Learn at your own pace.
+    - button "Send feedback" [ref=f63e448]
+    - contentinfo [ref=f63e451]: ByteSizeDecodes — Learn AI visually. Practise it. Build something real.
+  - button "Open Next.js Dev Tools" [ref=f63e457] [cursor=pointer]

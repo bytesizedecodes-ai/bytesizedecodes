@@ -1,0 +1,112 @@
+- generic [active] [ref=f48e1]:
+  - generic [ref=f48e2]:
+    - banner [ref=f48e3]:
+      - generic [ref=f48e4]:
+        - link "ByteSizeDecodes" [ref=f48e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f48e7]: BSD
+        - navigation "Primary navigation" [ref=f48e11]:
+          - link "Today" [ref=f48e12] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f48e13] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f48e14] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f48e15] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f48e16] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f48e17] [cursor=pointer]:
+            - /url: /profile
+        - button "Switch to dark theme" [ref=f48e18]
+    - main [ref=f48e21]:
+      - generic [ref=f48e22]:
+        - link "← Machine Learning for Layman" [ref=f48e23] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f48e24]:
+          - paragraph [ref=f48e25]: Lesson 9 of 19 · Machine Learning for Layman
+          - heading "Your first classifier" [level=1] [ref=f48e26]
+          - paragraph [ref=f48e27]: Count the data → a probability → a simple decision rule.
+          - paragraph [ref=f48e28]: "By the end: Build a classifier by counting outcomes and picking the more likely class."
+          - generic [ref=f48e29]:
+            - generic [ref=f48e30]: Byte · 5 min
+            - generic [ref=f48e31]: 1 questions
+            - generic [ref=f48e32]: +XP on complete
+        - generic [ref=f48e34]:
+          - paragraph [ref=f48e35]: Predict before you look
+          - paragraph [ref=f48e36]: "Before the picture: in your data, every 4-wheel sample is a car and every 2-wheel sample is a bike. A new sample has 4 wheels. What would you guess?"
+          - list [ref=f48e37]:
+            - listitem [ref=f48e38]:
+              - button "Car" [ref=f48e39]
+            - listitem [ref=f48e40]:
+              - button "Bike" [ref=f48e41]
+            - listitem [ref=f48e42]:
+              - button "Can’t tell" [ref=f48e43]
+        - generic [ref=f48e45]:
+          - generic [ref=f48e47]:
+            - heading "Your first classifier" [level=2] [ref=f48e48]
+            - paragraph [ref=f48e49]: Count the data → a probability → a decision rule
+          - figure "① Start with labelled examples" [ref=f48e51]:
+            - generic [ref=f48e53]:
+              - generic [ref=f48e54]: 4 wheels → car
+              - generic [ref=f48e81]: +
+              - generic [ref=f48e83]: 2 wheels → bike
+          - figure "② Count them → every 4-wheel is a car, every 2-wheel is a bike" [ref=f48e107]:
+            - generic [ref=f48e109]:
+              - generic [ref=f48e110]:
+                - generic [ref=f48e120]: 4 wheels
+                - generic [ref=f48e121]: 100%
+                - paragraph [ref=f48e122]: all of them are cars
+              - generic [ref=f48e123]:
+                - generic [ref=f48e132]: 2 wheels
+                - generic [ref=f48e133]: 100%
+                - paragraph [ref=f48e134]: all of them are bikes
+          - figure "③ A new sample arrives — apply the rule" [ref=f48e135]:
+            - generic [ref=f48e137]:
+              - generic [ref=f48e138]: 2 wheels · ?
+              - generic [ref=f48e148]: →
+              - generic [ref=f48e150]: bike
+            - paragraph [ref=f48e161]: Every 2-wheel example was a bike ⇒ the rule says bike.
+          - paragraph [ref=f48e163]: Count the data, pick the more likely class — that's a classifier from scratch.
+        - generic [ref=f48e164]:
+          - generic [ref=f48e165]:
+            - paragraph [ref=f48e166]: Once your samples are vectors with labels, you can build your first classifier with nothing more than counting.
+            - paragraph [ref=f48e167]: "Look at all the 4-wheel examples: if every one is a car, then a new 4-wheel sample is almost certainly a car too. That ‘probability from counting’ is the whole rule."
+            - paragraph [ref=f48e168]: Pick the class that’s more likely given the feature, and you have a working classifier — built from scratch, no maths beyond counting.
+          - generic [ref=f48e169]:
+            - generic [ref=f48e170]:
+              - heading "Check yourself" [level=2] [ref=f48e171]
+              - generic [ref=f48e172]:
+                - paragraph [ref=f48e173]: Every 4-wheel sample in your data is a car, every 2-wheel sample is a bike. A new sample has 2 wheels. What does your classifier say?
+                - generic [ref=f48e174]:
+                  - button "a CAR, because it might be" [ref=f48e175]:
+                    - generic [ref=f48e176]: a
+                    - text: CAR, because it might be
+                  - button "b BIKE, because Pr(BIKE | 2 wheels) = 100%" [ref=f48e177]:
+                    - generic [ref=f48e178]: b
+                    - text: BIKE, because Pr(BIKE | 2 wheels) = 100%
+                  - button "c Unsure — ask for more features" [ref=f48e179]:
+                    - generic [ref=f48e180]: c
+                    - text: Unsure — ask for more features
+                - button "Check" [disabled] [ref=f48e181]
+            - button "Answer all questions to finish" [disabled] [ref=f48e183]
+        - navigation [ref=f48e184]:
+          - link "← Previous Representing samples as features" [ref=f48e185] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/features-and-vectors
+            - generic [ref=f48e186]: ←
+            - generic [ref=f48e187]:
+              - generic [ref=f48e188]: Previous
+              - generic [ref=f48e189]: Representing samples as features
+          - link "Next When one feature isn’t enough →" [ref=f48e190] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/multiple-features
+            - generic [ref=f48e191]:
+              - generic [ref=f48e192]: Next
+              - generic [ref=f48e193]: When one feature isn’t enough
+            - generic [ref=f48e194]: →
+    - button "Send feedback" [ref=f48e195]
+    - contentinfo [ref=f48e198]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f48e199] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f48e205] [cursor=pointer]

@@ -81,7 +81,7 @@ function CourseFiltersContent({ courses }: { courses: readonly Course[] }) {
           <button
             type="button"
             onClick={() => router.replace("/courses", { scroll: false })}
-            className="focus-ring mt-4 inline-flex items-center rounded-xl border border-ash bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-brand-wash/40"
+            className="focus-ring mt-4 inline-flex items-center rounded-xl border border-ash bg-surface-elevated px-4 py-2 text-sm font-semibold text-ink hover:bg-brand-wash/40"
           >
             Clear filters
           </button>
@@ -121,7 +121,7 @@ function FilterRow({
               capitalize ? "capitalize" : ""
             } ${
               isActive
-                ? "bg-ink text-white"
+                ? "bg-ink text-canvas"
                 : "bg-ash/70 text-ink-soft hover:bg-ash"
             }`}
           >

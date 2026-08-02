@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
 import { Shell } from "@/components/Shell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { LoginCard } from "@/components/LoginCard";
 import { getLearningTrack } from "@/content/tracks";
 import {
@@ -101,6 +102,7 @@ export default function ProfilePage() {
 
   return (
     <Shell active="/profile">
+      <RequireAuth>
       <div className="mx-auto max-w-4xl space-y-8">
         <PageHeader
           eyebrow="Profile"
@@ -157,7 +159,7 @@ export default function ProfilePage() {
             <Button className="w-full" onClick={() => void download()} disabled={busy}>
               <Download className="h-4 w-4" /> Export progress
             </Button>
-            <label className="focus-ring flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-ash bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:border-brand-muted">
+            <label className="focus-ring flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-ash bg-surface-elevated px-4 py-2.5 text-sm font-semibold text-ink hover:border-brand-muted">
               <Upload className="h-4 w-4" /> Import progress
               <input
                 type="file"
@@ -183,6 +185,7 @@ export default function ProfilePage() {
           <LoginCard />
         </div>
       </div>
+      </RequireAuth>
     </Shell>
   );
 }

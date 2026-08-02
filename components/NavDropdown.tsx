@@ -120,7 +120,7 @@ export function NavDropdown({
       </div>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-52 rounded-xl border border-ash bg-white p-1 shadow-md">
+        <div className="absolute left-0 top-full z-50 mt-1 min-w-52 rounded-xl border border-ash bg-surface-elevated p-1 shadow-md">
           {items.map((item) => (
             <Link
               key={item.href}

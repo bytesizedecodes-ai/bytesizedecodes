@@ -50,7 +50,7 @@ function Stat({
   value: string;
 }) {
   return (
-    <div className="bg-white p-4">
+    <div className="bg-surface-elevated p-4">
       <div className="flex items-center gap-1.5 text-ink-faint">
         {icon}
         <p className="text-[11px] font-medium uppercase tracking-wide">{label}</p>
@@ -66,7 +66,7 @@ function StatsBoardSkeleton() {
   return (
     <div className="card grid grid-cols-2 gap-px overflow-hidden bg-ash sm:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="bg-white p-4">
+        <div key={i} className="bg-surface-elevated p-4">
           <div className="h-3 w-16 animate-pulse rounded bg-ash/70" />
           <div className="mt-2 h-7 w-12 animate-pulse rounded bg-ash/70" />
         </div>

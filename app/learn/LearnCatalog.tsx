@@ -45,7 +45,7 @@ export function LearnCatalog() {
               )}
             </div>
           </div>
-          <div className="flex min-h-52 items-center justify-center bg-ink p-8 text-white">
+          <div className="flex min-h-52 items-center justify-center bg-ink p-8 text-canvas">
             <div className="w-full max-w-xs">
               <div className="flex items-center gap-2 text-brand-muted">
                 <Sparkles className="h-4 w-4" />
@@ -54,8 +54,8 @@ export function LearnCatalog() {
                 </p>
               </div>
               <p className="mt-4 text-xl font-semibold">{trackInfo.title}</p>
-              <p className="mt-2 text-sm leading-relaxed text-white/60">{trackInfo.promise}</p>
-              <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
+              <p className="mt-2 text-sm leading-relaxed text-canvas/60">{trackInfo.promise}</p>
+              <div className="mt-6 h-2 overflow-hidden rounded-full bg-surface-elevated/10">
                 <div
                   className="h-full rounded-full bg-warm"
                   style={{
@@ -120,9 +120,9 @@ function UnitSection({
               <span
                 className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
                   status === "completed"
-                    ? "bg-good text-white"
+                    ? "bg-good text-canvas"
                     : status === "started"
-                      ? "bg-brand-deep text-white"
+                      ? "bg-brand-deep text-canvas"
                       : "bg-brand-wash text-brand-deep"
                 }`}
               >

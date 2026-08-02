@@ -1,0 +1,104 @@
+- generic [active] [ref=f47e1]:
+  - generic [ref=f47e2]:
+    - banner [ref=f47e3]:
+      - generic [ref=f47e4]:
+        - link "ByteSizeDecodes" [ref=f47e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f47e7]: BSD
+        - navigation "Primary navigation" [ref=f47e11]:
+          - link "Today" [ref=f47e12] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f47e13] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f47e14] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f47e15] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f47e16] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f47e17] [cursor=pointer]:
+            - /url: /profile
+        - button "Switch to dark theme" [ref=f47e18]
+    - main [ref=f47e21]:
+      - generic [ref=f47e22]:
+        - link "← Machine Learning for Layman" [ref=f47e23] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f47e24]:
+          - paragraph [ref=f47e25]: Lesson 1 of 19 · Machine Learning for Layman
+          - heading "How a human learns" [level=1] [ref=f47e26]
+          - paragraph [ref=f47e27]: A child, a car, and a bike — the original learning machine.
+          - paragraph [ref=f47e28]: "By the end: Explain learning as using experience to improve a future decision."
+          - generic [ref=f47e29]:
+            - generic [ref=f47e30]: Byte · 3 min
+            - generic [ref=f47e31]: 1 questions
+            - generic [ref=f47e32]: +XP on complete
+        - generic [ref=f47e34]:
+          - paragraph [ref=f47e35]: Predict before you look
+          - paragraph [ref=f47e36]: "Before the picture: a child has never seen a bike. You show them three, each labelled ‘bike’. Next time they see a new one, what’s most likely?"
+          - list [ref=f47e37]:
+            - listitem [ref=f47e38]:
+              - button "They recognise it as a bike" [ref=f47e39]
+            - listitem [ref=f47e40]:
+              - button "They still have no idea" [ref=f47e41]
+            - listitem [ref=f47e42]:
+              - button "They forget everything" [ref=f47e43]
+        - generic [ref=f47e45]:
+          - generic [ref=f47e47]:
+            - heading "How a human learns" [level=2] [ref=f47e48]
+            - paragraph [ref=f47e49]: Watch a child go from 'no idea' to 'got it' — that's learning
+          - 'figure "① Ask the child: what is this object?" [ref=f47e51]':
+            - generic [ref=f47e53]:
+              - generic [ref=f47e62]: the child
+              - generic [ref=f47e73]: "???"
+            - paragraph [ref=f47e75]: No experience yet → can't decide.
+          - figure "② Show some labelled examples" [ref=f47e76]:
+            - generic [ref=f47e78]:
+              - generic [ref=f47e79]: car
+              - generic [ref=f47e90]: car
+              - generic [ref=f47e101]: bike
+              - generic [ref=f47e111]: bike
+            - paragraph [ref=f47e121]: A few examples, each with its name. That's the “experience”.
+          - figure "③ The child spots the pattern" [ref=f47e122]:
+            - generic [ref=f47e124]:
+              - paragraph [ref=f47e134]: 4 wheels + roof → car
+              - paragraph [ref=f47e143]: 2 wheels + no roof → bike
+            - paragraph [ref=f47e144]: Not memorising each photo — extracting a general rule.
+          - figure "④ Show a brand-new photo — the child nails it" [ref=f47e145]:
+            - generic [ref=f47e147]:
+              - generic [ref=f47e148]: new!
+              - generic [ref=f47e158]: the child
+              - generic [ref=f47e169]: It's a CAR! 🎉
+            - paragraph [ref=f47e171]: A picture never seen before — handled from the learned pattern.
+          - paragraph [ref=f47e173]: 🧠 Learning = using past experience to decide about new things.
+        - generic [ref=f47e175]:
+          - generic [ref=f47e176]:
+            - heading "Check yourself" [level=2] [ref=f47e177]
+            - generic [ref=f47e178]:
+              - paragraph [ref=f47e179]: What makes an experience useful for learning?
+              - generic [ref=f47e180]:
+                - button "a It changes how you respond to a similar situation later" [ref=f47e181]:
+                  - generic [ref=f47e182]: a
+                  - text: It changes how you respond to a similar situation later
+                - button "b It is repeated without noticing the result" [ref=f47e183]:
+                  - generic [ref=f47e184]: b
+                  - text: It is repeated without noticing the result
+                - button "c Someone writes every future instruction in advance" [ref=f47e185]:
+                  - generic [ref=f47e186]: c
+                  - text: Someone writes every future instruction in advance
+              - button "Check" [disabled] [ref=f47e187]
+          - button "Answer all questions to finish" [disabled] [ref=f47e189]
+        - navigation [ref=f47e190]:
+          - link "Next Why a machine can't do that (yet) →" [ref=f47e192] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/humans-vs-machines
+            - generic [ref=f47e193]:
+              - generic [ref=f47e194]: Next
+              - generic [ref=f47e195]: Why a machine can't do that (yet)
+            - generic [ref=f47e196]: →
+    - button "Send feedback" [ref=f47e197]
+    - contentinfo [ref=f47e200]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f47e201] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f47e207] [cursor=pointer]
+  - alert [ref=f47e211]

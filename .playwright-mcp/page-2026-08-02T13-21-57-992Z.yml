@@ -1,0 +1,140 @@
+- generic [active] [ref=f50e1]:
+  - generic [ref=f50e2]:
+    - banner [ref=f50e3]:
+      - generic [ref=f50e4]:
+        - link "ByteSizeDecodes" [ref=f50e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f50e7]: BSD
+        - navigation "Primary navigation" [ref=f50e11]:
+          - link "Today" [ref=f50e12] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f50e13] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f50e14] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f50e15] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f50e16] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f50e17] [cursor=pointer]:
+            - /url: /profile
+        - button "Switch to dark theme" [ref=f50e18]
+    - main [ref=f50e21]:
+      - generic [ref=f50e22]:
+        - link "← Machine Learning for Layman" [ref=f50e23] [cursor=pointer]:
+          - /url: /courses/machine-learning-for-layman
+        - generic [ref=f50e24]:
+          - paragraph [ref=f50e25]: Lesson 8 of 19 · Machine Learning for Layman
+          - heading "Representing samples as features" [level=1] [ref=f50e26]
+          - paragraph [ref=f50e27]: Turn a real object into numbers a machine can read — and keep only useful features.
+          - paragraph [ref=f50e28]: "By the end: Represent an object as a feature vector and spot useless features."
+          - generic [ref=f50e29]:
+            - generic [ref=f50e30]: Byte · 5 min
+            - generic [ref=f50e31]: 1 questions
+            - generic [ref=f50e32]: +XP on complete
+        - generic [ref=f50e34]:
+          - paragraph [ref=f50e35]: Predict before you look
+          - paragraph [ref=f50e36]: "Before the picture: to teach a machine to tell cars from bikes, which feature would be least helpful?"
+          - list [ref=f50e37]:
+            - listitem [ref=f50e38]:
+              - button "Number of wheels" [ref=f50e39]
+            - listitem [ref=f50e40]:
+              - button "Height" [ref=f50e41]
+            - listitem [ref=f50e42]:
+              - button "Paint colour" [ref=f50e43]
+        - generic [ref=f50e45]:
+          - generic [ref=f50e47]:
+            - heading "Representing samples as features" [level=2] [ref=f50e48]
+            - paragraph [ref=f50e49]: Turn a real object into numbers a machine can read
+          - figure "① Describe a vehicle with features" [ref=f50e51]:
+            - generic [ref=f50e62]:
+              - generic [ref=f50e63]:
+                - generic [ref=f50e64]: "#Wheel"
+                - generic [ref=f50e65]: "4"
+              - generic [ref=f50e66]:
+                - generic [ref=f50e67]: Height
+                - generic [ref=f50e68]: "6"
+              - generic [ref=f50e69]:
+                - generic [ref=f50e70]: Weight
+                - generic [ref=f50e71]: "500"
+              - generic [ref=f50e72]:
+                - generic [ref=f50e73]: Color
+                - generic [ref=f50e74]: Red
+            - paragraph [ref=f50e75]: "The features describe the object: #Wheel, Height, Weight, Color."
+          - figure "② Each sample becomes a list of values — a vector" [ref=f50e76]:
+            - generic [ref=f50e78]:
+              - generic [ref=f50e79]: a sample
+              - generic [ref=f50e90]: =
+              - generic [ref=f50e93]:
+                - generic [ref=f50e94]:
+                  - generic [ref=f50e95]:
+                    - generic [ref=f50e96]: "#Wheel"
+                    - generic [ref=f50e97]: "4"
+                  - generic [ref=f50e98]:
+                    - generic [ref=f50e99]: Height
+                    - generic [ref=f50e100]: "6"
+                  - generic [ref=f50e101]:
+                    - generic [ref=f50e102]: Weight
+                    - generic [ref=f50e103]: "500"
+                  - generic [ref=f50e104]:
+                    - generic [ref=f50e105]: Color
+                    - generic [ref=f50e106]: Red
+                - generic [ref=f50e107]: a list of values (a vector)
+                - generic [ref=f50e108]: one value per feature
+          - 'figure "③ Not every feature helps — compare Color with #Wheel" [ref=f50e109]':
+            - generic [ref=f50e111]:
+              - generic [ref=f50e112]:
+                - generic [ref=f50e113]: "#Wheel — a good feature"
+                - generic [ref=f50e114]:
+                  - generic [ref=f50e115]: 4 → car
+                  - generic [ref=f50e126]: 2 → bike
+                - paragraph [ref=f50e136]: different wheels → different class
+              - generic [ref=f50e137]:
+                - generic [ref=f50e138]: Color — a bad feature
+                - generic [ref=f50e139]:
+                  - generic [ref=f50e140]: red car
+                  - generic [ref=f50e147]: red bike
+                - paragraph [ref=f50e154]: same color → tells you nothing
+          - paragraph [ref=f50e156]: A sample becomes a vector — keep only features that actually separate the classes.
+        - generic [ref=f50e157]:
+          - generic [ref=f50e158]:
+            - paragraph [ref=f50e159]: "A machine can’t ‘see’ a car the way you do — it only reads numbers. So the first job is to describe each object with measurable features: number of wheels, height, weight, colour."
+            - paragraph [ref=f50e160]: One object becomes a list of values, called a vector. The whole learning step that follows depends on this translation being right.
+            - paragraph [ref=f50e161]: Not every feature helps. A feature only earns its place if it separates the classes — colour doesn’t, because cars and bikes come in every colour.
+          - generic [ref=f50e162]:
+            - generic [ref=f50e163]:
+              - heading "Check yourself" [level=2] [ref=f50e164]
+              - generic [ref=f50e165]:
+                - paragraph [ref=f50e166]: Classifying car vs. bike, which feature is least useful?
+                - generic [ref=f50e167]:
+                  - button "a Number of wheels" [ref=f50e168]:
+                    - generic [ref=f50e169]: a
+                    - text: Number of wheels
+                  - button "b Height" [ref=f50e170]:
+                    - generic [ref=f50e171]: b
+                    - text: Height
+                  - button "c Color" [ref=f50e172]:
+                    - generic [ref=f50e173]: c
+                    - text: Color
+                - button "Check" [disabled] [ref=f50e174]
+            - button "Answer all questions to finish" [disabled] [ref=f50e176]
+        - navigation [ref=f50e177]:
+          - link "← Previous Inside reinforcement learning" [ref=f50e178] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/reinforcement-learning-deep-dive
+            - generic [ref=f50e179]: ←
+            - generic [ref=f50e180]:
+              - generic [ref=f50e181]: Previous
+              - generic [ref=f50e182]: Inside reinforcement learning
+          - link "Next Your first classifier →" [ref=f50e183] [cursor=pointer]:
+            - /url: /courses/machine-learning-for-layman/first-classifier
+            - generic [ref=f50e184]:
+              - generic [ref=f50e185]: Next
+              - generic [ref=f50e186]: Your first classifier
+            - generic [ref=f50e187]: →
+    - button "Send feedback" [ref=f50e188]
+    - contentinfo [ref=f50e191]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f50e192] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f50e198] [cursor=pointer]

@@ -2,14 +2,13 @@
  * Small drawn icons for the decision-tree lessons (tennis "play?" example).
  *
  * Drawn as inline SVG rather than emoji so the lessons stay picture-led and
- * consistent with the car/bike vocabulary's hand-drawn feel. Brand-blue only,
- * matching the rest of the Layman course.
+ * consistent with the car/bike vocabulary's hand-drawn feel. Colors resolve to
+ * the theme tokens (var(--color-*)) so they flip correctly in dark mode.
  */
 
-const SUN = "#e7a765"; // warm — reuse the brand warm token for the sun
-const CLOUD = "#c9d7eb"; // brand-muted
-const RAIN = "#6f91c5"; // brand
-const INK = "#171713";
+const SUN = "var(--color-warm)";
+const CLOUD = "var(--color-brand-muted)";
+const RAIN = "var(--color-brand)";
 
 /** A bright sun. */
 export function SunIcon({ className = "" }: { className?: string }) {
@@ -55,7 +54,7 @@ export function RainIcon({ className = "" }: { className?: string }) {
 /** A tennis racket — the "play" outcome. */
 export function PlayMark({ className = "" }: { className?: string }) {
   return (
-    <div className={`inline-flex items-center gap-1.5 rounded-full bg-good px-3 py-1.5 text-xs font-bold text-white ${className}`}>
+    <div className={`inline-flex items-center gap-1.5 rounded-full bg-good px-3 py-1.5 text-xs font-bold text-canvas ${className}`}>
       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
         <circle cx="9" cy="9" r="6" />
         {Array.from({ length: 5 }).map((_, i) => (
@@ -71,7 +70,7 @@ export function PlayMark({ className = "" }: { className?: string }) {
 /** A crossed-out racket — the "no play" outcome. */
 export function NoPlayMark({ className = "" }: { className?: string }) {
   return (
-    <div className={`inline-flex items-center gap-1.5 rounded-full bg-bad px-3 py-1.5 text-xs font-bold text-white ${className}`}>
+    <div className={`inline-flex items-center gap-1.5 rounded-full bg-bad px-3 py-1.5 text-xs font-bold text-canvas ${className}`}>
       <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
         <circle cx="12" cy="12" r="9" />
         <line x1="6" y1="6" x2="18" y2="18" />

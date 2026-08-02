@@ -7,7 +7,7 @@ import { Stagger, MotionChild } from "./motion";
  *
  * Layout: labelled picture cards → count them → probability → decision rule.
  * Faithful to Lesson 2.pdf slides 10-16: every 4-wheel sample is a car, every
- * 2-wheel sample is a bike, so Pr(CAR|4)=100% / Pr(BIKE|2)=100%, yielding the
+ * 2-wheel sample is a bike, so all 4-wheel examples → car and all 2-wheel → bike, yielding the
  * rule "4 wheels → car, 2 wheels → bike". Picture-led throughout; the count
  * is shown as a visual tally of cards, not a table. Brand blue only.
  * No prose/questions (course rule).
@@ -24,7 +24,7 @@ export function FirstClassifier() {
       <Scene caption="① Start with labelled examples">
         <Stagger className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-3">
           <MotionChild>
-            <div className="rounded-xl border border-ash bg-white p-3 text-center shadow-sm">
+            <div className="rounded-xl border border-ash bg-surface-elevated p-3 text-center shadow-sm">
               <div className="mb-2 flex items-end justify-center gap-2">
                 <CarShape className="!h-9" />
                 <CarShape className="!h-9" />
@@ -39,7 +39,7 @@ export function FirstClassifier() {
             <Operator>+</Operator>
           </MotionChild>
           <MotionChild>
-            <div className="rounded-xl border border-ash bg-white p-3 text-center shadow-sm">
+            <div className="rounded-xl border border-ash bg-surface-elevated p-3 text-center shadow-sm">
               <div className="mb-2 flex items-end justify-center gap-2">
                 <BikeShape className="!h-9" />
                 <BikeShape className="!h-9" />
@@ -90,7 +90,7 @@ export function FirstClassifier() {
           </MotionChild>
         </Stagger>
         <p className="mt-3 text-center text-xs font-medium text-ink">
-          Pr(bike | 2 wheels) = 100% &nbsp;⇒&nbsp; the rule says <span className="font-bold">bike</span>.
+          Every 2-wheel example was a bike &nbsp;⇒&nbsp; the rule says <span className="font-bold">bike</span>.
         </p>
       </Scene>
 
@@ -105,7 +105,7 @@ export function FirstClassifier() {
   );
 }
 
-/** A probability result shown as a picture + percentage. */
+/** A counting result shown as a picture + percentage. */
 function ProbCard({
   picture,
   condition,
@@ -125,9 +125,9 @@ function ProbCard({
     <div className={`rounded-xl border ${border} p-4 text-center shadow-sm`}>
       <div className="flex h-12 items-center justify-center">{picture}</div>
       <div className="mt-1 text-xs font-bold text-ink-soft">
-        Pr(class | {condition})
+        {condition}
       </div>
-      <div className={`mt-0.5 font-mono text-xl font-bold ${color}`}>{pct}</div>
+      <div className={`mt-0.5 text-xl font-bold ${color}`}>{pct}</div>
       <p className="mt-1 text-[11px] font-medium text-ink">{note}</p>
     </div>
   );

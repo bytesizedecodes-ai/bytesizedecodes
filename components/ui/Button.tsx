@@ -4,9 +4,9 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 type ButtonVariant = "primary" | "secondary" | "brand" | "ghost";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-ink text-white hover:bg-ink/88",
-  secondary: "border border-ash bg-white text-ink hover:border-brand-muted hover:bg-brand-wash/40",
-  brand: "bg-brand-deep text-white hover:bg-brand-deep/90",
+  primary: "bg-ink text-canvas hover:bg-ink/88",
+  secondary: "border border-ash bg-surface-elevated text-ink hover:border-brand-muted hover:bg-brand-wash/40",
+  brand: "bg-brand-deep text-canvas hover:bg-brand-deep/90",
   ghost: "text-ink-soft hover:bg-ash/60 hover:text-ink",
 };
 

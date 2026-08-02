@@ -101,23 +101,23 @@ function CurveCard({
 }) {
   const tone =
     verdict === "good"
-      ? { border: "border-good", badge: "bg-good text-white", text: "text-good", stroke: "#5f9e77" }
+      ? { border: "border-good", badge: "bg-good text-canvas", text: "text-good", stroke: "#5f9e77" }
       : verdict === "overfit"
-        ? { border: "border-bad", badge: "bg-bad text-white", text: "text-bad", stroke: "#c1706b" }
-        : { border: "border-ash", badge: "bg-ink text-white", text: "text-ink-soft", stroke: "#8b897f" };
+        ? { border: "border-bad", badge: "bg-bad text-canvas", text: "text-bad", stroke: "#c1706b" }
+        : { border: "border-ash", badge: "bg-ink text-canvas", text: "text-ink-soft", stroke: "#8b897f" };
   // scatter points
   const pts = [
     [16, 62], [26, 58], [34, 60], [42, 52], [50, 54], [58, 44], [66, 46], [74, 38], [82, 34],
   ];
   return (
-    <div className={`rounded-xl border-2 ${tone.border} bg-white p-3 text-center shadow-sm`}>
+    <div className={`rounded-xl border-2 ${tone.border} bg-surface-elevated p-3 text-center shadow-sm`}>
       <svg viewBox="0 0 100 80" className="h-auto w-full" aria-hidden="true">
         {/* axes */}
-        <line x1="8" y1="74" x2="94" y2="74" stroke="#e7e2d7" strokeWidth="1" />
-        <line x1="8" y1="6" x2="8" y2="74" stroke="#e7e2d7" strokeWidth="1" />
+        <line x1="8" y1="74" x2="94" y2="74" stroke="var(--color-ash)" strokeWidth="1" />
+        <line x1="8" y1="6" x2="8" y2="74" stroke="var(--color-ash)" strokeWidth="1" />
         {/* scatter */}
         {pts.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="2.4" fill="#4f72aa" />
+          <circle key={i} cx={x} cy={y} r="2.4" fill="var(--color-brand-deep)" />
         ))}
         {/* the fitted curve */}
         <path d={path} fill="none" stroke={tone.stroke} strokeWidth="2.5" strokeLinecap="round" />

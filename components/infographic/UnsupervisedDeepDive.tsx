@@ -36,7 +36,7 @@ export function UnsupervisedDeepDive() {
             </div>
           </MotionChild>
           <MotionChild>
-            <div className="flex-1 rounded-xl border border-dashed border-ink-faint bg-white p-3 text-center">
+            <div className="flex-1 rounded-xl border border-dashed border-ink-faint bg-surface-elevated p-3 text-center">
               <div className="mb-2 flex h-16 items-center justify-center">
                 <span className="text-2xl text-ink-faint">∅</span>
               </div>
@@ -62,7 +62,7 @@ export function UnsupervisedDeepDive() {
       <Scene caption="③ Two patterns it can discover">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {/* Clustering */}
-          <div className="rounded-xl border border-ash bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
             <div className="mb-2 text-center text-sm font-bold text-ink">
               Clustering — groups
             </div>
@@ -81,7 +81,7 @@ export function UnsupervisedDeepDive() {
             </p>
           </div>
           {/* Association rules */}
-          <div className="rounded-xl border border-ash bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
             <div className="mb-2 text-center text-sm font-bold text-ink">
               Association — “buy X → likely Y”
             </div>

@@ -54,7 +54,7 @@ export function TrainTestSplit() {
             </div>
           </MotionChild>
           <MotionChild>
-            <div className="rounded-xl border border-dashed border-ink-faint bg-white p-4 text-center shadow-sm">
+            <div className="rounded-xl border border-dashed border-ink-faint bg-surface-elevated p-4 text-center shadow-sm">
               <div className="mb-2 text-sm font-bold text-ink-soft">Test set</div>
               <div className="flex flex-wrap items-center justify-center gap-1">
                 <CarShape className="!h-8" />

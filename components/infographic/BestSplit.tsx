@@ -121,9 +121,9 @@ function SplitRow({
   verdict: "good" | "bad";
 }) {
   const border = verdict === "good" ? "border-good" : "border-bad";
-  const badgeTone = verdict === "good" ? "bg-good text-white" : "bg-bad text-white";
+  const badgeTone = verdict === "good" ? "bg-good text-canvas" : "bg-bad text-canvas";
   return (
-    <div className={`rounded-xl border-2 ${border} bg-white p-4 shadow-sm`}>
+    <div className={`rounded-xl border-2 ${border} bg-surface-elevated p-4 shadow-sm`}>
       <div className="mb-3 flex flex-wrap items-center justify-center gap-2 text-sm font-bold text-ink">
         <span className="rounded bg-ink px-2 py-0.5 text-[10px] uppercase text-canvas">question</span>
         {question}

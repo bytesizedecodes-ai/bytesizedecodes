@@ -87,10 +87,10 @@ export function ThreeParadigms() {
               <div className="flex flex-col items-center gap-2">
                 <MachineFigure className="!h-20" />
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-good px-2.5 py-1 text-[11px] font-bold text-white">
+                  <span className="rounded-full bg-good px-2.5 py-1 text-[11px] font-bold text-canvas">
                     ⭐ reward
                   </span>
-                  <span className="rounded-full bg-bad px-2.5 py-1 text-[11px] font-bold text-white">
+                  <span className="rounded-full bg-bad px-2.5 py-1 text-[11px] font-bold text-canvas">
                     ⛔ penalty
                   </span>
                 </div>

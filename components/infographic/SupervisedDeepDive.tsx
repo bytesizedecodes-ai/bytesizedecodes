@@ -88,7 +88,7 @@ export function SupervisedDeepDive() {
       <Scene caption="③ The prediction is one of two shapes">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {/* Classification */}
-          <div className="rounded-xl border border-ash bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
             <div className="mb-2 text-center text-sm font-bold text-ink">
               Classification — a category
             </div>
@@ -102,7 +102,7 @@ export function SupervisedDeepDive() {
             </p>
           </div>
           {/* Regression */}
-          <div className="rounded-xl border border-ash bg-white p-4 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
             <div className="mb-2 text-center text-sm font-bold text-ink">
               Regression — a number
             </div>

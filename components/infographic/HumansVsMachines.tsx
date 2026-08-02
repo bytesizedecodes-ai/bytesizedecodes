@@ -107,7 +107,7 @@ function InstructionCard({
   detail: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 rounded-xl border border-ash bg-white px-3 py-3 text-center shadow-sm">
+    <div className="flex flex-col items-center gap-1.5 rounded-xl border border-ash bg-surface-elevated px-3 py-3 text-center shadow-sm">
       <div className="flex h-9 w-9 items-center justify-center text-brand-deep">{icon}</div>
       <span className="text-xs font-bold text-ink">{label}</span>
       <span className="text-[11px] text-ink-soft">{detail}</span>

@@ -97,7 +97,7 @@ function Tier({
     tone === "brandDeep"
       ? "bg-canvas text-ink"
       : tone === "brand"
-        ? "bg-white text-ink"
+        ? "bg-surface-elevated text-ink"
         : "bg-brand-deep text-canvas";
   const bodyText = tone === "brandDeep" ? "text-canvas" : "text-ink";
 
@@ -132,13 +132,13 @@ function NestedCirclesSvg() {
       aria-label="Concentric circles: Artificial Intelligence contains Machine Learning, which contains Deep Learning."
     >
       {/* AI ring */}
-      <circle cx="260" cy="260" r="255" className="fill-brand-wash" stroke="#7898c8" strokeWidth={2} strokeDasharray="6 6" />
-      <text x="260" y="40" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={800} letterSpacing={1.5} fill="#6888c8">
+      <circle cx="260" cy="260" r="255" className="fill-brand-wash" stroke="var(--color-brand)" strokeWidth={2} strokeDasharray="6 6" />
+      <text x="260" y="40" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={14} fontWeight={800} letterSpacing={1.5} fill="var(--color-brand-deep)">
         ARTIFICIAL INTELLIGENCE
       </text>
       {/* ML ring */}
       <circle cx="260" cy="260" r="175" className="fill-brand" />
-      <text x="260" y="110" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="#f8f8f8">
+      <text x="260" y="110" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="var(--color-canvas)">
         MACHINE LEARNING
       </text>
       {/* DL core */}
@@ -146,7 +146,7 @@ function NestedCirclesSvg() {
       <text x="260" y="248" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={30}>
         🧠
       </text>
-      <text x="260" y="288" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="#f8f8f8">
+      <text x="260" y="288" textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={13} fontWeight={800} letterSpacing={1.5} fill="var(--color-canvas)">
         DEEP LEARNING
       </text>
     </svg>

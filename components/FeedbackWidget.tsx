@@ -53,14 +53,14 @@ export function FeedbackWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label="Send feedback"
-        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-white shadow-lg transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
+        className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-canvas shadow-lg transition-transform hover:scale-105 sm:bottom-6 sm:right-6"
       >
         {open ? <X className="h-5 w-5" /> : <MessageSquareText className="h-5 w-5" />}
       </button>
 
       {/* Popover form */}
       {open ? (
-        <div className="fixed bottom-20 right-5 z-40 w-[20rem] max-w-[calc(100vw-2.5rem)] rounded-2xl border border-ash bg-white p-4 shadow-xl sm:right-6">
+        <div className="fixed bottom-20 right-5 z-40 w-[20rem] max-w-[calc(100vw-2.5rem)] rounded-2xl border border-ash bg-surface-elevated p-4 shadow-xl sm:right-6">
           {done ? (
             <p className="py-6 text-center text-sm font-medium text-good">
               Thanks — your feedback was sent.
@@ -75,7 +75,7 @@ export function FeedbackWidget() {
                     type="button"
                     onClick={() => setKind(k.id)}
                     className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
-                      kind === k.id ? "bg-ink text-white" : "bg-ash/70 text-ink-soft hover:bg-ash"
+                      kind === k.id ? "bg-ink text-canvas" : "bg-ash/70 text-ink-soft hover:bg-ash"
                     }`}
                   >
                     {k.label}
@@ -94,7 +94,7 @@ export function FeedbackWidget() {
               <button
                 type="submit"
                 disabled={submitting || !body.trim()}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-4 py-2 text-sm font-semibold text-canvas disabled:opacity-40"
               >
                 <Send className="h-4 w-4" />
                 {submitting ? "Sending…" : "Send"}

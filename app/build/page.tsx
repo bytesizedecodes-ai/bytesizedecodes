@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Hammer, Plus } from "lucide-react";
 import { RequireOnboarding } from "@/components/RequireOnboarding";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Shell } from "@/components/Shell";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
@@ -43,6 +44,7 @@ export default function BuildPage() {
 
   return (
     <Shell active="/build">
+      <RequireAuth>
       <RequireOnboarding>
         <div className="mx-auto max-w-5xl space-y-8">
           <PageHeader
@@ -52,7 +54,7 @@ export default function BuildPage() {
             aside={
               <Link
                 href="/gallery"
-                className="inline-flex min-h-11 items-center rounded-xl border border-ash bg-white px-4 text-sm font-semibold text-ink"
+                className="inline-flex min-h-11 items-center rounded-xl border border-ash bg-surface-elevated px-4 text-sm font-semibold text-ink"
               >
                 Gallery
               </Link>
@@ -114,6 +116,7 @@ export default function BuildPage() {
           </section>
         </div>
       </RequireOnboarding>
+      </RequireAuth>
     </Shell>
   );
 }

@@ -10,7 +10,7 @@ export function BrandMark({ withAccent = false }: { withAccent?: boolean }) {
     <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-xl bg-ink">
       <span
         aria-hidden
-        className="select-none text-[11px] font-bold leading-none tracking-[-0.06em] text-white"
+        className="select-none text-[11px] font-bold leading-none tracking-[-0.06em] text-canvas"
       >
         BSD
       </span>

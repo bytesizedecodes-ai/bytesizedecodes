@@ -131,17 +131,24 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
 
-11. **Use the `infographics-animation` skill when creating or editing courses.**
+11. **Use the `infographics-animation` skill (v2) when creating or editing courses.**
     Any new lesson, course page, or infographic **must** be built with the
     `infographics-animation` skill (`.agents/skills/infographics-animation/SKILL.md`) —
-    read it first. Its rules override any default: lessons are **picture-led**,
-    built from the shared scene vocabulary (`CarShape`, `BikeShape`,
-    `PictureCard`, `Operator`, `Scene`, `PersonFigure`, `MachineFigure`) in
-    `components/infographic/scenes.tsx`, with motion inherited from
-    `Stagger`/`MotionChild`/`Reveal` — never tables, raw text blocks, or
-    hand-rolled per-lesson animation. Brand blue only; text stays `text-ink`/
-    `text-canvas`; `MotionConfig reducedMotion="user"` is non-negotiable. A
-    lesson that "works" but explains via a table instead of pictures is a bug.
+    read it first. **v2 is evidence-based and audience-aware:** it calibrates
+    *how* you tell the story to the course's `level` — **beginner** (layman:
+    picture-led, analogies, full narrative, no math), **intermediate**
+    (enthusiast: lighter analogies, some code/formulas), or **expert**
+    (practitioner: formal, problem-first, minimal scaffolding). Read the
+    `level` from `content/courses.ts` before authoring — what helps a beginner
+    *harms* an expert (the expertise reversal effect). Always build with the
+    shared scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`, `Operator`,
+    `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
+    **Color discipline is mandatory:** one accent per scene, neutrals carry
+    the load, no rainbow palettes (cognitive overload), theme-safe tokens only
+    (`bg-surface-elevated` not `bg-white`; `text-canvas` not `text-white`;
+    `currentColor`/`var(--*)` in SVG, never literal hex). Lessons must read
+    in both dark and light themes. A lesson that "works" but explains via a
+    table instead of pictures, or uses 4+ colors in one scene, is a bug.
 
 ## Where things live
 

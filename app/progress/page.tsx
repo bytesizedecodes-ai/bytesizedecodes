@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Brain, CheckCircle2, Clock3, TrendingUp } from "lucide-react";
 import { Shell } from "@/components/Shell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { StatsHud } from "@/components/StatsHud";
 import { LEARNING_UNITS, getUnitsForTrack } from "@/content/catalog";
 import { getLearningTrack } from "@/content/tracks";
@@ -58,6 +59,7 @@ export default function ProgressPage() {
 
   return (
     <Shell active="/progress">
+      <RequireAuth>
       <div className="mx-auto max-w-5xl space-y-8">
         <PageHeader
           eyebrow="Progress"
@@ -66,7 +68,7 @@ export default function ProgressPage() {
           aside={
             <Link
               href="/review"
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-canvas"
             >
               <Brain className="h-4 w-4" /> {queue.length} due
             </Link>
@@ -201,6 +203,7 @@ export default function ProgressPage() {
           </div>
         </section>
       </div>
+      </RequireAuth>
     </Shell>
   );
 }

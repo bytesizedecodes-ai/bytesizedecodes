@@ -22,7 +22,7 @@ export function CentroidClassifier() {
       {/* Step 1 — each class is a cluster */}
       <Scene caption="① Each class is a cluster of samples">
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-xl border border-ash bg-white p-4 text-center shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
             <div className="mb-2 flex items-end justify-center gap-1">
               <CarShape className="!h-9" />
               <CarShape className="!h-9" />
@@ -30,7 +30,7 @@ export function CentroidClassifier() {
             </div>
             <span className="text-xs font-bold text-ink-soft">all cars</span>
           </div>
-          <div className="rounded-xl border border-ash bg-white p-4 text-center shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
             <div className="mb-2 flex items-end justify-center gap-1">
               <BikeShape className="!h-9" />
               <BikeShape className="!h-9" />

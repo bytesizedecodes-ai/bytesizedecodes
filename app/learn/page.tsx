@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LearnCatalog } from "./LearnCatalog";
 import { Shell } from "@/components/Shell";
+import { RequireAuth } from "@/components/RequireAuth";
 import { RequireOnboardingClient } from "./RequireOnboardingClient";
 import { PageHeader } from "@/components/ui/PageHeader";
 
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
 export default function LearnPage() {
   return (
     <Shell active="/learn">
-      <RequireOnboardingClient>
+      <RequireAuth>
+        <RequireOnboardingClient>
         <div className="mx-auto max-w-5xl">
           <PageHeader
             eyebrow="Learn"
@@ -25,7 +27,8 @@ export default function LearnPage() {
             <LearnCatalog />
           </div>
         </div>
-      </RequireOnboardingClient>
+        </RequireOnboardingClient>
+      </RequireAuth>
     </Shell>
   );
 }

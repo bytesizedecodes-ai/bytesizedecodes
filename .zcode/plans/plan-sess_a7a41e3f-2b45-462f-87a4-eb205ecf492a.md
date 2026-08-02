@@ -1,75 +1,38 @@
 ## Goal
-An admin console at `/admin` (same app, not a subdomain) with: a user-count dashboard, a feedback collection + triage loop, and the scaffolding for email scheduling (built after Google/GitHub auth lands). Plus documenting the refined three-tier business model (free learning → login-to-build → paid-advanced).
+Apply the approved Landing A design to the real app: Twitter blue (#1D9BF0) brand accent app-wide, a true-black dark theme, and a dark/light toggle in the top-right. **Light is the default.** The change reaches every page with no per-component rewrites.
 
-## Decisions locked
-- **Admin location:** `/admin` route in this app (shares auth/Convex/UI, no subdomain/cookie infra).
-- **Business model (refined):** all courses free forever (no login to learn); `/build` requires authentication (login, not paywall); *later*, a paywall on advanced courses + advanced build projects. Documented as the canonical model; supersedes the earlier "paid certificates" framing.
-- **Admin promotion:** Google/GitHub auth + whitelisted email → server-side promotion to admin role on first sign-in. No anonymous admin.
-- **Scope now:** admin shell + feedback system + dashboard. Email scheduling is documented + scaffolded but built after phase-4 auth.
+## The key insight (why this is low-risk)
+Every color in the app flows through the `@theme` tokens in `app/globals.css` (`--color-canvas`, `--color-ink`, `--color-brand`, …) — all 1,200+ usages across 80 component files read `bg-canvas`/`text-ink`/etc., which resolve to those CSS variables. So:
+- **Rebranding to Twitter blue** = change `--color-brand` / `--color-brand-deep` / `--color-brand-wash` values in `@theme`.
+- **The dark theme** = a `[data-theme="dark"]` block that overrides those same CSS variables. Every `bg-canvas`/`text-ink`/etc. flips automatically — no component edits.
 
-## Critical prerequisite (security) — do first
-The audit found `convex/lib/getUser.ts:20` **trusts the client-supplied `userId`** during the anonymous transition, and the Convex AI guidelines (line 213) say *"NEVER accept a userId for authorization."* An admin role built on a client-trusted id is forgeable. Before any admin code:
-- Harden the admin path specifically: admin queries/mutations MUST derive identity server-side via `ctx.auth.getUserIdentity()` and check the role there — never accept `userId`/`isAdmin` from the client for admin operations. (The learning-path mutations can keep their current anonymous-transition behavior; only admin endpoints need the hardening. This avoids a big-bang auth refactor.)
+## Files to change (only 4)
 
-## Schema changes (`convex/schema.ts`)
-1. **`profiles.role`** — add `role: v.optional(v.union(v.literal("user"), v.literal("admin")))`, default absent = "user". Existing profiles unaffected.
-2. **New `feedback` table** — `userId`, `kind` (bug|content_error|idea|praise|other), `body`, `url` (where it was submitted), `status` (new|viewed|in_progress|resolved|wontfix), `adminReply?`, `createdAt`, `resolvedAt?`. Indexes: `by_status`, `by_user`, `by_created`.
+1. **`app/globals.css`** — the heart of the change:
+   - Update the `@theme` brand tokens to Twitter blue family: `--color-brand: #1D9BF0`, `--color-brand-deep: #0F8CD8`, `--color-brand-wash: #e8f6fe`, `--color-brand-muted: #b3e0ff`.
+   - Add a `[data-theme="dark"]` block on `:root`/`html` that overrides every color variable for dark mode (black bg, light text, dark surfaces, muted washes). Light stays the default (the current cream values).
+   - Keep the body's dot-grid texture reading `var(--color-dot)` so it recolors with the theme.
 
-## Auth hardening + admin guard (`convex/lib/admin.ts`, new)
-- `requireAdmin(ctx)`: calls `ctx.auth.getUserIdentity()` (server-derived), loads the profile by `tokenIdentifier` (per guideline line 212, not `subject`), throws if not found or `role !== "admin"`. Every admin query/mutation calls this first. No client-supplied id is trusted for admin operations.
-- `ADMIN_EMAILS`: env-var allowlist (`ADMIN_EMAILS=you@example.com,...`). `claimLegacyProgress` / a new `bootstrapAdminRole` mutation promotes a profile to admin when the authenticated email is in the allowlist, on sign-in. One-time, idempotent.
+2. **`app/layout.tsx`** — add the no-FOUC theme bootstrap:
+   - An inline `<script>` in `<head>` that reads `localStorage["bsd-theme"]` and sets `document.documentElement.dataset.theme` **before paint** (prevents the flash of the wrong theme — the standard Next.js pattern).
+   - Light is the default (no stored key = light).
 
-## Admin backend (`convex/queries.ts` + `convex/mutations.ts`)
-**Queries (all gated by `requireAdmin`):**
-- `admin.getStats` — total learners, active 7/30d (from `attempts`/`analyticsEvents`), anonymous vs. authenticated split, courses started/completed counts, feedback counts by status. (Replaces the placeholder `practicingNow` fake with real numbers.)
-- `admin.listUsers` — paginated profiles (name, email-if-authed, track, xp, streak, createdAt, lastActive). The legit version of the orphaned `getLeaderboard`/`getUserCounts`.
-- `admin.listFeedback` — by status, with pagination.
+3. **New `components/ThemeToggle.tsx`** — the sun/moon toggle button (client component): reads/writes `localStorage["bsd-theme"]` and the `data-theme` attribute on `<html>`. Compact, matches the sample.
 
-**Mutations (all gated):**
-- `admin.updateFeedbackStatus({ id, status, adminReply })` — the triage action.
-- `admin.bootstrapAdminRole()` — promotes whitelisted-email authenticated user to admin (idempotent; callable once by the first admin sign-in).
+4. **`components/Shell.tsx`** — place `<ThemeToggle />` in the header's right side (top-right, as you asked) and in the mobile bottom nav area. One import, one placement.
 
-## Admin UI (`app/admin/*`)
-Server components by default; a client island where needed.
-- **`app/admin/layout.tsx`** — gating: server-side check; if not admin, redirect to `/login?next=/admin`. Reuses `Shell` with an "Admin" active state (nav-hidden, or a minimal admin nav).
-- **`app/admin/page.tsx`** — dashboard: stat cards (learners, active 7d, feedback queue size), a feedback-status breakdown, recent-signups list.
-- **`app/admin/users/page.tsx`** — user table (paginated).
-- **`app/admin/feedback/page.tsx`** — feedback triage: filter by status, expand a row to read body + URL, set status + reply. The "fix loop" you described.
-
-## Feedback widget (`components/FeedbackWidget.tsx`)
-- A floating "Feedback" button on learner pages (lessons, bytes, courses) → opens a small form (kind selector + body + auto-captured URL).
-- Submits via a public `submitFeedback` mutation (no auth required — anonymous users can report issues; rate-limited via `@convex-dev/rate-limiter` to prevent spam). This is the user→admin feedback loop.
-
-## Documentation (`docs/`, `plans/`)
-1. **Update `docs/monetization-and-subscription.md`** — replace the "free learning / paid certificates" model with the refined **three-tier model**: free learning (no login) → login-to-build → paid-advanced (future). Explain the evolution and why it protects the habit loop.
-2. **New `docs/admin-and-feedback.md`** — the admin console: routes, role model, the `requireAdmin` guard, feedback lifecycle, the email-scheduling plan (scaffolded, built after phase-4), and the security note about server-derived identity.
-3. **Update `docs/overview.md`** + `docs/README.md` + `CLAUDE.md` — index the new admin doc; note the role field on profiles; note the feedback table.
-
-## Email scheduling — documented + scaffolded, built later
-Since no email is collected today (anonymous auth), email reminders are **phase-4 dependent**. Document the design now so it's ready:
-- **Channel:** Resend (native `scheduled_at` for one-offs; no cron needed for delayed send).
-- **Pattern:** Convex mutation → `ctx.scheduler.runAfter` → internal action → Resend. Recurring digests via the existing `convex/crons.ts`.
-- **Trigger:** only after a learner has an authenticated email (Google/GitHub) AND has opted in (per the ethical guardrails in `engagement-and-retention.md`).
-- Leave a stub `convex/admin/email.ts` with the intended function signatures (not wired) so the plan is concrete.
+5. **`app/page.tsx`** — replace the live home with the approved Landing A (the dark/light-aware version), ported from the sample to use the app's real nav Shell so it's consistent. (The sample used inline styles; the live version will use the global tokens so it benefits from the toggle automatically.)
 
 ## What I will NOT do
-- No separate app/port 3001 (decided: `/admin` route).
-- No content paywall now (decided: free learning; paywall is future, advanced-only).
-- No shipping email (decided: scaffold + document, build after auth).
-- No global-XP leaderboard in admin (separate decision, already documented).
-- No big-bang auth refactor — only the admin path hardens `getUserId`; learning mutations keep current behavior to avoid scope explosion.
+- No per-component color rewrites (none needed — the token swap handles it).
+- No new dependencies (no `next-themes` — the inline script + data-attribute is lighter and avoids a provider wrapper).
+- No SSR changes beyond the one inline script.
+- The `/samples/*` routes stay for now (so you can keep comparing); I'll note they can be deleted once you're satisfied.
+
+## Theme palette (the dark overrides)
+Dark mode redefines: `--color-canvas: #000`, `--color-surface: #0d0d0f`, `--color-ink: #e7e7ea`, `--color-ink-soft: #9b9ba3`, `--color-ash: #1f1f23`, washes become low-alpha blue/green/red tints. Brand stays Twitter blue in both. Semantic colors (good/bad/gold) get dark-mode-appropriate brighter values.
 
 ## Verification
-- `npm run typecheck` + `npm test` after schema/backend/UI.
-- Manual: non-admin visiting `/admin` → redirected to login; whitelisted-email Google sign-in → promoted to admin → sees dashboard; submit feedback from a lesson → appears in admin queue; triage → status updates.
-- Confirm `requireAdmin` throws for unauthenticated/non-admin on every admin endpoint (not just UI-hidden).
-
-## Build order
-1. Schema (`role`, `feedback` table) + `requireAdmin` guard + email allowlist bootstrap.
-2. Admin backend (stats, listUsers, listFeedback, updateFeedbackStatus).
-3. Admin UI (layout gating, dashboard, users, feedback triage).
-4. Feedback widget on learner pages.
-5. Docs (monetization update, new admin doc, index updates).
-
-## Scope honesty
-This is a meaningful feature (~12 files) touching auth, schema, queries, mutations, UI, and docs. The auth-hardening is the load-bearing part — without it, "admin" is cosmetic. I'll build it tier by tier and verify the gating actually works before declaring done.
+- `npm run typecheck` — clean.
+- Browser: load `/`, confirm Twitter blue + light by default; toggle to dark → entire app flips to black; refresh → chosen theme persists (no FOUC); check a lesson, `/courses`, `/today`, `/progress`, `/profile`, the footer dot texture, and the BSD mark all recolor correctly.
+- Mobile: toggle reachable; bottom nav readable in dark.

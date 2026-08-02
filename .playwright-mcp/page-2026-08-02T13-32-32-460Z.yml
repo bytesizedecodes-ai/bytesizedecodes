@@ -1,0 +1,74 @@
+- generic [active] [ref=f52e1]:
+  - generic [ref=f52e2]:
+    - banner [ref=f52e3]:
+      - generic [ref=f52e4]:
+        - link "ByteSizeDecodes" [ref=f52e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f52e7]: BSD
+        - navigation "Primary navigation" [ref=f52e11]:
+          - link "Today" [ref=f52e12] [cursor=pointer]:
+            - /url: /today
+          - link "Learn" [ref=f52e13] [cursor=pointer]:
+            - /url: /learn
+          - link "Courses" [ref=f52e14] [cursor=pointer]:
+            - /url: /courses
+          - link "Build" [ref=f52e15] [cursor=pointer]:
+            - /url: /build
+          - link "Progress" [ref=f52e16] [cursor=pointer]:
+            - /url: /progress
+          - link "Profile" [ref=f52e17] [cursor=pointer]:
+            - /url: /profile
+        - button "Switch to dark theme" [ref=f52e18]
+    - main [ref=f52e21]:
+      - generic [ref=f52e23]:
+        - generic [ref=f52e24]: Learn AI the visual way — no maths required
+        - heading "Learn AI visually. Practise it. Build something real." [level=1] [ref=f52e28]: Learn AI visually.Practise it. Build something real.
+        - paragraph [ref=f52e29]: Short visual lessons, intelligent practice, and real project thinking — for anyone curious about AI, from first concepts to your first useful product.
+        - generic [ref=f52e30]:
+          - link "Find my learning path" [ref=f52e31] [cursor=pointer]:
+            - /url: /onboarding
+          - link "Explore courses" [ref=f52e34] [cursor=pointer]:
+            - /url: /courses
+        - paragraph [ref=f52e35]: Start anonymously. No login required to learn.
+      - generic [ref=f52e37]:
+        - generic [ref=f52e38]:
+          - generic [ref=f52e39]: "19"
+          - generic [ref=f52e40]: visual lessons
+        - generic [ref=f52e41]:
+          - generic [ref=f52e42]: "2"
+          - generic [ref=f52e43]: full courses
+        - generic [ref=f52e44]:
+          - generic [ref=f52e45]: 100%
+          - generic [ref=f52e46]: free to learn
+        - generic [ref=f52e47]:
+          - generic [ref=f52e48]: ∞
+          - generic [ref=f52e49]: practice drills
+      - generic [ref=f52e50]:
+        - generic [ref=f52e51]:
+          - paragraph [ref=f52e52]: Why it works
+          - heading "A learning loop your brain actually likes" [level=2] [ref=f52e53]
+        - generic [ref=f52e54]:
+          - generic [ref=f52e55]:
+            - heading "See it clearly" [level=3] [ref=f52e60]
+            - paragraph [ref=f52e61]: Visual explanations turn abstract AI ideas into concrete mental models — no jargon, no prerequisites.
+          - generic [ref=f52e62]:
+            - heading "Practise the hard parts" [level=3] [ref=f52e67]
+            - paragraph [ref=f52e68]: Generated problems adapt while targeted feedback repairs misconceptions. Spaced review keeps it.
+          - generic [ref=f52e69]:
+            - heading "Build something real" [level=3] [ref=f52e74]
+            - paragraph [ref=f52e75]: Progress toward a useful artifact — the kind you can show, explain, and trust.
+      - generic [ref=f52e76]:
+        - paragraph [ref=f52e88]: “I finally understand what a model actually learns — and why it can be wrong. The pictures made it click.”
+        - paragraph [ref=f52e89]: A learner, after the foundations course
+      - generic [ref=f52e91]:
+        - heading "Start in under a minute" [level=2] [ref=f52e92]
+        - paragraph [ref=f52e93]: Pick a goal, get a daily plan, and learn your first AI concept today — free.
+        - link "Begin learning" [ref=f52e95] [cursor=pointer]:
+          - /url: /onboarding
+    - button "Send feedback" [ref=f52e98]
+    - contentinfo [ref=f52e101]:
+      - text: bytesizedecodes stores learning progress in Convex. Start anonymously, then link Google from
+      - link "Account" [ref=f52e102] [cursor=pointer]:
+        - /url: /login
+      - text: when you want cross-device continuity.
+  - button "Open Next.js Dev Tools" [ref=f52e108] [cursor=pointer]

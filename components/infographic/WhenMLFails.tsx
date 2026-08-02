@@ -111,7 +111,7 @@ function FailCard({ icon, title, detail }: { icon: React.ReactNode; title: strin
 function SafetyCard({ num, label, detail }: { num: string; label: string; detail: string }) {
   return (
     <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
-      <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-good text-sm font-bold text-white">
+      <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-full bg-good text-sm font-bold text-canvas">
         {num}
       </div>
       <div className="mt-2 text-sm font-bold text-good">{label}</div>
@@ -142,9 +142,9 @@ function StopSignIcon({ clean = false, dented = false }: { clean?: boolean; dent
 
 function ThumbDownIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true" fill="none" stroke="#c1706b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 14 L10 24 L13 24 L13 14 Z" fill="#f9efee" />
-      <path d="M13 14 L13 22 L20 22 Q23 22 23 19 L23 16 Q23 14 21 14 L13 14 Z" fill="#f9efee" />
+    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true" fill="none" stroke="var(--color-bad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 14 L10 24 L13 24 L13 14 Z" fill="var(--color-bad-wash)" />
+      <path d="M13 14 L13 22 L20 22 Q23 22 23 19 L23 16 Q23 14 21 14 L13 14 Z" fill="var(--color-bad-wash)" />
       <path d="M10 16 L6 16 Q4 16 4 14 Q4 12 6 12 L10 12" />
     </svg>
   );
@@ -152,10 +152,10 @@ function ThumbDownIcon() {
 
 function WrongFaceIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true" fill="none" stroke="#c1706b" strokeWidth="2" strokeLinecap="round">
+    <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true" fill="none" stroke="var(--color-bad)" strokeWidth="2" strokeLinecap="round">
       <rect x="5" y="4" width="22" height="24" rx="4" />
-      <circle cx="11" cy="15" r="1.2" fill="#c1706b" />
-      <circle cx="21" cy="15" r="1.2" fill="#c1706b" />
+      <circle cx="11" cy="15" r="1.2" fill="var(--color-bad)" />
+      <circle cx="21" cy="15" r="1.2" fill="var(--color-bad)" />
       <path d="M11 22 Q16 18 21 22" />
       <line x1="6" y1="6" x2="26" y2="26" />
     </svg>

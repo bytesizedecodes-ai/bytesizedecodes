@@ -81,15 +81,15 @@ export function MLInYourPhone() {
       {/* Step 3 — they get better the more you use them */}
       <Scene caption="And they improve as you keep using them">
         <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="rounded-xl border border-ash bg-white px-2 py-3 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated px-2 py-3 shadow-sm">
             <div className="text-2xl" aria-hidden="true">1️⃣</div>
             <div className="mt-1 text-[11px] font-bold text-ink">you use it</div>
           </div>
-          <div className="rounded-xl border border-ash bg-white px-2 py-3 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated px-2 py-3 shadow-sm">
             <div className="text-2xl" aria-hidden="true">2️⃣</div>
             <div className="mt-1 text-[11px] font-bold text-ink">it gathers examples</div>
           </div>
-          <div className="rounded-xl border border-ash bg-white px-2 py-3 shadow-sm">
+          <div className="rounded-xl border border-ash bg-surface-elevated px-2 py-3 shadow-sm">
             <div className="text-2xl" aria-hidden="true">3️⃣</div>
             <div className="mt-1 text-[11px] font-bold text-ink">it gets more accurate</div>
           </div>
@@ -125,7 +125,7 @@ function AppCard({
         ? "bg-warm-wash text-ink"
         : "bg-good-wash text-good";
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-ash bg-white p-4 shadow-sm">
+    <div className="flex items-start gap-3 rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-brand-wash">
         {icon}
       </div>
@@ -144,7 +144,7 @@ function AppCard({
 
 function SpamIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="8" width="24" height="17" rx="2" />
       <path d="M4 10 L16 19 L28 10" />
     </svg>
@@ -153,7 +153,7 @@ function SpamIcon() {
 
 function RecommendIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="6" width="20" height="14" rx="2" />
       <path d="M12 24 L16 20 L20 24" />
       <path d="M28 11 L28 22 Q28 24 26 24 L24 24" />
@@ -163,12 +163,12 @@ function RecommendIcon() {
 
 function FaceIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2" strokeLinecap="round">
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round">
       <rect x="5" y="4" width="22" height="24" rx="4" />
       <path d="M5 13 Q9 11 13 13" />
       <path d="M19 13 Q23 11 27 13" />
-      <circle cx="11" cy="16" r="1.2" fill="#4f72aa" />
-      <circle cx="21" cy="16" r="1.2" fill="#4f72aa" />
+      <circle cx="11" cy="16" r="1.2" fill="var(--color-brand-deep)" />
+      <circle cx="21" cy="16" r="1.2" fill="var(--color-brand-deep)" />
       <path d="M11 21 Q16 25 21 21" />
     </svg>
   );
@@ -176,7 +176,7 @@ function FaceIcon() {
 
 function MapIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 10 L12 7 L20 10 L27 7 L27 24 L20 27 L12 24 L5 27 Z" />
       <path d="M12 7 L12 24" />
       <path d="M20 10 L20 27" />
@@ -186,7 +186,7 @@ function MapIcon() {
 
 function KeyboardIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="#4f72aa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="9" width="24" height="14" rx="2" />
       <path d="M9 13 H9.01 M14 13 H14.01 M19 13 H19.01 M24 13 H24.01 M9 18 H23" />
     </svg>

@@ -42,7 +42,7 @@ function LeaderboardRowItem({ row }: { row: LeaderboardRow }) {
         : row.rank === 3
           ? "text-[#b87333]"
           : "text-ink-faint";
-  const highlight = row.rank <= 3 ? "bg-brand-wash/60" : "bg-white";
+  const highlight = row.rank <= 3 ? "bg-brand-wash/60" : "bg-surface-elevated";
 
   return (
     <li className={`flex items-center gap-3 px-5 py-3 ${highlight}`}>

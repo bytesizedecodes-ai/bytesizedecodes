@@ -83,7 +83,7 @@ export default function ProjectDetailPage({
                   value={brief}
                   onChange={(e) => setBrief(e.target.value)}
                   placeholder="Who is this for, what question should it answer, and what counts as a failure?"
-                  className="min-h-36 w-full rounded-xl border border-ash bg-white px-3 py-2 text-sm text-ink outline-none focus:border-brand"
+                  className="min-h-36 w-full rounded-xl border border-ash bg-surface-elevated px-3 py-2 text-sm text-ink outline-none focus:border-brand"
                 />
                 <div className="flex flex-wrap gap-3">
                   <Button disabled={saving} onClick={() => void saveCheckpoint("private")}>

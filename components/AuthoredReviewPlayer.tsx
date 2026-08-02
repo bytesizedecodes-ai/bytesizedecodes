@@ -97,7 +97,7 @@ export function AuthoredReviewPlayer({
           type="button"
           disabled={!selection}
           onClick={() => setRevealed(true)}
-          className="focus-ring w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white disabled:opacity-40"
+          className="focus-ring w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-canvas disabled:opacity-40"
         >
           Reveal answer
         </button>
@@ -124,7 +124,7 @@ export function AuthoredReviewPlayer({
                     type="button"
                     disabled={pending || (!correct && grade !== "again")}
                     onClick={() => void submitGrade(grade)}
-                    className="focus-ring rounded-xl border border-ash bg-white px-3 py-2.5 text-xs font-semibold capitalize text-ink hover:border-brand disabled:opacity-35"
+                    className="focus-ring rounded-xl border border-ash bg-surface-elevated px-3 py-2.5 text-xs font-semibold capitalize text-ink hover:border-brand disabled:opacity-35"
                   >
                     {grade}
                   </button>
@@ -145,7 +145,7 @@ export function AuthoredReviewPlayer({
               <button
                 type="button"
                 onClick={onDone}
-                className="focus-ring w-full rounded-xl border border-ash bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-ash/40"
+                className="focus-ring w-full rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-sm font-semibold text-ink hover:bg-ash/40"
               >
                 Next review
               </button>

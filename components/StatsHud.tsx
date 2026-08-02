@@ -66,7 +66,7 @@ function Stat({
   children?: ReactNode;
 }) {
   return (
-    <div className="bg-white p-4">
+    <div className="bg-surface-elevated p-4">
       <p className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">{label}</p>
       <div className="mt-1 text-2xl font-semibold tracking-tight text-ink">{value}</div>
       {children}
@@ -79,11 +79,11 @@ function Flame() {
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
       <path
         d="M8 1.5s3 3 3 6.2c0 1.9-1.3 3.3-3 3.3S5 9.6 5 7.7C5 5.5 8 1.5 8 1.5z"
-        fill="#c9a961"
+        fill="var(--color-gold)"
       />
       <path
         d="M8 7.2c.9 0 1.6.7 1.6 1.7S8.9 11 8 11s-1.6-.8-1.6-1.9.7-1.9 1.6-1.9z"
-        fill="#fff"
+        fill="var(--color-canvas)"
         opacity=".55"
       />
     </svg>
