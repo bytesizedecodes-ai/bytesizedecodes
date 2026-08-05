@@ -4,6 +4,7 @@ import { useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DrillPlayer } from "@/components/DrillPlayer";
 import { RequireOnboarding } from "@/components/RequireOnboarding";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Shell } from "@/components/Shell";
 import { GENERATORS, type Difficulty } from "@/lib/drills";
 import { useToday } from "@/lib/data/provider";
@@ -58,6 +59,7 @@ function PracticeContent() {
 
   return (
     <Shell active="/practice">
+      <RequireAuth>
       <RequireOnboarding>
       <div className="mx-auto max-w-2xl space-y-6">
         <div>
@@ -127,6 +129,7 @@ function PracticeContent() {
         />
       </div>
       </RequireOnboarding>
+      </RequireAuth>
     </Shell>
   );
 }

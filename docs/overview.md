@@ -12,41 +12,70 @@ A goal-based AI learning platform for:
 ## Product promise
 
 Learners pick a goal, get a daily plan, learn with visual + active lessons,
-practise with diagnostic drills, review with spaced repetition, and (later)
-build real artifacts.
+practise with diagnostic drills, review with spaced repetition, and build real
+artifacts.
+
+## Access model (current)
+
+| Visitor state | What they can do |
+| --- | --- |
+| **Guest** | Read free courses/lessons (public SEO), browse Learn catalog, Plans, About/Legal, Advertise/Subscribe forms |
+| **Signed-in, not onboarded** | Social account → onboarding (goal, level, weekly minutes, time mode) |
+| **Signed-in + onboarded** | Full loop: Today · Learn · Courses · Build · Progress · Plans · Profile |
+
+There is **no anonymous product session**. Guests can read free content; saving
+progress requires a **social identity** (Google OAuth live; GitHub when env is
+set). **No email OTP / Resend** for auth.
 
 ## What is shipped today
 
-- Next.js App Router UI with Today, Learn, Courses, Progress, Profile, Build navigation
-- Anonymous onboarding (goal, level, weekly minutes, time mode)
-- Convex Auth: anonymous by default; Google when env vars are set (**no email OTP**)
-- Convex-backed progress behind a `DataLayer` seam
-- Typed lesson/byte content, courses (with domain + level fields), skills, tracks, unified Learn + Courses catalogs
-- Two courses: "Machine Learning" (4 lessons) and "Machine Learning for Layman" (19 lessons, picture-led)
-- Personalized daily plan query
-- Procedural drill generators + authored review
-- SM-2 review queue, streaks, XP, streak rollover cron
-- Pyodide code cell (worker + timeout)
+### Product UI and navigation
+
+- **Public nav:** Learn · Courses · Plans · Login (Login on the right)
+- **Authed + onboarded:** Today · Learn · Courses · Build · Progress · Plans + account menu
+- Auth modal + `/login` with **Continue with Google** and **Continue with GitHub** (GitHub “Soon” until enabled)
+- Onboarding after first social sign-in
+- Site footer (Brand · Product · Company · Legal) and contact email `bytesizedecodes@gmail.com`
+- Trust pages: `/about`, `/contact`, `/privacy`, `/terms`
+- Lead forms: `/advertise`, `/subscribe` (stored in Convex `inquiries` + FormSubmit email)
+- `/plans` tiers: Free learning · Free account · Pro (coming soon, fee TBD)
+
+### Auth and data
+
+- Convex Auth social OAuth (`convex/auth.ts`) — Google when `AUTH_GOOGLE_*` set; GitHub when `AUTH_GITHUB_*` set
+- `getUserId` derives identity **only** from `ctx.auth` (client-supplied userId ignored)
+- Profile from identity (name / email / avatar); `ensureProfile` on sign-in
+- Convex-backed progress behind a `DataLayer` seam (`lib/data/provider.tsx`)
 - Opt-in project gallery (publish from Build)
-- SEO foundation: per-page metadata, sitemap, robots, OpenGraph images, JSON-LD structured data
+
+### Learning content and loop
+
+- Typed lesson/byte content, courses with domain + level + `access: "free" | "paid"`
+- Two free courses: “Machine Learning” (4 lessons) and “Machine Learning for Layman” (19 lessons)
+- Personalized daily plan (signed-in), procedural drills, SM-2 review, streaks, XP
+- Pyodide code cell (worker + timeout)
+- SEO foundation: metadata, sitemap, robots, OpenGraph, JSON-LD
+
+### Ops
+
+- `/admin` console: users, feedback triage, `requireAdmin` + `ADMIN_EMAILS` allowlist
+- `dev` → `main` promote, CI, Netlify, Convex production workflow
 
 ## What is not ready
 
-- Google OAuth until `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` are configured
-- Daily reminder email (intentionally deferred — no Resend)
-- Public social features, peer review moderation, and real leaderboards (the
-  leaderboard component exists but is deliberately not rendered — see
-  [`engagement-and-retention.md`](./engagement-and-retention.md))
-- Any monetization, billing, or paywall (no code exists — see
-  [`monetization-and-subscription.md`](./monetization-and-subscription.md))
+- **GitHub OAuth** until `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET` (Convex) and
+  `NEXT_PUBLIC_AUTH_GITHUB_ENABLED=true` (Next) are configured — UI placeholder is present
+- Daily reminder email / push (no Resend or outbound channel)
+- Public social features, peer moderation, cohort leaderboards (global-XP component exists but is not rendered)
+- Stripe / real checkout for `access: "paid"` courses and Pro pricing
 - Full Python / LLM curriculum depth
-- Complete anonymous→Google account-linking edge cases under abuse
+- `lib/data/identity.ts` browser UUID remains for legacy shapes only — not product login
 
 ## Related reading
 
 - Agent rules: [`../CLAUDE.md`](../CLAUDE.md)
-- Engagement & retention (what's built vs missing): [`./engagement-and-retention.md`](./engagement-and-retention.md)
-- Monetization & subscription model: [`./monetization-and-subscription.md`](./monetization-and-subscription.md)
-- Admin console & feedback loop: [`./admin-and-feedback.md`](./admin-and-feedback.md)
+- Engagement & retention: [`./engagement-and-retention.md`](./engagement-and-retention.md)
+- Monetization & tiers: [`./monetization-and-subscription.md`](./monetization-and-subscription.md)
+- Admin & feedback: [`./admin-and-feedback.md`](./admin-and-feedback.md)
 - Current plans: [`../plans/coherent-v1/`](../plans/coherent-v1/)
 - Historical plans: [`../plans/historical/`](../plans/historical/)

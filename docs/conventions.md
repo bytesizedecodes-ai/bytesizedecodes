@@ -6,7 +6,8 @@ Hard rules for agents. Also summarized in [`../CLAUDE.md`](../CLAUDE.md).
 
 1. Components/pages import hooks only from `@/lib/data/provider`.
 2. Direct Convex imports stay in the provider/backend boundary.
-3. Direct anonymous storage access stays in `lib/data/identity.ts`.
+3. Product identity = Convex Auth social session (`getUserId` server-side).
+4. Do not reintroduce anonymous auto-login.
 
 ## Pure modules
 
@@ -48,11 +49,24 @@ Branded `"YYYY-MM-DD"` in IST. Cast with `asDayKey()`, never blind `as DayKey`.
 - No `any`. Prefer `Doc<>` / `Id<>` and branded types.
 - `noUncheckedIndexedAccess`: array access is `T | undefined`.
 
+## Auth copy and UI
+
+- Prefer “sign in”, “social account”, “signed-in identity” in product copy.
+- Provider names belong on OAuth buttons (`Continue with Google` / `Continue with GitHub`).
+- Wire new providers in `convex/auth.ts` + flags in `lib/authProviders.ts` +
+  `.env.example` / Netlify env.
+
+## Courses / infographics
+
+Use the `infographics-animation` skill (v2) for new or edited visual courses:
+audience-aware level, scene vocabulary, theme-safe tokens, one accent per scene.
+See rule 11 in [`../CLAUDE.md`](../CLAUDE.md).
+
 ## Tests and finish line
 
 - Colocated `*.test.ts`.
 - Generator changes: run generator tests (`npm test`).
-- Data-layer / Convex changes: keep the seam intact.
+- Data-layer / Convex changes: keep the seam intact; do not trust client userIds.
 - Before declaring done: `npm run typecheck` (and relevant tests).
 
 ## Tailwind

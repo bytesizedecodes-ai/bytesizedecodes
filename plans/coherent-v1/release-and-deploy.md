@@ -23,7 +23,9 @@ work on dev → push → open PR to main → CI + preview → merge → Netlify 
 2. CI green: `npm test`, `npm run typecheck`, `npm run build` (GitHub Actions job `CI`).
 3. Deploy Preview looked good on the PR.
 4. If backend changed: Convex production deploy will run from `main` (see below).
-5. Env parity: Netlify production has `NEXT_PUBLIC_CONVEX_URL` (and Google flags if used).
+5. Env parity: Netlify production has `NEXT_PUBLIC_CONVEX_URL` and social auth
+   UI flags (`NEXT_PUBLIC_AUTH_GOOGLE_ENABLED`, optionally `_GITHUB_`) matching
+   secrets on the Convex production deployment.
 6. If the diff touches auth / `convex/` / `lib/data/`: run Cursor Security Review or Bugbot.
    Agent review does **not** block merge by itself — CI does.
 
@@ -45,7 +47,8 @@ Dashboard (required once):
 3. Enable **Deploy Previews** for pull requests.
 4. Set env vars for production (and preview if needed):
    - `NEXT_PUBLIC_CONVEX_URL` — production Convex deployment URL
-   - `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` — `true` only when Google auth is configured
+   - `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` — `true` only when Google auth is configured on Convex
+   - `NEXT_PUBLIC_AUTH_GITHUB_ENABLED` — `true` only when GitHub auth is configured on Convex
 5. Confirm build command is `npm run build` (from `netlify.toml`).
 
 Do not point Netlify production at `dev`.
@@ -65,8 +68,14 @@ Production deploys are coupled to `main` via
 If the secret is missing, the Convex job is skipped — add the secret before the
 first real production cutover.
 
-Auth secrets (`AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, etc.) live in the Convex
-dashboard for the **production** deployment, not in git.
+Auth secrets live on the Convex **production** deployment (not in git):
+
+- Google: `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`
+- GitHub: `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` (when enabling)
+- `ADMIN_EMAILS` for operators
+- Convex Auth JWT material from the auth install path
+
+See [`.env.example`](../../.env.example) for setup comments.
 
 ## Branch protection
 

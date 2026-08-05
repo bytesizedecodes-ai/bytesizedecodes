@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { CodeCell } from "@/components/CodeCell";
 import { RewardBanner } from "@/components/RewardBanner";
 import type { ByteQuestion, CodeExercise, SkillId } from "@/content";
+import { useConvexAuth } from "convex/react";
+import { AuthModal } from "@/components/AuthModal";
 import {
   useByteProgress,
   useCompleteByte,
@@ -56,11 +58,15 @@ export function ByteBody({
   const questionStartedAt = useRef<Record<string, number>>({});
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Progress writes require a signed-in account. Guests can read; start only when authed
+  // and we already have a real unseen progress row (not the guest placeholder).
+  const { isAuthenticated } = useConvexAuth();
   useEffect(() => {
+    if (!isAuthenticated) return;
     if (progress && progress.status === "unseen") {
       void start(progressSlug);
     }
-  }, [progress, progressSlug, start]);
+  }, [isAuthenticated, progress, progressSlug, start]);
 
   useEffect(() => {
     if (!progress || hydrated) return;
@@ -77,6 +83,7 @@ export function ByteBody({
   }, [progress, hydrated, exercise?.starterCode]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     if (!hydrated || progress?.status === "completed") return;
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
@@ -90,14 +97,30 @@ export function ByteBody({
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [answers, checked, code, exercise, hydrated, progress?.status, progressSlug, saveDraft]);
+  }, [
+    isAuthenticated,
+    answers,
+    checked,
+    code,
+    exercise,
+    hydrated,
+    progress?.status,
+    progressSlug,
+    saveDraft,
+  ]);
 
   const questionsDone =
     questions.length === 0 ||
     questions.every((q) => checked[q.id] && answers[q.id] === q.answer);
   const canComplete = questionsDone && (!exercise || exercisePassed);
 
+  const [authOpen, setAuthOpen] = useState(false);
+
   async function checkQuestion(id: string) {
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      return;
+    }
     const q = questions.find((x) => x.id === id);
     if (!q || !answers[id]) return;
     const correct = answers[id] === q.answer;
@@ -114,6 +137,10 @@ export function ByteBody({
   }
 
   async function finish() {
+    if (!isAuthenticated) {
+      setAuthOpen(true);
+      return;
+    }
     if (!canComplete || pending) return;
     setPending(true);
     try {
@@ -130,6 +157,20 @@ export function ByteBody({
 
   return (
     <div className="mt-12 space-y-8 border-t border-ash pt-10">
+      {!isAuthenticated && (
+        <p className="rounded-xl border border-brand/30 bg-brand-wash px-4 py-3 text-sm text-ink-soft">
+          Reading is free.{" "}
+          <button
+            type="button"
+            className="font-semibold text-brand-deep hover:underline"
+            onClick={() => setAuthOpen(true)}
+          >
+            Sign in
+          </button>{" "}
+          to save progress and earn XP.
+        </p>
+      )}
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} redirectTo="/onboarding?next=/learn" />
       {questions.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-lg font-semibold tracking-tight">Check yourself</h2>
@@ -219,7 +260,9 @@ export function ByteBody({
             onTestResult={(ok) => {
               if (!ok) return;
               setExercisePassed(true);
-              void recordCodePass(progressSlug, today, [...skillIds]);
+              if (isAuthenticated) {
+                void recordCodePass(progressSlug, today, [...skillIds]);
+              }
             }}
           />
           {exercisePassed ? (

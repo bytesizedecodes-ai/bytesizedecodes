@@ -8,11 +8,11 @@ Guide for AI agents working on this repo. Read before editing.
 goal-based AI learning platform for curious beginners, students and graduates,
 working professionals, and aspiring founders.
 
-The current prototype uses **Convex Auth** (anonymous by default; Google when
-`AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` are set) behind the `DataLayer` seam.
-Legacy browser UUIDs can be claimed onto an auth subject. **No email OTP /
-Resend** — cross-device identity is Google when configured. Opt-in project
-gallery is available; full social features are not.
+The current prototype uses **Convex Auth** (social OAuth: Google live; GitHub
+ready when env is set) behind the `DataLayer` seam. Free courses are public/SEO-
+readable without login; progress, streaks, and the personal loop require a
+signed-in identity. **No email OTP / Resend.** Opt-in project gallery is
+available; full social features are not.
 `lib/data/local.ts` is the retained legacy adapter, not the active provider.
 
 ## Docs for agents (read these)
@@ -24,7 +24,7 @@ gallery is available; full social features are not.
 | [`docs/data-layer.md`](docs/data-layer.md) | DataLayer seam, identity, practice vs review |
 | [`docs/content-model.md`](docs/content-model.md) | Bytes, courses, tracks, skills, catalog |
 | [`docs/engagement-and-retention.md`](docs/engagement-and-retention.md) | Habit-formation: what's built vs missing, leaderboard decision, pre-launch checklist |
-| [`docs/monetization-and-subscription.md`](docs/monetization-and-subscription.md) | Business model: free learning → login-to-build → paid-advanced |
+| [`docs/monetization-and-subscription.md`](docs/monetization-and-subscription.md) | Free read → free social account → Pro; Plans/leads |
 | [`docs/admin-and-feedback.md`](docs/admin-and-feedback.md) | /admin console, admin role + requireAdmin guard, feedback loop, email scheduling plan |
 | [`docs/conventions.md`](docs/conventions.md) | Hard engineering rules |
 | [`docs/release.md`](docs/release.md) | `dev` → `main` promote, CI, Netlify, Convex |
@@ -51,7 +51,8 @@ need roadmap context.
 
 Prerequisites: `npm install`, and a `.env.local` containing
 `CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL` (pointing at a dev
-deployment created via `npx convex dev`).
+deployment created via `npx convex dev`). OAuth setup and flags for Google/GitHub
+are documented in [`.env.example`](.env.example).
 
 ### Run the app locally (two terminals)
 
@@ -93,8 +94,8 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 
 1. **The `DataLayer` seam is sacred.** Components and pages import hooks only from
    `@/lib/data/provider`; they do not import Convex or browser persistence directly.
-   `lib/data/provider.tsx` is the active Convex adapter. `lib/data/identity.ts` is
-   the temporary exception that owns the anonymous browser UUID.
+   `lib/data/provider.tsx` is the active Convex adapter. Product identity is Convex
+   Auth (social OAuth). `lib/data/identity.ts` is **legacy** browser UUID only.
 
 2. **`lib/drills/`, `lib/srs.ts`, `lib/day.ts`, `lib/data/streak.ts`, `lib/data/xp.ts`
    are pure TypeScript.** No `Math.random()`, `Date.now()`, DOM, React, or storage
@@ -159,8 +160,9 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 | App routes | `app/` | Server components by default; `"use client"` only where needed |
 | React data hooks | `lib/data/provider.tsx` | Active Convex-backed provider |
 | Data mutation contract | `lib/data/contract.ts` | Spec for the mutation surface |
-| Convex backend | `convex/` | Schema, queries, mutations, and shared pure logic |
-| Anonymous identity | `lib/data/identity.ts` | Temporary browser UUID; replace with auth |
+| Convex backend | `convex/` | Schema, queries, mutations, auth, admin, inquiries |
+| Auth (social) | `convex/auth.ts`, `lib/authProviders.ts` | Google + optional GitHub; UI flags |
+| Legacy browser UUID | `lib/data/identity.ts` | Not product login |
 | Legacy local adapter | `lib/data/local.ts` | Retained but not active |
 | Drill generators | `lib/drills/` | Registry order = practice-picker order |
 | Spaced repetition | `lib/srs.ts` | SM-2; `dueQueue` cap of 20 (anti-abandonment) |
@@ -189,7 +191,7 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 
 - If you touched a generator, run the generator tests.
 - If you touched the data layer, keep direct Convex imports in the provider/backend
-  boundary and direct anonymous-storage access in `lib/data/identity.ts`.
+  boundary; do not trust client-supplied userIds.
 - Run `npm run typecheck` before declaring done.
 
 <!-- convex-ai-start -->

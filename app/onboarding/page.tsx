@@ -1,7 +1,16 @@
+"use client";
+
+/**
+ * Onboarding requires a signed-in session. Guests redirect to
+ * /login?next=/onboarding.
+ */
+
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useEffect, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
 import { OnboardingForm } from "./OnboardingForm";
 import { BrandMark } from "@/components/BrandMark";
+import { useAuthState } from "@/lib/data/provider";
 
 export default function OnboardingPage() {
   return (
@@ -18,18 +27,41 @@ export default function OnboardingPage() {
             <span className="block text-brand-deep">Learn toward what matters.</span>
           </h1>
           <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
-            Three quick choices shape your daily plan. Nothing here locks content away,
-            and you can change direction at any time.
+            Three quick choices shape your daily plan. Free courses stay open —
+            this just personalises your path and progress.
           </p>
         </header>
         <div className="card mt-8 p-5 sm:mt-10 sm:p-8">
-          <Suspense fallback={<OnboardingSkeleton />}>
-            <OnboardingForm />
-          </Suspense>
+          <RequireSignedInSuspense>
+            <Suspense fallback={<OnboardingSkeleton />}>
+              <OnboardingForm />
+            </Suspense>
+          </RequireSignedInSuspense>
         </div>
       </div>
     </main>
   );
+}
+
+function RequireSignedInSuspense({ children }: { children: ReactNode }) {
+  const { status } = useAuthState();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthed") {
+      router.replace(`/login?next=${encodeURIComponent("/onboarding")}`);
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <OnboardingSkeleton />;
+  }
+  if (status === "unauthed") {
+    return (
+      <p className="text-sm text-ink-soft">Redirecting to sign-in…</p>
+    );
+  }
+  return <>{children}</>;
 }
 
 function OnboardingSkeleton() {

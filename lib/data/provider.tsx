@@ -1,11 +1,10 @@
 "use client";
 
 /**
- * React bindings — Convex-backed with Convex Auth.
+ * React bindings — Convex-backed with Convex Auth (social identity).
  *
- * Components import hooks from here and nowhere else. Identity resolves on the
- * server from the auth session when present; the browser UUID is only used to
- * keep legacy progress readable until anonymous auth claims it.
+ * Components import hooks from here and nowhere else. User data requires a
+ * signed-in session; free public pages skip personal queries when unauthenticated.
  */
 
 import { useCallback, useEffect, useMemo, type ReactNode } from "react";
@@ -16,11 +15,9 @@ import {
   useQuery,
 } from "convex/react";
 import { ConvexAuthNextjsProvider } from "@convex-dev/auth/nextjs";
-import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { todayKey, type DayKey } from "../day";
-import { getUserId, peekLegacyAnonId } from "./identity";
 import type {
   AttemptInput,
   AttemptResult,
@@ -42,24 +39,25 @@ import type {
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-function AuthBootstrap({ children }: { children: ReactNode }) {
+/**
+ * After social sign-in, ensure a profiles row exists so getProfile can return
+ * name/email. Onboarding still sets path preferences.
+ */
+function ProfileEnsure({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useConvexAuth();
-  const { signIn } = useAuthActions();
-  const claim = useMutation(api.mutations.claimLegacyProgress);
+  const ensure = useMutation(api.mutations.ensureProfile);
+  const today = useToday();
+  const profile = useQuery(
+    api.queries.getProfile,
+    !isLoading && isAuthenticated ? { userId: AUTH_USER_ID, today } : "skip",
+  );
 
   useEffect(() => {
-    if (isLoading || isAuthenticated) return;
-    void signIn("anonymous").then(async () => {
-      const legacy = peekLegacyAnonId();
-      if (legacy) {
-        try {
-          await claim({ legacyUserId: legacy });
-        } catch {
-          // Claim is best-effort; learning still works under the new subject.
-        }
-      }
-    });
-  }, [isLoading, isAuthenticated, signIn, claim]);
+    if (isLoading || !isAuthenticated) return;
+    if (profile === null) {
+      void ensure({ userId: AUTH_USER_ID });
+    }
+  }, [isLoading, isAuthenticated, profile, ensure]);
 
   return <>{children}</>;
 }
@@ -68,7 +66,7 @@ function AuthBootstrap({ children }: { children: ReactNode }) {
 export function DataProvider({ children }: { children: ReactNode }) {
   return (
     <ConvexAuthNextjsProvider client={convex}>
-      <AuthBootstrap>{children}</AuthBootstrap>
+      <ProfileEnsure>{children}</ProfileEnsure>
     </ConvexAuthNextjsProvider>
   );
 }
@@ -78,25 +76,59 @@ export function useToday(): DayKey {
   return useMemo(() => todayKey(), []);
 }
 
-/** Stable per-browser user id. Re-render-safe (no state). */
-function useUserId(): string {
-  return useMemo(() => getUserId(), []);
+/**
+ * Placeholder userId arg — server ignores it and uses ctx.auth subject.
+ * Kept for Convex API shape stability.
+ */
+const AUTH_USER_ID = "auth";
+
+function useAuthGate(): { ready: boolean; authed: boolean } {
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  return { ready: !isLoading, authed: isAuthenticated };
 }
 
 // ---------- reads ----------
 
 export function useCurrentUser(): Profile | undefined | null {
-  const userId = useUserId();
+  const { ready, authed } = useAuthGate();
   const today = useToday();
-  const data = useQuery(api.queries.getProfile, { userId, today });
+  const data = useQuery(
+    api.queries.getProfile,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready) return undefined;
+  if (!authed) return null;
   if (data === undefined) return undefined;
   if (data === null) return null;
   return data as Profile;
 }
 
+/**
+ * Single source of truth for navigation/auth-gating decisions.
+ *
+ *   - "loading"  — auth still resolving
+ *   - "unauthed" — no signed-in session
+ *   - "authed"   — social identity session is live
+ */
+export function useAuthState(): {
+  status: "loading" | "unauthed" | "authed";
+  profile: Profile | undefined | null;
+  hasProfile: boolean;
+} {
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  const profile = useCurrentUser();
+  const hasProfile = Boolean(profile?.onboardingCompletedAt);
+  if (isLoading) return { status: "loading", profile, hasProfile };
+  return { status: isAuthenticated ? "authed" : "unauthed", profile, hasProfile };
+}
+
 export function useDayProgress(today: DayKey): DayProgress | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getDayProgress, { userId, today });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getDayProgress,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as DayProgress | undefined;
 }
 
@@ -104,43 +136,78 @@ export function useDailyPlan(
   today: DayKey,
   timeMode?: TimeMode,
 ): DailyPlan | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getDailyPlan, {
-    userId,
-    today,
-    ...(timeMode ? { timeMode } : {}),
-  });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getDailyPlan,
+    ready && authed
+      ? { userId: AUTH_USER_ID, today, ...(timeMode ? { timeMode } : {}) }
+      : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as DailyPlan | undefined;
 }
 
 export function useReviewQueue(today: DayKey): ReviewCard[] | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getReviewQueue, { userId, today });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getReviewQueue,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as ReviewCard[] | undefined;
 }
 
 export function useByteProgress(slug: string): ByteProgress | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getByteProgress, { userId, slug });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getByteProgress,
+    ready && authed ? { userId: AUTH_USER_ID, slug } : "skip",
+  );
+  if (!ready) return undefined;
+  if (!authed) {
+    return {
+      slug,
+      status: "unseen",
+      completedDay: null,
+      xpEarned: 0,
+      draftAnswers: null,
+      draftChecked: null,
+      draftCode: null,
+      exercisePassed: false,
+    };
+  }
   if (data === undefined) return undefined;
   return data as ByteProgress;
 }
 
 export function useAllByteProgress(): Record<string, ByteProgress> | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getAllByteProgress, { userId });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getAllByteProgress,
+    ready && authed ? { userId: AUTH_USER_ID } : "skip",
+  );
+  if (!ready) return undefined;
+  if (!authed) return {};
   return data as Record<string, ByteProgress> | undefined;
 }
 
 export function useTopicMastery(today: DayKey): TopicMastery[] | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getTopicMastery, { userId, today });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getTopicMastery,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as TopicMastery[] | undefined;
 }
 
 export function useRecentXp(days: number, today: DayKey): DayXp[] | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.getRecentXp, { userId, days, today });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getRecentXp,
+    ready && authed ? { userId: AUTH_USER_ID, days, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as DayXp[] | undefined;
 }
 
@@ -165,8 +232,12 @@ export function useProjects():
       updatedAt: number;
     }>
   | undefined {
-  const userId = useUserId();
-  const data = useQuery(api.queries.listProjects, { userId });
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.listProjects,
+    ready && authed ? { userId: AUTH_USER_ID } : "skip",
+  );
+  if (!ready || !authed) return undefined;
   return data as
     | Array<{
         slug: string;
@@ -183,31 +254,30 @@ export function useProjects():
 // ---------- mutations ----------
 
 export function useSubmitAttempt(): (input: AttemptInput) => Promise<AttemptResult> {
-  const userId = useUserId();
   const submit = useMutation(api.mutations.submitAttempt);
   return useCallback(
-    (input: AttemptInput) => submit({ input: { ...input, userId } }) as Promise<AttemptResult>,
-    [submit, userId],
+    (input: AttemptInput) =>
+      submit({ input: { ...input, userId: AUTH_USER_ID } }) as Promise<AttemptResult>,
+    [submit],
   );
 }
 
 export function useGradeReview(): (input: ReviewInput) => Promise<AttemptResult> {
-  const userId = useUserId();
   const grade = useMutation(api.mutations.gradeReview);
   return useCallback(
-    (input: ReviewInput) => grade({ input: { ...input, userId } }) as Promise<AttemptResult>,
-    [grade, userId],
+    (input: ReviewInput) =>
+      grade({ input: { ...input, userId: AUTH_USER_ID } }) as Promise<AttemptResult>,
+    [grade],
   );
 }
 
 export function useStartByte(): (slug: string) => Promise<void> {
-  const userId = useUserId();
   const start = useMutation(api.mutations.startByte);
   return useCallback(
     async (slug: string) => {
-      await start({ userId, slug });
+      await start({ userId: AUTH_USER_ID, slug });
     },
-    [start, userId],
+    [start],
   );
 }
 
@@ -216,38 +286,35 @@ export function useCompleteByte(): (
   today: DayKey,
   opts?: { requireExercise?: boolean },
 ) => Promise<AttemptResult> {
-  const userId = useUserId();
   const complete = useMutation(api.mutations.completeByte);
   return useCallback(
     (slug: string, today: DayKey, opts?: { requireExercise?: boolean }) =>
       complete({
-        userId,
+        userId: AUTH_USER_ID,
         slug,
         today,
         ...(opts?.requireExercise ? { requireExercise: true } : {}),
       }) as Promise<AttemptResult>,
-    [complete, userId],
+    [complete],
   );
 }
 
 export function useUpdateOnboarding(): (input: OnboardingInput) => Promise<void> {
-  const userId = useUserId();
   const update = useMutation(api.mutations.updateOnboarding);
   return useCallback(
     async (input: OnboardingInput) => {
-      await update({ userId, ...input });
+      await update({ userId: AUTH_USER_ID, ...input });
     },
-    [update, userId],
+    [update],
   );
 }
 
 export function useTrackEvent(): (input: TrackEventInput) => Promise<void> {
-  const userId = useUserId();
   const track = useMutation(api.mutations.trackEvent);
   return useCallback(
     async (input: TrackEventInput) => {
       await track({
-        userId,
+        userId: AUTH_USER_ID,
         name: input.name,
         today: input.today,
         refKey: input.refKey,
@@ -255,17 +322,16 @@ export function useTrackEvent(): (input: TrackEventInput) => Promise<void> {
         mode: input.mode,
       });
     },
-    [track, userId],
+    [track],
   );
 }
 
 export function useSaveLessonDraft(): (input: LessonDraftInput) => Promise<void> {
-  const userId = useUserId();
   const save = useMutation(api.mutations.saveLessonDraft);
   return useCallback(
     async (input: LessonDraftInput) => {
       await save({
-        userId,
+        userId: AUTH_USER_ID,
         slug: input.slug,
         draftAnswers:
           input.draftAnswers !== undefined ? JSON.stringify(input.draftAnswers) : undefined,
@@ -274,7 +340,7 @@ export function useSaveLessonDraft(): (input: LessonDraftInput) => Promise<void>
         draftCode: input.draftCode,
       });
     },
-    [save, userId],
+    [save],
   );
 }
 
@@ -283,41 +349,37 @@ export function useRecordCodeTestPass(): (
   today: DayKey,
   skillIds: string[],
 ) => Promise<void> {
-  const userId = useUserId();
   const record = useMutation(api.mutations.recordCodeTestPass);
   return useCallback(
     async (slug: string, today: DayKey, skillIds: string[]) => {
-      await record({ userId, slug, today, skillIds });
+      await record({ userId: AUTH_USER_ID, slug, today, skillIds });
     },
-    [record, userId],
+    [record],
   );
 }
 
 export function useResetProgress(): () => Promise<void> {
-  const userId = useUserId();
   const reset = useMutation(api.mutations.resetProgress);
   return useCallback(async () => {
-    await reset({ userId });
-  }, [reset, userId]);
+    await reset({ userId: AUTH_USER_ID });
+  }, [reset]);
 }
 
 export function useExportProgress(): () => Promise<string> {
-  const userId = useUserId();
   const exportAction = useAction(api.mutations.exportProgress);
   return useCallback(async () => {
-    const json = (await exportAction({ userId })) as unknown as string;
+    const json = (await exportAction({ userId: AUTH_USER_ID })) as unknown as string;
     return json;
-  }, [exportAction, userId]);
+  }, [exportAction]);
 }
 
 export function useImportProgress(): (json: string) => Promise<void> {
-  const userId = useUserId();
   const importProgress = useMutation(api.mutations.importProgress);
   return useCallback(
     async (json: string) => {
-      await importProgress({ userId, json });
+      await importProgress({ userId: AUTH_USER_ID, json });
     },
-    [importProgress, userId],
+    [importProgress],
   );
 }
 
@@ -330,13 +392,12 @@ export function useUpsertProject(): (input: {
   status?: "draft" | "in_progress" | "submitted" | "published";
   visibility?: "private" | "unlisted" | "public";
 }) => Promise<void> {
-  const userId = useUserId();
   const upsert = useMutation(api.mutations.upsertProject);
   return useCallback(
     async (input) => {
-      await upsert({ userId, ...input });
+      await upsert({ userId: AUTH_USER_ID, ...input });
     },
-    [upsert, userId],
+    [upsert],
   );
 }
 
@@ -357,11 +418,10 @@ export function usePublicProjects(limit?: number) {
 }
 
 export function useDeleteAccountData(): () => Promise<void> {
-  const userId = useUserId();
   const wipe = useMutation(api.mutations.deleteAccountData);
   return useCallback(async () => {
-    await wipe({ userId });
-  }, [wipe, userId]);
+    await wipe({ userId: AUTH_USER_ID });
+  }, [wipe]);
 }
 
 /* ------------------------------------------------------------------ */
@@ -392,9 +452,8 @@ export function useBootstrapAdminRole(): () => Promise<{ promoted: boolean; reas
   }, [bootstrap]);
 }
 
-/** PUBLIC — submit user feedback (no admin role needed). */
+/** PUBLIC — submit user feedback (no admin role needed — still needs sign-in). */
 export function useSubmitFeedback() {
-  const userId = useUserId();
   const submit = useMutation(api.admin.mutations.submitFeedback);
   return useCallback(
     async (input: {
@@ -402,8 +461,8 @@ export function useSubmitFeedback() {
       body: string;
       url?: string;
     }) => {
-      await submit({ userId, ...input });
+      await submit({ userId: AUTH_USER_ID, ...input });
     },
-    [submit, userId],
+    [submit],
   );
 }

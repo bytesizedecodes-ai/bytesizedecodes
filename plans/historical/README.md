@@ -1,12 +1,17 @@
 # Historical planning (frontend-first)
 
-These documents captured the original ByteSizedCodes plan: browser-local
-prototype first, Convex later. Much of the product framing is outdated
-(interview-prep-first, localStorage as the active store).
+These documents captured the original ByteSizeDecodes plan: browser-local
+prototype first, Convex later. **They are not product reality today.**
 
-Keep them for context on generator philosophy, SRS, and early architecture
-assumptions. Prefer [`../coherent-v1/`](../coherent-v1/) for current product
-direction and [`../../docs/`](../../docs/) for how the repo actually works.
+Outdated assumptions include: interview-prep-first positioning, localStorage as
+the active store, anonymous-first identity, email OTP/Resend as primary auth,
+and older navigation. Generator/SRS philosophy notes may still be useful.
+
+| Prefer for… | Read |
+| --- | --- |
+| How the repo works now | [`../../docs/`](../../docs/) |
+| Current product direction | [`../coherent-v1/`](../coherent-v1/) |
+| Agent rules | [`../../CLAUDE.md`](../../CLAUDE.md) |
 
 | Doc | Topic |
 | --- | --- |

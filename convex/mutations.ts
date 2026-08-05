@@ -5,8 +5,8 @@
  * PersistedStateV1 blob swapped for Convex db reads/writes. The orchestration, the
  * XP/streak/SRS math, and the AttemptResult shape are identical to Phase 0.
  *
- * Identity flows through getUserId() — the single auth swap point. Today the client
- * sends a trusted localStorage UUID; Phase 2 replaces that with ctx.auth.
+ * Identity flows through getUserId() — Convex Auth subject only
+ * (convex/lib/getUser.ts). Never authorize from a client-supplied userId.
  */
 
 import { MutationCtx, mutation, internalMutation, action } from "./_generated/server";
@@ -108,10 +108,27 @@ async function loadOrCreateProfile(
     .query("profiles")
     .withIndex("by_user", (q) => q.eq("userId", userId))
     .unique();
-  if (existing) return existing;
+  if (existing) {
+    // Keep displayName in sync with identity name when still the default seed label.
+    const identity = await ctx.auth.getUserIdentity();
+    if (
+      existing.displayName === "You" &&
+      identity?.name &&
+      identity.name.trim().length > 0
+    ) {
+      await ctx.db.patch(existing._id, { displayName: identity.name.trim() });
+      return (await ctx.db.get(existing._id))!;
+    }
+    return existing;
+  }
+  const identity = await ctx.auth.getUserIdentity();
+  const displayName =
+    identity?.name?.trim() ||
+    identity?.email?.split("@")[0] ||
+    "You";
   const id = await ctx.db.insert("profiles", {
     userId,
-    displayName: "You",
+    displayName,
     track: "grad",
     xpTotal: 0,
     currentStreak: 0,
@@ -341,6 +358,17 @@ export const updateOnboarding = mutation({
       track: args.track,
       mode: args.preferredTimeMode,
     });
+    return null;
+  },
+});
+
+/** Create a minimal profile row for a signed-in user if missing (name from identity). */
+export const ensureProfile = mutation({
+  args: { userId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const userId = await getUserId(ctx, { userId: args.userId });
+    await loadOrCreateProfile(ctx, userId);
     return null;
   },
 });

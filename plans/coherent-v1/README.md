@@ -4,11 +4,28 @@ Current product direction: one coherent learning journey —
 
 > Choose a goal → daily plan → learn actively → review → build → verified progress
 
+## Reality check (read first)
+
+**Codebase truth is under [`docs/`](../../docs/)**, not this folder. As of the
+current site, several roadmap items are partially or fully **already shipped**
+in product form:
+
+| Area | Shipped (see `docs/`) | Still planned |
+| --- | --- | --- |
+| Auth | Social OAuth (Google live; GitHub env/UI ready); no anonymous UI session; privacy/export on Profile | Optional progress migration polish; peer social |
+| Free content | Free courses public SEO; login to save progress | — |
+| Freemium narrative | `/plans`, lead forms | Stripe/Pro pricing |
+| Gallery | Opt-in project gallery | Peer review, squads |
+| Habit core | Daily plan, SRS, streaks, XP | Externals: email/push, weekly minutes tracking |
+
+Historical phase writeups (especially Phase 4 “add Google”) may describe work
+as future; treat them as strategy history unless exit criteria still apply.
+
 ## Strategy docs
 
 | Doc | Topic |
 | --- | --- |
-| [`01-repository-product-audit.md`](./01-repository-product-audit.md) | What the repo actually ships vs claims |
+| [`01-repository-product-audit.md`](./01-repository-product-audit.md) | Audit snapshot (may lag; verify against `docs/`) |
 | [`02-hooked-engagement-strategy.md`](./02-hooked-engagement-strategy.md) | Habit / Hooked model for retention |
 | [`03-course-and-track-roadmap.md`](./03-course-and-track-roadmap.md) | Tracks, skills, curriculum |
 | [`04-interactive-learning-design.md`](./04-interactive-learning-design.md) | Active learning interaction patterns |
@@ -17,7 +34,9 @@ Current product direction: one coherent learning journey —
 
 ## Delivery phases
 
-Phased execution plans (split from the roadmap):
+Phased execution plans (split from the roadmap). Many items remain valid;
+auth/free-content status has moved forward — re-check exit criteria against
+[`docs/overview.md`](../../docs/overview.md).
 
 | Phase | Doc |
 | --- | --- |

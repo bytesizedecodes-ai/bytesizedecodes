@@ -1,3 +1,7 @@
+import { Shell } from "@/components/Shell";
+import { JsonLd } from "@/components/JsonLd";
+import { BeginLearningCta } from "@/components/BeginLearningCta";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_DESCRIPTION } from "@/lib/site";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import {
@@ -12,10 +16,6 @@ import {
   Star,
   Target,
 } from "lucide-react";
-import { Shell } from "@/components/Shell";
-import { JsonLd } from "@/components/JsonLd";
-import { ButtonLink } from "@/components/ui/Button";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata = {
   title: { absolute: `${SITE_NAME} — ${SITE_TAGLINE}` },
@@ -91,14 +91,18 @@ export default function HomePage() {
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/onboarding" className="px-7 py-3 text-base">
-              Find my learning path <ArrowRight className="h-4 w-4" />
-            </ButtonLink>
+            <BeginLearningCta />
             <Link
               href="/courses"
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-ash px-6 py-3 text-base font-semibold text-ink hover:bg-ash/40"
             >
               Explore courses
+            </Link>
+            <Link
+              href="/plans"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-ash px-6 py-3 text-base font-semibold text-ink hover:bg-ash/40"
+            >
+              See plans
             </Link>
           </div>
         </div>
@@ -228,14 +232,12 @@ export default function HomePage() {
             })}
           </ol>
 
-          <div className="mt-10 flex justify-center">
-            <ButtonLink href="/learn" variant="brand" className="px-7 py-3 text-base">
-              Begin learning <ArrowRight className="h-4 w-4" />
-            </ButtonLink>
+          <div className="mt-10 flex flex-col items-center gap-3">
+            <BeginLearningCta />
+            <p className="text-xs text-ink-faint">
+              Free courses open without an account · Sign in to save progress
+            </p>
           </div>
-          <p className="mt-4 text-xs text-ink-faint">
-            Login to capture progress for free
-          </p>
         </div>
       </section>
     </Shell>

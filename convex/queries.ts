@@ -12,7 +12,7 @@
 import { QueryCtx, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
-import { getUserId } from "./lib/getUser";
+import { getIdentityProfile, getUserId } from "./lib/getUser";
 import { addDays, asDayKey, type DayKey } from "./lib/day";
 import { dueQueue, mastery, type SrsState } from "./lib/srs";
 import { settleOnRollover, type StreakFields } from "./lib/streak";
@@ -62,6 +62,8 @@ export interface ByteExport {
 interface ProfileView {
   userId: string;
   displayName: string;
+  email: string | null;
+  imageUrl: string | null;
   track: "grad" | "beginner" | "engineer" | "founder";
   xpTotal: number;
   level: number;
@@ -305,6 +307,7 @@ export const getProfile = query({
   args: { userId: v.string(), today: v.string() },
   handler: async (ctx, { userId, today }): Promise<ProfileView | null> => {
     const uid = await getUserId(ctx, { userId });
+    const identity = await getIdentityProfile(ctx);
     const profile = await loadProfile(ctx, uid);
     if (!profile) return null;
     const day = asDayKey(today);
@@ -313,6 +316,8 @@ export const getProfile = query({
     return {
       userId: uid,
       displayName: profile.displayName,
+      email: identity?.email ?? null,
+      imageUrl: identity?.imageUrl ?? null,
       track: profile.track,
       xpTotal: profile.xpTotal,
       level: progress.level,

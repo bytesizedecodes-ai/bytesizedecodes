@@ -5,11 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useConvexAuth } from "convex/react";
 
 /**
- * Gates a route behind authentication. If the user is not logged in, redirects
- * to /login?next=<current path>. Used on /learn, /today, /progress, /build —
- * the personalised learning loop that requires a profile.
+ * Gates a route behind authentication. Used on /today, /progress,
+ * /build, /practice, /profile — personalised loop surfaces.
  *
- * Courses and lessons remain free and login-free (no RequireAuth).
+ * Free courses and public Learn browse remain login-free.
  */
 export function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isLoading, isAuthenticated } = useConvexAuth();

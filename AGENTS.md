@@ -3,8 +3,8 @@
 Start here for AI agents:
 
 1. [`CLAUDE.md`](CLAUDE.md) — rules and commands
-2. [`docs/README.md`](docs/README.md) — project understanding docs
-3. [`plans/README.md`](plans/README.md) — product plans by phase (not codebase truth)
+2. [`docs/README.md`](docs/README.md) — **current** project understanding (codebase truth)
+3. [`plans/README.md`](plans/README.md) — product plans by phase (**not** codebase truth; may lag)
 
 When working on Convex code, also read `convex/_generated/ai/guidelines.md`.
 

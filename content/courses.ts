@@ -58,6 +58,13 @@ export type CourseLevel = "beginner" | "intermediate" | "expert";
  */
 export type CourseDomain = "Machine Learning" | "Cybersecurity" | "Artificial Intelligence";
 
+/**
+ * Monetization tier for browse/gate UX.
+ * - free: full SSR content, public SEO, readable without sign-in
+ * - paid: listing + soft login (payment later); do not full-index paid lesson bodies when added
+ */
+export type CourseAccess = "free" | "paid";
+
 /** Ordered list of levels, for filter UIs. */
 export const COURSE_LEVELS: readonly CourseLevel[] = ["beginner", "intermediate", "expert"];
 
@@ -67,6 +74,9 @@ export const COURSE_DOMAINS: readonly CourseDomain[] = [
   "Cybersecurity",
   "Artificial Intelligence",
 ];
+
+/** Ordered list of access tiers, for filter UIs. */
+export const COURSE_ACCESS: readonly CourseAccess[] = ["free", "paid"];
 
 export type Course = {
   /** URL segment under `/courses/`. */
@@ -79,6 +89,8 @@ export type Course = {
   level: CourseLevel;
   /** Field of study — drives the domain filter and grouping on `/courses`. */
   domain: CourseDomain;
+  /** free | paid — free courses are public SEO; paid soft-gate until checkout exists */
+  access: CourseAccess;
   lessons: Lesson[];
 };
 
@@ -91,6 +103,7 @@ export const COURSES: readonly Course[] = [
       "A visual path through the concepts every AI learner needs. Each lesson combines an infographic, a concise explanation, an active check, and saved progress.",
     level: "intermediate",
     domain: "Machine Learning",
+    access: "free",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
@@ -437,6 +450,7 @@ for task, expected in cases:
       "A picture-led path through what learning and machine learning actually mean. Every lesson ends with one small active check so the idea becomes more than something you scrolled past.",
     level: "beginner",
     domain: "Machine Learning",
+    access: "free",
     lessons: [
       {
         slug: "how-humans-learn",

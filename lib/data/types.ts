@@ -23,6 +23,10 @@ export interface OnboardingInput {
 export interface Profile {
   userId: UserId;
   displayName: string;
+  /** Identity provider email when signed in. */
+  email: string | null;
+  /** Identity provider avatar URL when available. */
+  imageUrl: string | null;
   track: Track;
   xpTotal: number;
   level: number;

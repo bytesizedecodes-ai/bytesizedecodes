@@ -1,16 +1,14 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Course, CourseDomain, CourseLevel } from "@/content/courses";
-import { COURSE_DOMAINS, COURSE_LEVELS } from "@/content/courses";
+import type { Course } from "@/content/courses";
+import { COURSE_ACCESS, COURSE_DOMAINS, COURSE_LEVELS } from "@/content/courses";
 import { CourseCard } from "./CourseCard";
 
 /**
- * Domain + level filter bar plus the filtered course grid. Filter state lives
- * in the URL (`?domain=&level=`) so it is shareable and survives refresh —
- * mirroring the `/practice` page's pattern. The host page stays a server
- * component and passes `COURSES` down.
+ * Domain + level + access filter bar plus the filtered course grid.
+ * Filter state lives in the URL (`?domain=&level=&access=`).
  */
 export function CourseFilters({ courses }: { courses: readonly Course[] }) {
   return (
@@ -26,8 +24,9 @@ function CourseFiltersContent({ courses }: { courses: readonly Course[] }) {
 
   const activeDomain = searchParams.get("domain");
   const activeLevel = searchParams.get("level");
+  const activeAccess = searchParams.get("access");
 
-  function setFilter(key: "domain" | "level", value: string | null) {
+  function setFilter(key: "domain" | "level" | "access", value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
     if (value === null || value === "All") {
       params.delete(key);
@@ -41,7 +40,8 @@ function CourseFiltersContent({ courses }: { courses: readonly Course[] }) {
   const filtered = courses.filter(
     (course) =>
       (!activeDomain || course.domain === activeDomain) &&
-      (!activeLevel || course.level === activeLevel),
+      (!activeLevel || course.level === activeLevel) &&
+      (!activeAccess || course.access === activeAccess),
   );
 
   return (
@@ -60,6 +60,13 @@ function CourseFiltersContent({ courses }: { courses: readonly Course[] }) {
           onSelect={(value) => setFilter("level", value)}
           capitalize
         />
+        <FilterRow
+          label="Access"
+          options={["All", ...COURSE_ACCESS]}
+          active={activeAccess ?? "All"}
+          onSelect={(value) => setFilter("access", value)}
+          capitalize
+        />
       </div>
 
       <div className="mt-3 text-xs text-ink-faint">
@@ -76,7 +83,7 @@ function CourseFiltersContent({ courses }: { courses: readonly Course[] }) {
         <div className="card mt-4 p-10 text-center">
           <p className="text-sm font-medium text-ink">No courses match this filter yet</p>
           <p className="mt-1 text-sm text-ink-soft">
-            Try a different domain or level, or check back as we add more.
+            Try a different domain, level, or access tier — or check back as we add more.
           </p>
           <button
             type="button"
@@ -137,7 +144,6 @@ function GridSkeleton({ courses }: { courses: readonly Course[] }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
       {Array.from({ length: Math.max(2, Math.min(courses.length, 4)) }).map((_, index) => (
-        // Skeleton shown before client filter state hydrates; index is stable.
         <div key={index} className="card h-56 animate-pulse" />
       ))}
     </div>

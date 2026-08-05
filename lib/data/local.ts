@@ -169,6 +169,8 @@ export class LocalStore {
     return {
       userId: this.state.userId as UserId,
       displayName: this.state.displayName,
+      email: null,
+      imageUrl: null,
       track: this.state.track,
       xpTotal: this.state.xpTotal,
       level: progress.level,

@@ -2,72 +2,82 @@
 
 Learn AI visually. Practise it. Build something real.
 
-bytesizedecodes is an early learning-platform prototype for curious beginners,
-students, working professionals, and aspiring AI founders. It combines visual
-lessons, procedural practice, spaced review, executable Python, and project-based
-learning.
-
-The current prototype persists progress in Convex using an anonymous browser
-identity. Production authentication and cross-device accounts are not implemented
-yet.
+**ByteSizeDecodes** is a goal-based AI learning platform for curious beginners,
+students, working professionals, and aspiring founders. Free courses are public
+to read; progress, streaks, and the daily plan require a free **social account**
+(Google OAuth live; GitHub ready when configured).
 
 ## Run locally
 
+Prerequisites: `npm install`, and `.env.local` with `CONVEX_DEPLOYMENT` and
+`NEXT_PUBLIC_CONVEX_URL` (from `npx convex dev`). Auth flags and OAuth setup:
+[`.env.example`](.env.example).
+
 ```bash
-npm install
+# Terminal 1 — Convex (start first)
+npx convex dev
+
+# Terminal 2 — Next.js → http://localhost:3000
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
 ```bash
-npm test        # generator + SRS + day-key suite
+npm test        # vitest
 npm run typecheck
 npm run build
 ```
+
+## Product in brief
+
+| Audience | Experience |
+| --- | --- |
+| Guest | Free courses/lessons SEO, Learn catalog, Plans, legal, advertise/subscribe |
+| Signed-in | Onboarding → Today · Learn · Courses · Build · Progress · Profile |
+
+Stack: Next.js 16 · React 19 · TypeScript · Tailwind v4 · Convex · Vitest · Convex Auth.
 
 ## Branches and production
 
 - **`dev`** — day-to-day development
 - **`main`** — production (Netlify production branch)
-- Promote with a PR: `dev` → `main` (see [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md))
+- Promote with a PR: `dev` → `main`
 - Full release ritual: [`plans/coherent-v1/release-and-deploy.md`](plans/coherent-v1/release-and-deploy.md)
 
 ## What's in here
 
 | Area | Path |
 | --- | --- |
-| Agent docs | `docs/` |
-| Product plans | `plans/` |
+| Agent docs (current truth) | [`docs/`](docs/) |
+| Product plans | [`plans/`](plans/) |
 | Drill generators | `lib/drills/` |
 | Spaced repetition | `lib/srs.ts` |
 | Day keys (IST) | `lib/day.ts` |
 | Convex backend | `convex/` |
 | Frontend data provider | `lib/data/` |
-| Learning content | `content/` |
+| Learning + plans content | `content/` |
 | App routes | `app/` |
 
-## Current prototype
+## Current prototype checklist
 
-- [x] Scaffold (Next.js + Tailwind)
-- [x] Generators G2, G1, G4, G8 with diagnostic distractors
-- [x] SM-2 review scheduling
-- [x] Reactive Convex persistence behind a DataLayer seam
-- [x] Courses, practice, review, mastery, daily plan, bytes, and settings
-- [x] Visual infographic lessons and three standalone bytes
-- [x] Pyodide code cell (lazy, gesture-triggered)
-- [ ] Add production authentication
-- [ ] Unify course lessons and standalone bytes
-- [ ] Add goal-based paths and active project checkpoints
-- [ ] Put the coherent learning loop in front of real testers
-- [ ] Measure byte authoring time (target ≤ 90 min)
+- [x] Scaffold (Next.js + Tailwind + Convex)
+- [x] Social auth (Google live; GitHub placeholder/env ready)
+- [x] Free public course reading; login to save progress
+- [x] Generators with diagnostic distractors; SM-2 review
+- [x] Daily plan, streaks, XP, onboarding tracks
+- [x] Visual courses, bytes, Pyodide code cell
+- [x] Build projects + opt-in gallery
+- [x] Plans page, footer, About/Contact/Privacy/Terms
+- [x] Advertise / Subscribe lead capture
+- [x] Admin console + feedback widget
+- [ ] Enable GitHub OAuth for production if desired
+- [ ] Outbound reminders (email/push)
+- [ ] Stripe / Pro pricing for paid courses
+- [ ] Cohort leaderboard or none (no global XP rank)
+- [ ] Deeper curriculum and peer social features
 
 ## Docs and plans
 
-- Agent-facing project docs: [`docs/`](docs/) (start at [`docs/README.md`](docs/README.md))
+- Agent-facing docs: [`docs/README.md`](docs/README.md)
 - Agent entrypoint: [`CLAUDE.md`](CLAUDE.md)
-- Product plans by phase: [`plans/`](plans/)
-  - Current direction: [`plans/coherent-v1/`](plans/coherent-v1/)
-  - Release / deploy: [`plans/coherent-v1/release-and-deploy.md`](plans/coherent-v1/release-and-deploy.md)
-  - Delivery phases: [`plans/coherent-v1/phases/`](plans/coherent-v1/phases/)
-  - Historical: [`plans/historical/`](plans/historical/)
+- Current product direction: [`plans/coherent-v1/`](plans/coherent-v1/)
+- Historical (not current truth): [`plans/historical/`](plans/historical/)

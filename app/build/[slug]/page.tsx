@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { RequireOnboarding } from "@/components/RequireOnboarding";
+import { RequireAuth } from "@/components/RequireAuth";
 import { Shell } from "@/components/Shell";
 import { Button } from "@/components/ui/Button";
 import { useProjects, useUpsertProject } from "@/lib/data/provider";
@@ -54,6 +55,7 @@ export default function ProjectDetailPage({
 
   return (
     <Shell active="/build">
+      <RequireAuth>
       <RequireOnboarding>
         <div className="mx-auto max-w-3xl space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -116,6 +118,7 @@ export default function ProjectDetailPage({
           )}
         </div>
       </RequireOnboarding>
+      </RequireAuth>
     </Shell>
   );
 }

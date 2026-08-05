@@ -4,13 +4,14 @@ import { BrandMark } from "@/components/BrandMark";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NavLinks } from "@/components/NavLinks";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SITE_NAME } from "@/lib/site";
 
 /**
- * The app shell — header, nav, footer, feedback widget.
+ * The app shell — header, nav, multi-column footer, feedback widget.
  *
- * The nav is auth-aware via <NavLinks>: a logged-out visitor sees only
- * Courses (free) + Learn (redirects to login). A logged-in learner sees the
- * full nav (Today, Learn, Courses, Build, Progress, Profile).
+ * The nav is auth-aware via <NavLinks>. Guests see Learn · Courses · Login;
+ * signed-in learners see the full loop plus account menu.
  */
 export function Shell({
   children,
@@ -26,22 +27,21 @@ export function Shell({
           <div className="flex items-center gap-3">
             <Link href="/" className="focus-ring flex items-center gap-2.5 rounded-lg font-semibold tracking-tight">
               <BrandMark withAccent />
-              <span>ByteSizeDecodes</span>
+              <span>{SITE_NAME}</span>
             </Link>
             <ThemeToggle className="sm:hidden" />
           </div>
-          <NavLinks active={active} variant="desktop" />
-          <ThemeToggle className="hidden sm:flex" />
+          <div className="flex items-center gap-2">
+            <NavLinks active={active} variant="desktop" />
+            <ThemeToggle className="hidden sm:flex" />
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-10">
         {children}
       </main>
       <FeedbackWidget />
-      <footer className="border-t border-ash bg-canvas/80 py-7 text-center text-xs leading-relaxed text-ink-faint">
-        ByteSizeDecodes — Learn AI visually. Practise it. Build something real.
-      </footer>
-
+      <SiteFooter />
       <NavLinks active={active} variant="mobile" />
     </div>
   );

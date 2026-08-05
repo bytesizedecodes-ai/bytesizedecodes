@@ -237,6 +237,28 @@ const feedback = defineTable({
   .index("by_user", ["userId"])
   .index("by_created", ["createdAt"]);
 
+/**
+ * Public lead forms: Advertise with us / product update subscribe.
+ * Stored for admin review; an email notification is scheduled to CONTACT mailbox.
+ */
+const inquiries = defineTable({
+  kind: v.union(v.literal("advertise"), v.literal("subscribe")),
+  name: v.string(),
+  email: v.string(),
+  company: v.optional(v.string()),
+  website: v.optional(v.string()),
+  budget: v.optional(v.string()),
+  /** Goal type e.g. sponsorship | product interest focus */
+  intent: v.optional(v.string()),
+  interests: v.optional(v.array(v.string())),
+  message: v.string(),
+  createdAt: v.number(),
+  /** True after outbound email attempt completes (success or fail handled in logs). */
+  emailNotified: v.optional(v.boolean()),
+})
+  .index("by_kind", ["kind"])
+  .index("by_created", ["createdAt"]);
+
 export default defineSchema({
   ...authTables,
   profiles,
@@ -248,4 +270,5 @@ export default defineSchema({
   skillEvidence,
   projects,
   feedback,
+  inquiries,
 });

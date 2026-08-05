@@ -1,13 +1,14 @@
 "use client";
 
+/**
+ * Hard-gates the personalised loop until onboarding (post sign-in) is finished.
+ * Homepage, login, free courses, and public Learn browse stay reachable.
+ */
+
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useCurrentUser } from "@/lib/data/provider";
 
-/**
- * Hard-gates the learning loop until anonymous onboarding is finished.
- * Homepage, onboarding, login, and profile remain reachable without it.
- */
 export function RequireOnboarding({ children }: { children: React.ReactNode }) {
   const profile = useCurrentUser();
   const router = useRouter();
@@ -15,28 +16,33 @@ export function RequireOnboarding({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (profile === undefined) return;
-    if (profile?.onboardingCompletedAt) return;
+    if (profile === null) {
+      // Authed but no profile row yet — onboarding creates it on submit.
+      // Still send to onboarding so path preferences get set.
+      const next = encodeURIComponent(pathname || "/today");
+      router.replace(`/onboarding?next=${next}`);
+      return;
+    }
+    if (profile.onboardingCompletedAt) return;
     const next = encodeURIComponent(pathname || "/today");
     router.replace(`/onboarding?next=${next}`);
-  }, [profile, pathname, router]);
+  }, [profile, router, pathname]);
 
   if (profile === undefined) {
     return (
-      <div className="mx-auto max-w-3xl space-y-4 py-10">
-        <div className="h-8 w-56 animate-pulse rounded bg-ash" />
-        <div className="h-40 animate-pulse rounded-2xl bg-ash/70" />
+      <div className="mx-auto max-w-lg py-16 text-center text-sm text-ink-soft">
+        Loading your path…
       </div>
     );
   }
 
-  if (!profile?.onboardingCompletedAt) {
+  if (profile === null || !profile.onboardingCompletedAt) {
     return (
-      <div className="mx-auto max-w-3xl space-y-4 py-10">
-        <div className="h-8 w-56 animate-pulse rounded bg-ash" />
-        <div className="h-40 animate-pulse rounded-2xl bg-ash/70" />
+      <div className="mx-auto max-w-lg py-16 text-center text-sm text-ink-soft">
+        Setting up your path…
       </div>
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
