@@ -11,9 +11,10 @@
 
 import { MutationCtx, mutation, internalMutation, action } from "./_generated/server";
 import { v } from "convex/values";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { Doc, Id } from "./_generated/dataModel";
 import { getUserId } from "./lib/getUser";
+import { requireAdmin } from "./lib/admin";
 import { asDayKey, todayKey, type DayKey } from "./lib/day";
 import { describeInterval, newSrsState, review, type SrsState } from "./lib/srs";
 import { settleOnPractice, settleOnRollover, type StreakFields } from "./lib/streak";
@@ -773,7 +774,16 @@ export const resetProgress = mutation({
 /**
  * Move progress from a pre-auth browser UUID onto the authenticated subject.
  * Idempotent and skips when the legacy id has no profile.
+ *
+ * SECURITY: the legacy id must be an anonymous browser UUID (crypto.randomUUID,
+ * v4 shape), never another user's OAuth subject. The legacy profile must also be a
+ * genuine anonymous seed — not a demo row, not an admin, and not already linked to
+ * a real authenticated account. Without these checks an attacker could pass a
+ * victim's (or an admin's) subject here and absorb/destroy their account.
  */
+const ANON_UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export const claimLegacyProgress = mutation({
   args: { legacyUserId: v.string() },
   returns: v.object({ claimed: v.boolean() }),
@@ -784,12 +794,29 @@ export const claimLegacyProgress = mutation({
     if (!legacyUserId || legacyUserId === "ssr" || legacyUserId === newId) {
       return { claimed: false };
     }
+    // The legacy id must be an anonymous browser UUID, not an OAuth subject.
+    if (!ANON_UUID_RE.test(legacyUserId)) {
+      return { claimed: false };
+    }
 
     const legacyProfile = await ctx.db
       .query("profiles")
       .withIndex("by_user", (q) => q.eq("userId", legacyUserId))
       .unique();
     if (!legacyProfile) return { claimed: false };
+
+    // Never let a claim touch a privileged, demo, or already-authenticated account.
+    // These fields are only set on real accounts — anonymous pre-auth profiles never
+    // have them, so their presence means this is not a migratable legacy profile.
+    if (legacyProfile.role === "admin" || legacyProfile.seed) {
+      return { claimed: false };
+    }
+    // An anonymous legacy profile is never itself the result of a prior claim (those
+    // get re-keyed onto the auth subject). If this row already carries a legacyAnonId
+    // or an onboarding completion, it belongs to a real user — refuse to touch it.
+    if (legacyProfile.legacyAnonId !== undefined || legacyProfile.onboardingCompletedAt !== undefined) {
+      return { claimed: false };
+    }
 
     const moveSimple = async (
       table: "attempts" | "xpEvents" | "analyticsEvents" | "skillEvidence",
@@ -950,18 +977,27 @@ export const deleteAccountData = mutation({
 /**
  * Build the PersistedStateV1 blob for the Settings export. Runs as an action so it can
  * read across all tables and return a JSON string without consuming a mutation slot.
+ *
+ * SECURITY: the caller's identity is resolved here from ctx.auth — the client-supplied
+ * userId arg is ignored. The internal queries below are not publicly callable, so the
+ * only way to reach them is through this action, which always exports the caller's own
+ * data.
  */
 export const exportProgress = action({
   args: { userId: v.string() },
-  handler: async (ctx, { userId }): Promise<string> => {
-    const profile = await ctx.runQuery(api.queries.getProfileForExport, { userId });
-    const srs = await ctx.runQuery(api.queries.getAllSrs, { userId });
-    const bytes = await ctx.runQuery(api.queries.getAllByteProgressRaw, { userId });
-    const attempts = await ctx.runQuery(api.queries.getAttempts, {
+  handler: async (ctx, _args): Promise<string> => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity?.subject) throw new Error("Not authenticated");
+    const userId = identity.subject;
+
+    const profile = await ctx.runQuery(internal.queries.getProfileForExport, { userId });
+    const srs = await ctx.runQuery(internal.queries.getAllSrs, { userId });
+    const bytes = await ctx.runQuery(internal.queries.getAllByteProgressRaw, { userId });
+    const attempts = await ctx.runQuery(internal.queries.getAttempts, {
       userId,
       limit: ATTEMPT_CAP,
     });
-    const xpEvents = await ctx.runQuery(api.queries.getXpEvents, {
+    const xpEvents = await ctx.runQuery(internal.queries.getXpEvents, {
       userId,
       limit: XP_EVENT_CAP,
     });
@@ -1110,6 +1146,11 @@ const DEMO_LEARNERS: {
 export const seedDemoProfiles = mutation({
   args: {},
   handler: async (ctx) => {
+    // Admin-only: this performs destructive writes and is dev tooling, not a public
+    // endpoint. Without the gate anyone could spam it (cost amplification, leaderboard
+    // flicker). See convex/lib/admin.ts for the server-side role check.
+    await requireAdmin(ctx);
+
     // Clear prior seed rows only.
     const seeded = await ctx.db
       .query("profiles")

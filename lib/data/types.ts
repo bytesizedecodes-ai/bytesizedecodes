@@ -174,7 +174,6 @@ export interface DayXp {
 /** One row of the global leaderboard. Level is derived server-side from xpTotal. */
 export interface LeaderboardRow {
   rank: number;
-  userId: string;
   displayName: string;
   xpTotal: number;
   level: number;

@@ -26,7 +26,7 @@ export function Leaderboard({ limit }: { limit?: number }) {
       </header>
       <ol className="divide-y divide-ash">
         {rows.map((row) => (
-          <LeaderboardRowItem key={row.userId} row={row} />
+          <LeaderboardRowItem key={row.rank} row={row} />
         ))}
       </ol>
     </section>

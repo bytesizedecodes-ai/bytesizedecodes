@@ -9,7 +9,7 @@
  * even without the cron having fired yet — mirroring LocalStore.getProfile.
  */
 
-import { QueryCtx, query } from "./_generated/server";
+import { QueryCtx, query, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
 import { getIdentityProfile, getUserId } from "./lib/getUser";
@@ -587,7 +587,6 @@ export const getRecentXp = query({
 
 interface LeaderboardRow {
   rank: number;
-  userId: string;
   displayName: string;
   xpTotal: number;
   level: number;
@@ -604,7 +603,6 @@ export const getLeaderboard = query({
       .slice(0, limit ?? 20)
       .map((p, i) => ({
         rank: i + 1,
-        userId: p.userId,
         displayName: p.displayName,
         xpTotal: p.xpTotal,
         level: levelProgress(p.xpTotal).level,
@@ -653,8 +651,14 @@ export const getUserCounts = query({
 });
 
 // ---------- raw reads used only by exportProgress ----------
+//
+// INTERNAL ONLY. These are invoked via ctx.runQuery(internal.…) from the
+// exportProgress action, which resolves the caller's identity itself and passes
+// the verified subject down. They are NOT registered as public queries — that
+// would let any client read any user's attempts/XP/SRS/profile by supplying an
+// arbitrary userId (an IDOR). See convex/lib/getUser.ts for the auth swap point.
 
-export const getProfileForExport = query({
+export const getProfileForExport = internalQuery({
   args: { userId: v.string() },
   handler: async (ctx, { userId }): Promise<ProfileExport | null> => {
     const profile = await loadProfile(ctx, userId);
@@ -676,7 +680,7 @@ export const getProfileForExport = query({
   },
 });
 
-export const getAllSrs = query({
+export const getAllSrs = internalQuery({
   args: { userId: v.string() },
   handler: async (ctx, { userId }): Promise<SrsExport[]> => {
     const cards = await ctx.db
@@ -696,7 +700,7 @@ export const getAllSrs = query({
   },
 });
 
-export const getAllByteProgressRaw = query({
+export const getAllByteProgressRaw = internalQuery({
   args: { userId: v.string() },
   handler: async (ctx, { userId }): Promise<ByteExport[]> => {
     const rows = await ctx.db
@@ -712,7 +716,7 @@ export const getAllByteProgressRaw = query({
   },
 });
 
-export const getAttempts = query({
+export const getAttempts = internalQuery({
   args: { userId: v.string(), limit: v.number() },
   handler: async (ctx, { userId, limit }) => {
     const docs = await ctx.db
@@ -732,7 +736,7 @@ export const getAttempts = query({
   },
 });
 
-export const getXpEvents = query({
+export const getXpEvents = internalQuery({
   args: { userId: v.string(), limit: v.number() },
   handler: async (ctx, { userId, limit }) => {
     const docs = await ctx.db

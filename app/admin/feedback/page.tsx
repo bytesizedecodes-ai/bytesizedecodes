@@ -5,6 +5,24 @@ import { useAdminFeedback, useUpdateFeedbackStatus } from "@/lib/data/provider";
 
 const STATUSES = ["all", "new", "viewed", "in_progress", "resolved", "wontfix"] as const;
 
+/**
+ * Defense-in-depth: only render http(s) URLs as clickable links. React does NOT
+ * neutralize `javascript:` (or other) schemes in `href`, so a feedback item whose
+ * `url` is a malicious scheme would execute script in an admin's session when
+ * clicked. The backend now strips non-http(s) urls on write; this guards anything
+ * already stored.
+ */
+function safeHref(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") return parsed.toString();
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export default function AdminFeedbackPage() {
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("new");
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -81,9 +99,16 @@ export default function AdminFeedbackPage() {
                   {f.url ? (
                     <p className="mt-2 text-xs text-brand-deep">
                       Submitted from:{" "}
-                      <a href={f.url} className="underline" target="_blank" rel="noreferrer">
-                        {f.url}
-                      </a>
+                      {(() => {
+                        const href = safeHref(f.url);
+                        return href ? (
+                          <a href={href} className="underline" target="_blank" rel="noreferrer noopener">
+                            {f.url}
+                          </a>
+                        ) : (
+                          <span className="text-ink-faint">{f.url}</span>
+                        );
+                      })()}
                     </p>
                   ) : null}
                   {f.adminReply ? (

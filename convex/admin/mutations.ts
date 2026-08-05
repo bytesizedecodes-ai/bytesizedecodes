@@ -66,10 +66,18 @@ export const bootstrapAdminRole = mutation({
 
 /**
  * PUBLIC — submit feedback. No auth required (anonymous users may report issues).
- * Identity uses the same getUserId swap point as learning mutations so progress
- * and feedback stay linked to the same user. Rate limiting should be added before
- * production scale (@convex-dev/rate-limiter); until then, the body length cap is
- * the only guard.
+ *
+ * SECURITY:
+ *  - `userId` is derived server-side from the authenticated identity (falling back to
+ *    "anonymous"). The client-supplied value is ignored — never trust it for
+ *    attribution, or an attacker can frame another user.
+ *  - `url` is validated to an http(s) scheme before storage. It is later rendered as a
+ *    clickable link in the admin UI, so a `javascript:` (or other) scheme would be a
+ *    stored-XSS vector against an admin. The FeedbackWidget normally sets this to
+ *    window.location.href; we still validate because the mutation is public.
+ *
+ * Rate limiting should be added before production scale (@convex-dev/rate-limiter);
+ * until then, the body length cap is the only spam guard.
  */
 export const submitFeedback = mutation({
   args: {
@@ -84,18 +92,40 @@ export const submitFeedback = mutation({
     body: v.string(),
     url: v.optional(v.string()),
   },
-  handler: async (ctx, { userId, kind, body, url }) => {
+  handler: async (ctx, { userId: _ignoredUserId, kind, body, url }) => {
     const trimmed = body.trim();
     if (trimmed.length === 0) throw new Error("Feedback body is empty");
     if (trimmed.length > 2000) throw new Error("Feedback too long (2000 char max)");
+
+    // Derive the stored id honestly from the auth identity; anonymous if none.
+    const identity = await ctx.auth.getUserIdentity();
+    const userId = identity?.subject ?? "anonymous";
+
+    // Only allow http(s) URLs — anything else (javascript:, data:, etc.) would be a
+    // stored-XSS vector when rendered as a link in the admin UI. Drop non-conforming
+    // values entirely rather than rejecting the feedback.
+    const safeUrl = sanitizeFeedbackUrl(url);
+
     await ctx.db.insert("feedback", {
       userId,
       kind,
       body: trimmed,
-      url,
+      url: safeUrl,
       status: "new",
       createdAt: Date.now(),
     });
     return null;
   },
 });
+
+/** Allow only absolute http(s) URLs; return undefined for anything else. */
+function sanitizeFeedbackUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol === "http:" || parsed.protocol === "https:") return parsed.toString();
+    return undefined;
+  } catch {
+    return undefined;
+  }
+}
