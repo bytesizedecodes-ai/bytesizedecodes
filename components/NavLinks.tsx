@@ -100,7 +100,6 @@ export function NavLinks({
         : PUBLIC_NAV;
   const showLogin = status === "unauthed" || status === "loading";
   const showAccount = status === "authed";
-  const label = profile?.displayName?.split(" ")[0] || "Account";
 
   if (variant === "desktop") {
     return (
@@ -140,22 +139,19 @@ export function NavLinks({
                 aria-haspopup="menu"
                 aria-expanded={menuOpen}
                 aria-label="Account menu"
-                className="focus-ring flex h-9 max-w-[10rem] items-center gap-2 rounded-full border border-ash bg-canvas px-2.5 text-ink-soft transition-colors hover:bg-ash/60 hover:text-ink"
+                className="focus-ring flex h-9 w-9 items-center justify-center rounded-full border border-ash text-ink-soft transition-colors hover:bg-ash/60 hover:text-ink"
               >
                 {profile?.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={profile.imageUrl}
                     alt=""
-                    className="h-6 w-6 rounded-full object-cover"
+                    className="h-4 w-4 rounded-full object-cover"
                     referrerPolicy="no-referrer"
                   />
                 ) : (
-                  <UserRound className="h-4 w-4 shrink-0" />
+                  <UserRound className="h-4 w-4" />
                 )}
-                <span className="hidden truncate text-sm font-bold text-ink sm:inline">
-                  {label}
-                </span>
               </button>
               {menuOpen && (
                 <div

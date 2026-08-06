@@ -12,7 +12,7 @@
 import { QueryCtx, query, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc } from "./_generated/dataModel";
-import { getIdentityProfile, getUserId } from "./lib/getUser";
+import { displayNameFromIdentity, getIdentityProfile, getUserId } from "./lib/getUser";
 import { addDays, asDayKey, type DayKey } from "./lib/day";
 import { dueQueue, mastery, type SrsState } from "./lib/srs";
 import { settleOnRollover, type StreakFields } from "./lib/streak";
@@ -315,7 +315,8 @@ export const getProfile = query({
     const progress = levelProgress(profile.xpTotal);
     return {
       userId: uid,
-      displayName: profile.displayName,
+      // Prefer live OAuth name from `users`; fall back to stored profile label.
+      displayName: displayNameFromIdentity(identity, profile.displayName),
       email: identity?.email ?? null,
       imageUrl: identity?.imageUrl ?? null,
       track: profile.track,

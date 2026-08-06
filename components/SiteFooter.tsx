@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
-import { SITE_NAME, SITE_TAGLINE } from "@/lib/site";
+import { SITE_NAME } from "@/lib/site";
 
 const PRODUCT = [
   { href: "/learn", label: "Learn" },
@@ -42,8 +42,7 @@ export function SiteFooter() {
               <BrandMark withAccent />
               <span>{SITE_NAME}</span>
             </Link>
-            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">{SITE_TAGLINE}</p>
-            <p className="mt-3 max-w-xs text-xs leading-relaxed text-ink-faint">
+            <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">
               Free courses to read without an account. Sign in when you want saved
               progress and a daily plan.
             </p>

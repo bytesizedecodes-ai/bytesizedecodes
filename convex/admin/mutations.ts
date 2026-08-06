@@ -9,6 +9,7 @@
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import { requireAdmin, isAdminEmail } from "../lib/admin";
+import { getIdentityProfile } from "../lib/getUser";
 import { rateLimiter } from "../lib/rateLimit";
 
 /** Update a feedback item's status and optional admin reply. The triage action. */
@@ -42,7 +43,7 @@ export const updateFeedbackStatus = mutation({
 export const bootstrapAdminRole = mutation({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const identity = await getIdentityProfile(ctx);
     if (!identity?.subject) {
       throw new Error("Not authenticated");
     }
@@ -52,7 +53,7 @@ export const bootstrapAdminRole = mutation({
     }
     const profile = await ctx.db
       .query("profiles")
-      .withIndex("by_user", (q) => q.eq("userId", identity.subject!))
+      .withIndex("by_user", (q) => q.eq("userId", identity.subject))
       .unique();
     if (!profile) {
       return { promoted: false, reason: "no profile" as const };

@@ -137,12 +137,9 @@ export default function HomePage() {
                   <span className="mt-3 text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
                     0{index + 1}
                   </span>
-                  <h3 className="mt-1.5 text-sm font-semibold leading-snug text-ink sm:min-h-[2.5rem]">
+                  <h3 className="mt-1.5 text-sm font-semibold leading-snug text-ink">
                     {stage.title}
                   </h3>
-                  <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-                    {stage.detail}
-                  </p>
                 </li>
               );
             })}
@@ -213,9 +210,6 @@ export default function HomePage() {
                       </span>
                     </span>
                     <p className="mt-4 text-sm font-semibold text-ink">{step.title}</p>
-                    <p className="mt-1 max-w-[11rem] text-xs leading-relaxed text-ink-soft">
-                      {step.detail}
-                    </p>
                   </div>
                   {index < START_STEPS.length - 1 && (
                     <div
@@ -329,27 +323,22 @@ function BuildPanel() {
 const PATH_STAGES = [
   {
     title: "Learn visually",
-    detail: "One clear picture, one idea — not a textbook dump.",
     icon: Eye,
   },
   {
     title: "Capture goals & progress",
-    detail: "Your path and streak live with you, session to session.",
     icon: ChartNoAxesCombined,
   },
   {
     title: "Validate understanding",
-    detail: "Checks and drills prove it stuck — not just scrolled.",
     icon: BadgeCheck,
   },
   {
     title: "Help your profession",
-    detail: "Skills that transfer to work, interviews, and product decisions.",
     icon: Briefcase,
   },
   {
     title: "Build something real",
-    detail: "Finish with an artifact you can show and explain.",
     icon: Hammer,
   },
 ] as const;
@@ -357,17 +346,14 @@ const PATH_STAGES = [
 const START_STEPS = [
   {
     title: "Pick a goal",
-    detail: "Tell us what you’re aiming for — literacy, skills, or shipping.",
     icon: Target,
   },
   {
     title: "Get a daily plan",
-    detail: "A short path matched to your profile and time.",
     icon: CalendarDays,
   },
   {
     title: "Learn your first concept",
-    detail: "Open Learn and start with a visual AI lesson today.",
     icon: BookOpen,
   },
 ] as const;

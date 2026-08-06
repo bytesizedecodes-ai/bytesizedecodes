@@ -40,24 +40,17 @@ import type {
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 /**
- * After social sign-in, ensure a profiles row exists so getProfile can return
- * name/email. Onboarding still sets path preferences.
+ * After social sign-in, ensure a profiles row exists and OAuth name/email
+ * are applied so getProfile can return them.
  */
 function ProfileEnsure({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useConvexAuth();
   const ensure = useMutation(api.mutations.ensureProfile);
-  const today = useToday();
-  const profile = useQuery(
-    api.queries.getProfile,
-    !isLoading && isAuthenticated ? { userId: AUTH_USER_ID, today } : "skip",
-  );
 
   useEffect(() => {
     if (isLoading || !isAuthenticated) return;
-    if (profile === null) {
-      void ensure({ userId: AUTH_USER_ID });
-    }
-  }, [isLoading, isAuthenticated, profile, ensure]);
+    void ensure({ userId: AUTH_USER_ID });
+  }, [isLoading, isAuthenticated, ensure]);
 
   return <>{children}</>;
 }

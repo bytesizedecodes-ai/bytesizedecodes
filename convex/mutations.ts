@@ -13,7 +13,7 @@ import { MutationCtx, mutation, internalMutation, action } from "./_generated/se
 import { v } from "convex/values";
 import { api, internal } from "./_generated/api";
 import { Doc, Id } from "./_generated/dataModel";
-import { getUserId } from "./lib/getUser";
+import { displayNameFromIdentity, getIdentityProfile, getUserId } from "./lib/getUser";
 import { requireAdmin } from "./lib/admin";
 import { asDayKey, todayKey, type DayKey } from "./lib/day";
 import { describeInterval, newSrsState, review, type SrsState } from "./lib/srs";
@@ -105,28 +105,34 @@ async function loadOrCreateProfile(
   ctx: MutationCtx,
   userId: string,
 ): Promise<Doc<"profiles">> {
+  const identity = await getIdentityProfile(ctx);
+  const displayName = displayNameFromIdentity(identity);
+
   const existing = await ctx.db
     .query("profiles")
     .withIndex("by_user", (q) => q.eq("userId", userId))
     .unique();
   if (existing) {
-    // Keep displayName in sync with identity name when still the default seed label.
-    const identity = await ctx.auth.getUserIdentity();
+    // Upgrade placeholder labels once OAuth name/email is available on `users`.
+    const isPlaceholder =
+      existing.displayName === "You" ||
+      existing.displayName === "Learner" ||
+      existing.displayName.trim().length === 0;
+    if (isPlaceholder && displayName !== existing.displayName) {
+      await ctx.db.patch(existing._id, { displayName });
+      return (await ctx.db.get(existing._id))!;
+    }
+    // If we now have a real provider name, prefer it over an email-local-part label.
     if (
-      existing.displayName === "You" &&
       identity?.name &&
-      identity.name.trim().length > 0
+      existing.displayName !== identity.name &&
+      identity.email?.split("@")[0] === existing.displayName
     ) {
-      await ctx.db.patch(existing._id, { displayName: identity.name.trim() });
+      await ctx.db.patch(existing._id, { displayName: identity.name });
       return (await ctx.db.get(existing._id))!;
     }
     return existing;
   }
-  const identity = await ctx.auth.getUserIdentity();
-  const displayName =
-    identity?.name?.trim() ||
-    identity?.email?.split("@")[0] ||
-    "You";
   const id = await ctx.db.insert("profiles", {
     userId,
     displayName,
