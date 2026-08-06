@@ -18,6 +18,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { requireAdmin } from "./lib/admin";
+import { rateLimiter } from "./lib/rateLimit";
 
 /** Inbox for lead notifications — keep in sync with lib/site CONTACT_EMAIL. */
 const LEAD_INBOX = "bytesizedecodes@gmail.com";
@@ -46,6 +47,10 @@ export const submit = mutation({
   },
   returns: v.object({ ok: v.boolean(), id: v.id("inquiries") }),
   handler: async (ctx, args) => {
+    // Global rate limit (anonymous endpoint, each submission emails a lead inbox).
+    // Throws a RateLimitError when exceeded.
+    await rateLimiter.limit(ctx, "inquiry", { throws: true });
+
     const name = trimLen(args.name, 120);
     const email = trimLen(args.email, 200).toLowerCase();
     const message = trimLen(args.message, 4000);

@@ -19,6 +19,7 @@ import type * as lib_dailyPlan from "../lib/dailyPlan.js";
 import type * as lib_day from "../lib/day.js";
 import type * as lib_getUser from "../lib/getUser.js";
 import type * as lib_parseDrillKey from "../lib/parseDrillKey.js";
+import type * as lib_rateLimit from "../lib/rateLimit.js";
 import type * as lib_reviewKey from "../lib/reviewKey.js";
 import type * as lib_rng from "../lib/rng.js";
 import type * as lib_srs from "../lib/srs.js";
@@ -46,6 +47,7 @@ declare const fullApi: ApiFromModules<{
   "lib/day": typeof lib_day;
   "lib/getUser": typeof lib_getUser;
   "lib/parseDrillKey": typeof lib_parseDrillKey;
+  "lib/rateLimit": typeof lib_rateLimit;
   "lib/reviewKey": typeof lib_reviewKey;
   "lib/rng": typeof lib_rng;
   "lib/srs": typeof lib_srs;
@@ -82,4 +84,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  rateLimiter: import("@convex-dev/rate-limiter/_generated/component.js").ComponentApi<"rateLimiter">;
+};

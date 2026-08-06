@@ -9,6 +9,7 @@
 import { mutation } from "../_generated/server";
 import { v } from "convex/values";
 import { requireAdmin, isAdminEmail } from "../lib/admin";
+import { rateLimiter } from "../lib/rateLimit";
 
 /** Update a feedback item's status and optional admin reply. The triage action. */
 export const updateFeedbackStatus = mutation({
@@ -93,6 +94,9 @@ export const submitFeedback = mutation({
     url: v.optional(v.string()),
   },
   handler: async (ctx, { userId: _ignoredUserId, kind, body, url }) => {
+    // Global rate limit (anonymous endpoint). Throws a RateLimitError when exceeded.
+    await rateLimiter.limit(ctx, "feedback", { throws: true });
+
     const trimmed = body.trim();
     if (trimmed.length === 0) throw new Error("Feedback body is empty");
     if (trimmed.length > 2000) throw new Error("Feedback too long (2000 char max)");
