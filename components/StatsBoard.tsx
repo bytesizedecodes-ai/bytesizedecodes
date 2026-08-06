@@ -7,7 +7,7 @@ import { useUserCounts } from "@/lib/data/provider";
 /**
  * Homepage cross-user stat board. Four big-number tiles in a card, mirroring the
  * split-cell grid pattern of StatsHud. Data is global (no userId). `practicingNow`
- * is a deterministic placeholder until a presence backend exists.
+ * is a real recent-activity count (not fabricated) — see convex/queries.ts getUserCounts.
  */
 export function StatsBoard() {
   const counts = useUserCounts();

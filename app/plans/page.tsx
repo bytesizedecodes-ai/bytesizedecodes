@@ -60,13 +60,49 @@ export default function PlansPage() {
                 </div>
                 {isPro && (
                   <p className="mt-3 text-center text-[11px] text-ink-faint">
-                    No charge yet — join the interest list only.
+                    No charge yet — join the interest list only. Pro packages advanced
+                    courses and the project portal together.
                   </p>
                 )}
               </section>
             );
           })}
         </div>
+
+        <section className="mt-12 rounded-2xl border border-brand-muted bg-brand-wash/30 p-6 sm:p-8">
+          <h2 className="text-lg font-semibold tracking-tight text-ink">What’s in Pro</h2>
+          <ul className="mt-4 grid gap-3 text-sm leading-relaxed text-ink-soft sm:grid-cols-2">
+            <li className="flex gap-2">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-deep" aria-hidden />
+              <span>
+                <span className="font-semibold text-ink">Advanced courses</span> — paid
+                curriculum beyond free foundations (`access: paid` when live).
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-deep" aria-hidden />
+              <span>
+                <span className="font-semibold text-ink">GitHub project portal</span> —
+                AI ideas and starter codes for work tasks, startup MVPs, and hobby
+                builds.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-deep" aria-hidden />
+              <span>
+                <span className="font-semibold text-ink">Advanced builds</span> —
+                deeper implementation tracks on top of free drafts.
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-deep" aria-hidden />
+              <span>
+                Core free lessons, Energy, and streaks stay free forever — Pro is depth
+                and shipping, not habit hostage.
+              </span>
+            </li>
+          </ul>
+        </section>
 
         {/* Comparison table */}
         <section className="mt-14">

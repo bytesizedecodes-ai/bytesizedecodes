@@ -107,20 +107,26 @@ async function loadOrCreateProfile(
 ): Promise<Doc<"profiles">> {
   const identity = await getIdentityProfile(ctx);
   const displayName = displayNameFromIdentity(identity);
+  const email = identity?.email?.trim().toLowerCase() || undefined;
+  const authUserId = userId.includes("|") ? userId.split("|")[0] : userId;
 
   const existing = await ctx.db
     .query("profiles")
     .withIndex("by_user", (q) => q.eq("userId", userId))
     .unique();
   if (existing) {
+    const patch: {
+      displayName?: string;
+      email?: string;
+      authUserId?: string;
+    } = {};
     // Upgrade placeholder labels once OAuth name/email is available on `users`.
     const isPlaceholder =
       existing.displayName === "You" ||
       existing.displayName === "Learner" ||
       existing.displayName.trim().length === 0;
     if (isPlaceholder && displayName !== existing.displayName) {
-      await ctx.db.patch(existing._id, { displayName });
-      return (await ctx.db.get(existing._id))!;
+      patch.displayName = displayName;
     }
     // If we now have a real provider name, prefer it over an email-local-part label.
     if (
@@ -128,7 +134,14 @@ async function loadOrCreateProfile(
       existing.displayName !== identity.name &&
       identity.email?.split("@")[0] === existing.displayName
     ) {
-      await ctx.db.patch(existing._id, { displayName: identity.name });
+      patch.displayName = identity.name;
+    }
+    if (email && existing.email !== email) patch.email = email;
+    if (authUserId && existing.authUserId !== authUserId) {
+      patch.authUserId = authUserId;
+    }
+    if (Object.keys(patch).length > 0) {
+      await ctx.db.patch(existing._id, patch);
       return (await ctx.db.get(existing._id))!;
     }
     return existing;
@@ -143,6 +156,8 @@ async function loadOrCreateProfile(
     lastPracticeDay: null,
     streakFreezes: 1,
     createdAt: Date.now(),
+    ...(email ? { email } : {}),
+    ...(authUserId ? { authUserId } : {}),
   });
   return (await ctx.db.get(id))!;
 }

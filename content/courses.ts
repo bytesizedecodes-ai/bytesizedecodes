@@ -4,7 +4,7 @@
  * A `Lesson` points at an infographic component (registered in
  * `components/infographic/index.tsx`) AND carries the "byte" payload that turns
  * a static visual into a Hook-loop unit: prose, an optional runnable code
- * exercise, and self-check questions that gate completion and award XP.
+ * exercise, and self-check questions that gate completion and award Energy.
  *
  * This mirrors the `Byte` shape in `content/types.ts` but is a parallel system —
  * `/bytes` and `/courses` coexist without sharing content. The data layer keys

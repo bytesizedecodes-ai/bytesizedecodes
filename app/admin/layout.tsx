@@ -29,6 +29,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <Link href="/admin/feedback" className="text-ink-soft hover:text-ink">
                 Feedback
               </Link>
+              <Link href="/admin/email" className="text-ink-soft hover:text-ink">
+                Email
+              </Link>
               <Link href="/" className="text-ink-faint hover:text-ink-soft">
                 ← Site
               </Link>

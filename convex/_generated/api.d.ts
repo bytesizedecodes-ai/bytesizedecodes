@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as admin_emailActions from "../admin/emailActions.js";
+import type * as admin_emailInternals from "../admin/emailInternals.js";
 import type * as admin_mutations from "../admin/mutations.js";
 import type * as admin_queries from "../admin/queries.js";
 import type * as auth from "../auth.js";
@@ -36,6 +38,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "admin/emailActions": typeof admin_emailActions;
+  "admin/emailInternals": typeof admin_emailInternals;
   "admin/mutations": typeof admin_mutations;
   "admin/queries": typeof admin_queries;
   auth: typeof auth;

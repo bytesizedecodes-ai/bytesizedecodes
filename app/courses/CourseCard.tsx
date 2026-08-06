@@ -68,7 +68,7 @@ export function CourseCard({ course }: { course: Course }) {
             {isPaid ? (
               <>
                 <Lock className="mr-1 h-3 w-3" />
-                Paid
+                Advanced
               </>
             ) : (
               "Free"
@@ -138,7 +138,7 @@ export function CourseCard({ course }: { course: Course }) {
           open={authOpen}
           onClose={() => setAuthOpen(false)}
           title="Sign in to unlock this course"
-          description="Paid courses will require an account. Sign in with a social account — checkout comes later."
+          description="Paid advanced courses need a free account first. Checkout and GitHub project portal access come later with Pro."
           redirectTo={`/courses/${course.slug}`}
         />
       </>

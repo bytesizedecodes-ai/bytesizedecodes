@@ -182,7 +182,7 @@ export default function ProfilePage() {
               value={profile ? String(profile.level) : "—"}
               detail={
                 profile
-                  ? `${profile.xpTotal} XP · ${profile.levelProgress.into}/${profile.levelProgress.span}`
+                  ? `${profile.xpTotal} Energy · ${profile.levelProgress.into}/${profile.levelProgress.span}`
                   : undefined
               }
             />
@@ -233,7 +233,7 @@ export default function ProfilePage() {
               <div>
                 <p className="text-sm font-semibold text-ink">Daily habit</p>
                 <p className="mt-1 text-xs leading-relaxed text-ink-soft">
-                  Open Today to complete one useful plan step — streak and XP update when you
+                  Open Today to complete one useful plan step — streak and Energy update when you
                   practise, not when you only open the app.
                 </p>
                 <Link

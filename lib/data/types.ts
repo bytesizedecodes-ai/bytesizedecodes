@@ -28,9 +28,10 @@ export interface Profile {
   /** Identity provider avatar URL when available. */
   imageUrl: string | null;
   track: Track;
+  /** Effort currency (shown as Energy in UI). */
   xpTotal: number;
   level: number;
-  /** XP into the current level, and what the level spans. */
+  /** Energy into the current level, and what the level spans. */
   levelProgress: { into: number; span: number };
   currentStreak: number;
   longestStreak: number;
@@ -181,7 +182,7 @@ export interface LeaderboardRow {
   track: Track;
 }
 
-/** Homepage stat board — cross-user counts. practicingNow is a demo placeholder. */
+/** Homepage stat board — cross-user counts. practicingNow is real (recent-activity proxy), not fabricated. */
 export interface UserCounts {
   totalLearners: number;
   practicingNow: number;

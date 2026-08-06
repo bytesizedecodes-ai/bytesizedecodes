@@ -123,13 +123,22 @@ export function assembleDailyPlan(input: {
   const dueCount = Math.max(0, Math.floor(input.dueCount));
 
   if (dueCount > 0) {
-    const count = input.timeMode === "quick" ? Math.min(2, dueCount) : Math.min(5, dueCount);
+    const count =
+      input.timeMode === "quick"
+        ? Math.min(2, dueCount)
+        : Math.min(6, dueCount);
     steps.push({
       kind: "review",
-      label: `Review ${count} ${count === 1 ? "idea" : "ideas"}`,
-      detail: "Recall before the memory fades",
+      label:
+        count === 1
+          ? "Mastery Challenge · 1 skill check"
+          : `Mastery Challenge · ${count} skill checks`,
+      detail: "Spaced recall before the memory fades",
       href: "/review",
-      minutes: input.timeMode === "quick" ? 3 : Math.min(5, count),
+      minutes:
+        input.timeMode === "quick"
+          ? 3
+          : Math.min(8, Math.max(3, Math.ceil(count * 1.5))),
       count,
     });
   }
@@ -187,7 +196,7 @@ function focusFor(
   },
   steps: DailyPlanStep[],
 ): string {
-  if (input.dueCount > 0) return "Bring fading ideas back";
+  if (input.dueCount > 0) return "Mastery Challenge waiting";
   if (input.nextUnit) return input.nextUnit.title;
   if (input.weakTopic) return `Strengthen ${input.weakTopic.replaceAll("-", " ")}`;
   return steps[0]?.label ?? "Keep learning";

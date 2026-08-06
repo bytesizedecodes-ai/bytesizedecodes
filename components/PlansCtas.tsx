@@ -62,7 +62,7 @@ export function PlanTierCta({ tier }: { tier: PlanTier }) {
         open={authOpen}
         onClose={() => setAuthOpen(false)}
         title="Create a free account"
-        description="Sign in with Google or GitHub to save progress, streaks, and your daily plan — no paid plan required."
+        description="Sign in with Google or GitHub to save progress, Energy, streaks, and your daily plan — no paid plan required."
         redirectTo="/onboarding"
       />
     </>

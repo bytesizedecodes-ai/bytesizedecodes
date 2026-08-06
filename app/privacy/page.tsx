@@ -65,7 +65,7 @@ export default function PrivacyPage() {
           <p>When you use signed-in features we store, for example:</p>
           <ul className="list-disc space-y-2 pl-5">
             <li>Onboarding preferences (goal, level, time mode, weekly minutes)</li>
-            <li>Lesson and byte progress, attempts, XP, levels, streaks, freezes</li>
+            <li>Lesson and byte progress, attempts, Energy, levels, streaks, freezes</li>
             <li>Spaced-repetition card state and skill evidence</li>
             <li>Projects and artifacts you create in Build; public gallery items if you publish</li>
             <li>Optional product feedback you submit</li>

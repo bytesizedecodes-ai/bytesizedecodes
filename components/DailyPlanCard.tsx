@@ -6,10 +6,20 @@ import { ButtonLink } from "@/components/ui/Button";
 import { PlanStep, PlanStepList } from "@/components/ui/PlanStep";
 import { ArrowRight, Clock3 } from "lucide-react";
 
-export function DailyPlanCard({ plan }: { plan: DailyPlan }) {
+export function DailyPlanCard({
+  plan,
+  dueCount = 0,
+}: {
+  plan: DailyPlan;
+  dueCount?: number;
+}) {
   const primary = plan.steps[0];
   const today = useToday();
   const trackEvent = useTrackEvent();
+  const continueLabel =
+    dueCount > 0
+      ? `Continue · ${dueCount} due · ${plan.estimatedMinutes} min`
+      : `Continue · ${plan.estimatedMinutes} min`;
 
   return (
     <section className="card overflow-hidden">
@@ -43,7 +53,7 @@ export function DailyPlanCard({ plan }: { plan: DailyPlan }) {
               });
             }}
           >
-            Continue · {plan.estimatedMinutes} min <ArrowRight className="h-4 w-4" />
+            {continueLabel} <ArrowRight className="h-4 w-4" />
           </ButtonLink>
         )}
       </div>

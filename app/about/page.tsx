@@ -70,7 +70,7 @@ export default function AboutPage() {
         <ContentSection title="Free to read, sign in to save">
           <p>
             Free courses stay open without an account so you can learn and search engines can index
-            the content. Sign in with a social account when you want a saved path, streaks, XP, and
+            the content. Sign in with a social account when you want a saved path, streaks, Energy, and
             progress that follows you across devices.
           </p>
         </ContentSection>

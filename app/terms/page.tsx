@@ -41,7 +41,7 @@ export default function TermsPage() {
 
         <ContentSection title="3. Accounts">
           <p>
-            Some features (progress, streaks, XP, daily plan, Build, Profile tools) require signing
+            Some features (progress, streaks, Energy, daily plan, Build, Profile tools) require signing
             in with a social account. You are responsible for activity under your account. Keep
             access to your identity provider secure. Notify us if you believe your account was
             misused.

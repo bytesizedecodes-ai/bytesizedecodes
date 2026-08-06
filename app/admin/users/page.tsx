@@ -3,17 +3,23 @@
 import { useAdminUsers } from "@/lib/data/provider";
 
 export default function AdminUsersPage() {
-  const users = useAdminUsers(100);
+  const users = useAdminUsers(200);
 
   if (users === undefined) {
     return <div className="text-sm text-ink-faint">Loading users…</div>;
   }
 
+  const accounts = users.filter((u) => !u.seed);
+  const withEmail = accounts.filter((u) => u.email).length;
+
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-semibold tracking-tight text-ink">Users</h1>
-        <p className="mt-1 text-sm text-ink-soft">{users.length} profiles (newest first).</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          {accounts.length} signed-in accounts · {withEmail} with email · {users.length} rows shown
+          (newest first).
+        </p>
       </header>
 
       <div className="card overflow-hidden">
@@ -22,8 +28,9 @@ export default function AdminUsersPage() {
             <thead className="border-b border-ash bg-ash/40 text-xs font-bold uppercase tracking-wide text-ink-soft">
               <tr>
                 <th className="px-3 py-2">Name</th>
+                <th className="px-3 py-2">Email</th>
                 <th className="px-3 py-2">Track</th>
-                <th className="px-3 py-2 text-right">XP</th>
+                <th className="px-3 py-2 text-right">Energy</th>
                 <th className="px-3 py-2 text-right">Streak</th>
                 <th className="px-3 py-2">Role</th>
                 <th className="px-3 py-2">Created</th>
@@ -41,9 +48,12 @@ export default function AdminUsersPage() {
                       </span>
                     ) : null}
                   </td>
+                  <td className="px-3 py-2 text-ink-soft">
+                    {u.email ?? <span className="text-ink-faint">—</span>}
+                  </td>
                   <td className="px-3 py-2 text-ink-soft">{u.track}</td>
                   <td className="px-3 py-2 text-right font-mono text-ink">{u.xpTotal}</td>
-                  <td className="px-3 py-2 text-right font-mono text-ink">{u.currentStreak}🔥</td>
+                  <td className="px-3 py-2 text-right font-mono text-ink">{u.currentStreak}</td>
                   <td className="px-3 py-2">
                     {u.role === "admin" ? (
                       <span className="rounded-full bg-brand-wash px-2 py-0.5 text-[11px] font-bold text-brand-deep">

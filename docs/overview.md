@@ -52,13 +52,13 @@ set). **No email OTP / Resend** for auth.
 
 - Typed lesson/byte content, courses with domain + level + `access: "free" | "paid"`
 - Two free courses: “Machine Learning” (4 lessons) and “Machine Learning for Layman” (19 lessons)
-- Personalized daily plan (signed-in), procedural drills, SM-2 review, streaks, XP
+- Personalized daily plan (signed-in), procedural drills, SM-2 review, streaks, Energy
 - Pyodide code cell (worker + timeout)
 - SEO foundation: metadata, sitemap, robots, OpenGraph, JSON-LD
 
 ### Ops
 
-- `/admin` console: users, feedback triage, `requireAdmin` + `ADMIN_EMAILS` allowlist
+- `/admin` console: users (name/email), feedback triage + replies, email campaigns & triggers; `requireAdmin` + `ADMIN_EMAILS` allowlist
 - `dev` → `main` promote, CI, Netlify, Convex production workflow
 
 ## What is not ready

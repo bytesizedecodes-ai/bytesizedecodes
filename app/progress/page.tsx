@@ -16,6 +16,12 @@ import {
   useTopicMastery,
 } from "@/lib/data/provider";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ProUpsell } from "@/components/ProUpsell";
+import {
+  estimateMasteryMinutes,
+  masteryLevelFromScore,
+  MASTERY_CHALLENGE_CAP,
+} from "@/lib/capabilityLabels";
 
 const TOPIC_LABELS: Record<string, string> = {
   evaluation: "Choose and compute classification metrics",
@@ -56,6 +62,8 @@ export default function ProgressPage() {
     (unit) => progress[unit.progressKey]?.status === "completed",
   ).length;
   const pathPct = Math.round((pathCompleted / Math.max(1, pathUnits.length)) * 100);
+  const pathDone = pathCompleted >= pathUnits.length && pathUnits.length > 0;
+  const dueForChallenge = Math.min(queue.length, MASTERY_CHALLENGE_CAP);
 
   return (
     <Shell active="/progress">
@@ -66,16 +74,50 @@ export default function ProgressPage() {
           title="Proof of what is becoming durable"
           description="Completion shows where you have been. Review intervals show what you can still recall. Both matter."
           aside={
-            <Link
-              href="/review"
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-canvas"
-            >
-              <Brain className="h-4 w-4" /> {queue.length} due
-            </Link>
+            queue.length > 0 ? (
+              <Link
+                href="/review"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-canvas"
+              >
+                <Brain className="h-4 w-4" /> Mastery Challenge · {dueForChallenge}
+              </Link>
+            ) : (
+              <Link
+                href="/today"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-ash px-4 py-2.5 text-sm font-semibold text-ink"
+              >
+                Open Today
+              </Link>
+            )
           }
         />
 
         <StatsHud profile={profile} dueCount={queue.length} />
+
+        {queue.length > 0 && (
+          <div className="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
+                Mastery Challenge
+              </p>
+              <p className="mt-1 text-sm font-semibold text-ink">
+                {dueForChallenge} skill check{dueForChallenge === 1 ? "" : "s"} ready
+                {queue.length > MASTERY_CHALLENGE_CAP
+                  ? ` (${queue.length} due total)`
+                  : ""}
+              </p>
+              <p className="mt-0.5 text-xs text-ink-faint">
+                About {Math.ceil(estimateMasteryMinutes(dueForChallenge))} min · spaced recall
+              </p>
+            </div>
+            <Link
+              href="/review"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-ink px-5 py-2.5 text-sm font-semibold text-canvas"
+            >
+              Start challenge <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
 
         <section className="card p-5 sm:p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -100,6 +142,8 @@ export default function ProgressPage() {
             Continue the path <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </section>
+
+        {pathDone && <ProUpsell />}
 
         <div className="grid gap-5 lg:grid-cols-2">
           <section>
@@ -139,7 +183,7 @@ export default function ProgressPage() {
               <h2 className="text-lg font-semibold text-ink">Memory strength</h2>
             </div>
             <p className="mt-1 text-xs text-ink-faint">
-              Capability statements from spaced review intervals — not lesson clicks.
+              Mastery ladder from spaced review intervals — not lesson clicks.
             </p>
             <div className="mt-4 space-y-3">
               {mastery.length === 0 ? (
@@ -148,12 +192,6 @@ export default function ProgressPage() {
                 </div>
               ) : (
                 mastery.map((item) => {
-                  const strength =
-                    item.mastery >= 0.7
-                      ? "Can usually recall under delay"
-                      : item.mastery >= 0.35
-                        ? "Building durable recall"
-                        : "Needs another review soon";
                   return (
                     <div key={item.topic} className="card p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -167,7 +205,7 @@ export default function ProgressPage() {
                           </p>
                         </div>
                         <span className="max-w-[9rem] text-right text-xs font-semibold text-brand-deep">
-                          {strength}
+                          {masteryLevelFromScore(item.mastery)}
                         </span>
                       </div>
                       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-ash">
@@ -195,7 +233,7 @@ export default function ProgressPage() {
                 <div
                   className={`w-full rounded-md ${day.practised ? "bg-brand" : "bg-ash"}`}
                   style={{ height: day.xp === 0 ? 5 : Math.min(72, 10 + day.xp / 2) }}
-                  title={`${day.day}: ${day.xp} XP`}
+                  title={`${day.day}: ${day.xp} Energy`}
                 />
                 <span className="text-[10px] text-ink-faint">{day.day.slice(8)}</span>
               </div>

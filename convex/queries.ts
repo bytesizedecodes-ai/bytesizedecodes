@@ -599,7 +599,10 @@ export const getLeaderboard = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, { limit }): Promise<LeaderboardRow[]> => {
     const profiles = await ctx.db.query("profiles").collect();
-    return profiles
+    // Never show demo/seed rows (see seedDemoProfiles) on the public leaderboard —
+    // real launch means real users only, no fabricated social proof.
+    const real = profiles.filter((p) => !p.seed);
+    return real
       .sort((a, b) => b.xpTotal - a.xpTotal)
       .slice(0, limit ?? 20)
       .map((p, i) => ({
@@ -616,22 +619,35 @@ export const getLeaderboard = query({
 interface UserCounts {
   totalLearners: number;
   /**
-   * PLACEHOLDER — no presence backend exists yet. Deterministically derived from the
-   * current minute so the count fluctuates believably during the demo. Replace with a
-   * real @convex-dev/presence read (or a lastSeenAt field) when auth ships.
+   * Real, not fabricated (docs/engagement-and-retention.md: "Never fabricate social
+   * activity"). Distinct real users with an attempt in the last 15 minutes, read from
+   * the most recently created attempts (bounded `.take()`, not a full collect) as a
+   * proxy for "recently active" until a real presence backend exists.
    */
   practicingNow: number;
   drillsAnswered: number;
   avgStreak: number;
 }
 
+const PRACTICING_WINDOW_MS = 15 * 60 * 1000;
+const RECENT_ATTEMPTS_SAMPLE = 300;
+
 export const getUserCounts = query({
   args: {},
   handler: async (ctx): Promise<UserCounts> => {
-    const [profiles, attempts] = await Promise.all([
+    const [allProfiles, attempts, recentAttempts] = await Promise.all([
       ctx.db.query("profiles").collect(),
       ctx.db.query("attempts").collect(),
+      // Newest-created first (insertion order tracks `at` closely) — bounded sample,
+      // not a full-table scan, to estimate who's active right now.
+      ctx.db.query("attempts").order("desc").take(RECENT_ATTEMPTS_SAMPLE),
     ]);
+    // Exclude demo/seed rows (seedDemoProfiles) from every public-facing count —
+    // these are fabricated dev-only rows and must never inflate real launch metrics.
+    const profiles = allProfiles.filter((p) => !p.seed);
+    const seedUserIds = new Set(
+      allProfiles.filter((p) => p.seed).map((p) => p.userId),
+    );
     const totalLearners = profiles.length;
     const drillsAnswered = attempts.length;
     const avgStreak =
@@ -640,13 +656,14 @@ export const getUserCounts = query({
         : Math.round(
             profiles.reduce((s, p) => s + p.currentStreak, 0) / totalLearners,
           );
-    // Deterministic-ish active count in a believable range, seeded by the minute so it
-    // visibly changes between page loads. Honest placeholder — see field doc.
-    const minuteSeed = Math.floor(Date.now() / 60000);
-    const practicingNow =
-      totalLearners === 0
-        ? 0
-        : 3 + (minuteSeed % Math.max(1, Math.floor(totalLearners / 3)));
+
+    const cutoff = Date.now() - PRACTICING_WINDOW_MS;
+    const practicingNow = new Set(
+      recentAttempts
+        .filter((a) => a.at >= cutoff && !seedUserIds.has(a.userId))
+        .map((a) => a.userId),
+    ).size;
+
     return { totalLearners, practicingNow, drillsAnswered, avgStreak };
   },
 });

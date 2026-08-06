@@ -1,10 +1,15 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
 
-/** Allow all crawling, and point bots at the sitemap. */
+/**
+ * Allow crawling of the public site; keep the admin console and internal
+ * design-comparison drafts (`/samples/*` — see app/samples/page.tsx) out of
+ * search results. Both are still reachable by URL (auth/obscurity only,
+ * not a security boundary) — this only affects indexing.
+ */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    rules: { userAgent: "*", allow: "/", disallow: ["/admin", "/samples"] },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
   };

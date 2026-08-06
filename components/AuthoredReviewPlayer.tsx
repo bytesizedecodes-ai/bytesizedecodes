@@ -7,6 +7,7 @@ import type { ResolvedAuthoredReview } from "@/content/review";
 import { useGradeReview, useToday } from "@/lib/data/provider";
 import type { AttemptResult, AuthoredReviewCard } from "@/lib/data/types";
 import type { SrsGrade } from "@/lib/srs";
+import { capabilityForTopic } from "@/lib/capabilityLabels";
 
 export function AuthoredReviewPlayer({
   card,
@@ -141,7 +142,10 @@ export function AuthoredReviewPlayer({
           {error && <p className="rounded-xl bg-bad-wash px-3 py-2 text-xs text-bad">{error}</p>}
           {reward && (
             <>
-              <RewardBanner result={reward} />
+              <RewardBanner
+                result={reward}
+                capability={capabilityForTopic(card.topic)}
+              />
               <button
                 type="button"
                 onClick={onDone}

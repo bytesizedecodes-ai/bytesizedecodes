@@ -163,6 +163,11 @@ export function OnboardingForm() {
             </>
           )}
         </Button>
+        <p className="max-w-md text-center text-xs leading-relaxed text-ink-soft">
+          Tomorrow, open{" "}
+          <span className="font-semibold text-ink">Today</span> — your due reviews will
+          be waiting so one short session keeps learning sticky.
+        </p>
         <p className="text-center text-xs text-ink-faint">
           You can change these preferences later from Profile.
         </p>

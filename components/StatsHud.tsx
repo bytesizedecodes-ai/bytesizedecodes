@@ -6,9 +6,12 @@ import type { Profile } from "@/lib/data/types";
 export function StatsHud({
   profile,
   dueCount,
+  weeklyMinutesDone,
 }: {
   profile: Profile | null | undefined;
   dueCount?: number;
+  /** Estimated minutes practised this IST week (from Today). */
+  weeklyMinutesDone?: number;
 }) {
   if (profile === undefined) {
     return (
@@ -21,19 +24,28 @@ export function StatsHud({
   }
   if (profile === null) return null;
 
-  const pct = Math.min(100, Math.round((profile.levelProgress.into / profile.levelProgress.span) * 100));
+  const pct = Math.min(
+    100,
+    Math.round((profile.levelProgress.into / profile.levelProgress.span) * 100),
+  );
+  const weeklyGoal = profile.weeklyMinutes ?? null;
+  const weeklyDone = weeklyMinutesDone ?? 0;
+  const weeklyPct =
+    weeklyGoal && weeklyGoal > 0
+      ? Math.min(100, Math.round((weeklyDone / weeklyGoal) * 100))
+      : null;
 
   return (
-    <div className="card grid grid-cols-2 gap-px overflow-hidden bg-ash sm:grid-cols-4">
+    <div className="card grid grid-cols-2 gap-px overflow-hidden bg-ash sm:grid-cols-4 lg:grid-cols-5">
       <Stat label="Level" value={`Lv ${profile.level}`}>
         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ash">
           <div className="h-full rounded-full bg-brand" style={{ width: `${pct}%` }} />
         </div>
         <p className="mt-1 text-[11px] text-ink-faint">
-          {profile.levelProgress.into} / {profile.levelProgress.span} XP
+          {profile.levelProgress.into} / {profile.levelProgress.span} Energy
         </p>
       </Stat>
-      <Stat label="XP" value={profile.xpTotal.toLocaleString("en-IN")} />
+      <Stat label="Energy" value={profile.xpTotal.toLocaleString("en-IN")} />
       <Stat
         label="Streak"
         value={
@@ -52,6 +64,21 @@ export function StatsHud({
         label="Due today"
         value={dueCount === undefined ? "—" : String(dueCount)}
       />
+      {weeklyGoal !== null && (
+        <Stat
+          label="This week"
+          value={`${weeklyDone}/${weeklyGoal}`}
+          className="col-span-2 sm:col-span-4 lg:col-span-1"
+        >
+          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-ash">
+            <div
+              className="h-full rounded-full bg-brand"
+              style={{ width: `${weeklyPct ?? 0}%` }}
+            />
+          </div>
+          <p className="mt-1 text-[11px] text-ink-faint">min goal</p>
+        </Stat>
+      )}
     </div>
   );
 }
@@ -60,13 +87,15 @@ function Stat({
   label,
   value,
   children,
+  className = "",
 }: {
   label: string;
   value: ReactNode;
   children?: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="bg-surface-elevated p-4">
+    <div className={`bg-surface-elevated p-4 ${className}`}>
       <p className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">{label}</p>
       <div className="mt-1 text-2xl font-semibold tracking-tight text-ink">{value}</div>
       {children}

@@ -18,6 +18,10 @@ import {
   type GeneratedQuestion,
 } from "@/lib/drills";
 import type { SrsGrade } from "@/lib/srs";
+import {
+  capabilityForGenerator,
+  capabilityForTopic,
+} from "@/lib/capabilityLabels";
 
 type Mode = "practice" | "review";
 
@@ -26,12 +30,15 @@ export function DrillPlayer({
   difficulty,
   seed,
   mode = "practice",
+  topic,
   onDone,
 }: {
   generatorId: string;
   difficulty: Difficulty;
   seed: number;
   mode?: Mode;
+  /** Optional SRS topic for capability copy. */
+  topic?: string;
   onDone?: () => void;
 }) {
   const question = useMemo(
@@ -44,6 +51,9 @@ export function DrillPlayer({
       key={`${generatorId}-${difficulty}-${seed}`}
       question={question}
       mode={mode}
+      capability={
+        capabilityForGenerator(generatorId) ?? capabilityForTopic(topic)
+      }
       onDone={onDone}
     />
   );
@@ -52,10 +62,12 @@ export function DrillPlayer({
 function QuestionCard({
   question,
   mode,
+  capability,
   onDone,
 }: {
   question: GeneratedQuestion;
   mode: Mode;
+  capability?: string | null;
   onDone?: () => void;
 }) {
   const today = useToday();
@@ -267,7 +279,7 @@ function QuestionCard({
             </div>
           )}
 
-          {reward && <RewardBanner result={reward} />}
+          {reward && <RewardBanner result={reward} capability={capability} />}
 
           {onDone && (mode === "practice" || reward) && (
             <button

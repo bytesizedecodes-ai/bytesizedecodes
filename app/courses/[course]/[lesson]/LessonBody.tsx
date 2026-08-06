@@ -18,6 +18,7 @@ export function LessonBody({
   exercise,
   questions,
   skillIds,
+  capability,
 }: {
   progressKey: string;
   attemptPrefix: string;
@@ -26,6 +27,7 @@ export function LessonBody({
   exercise?: CodeExercise;
   questions: ByteQuestion[];
   skillIds?: readonly SkillId[];
+  capability?: string;
 }) {
   return (
     <>
@@ -44,6 +46,7 @@ export function LessonBody({
         questions={questions}
         exercise={exercise}
         skillIds={skillIds}
+        capability={capability}
       />
     </>
   );

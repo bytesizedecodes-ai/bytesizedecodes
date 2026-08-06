@@ -9,10 +9,13 @@ The product **strategy** (audience, promise, learning loop) lives in
 business-model and architecture view: *how does a learner keep learning, and
 where does paying fit?*
 
+**Effort currency in the product UI is called Energy** (stored as `xpTotal` /
+`xpEvents` under the hood — no schema rename required).
+
 ## Auth model (current product decision)
 
 **Social identity (OAuth).** Free **course content** is readable without an account
-(SSR/SEO). Personal progress, streaks, XP, Daily plan, Build, Practice, and
+(SSR/SEO). Personal progress, streaks, Energy, Daily plan, Build, Practice, and
 Profile require a signed-in account (Google now; GitHub when configured). There
 is **no anonymous session** for the product UI.
 
@@ -38,10 +41,14 @@ streaks) requires a real identity so investment sticks per account and habits fo
 | Tier | Price | Reality |
 | --- | --- | --- |
 | **Free learning** | $0 · no account | Read free courses/lessons |
-| **Free account** | $0 · social sign-in | Saved path, Today, practice, streaks, Build drafts, Profile |
-| **Pro / Advanced** | Fee TBD · coming soon | Paid courses + advanced builds; notify via `/subscribe?intent=pro` |
+| **Free account** | $0 · social sign-in | Saved path, Today, practice, Energy, streaks, free Build drafts, Profile |
+| **Pro** | Fee TBD · coming soon | **Advanced courses** + advanced builds + **private GitHub portal** of AI project ideas and starter codes (work / startup / hobby). Notify via `/subscribe?intent=pro` |
 
 This is marketing truth for “fee not decided yet” — not Stripe products.
+
+**Pro is not an AI tutor chat product.** The paid upgrade packages depth of
+curriculum and **real project kits** (codes + ideas on GitHub) so learners can
+implement AI at work or ship a side project / startup MVP.
 
 Lead capture (not payment):
 
@@ -61,18 +68,19 @@ Lead capture (not payment):
 | Tier | Cost | What's gated | What stays free |
 | --- | --- | --- | --- |
 | **1. Free content** (now) | $0 | Nothing for **reading** free courses / lessons | All free courses fully public SEO |
-| **2. Login for progress** (now) | Free social account | Progress, streaks, XP, Today, Build, Practice, Profile | Free course reading without login |
-| **3. Paid-advanced** (later) | Subscription or one-time | `access: "paid"` courses + advanced builds | Free foundational courses forever |
+| **2. Login for progress** (now) | Free social account | Progress, streaks, Energy, Today, free Build, Practice, Profile | Free course reading without login |
+| **3. Pro** (later) | Subscription or one-time | `access: "paid"` **advanced courses**, advanced builds, GitHub project portal | Free foundational courses forever |
 
 ### What stays free forever
 
 - Foundational free courses and lessons (read).
-- After sign-in: streaks, XP, daily plan, free drills/review — not paywalled.
+- After sign-in: streaks freezes, Energy, daily plan, free drills/review — not paywalled.
 
-### Paid later
+### Paid later (Pro)
 
-- Courses with `access: "paid"` (login prompt now; checkout later).
-- Advanced build projects under a real Pro price.
+- Courses with `access: "paid"` (advanced curriculum).
+- Advanced build tracks.
+- Private GitHub access: curated AI project ideas + starter code for work, startup, and hobby builds.
 
 Do not gate free course **reading** behind payment. Progress savings need a
 signed-in identity so daily return has an account to attach to.

@@ -7,6 +7,8 @@ import { allCourseSlugs, courseLessonKey, getCourse } from "@/content/courses";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import { LessonStatus } from "./LessonStatus";
 import { CourseResumeButton } from "./CourseResumeButton";
+import { CourseSkillMap } from "@/components/CourseSkillMap";
+import { ProUpsell } from "@/components/ProUpsell";
 
 export function generateStaticParams() {
   return allCourseSlugs().map((course) => ({ course }));
@@ -79,6 +81,8 @@ export default async function CourseIndexPage({
           )}
         </header>
 
+        <CourseSkillMap course={course} />
+
         <ol className="mt-8 flex flex-col gap-3">
           {course.lessons.map((lesson, index) => (
             <li key={lesson.slug}>
@@ -111,6 +115,18 @@ export default async function CourseIndexPage({
         {course.lessons[0] && (
           <div className="mt-8">
             <CourseResumeButton course={course} />
+          </div>
+        )}
+
+        {course.access === "paid" && (
+          <div className="mt-8">
+            <ProUpsell />
+          </div>
+        )}
+
+        {course.access === "free" && (
+          <div className="mt-8">
+            <ProUpsell variant="inline" />
           </div>
         )}
 

@@ -5,9 +5,8 @@ import { useLeaderboard } from "@/lib/data/provider";
 import type { LeaderboardRow } from "@/lib/data/types";
 
 /**
- * Top-N leaderboard for the homepage. Reads seeded demo profiles for now; replaced by
- * real users when auth ships. Pattern adapted from CEMVP's podium widget, rendered in
- * the light ink/ash/brand token system.
+ * Top-N leaderboard for the homepage. Real users only — demo/seed profiles
+ * (seedDemoProfiles) are excluded server-side in getLeaderboard.
  */
 export function Leaderboard({ limit }: { limit?: number }) {
   const rows = useLeaderboard(limit);
@@ -21,7 +20,7 @@ export function Leaderboard({ limit }: { limit?: number }) {
         <Trophy className="h-5 w-5 text-gold" />
         <h2 className="text-sm font-semibold text-ink">Leaderboard</h2>
         <span className="ml-auto text-[11px] font-medium uppercase tracking-wide text-ink-faint">
-          by total XP
+          by total Energy
         </span>
       </header>
       <ol className="divide-y divide-ash">

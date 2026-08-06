@@ -14,7 +14,7 @@ this is the *what exists and what to build next*.
 | Action | Daily plan (review → weak-skill → next unit) | ✅ built | `convex/lib/dailyPlan.ts`, `app/today` |
 | Action | Time modes (quick 3m / standard 10m / deep 25m) | ✅ built | `content/tracks.ts`, `app/today` |
 | Investment | Spaced repetition (SM-2, anti-abandonment cap=20) | ✅ built | `convex/lib/srs.ts`, `app/review` |
-| Variable reward | XP + levels (deterministic, anti-grind, crit rolls) | ✅ built | `convex/lib/xp.ts`, `components/StatsHud.tsx` |
+| Variable reward | Energy + levels (deterministic, anti-grind, crit rolls) | ✅ built | `convex/lib/xp.ts`, `components/StatsHud.tsx` |
 | Variable reward | Streaks + freezes (1 freeze per 7 days) | ✅ built | `convex/lib/streak.ts`, `components/StatsHud.tsx` |
 | Variable reward | Reward banner (CSS pop, crit variant) | ✅ minimal | `components/RewardBanner.tsx` |
 | Investment | Skill evidence + mastery tracking | ✅ built | `convex/schema.ts` `skillEvidence`, `app/progress` |
@@ -45,18 +45,18 @@ all exist — but the component is **imported by zero pages**. It ranks by
 - **Resolution:** do not ship the global-XP leaderboard as-is. Prefer
   cohort/weekly or personal-best (see "Leaderboard decision" below).
 
-### 3. `weeklyMinutes` is captured but never tracked
-Onboarding asks for weekly time (30/75/150 min) and it's persisted and
-validated — but it's shown only as a static label (`app/profile`). There is no
-"X / 75 min this week" progress. Missed retention opportunity.
+### 3. `weeklyMinutes` is partially tracked
+Onboarding asks for weekly time (30/75/150 min) and it's persisted. `/today`
+shows an estimated progress (`practised days × session minutes` vs goal). True
+timer-based tracking is still a gap, but the weekly goal is no longer only static.
 
 ### 4. No achievements / badges / milestones
 Raw `skillEvidence` only — no trophies, unlock moments, or capability statements
 surface UX.
 
-### 5. Onboarding plants no return-visit hook
-Onboarding captures goal/level/time and redirects to `/today` without setting
-"come back tomorrow" expectation or reminder opt-in.
+### 5. Onboarding plants a light return-visit hook
+Onboarding copy points learners to tomorrow’s Due items on `/today`. Reminder
+opt-in / email is still deferred.
 
 ### 6. Celebratory moments are minimal
 One CSS-pop banner is the entire reward vocabulary — no dedicated level-up
@@ -66,9 +66,9 @@ modal or streak-milestone celebration.
 
 ### Trigger (the biggest gap)
 1. **Decide on a channel.** Email is available after social sign-in for many
-   users; Web push needs service worker + VAPID. **Recommendation:** in-app
-   "N due / streak at risk" banner on `/today` and home first; then daily email
-   once Resend (or similar) is wired with opt-in.
+   users; Web push needs service worker + VAPID. **In-app (shipped):**
+   `/today` shows due count + time estimate and Continue CTA with due
+   context. **Next:** daily email once Resend (or similar) is wired with opt-in.
 2. **Reminder content** (from the strategy): due count, est. time, the exact
    skill/step, one deep link. Never *"your streak is about to die."*
 3. **New-content trigger:** publish 2 visual concepts/week; reminders point at
@@ -105,13 +105,18 @@ or leave comparison out for v1.**
 
 ## Pre-launch retention checklist
 
-1. Activate `weeklyMinutes` as a tracked weekly goal on `/today` and `/progress`.
-2. Add in-app “N due / streak at risk” on `/today` and home.
+1. ~~Activate `weeklyMinutes` as a tracked weekly goal on `/today`~~ (estimate on `/today`)
+2. ~~Add in-app “N due” on `/today`~~
 3. Decide leaderboard (rebuild query or remove orphan component).
-4. Plant a return hook in onboarding (streak + due loop; reminder opt-in later).
-5. Build at least one capability-statement reward.
-6. Real level-up moment.
+4. ~~Plant a return hook in onboarding~~ (copy); reminder opt-in later.
+5. ~~Capability-statement rewards~~ (RewardBanner + lesson capability)
+6. ~~Level-up treatment~~ (RewardBanner highlight) — still no modal
 7. **After** opt-in + outbound channel: daily reminder email using OAuth email.
+8. Product-facing effort currency is **Energy** (not XP).
+9. Pro = advanced courses + GitHub AI project portal (work/startup/hobby) — not an AI coach.
+10. ~~Course skill map squares~~
+11. ~~Mastery Challenge packaging~~ (`/review`, daily plan, Progress)
+12. ~~Khan-style mastery ladder labels on Progress topics~~
 
 ## Ethical guardrails (non-negotiable)
 

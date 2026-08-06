@@ -1,6 +1,8 @@
 /**
  * Plans / tiers marketing copy — single source for /plans comparison.
  * Aligned with docs/monetization-and-subscription.md (no fake prices).
+ *
+ * Effort currency is labelled Energy in product UI (stored as xp* in data layer).
  */
 
 export type PlanTierId = "free_learn" | "free_account" | "pro";
@@ -28,8 +30,9 @@ export const PLAN_PAGE = {
   eyebrow: "Plans",
   title: "What you get — free and paid",
   description:
-    "Read free forever. Create a free account with a social sign-in to save progress. Advanced courses and builds are coming soon — fee not decided yet.",
-  heroLine: "Read free forever. Account free for progress. Advanced coming soon.",
+    "Read free forever. Create a free account to save progress and Energy. Pro unlocks advanced courses plus our private GitHub portal of real AI project ideas and starter codes for work, startups, and hobby builds. Fee not decided yet.",
+  heroLine:
+    "Free lessons. Free account for the habit loop. Pro for advanced courses and shippable project kits.",
 } as const;
 
 export const PLAN_TIERS: readonly PlanTier[] = [
@@ -38,7 +41,8 @@ export const PLAN_TIERS: readonly PlanTier[] = [
     name: "Free learning",
     priceLabel: "$0 · no account",
     status: "available",
-    blurb: "Browse free courses and lessons without signing in. Built for SEO and curious visitors.",
+    blurb:
+      "Browse free courses and visual lessons without signing in. Built for SEO and curious visitors.",
     ctaLabel: "Browse free courses",
     cta: "courses",
   },
@@ -48,17 +52,17 @@ export const PLAN_TIERS: readonly PlanTier[] = [
     priceLabel: "$0 · social sign-in",
     status: "available",
     blurb:
-      "Everything in free learning, plus a saved path: daily plan, practice, streaks, Build drafts, and Profile export.",
+      "Everything in free learning, plus a saved path: daily plan, practice, Energy, streaks, free Build drafts, and Profile export.",
     ctaLabel: "Sign in free",
     cta: "account",
   },
   {
     id: "pro",
-    name: "Pro / Advanced",
+    name: "Pro",
     priceLabel: "Fee TBD",
     status: "coming_soon",
     blurb:
-      "Paid courses, advanced builds, and future certificates when we ship them. Price and checkout are not live yet.",
+      "Advanced paid courses, advanced builds, and access to our private GitHub portal: curated AI project ideas and starter code you can implement at work, launch as a startup, or ship as a hobby project. Price and checkout are not live yet.",
     ctaLabel: "Notify me",
     cta: "notify",
   },
@@ -86,8 +90,8 @@ export const PLAN_FEATURES: readonly PlanFeature[] = [
     values: { free_learn: "no", free_account: "yes", pro: "yes" },
   },
   {
-    id: "xp_streaks",
-    label: "XP, levels, streaks & freezes",
+    id: "energy_streaks",
+    label: "Energy, levels, streaks & freezes",
     values: { free_learn: "no", free_account: "yes", pro: "yes" },
   },
   {
@@ -107,17 +111,17 @@ export const PLAN_FEATURES: readonly PlanFeature[] = [
   },
   {
     id: "paid_courses",
-    label: "Advanced paid courses",
+    label: "Advanced courses",
+    values: { free_learn: "no", free_account: "no", pro: "soon" },
+  },
+  {
+    id: "github_portal",
+    label: "GitHub portal: AI project kits (work / startup / hobby)",
     values: { free_learn: "no", free_account: "no", pro: "soon" },
   },
   {
     id: "advanced_build",
-    label: "Advanced build projects",
-    values: { free_learn: "no", free_account: "no", pro: "soon" },
-  },
-  {
-    id: "certificates",
-    label: "Certificates",
+    label: "Advanced build tracks",
     values: { free_learn: "no", free_account: "no", pro: "soon" },
   },
   {

@@ -20,7 +20,7 @@ import type { DayKey } from "@/lib/day";
 
 /**
  * The interactive "byte" body: MCQ self-check questions, an optional runnable
- * code cell, and the mark-complete → XP reward flow.
+ * code cell, and the mark-complete → Energy reward flow.
  */
 export function ByteBody({
   progressSlug,
@@ -29,6 +29,7 @@ export function ByteBody({
   questions,
   exercise,
   skillIds = [],
+  capability,
   today: todayProp,
 }: {
   progressSlug: string;
@@ -37,6 +38,7 @@ export function ByteBody({
   questions: ByteQuestion[];
   exercise?: CodeExercise;
   skillIds?: readonly SkillId[];
+  capability?: string;
   today?: DayKey;
 }) {
   const todayFromHook = useToday();
@@ -167,7 +169,7 @@ export function ByteBody({
           >
             Sign in
           </button>{" "}
-          to save progress and earn XP.
+          to save progress and earn Energy.
         </p>
       )}
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} redirectTo="/onboarding?next=/learn" />
@@ -277,7 +279,7 @@ export function ByteBody({
         {alreadyDone || reward ? (
           <div className="rounded-xl border border-good/30 bg-good-wash px-4 py-3 text-sm">
             Byte complete
-            {reward && reward.xpAwarded > 0 ? ` · +${reward.xpAwarded} XP` : ""}
+            {reward && reward.xpAwarded > 0 ? ` · +${reward.xpAwarded} Energy` : ""}
           </div>
         ) : (
           <button
@@ -295,7 +297,16 @@ export function ByteBody({
                 : "Answer all questions to finish"}
           </button>
         )}
-        {reward && <RewardBanner result={reward} />}
+        {reward && (
+          <RewardBanner
+            result={reward}
+            capability={
+              capability
+                ? `You can now: ${capability.charAt(0).toLowerCase()}${capability.slice(1)}`
+                : null
+            }
+          />
+        )}
       </section>
     </div>
   );

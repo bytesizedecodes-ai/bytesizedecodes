@@ -88,12 +88,17 @@ const profiles = defineTable({
   legacyAnonId: v.optional(v.string()),
   /** Authorization role. Absent = ordinary "user". Promoted server-side via ADMIN_EMAILS. */
   role: v.optional(role),
+  /** OAuth email captured at ensure/sync — for admin ops and mail (never trust client). */
+  email: v.optional(v.string()),
+  /** Convex Auth users table id (subject prefix before |session). */
+  authUserId: v.optional(v.string()),
 })
   .index("by_user", ["userId"])
   // Top-N leaderboard read. At dev scale (~20 profiles) a full collect+sort is fine;
   // this index pays off once real volume arrives.
   .index("by_xp", ["xpTotal"])
-  .index("by_legacy_anon", ["legacyAnonId"]);
+  .index("by_legacy_anon", ["legacyAnonId"])
+  .index("by_email", ["email"]);
 
 /** Learner project artifacts (Build track). Private by default. */
 const projects = defineTable({
@@ -259,6 +264,50 @@ const inquiries = defineTable({
   .index("by_kind", ["kind"])
   .index("by_created", ["createdAt"]);
 
+/**
+ * Admin outbound email campaigns (broadcast / scheduled announcements).
+ * Sent via Resend when RESEND_API_KEY is set on the Convex deployment.
+ */
+const emailCampaigns = defineTable({
+  subject: v.string(),
+  body: v.string(),
+  audience: v.union(v.literal("all_with_email")),
+  status: v.union(
+    v.literal("draft"),
+    v.literal("scheduled"),
+    v.literal("sending"),
+    v.literal("sent"),
+    v.literal("failed"),
+    v.literal("cancelled"),
+  ),
+  /** Epoch ms to send; null means send-now queue. */
+  scheduledFor: v.union(v.number(), v.null()),
+  createdAt: v.number(),
+  createdBy: v.string(),
+  sentAt: v.optional(v.number()),
+  recipientCount: v.optional(v.number()),
+  sentCount: v.optional(v.number()),
+  error: v.optional(v.string()),
+})
+  .index("by_status", ["status"])
+  .index("by_created", ["createdAt"]);
+
+/**
+ * Global admin toggles for automated email triggers (key/value JSON strings).
+ * Keys: daily_due_reminder, etc.
+ */
+const adminTriggers = defineTable({
+  key: v.string(),
+  enabled: v.boolean(),
+  /** Human schedule note e.g. "daily 09:00 IST" (cron is fixed in code). */
+  scheduleLabel: v.string(),
+  subjectTemplate: v.string(),
+  bodyTemplate: v.string(),
+  updatedAt: v.number(),
+  lastRunAt: v.optional(v.number()),
+  lastResult: v.optional(v.string()),
+}).index("by_key", ["key"]);
+
 export default defineSchema({
   ...authTables,
   profiles,
@@ -271,4 +320,6 @@ export default defineSchema({
   projects,
   feedback,
   inquiries,
+  emailCampaigns,
+  adminTriggers,
 });

@@ -41,16 +41,22 @@ const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 /**
  * After social sign-in, ensure a profiles row exists and OAuth name/email
- * are applied so getProfile can return them.
+ * are applied so getProfile can return them. Also attempts admin promotion
+ * (idempotent no-op unless the signed-in email is in ADMIN_EMAILS) — this is
+ * the only place bootstrapAdminRole is invoked, so allowlisting an email on
+ * Convex has no effect until that user's next sign-in triggers this.
  */
 function ProfileEnsure({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useConvexAuth();
   const ensure = useMutation(api.mutations.ensureProfile);
+  const bootstrapAdmin = useMutation(api.admin.mutations.bootstrapAdminRole);
 
   useEffect(() => {
     if (isLoading || !isAuthenticated) return;
-    void ensure({ userId: AUTH_USER_ID });
-  }, [isLoading, isAuthenticated, ensure]);
+    void ensure({ userId: AUTH_USER_ID }).then(() => {
+      void bootstrapAdmin({});
+    });
+  }, [isLoading, isAuthenticated, ensure, bootstrapAdmin]);
 
   return <>{children}</>;
 }
@@ -435,6 +441,38 @@ export function useAdminFeedback(status?: string) {
 
 export function useUpdateFeedbackStatus() {
   return useMutation(api.admin.mutations.updateFeedbackStatus);
+}
+
+export function useMailRecipients() {
+  return useQuery(api.admin.queries.listMailRecipients, {});
+}
+
+export function useAdminCampaigns() {
+  return useQuery(api.admin.queries.listCampaigns, {});
+}
+
+export function useAdminTriggers() {
+  return useQuery(api.admin.queries.listTriggers, {});
+}
+
+export function useEmailConfigStatus() {
+  return useQuery(api.admin.queries.getEmailConfigStatus, {});
+}
+
+export function useCreateEmailCampaign() {
+  return useMutation(api.admin.mutations.createEmailCampaign);
+}
+
+export function useCancelEmailCampaign() {
+  return useMutation(api.admin.mutations.cancelEmailCampaign);
+}
+
+export function useEnsureDefaultTriggers() {
+  return useMutation(api.admin.mutations.ensureDefaultTriggers);
+}
+
+export function useUpdateTrigger() {
+  return useMutation(api.admin.mutations.updateTrigger);
 }
 
 /** Attempt to promote the calling authenticated user to admin (idempotent). */

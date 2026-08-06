@@ -133,7 +133,7 @@ export default async function LessonPage({
             )}
             {hasQuestions && (
               <span className="rounded-full bg-gold/20 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-ink-soft">
-                +XP on complete
+                +Energy on complete
               </span>
             )}
           </div>
@@ -158,6 +158,7 @@ export default async function LessonPage({
             exercise={lesson.exercise}
             questions={lesson.questions ?? []}
             skillIds={lesson.skillIds}
+            capability={lesson.capability}
           />
           {lesson.application && (
             <ApplicationCase

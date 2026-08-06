@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAdminFeedback, useUpdateFeedbackStatus } from "@/lib/data/provider";
+import type { Id } from "@/convex/_generated/dataModel";
 
 const STATUSES = ["all", "new", "viewed", "in_progress", "resolved", "wontfix"] as const;
 
@@ -26,15 +27,33 @@ function safeHref(url: string | undefined): string | undefined {
 export default function AdminFeedbackPage() {
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("new");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [replyDrafts, setReplyDrafts] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState<string | null>(null);
   const feedback = useAdminFeedback(status === "all" ? undefined : status);
   const updateStatus = useUpdateFeedbackStatus();
+
+  async function saveReply(id: Id<"feedback">, nextStatus?: "viewed" | "in_progress" | "resolved" | "wontfix") {
+    const item = feedback?.find((f) => f._id === id);
+    if (!item) return;
+    setSaving(id);
+    try {
+      const draft = replyDrafts[id] ?? item.adminReply ?? "";
+      await updateStatus({
+        id,
+        status: nextStatus ?? (item.status as "new" | "viewed" | "in_progress" | "resolved" | "wontfix"),
+        adminReply: draft,
+      });
+    } finally {
+      setSaving(null);
+    }
+  }
 
   return (
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-semibold tracking-tight text-ink">Feedback</h1>
         <p className="mt-1 text-sm text-ink-soft">
-          Triage issues, ideas, and praise from learners. Reply and resolve.
+          View submitted feedback, leave an internal admin note/reply, and triage status.
         </p>
       </header>
 
@@ -73,7 +92,12 @@ export default function AdminFeedbackPage() {
                 type="button"
                 onClick={() => {
                   setExpanded(expanded === f._id ? null : f._id);
-                  if (f.status === "new") updateStatus({ id: f._id, status: "viewed" });
+                  if (!(f._id in replyDrafts) && f.adminReply) {
+                    setReplyDrafts((d) => ({ ...d, [f._id]: f.adminReply ?? "" }));
+                  }
+                  if (f.status === "new") {
+                    void updateStatus({ id: f._id, status: "viewed" });
+                  }
                 }}
                 className="flex w-full items-start gap-3 px-4 py-3 text-left"
               >
@@ -82,6 +106,8 @@ export default function AdminFeedbackPage() {
                   <p className="line-clamp-2 text-sm text-ink">{f.body}</p>
                   <div className="mt-1 flex items-center gap-2 text-[11px] text-ink-faint">
                     <span>{fmtDate(f.createdAt)}</span>
+                    <span>·</span>
+                    <span className="truncate">user {f.userId.slice(0, 12)}…</span>
                     {f.url ? (
                       <>
                         <span>·</span>
@@ -111,28 +137,47 @@ export default function AdminFeedbackPage() {
                       })()}
                     </p>
                   ) : null}
-                  {f.adminReply ? (
-                    <p className="mt-2 rounded-lg bg-surface-elevated px-3 py-2 text-xs text-ink-soft">
-                      <span className="font-bold text-ink">Admin reply:</span> {f.adminReply}
-                    </p>
-                  ) : null}
+
+                  <label className="mt-4 block">
+                    <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+                      Admin reply / notes
+                    </span>
+                    <textarea
+                      value={replyDrafts[f._id] ?? f.adminReply ?? ""}
+                      onChange={(e) =>
+                        setReplyDrafts((d) => ({ ...d, [f._id]: e.target.value }))
+                      }
+                      rows={3}
+                      maxLength={2000}
+                      placeholder="Internal note or reply text (stored on the feedback item)"
+                      className="mt-1 w-full rounded-lg border border-ash bg-surface-elevated px-3 py-2 text-sm text-ink focus:border-brand focus:outline-none"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    disabled={saving === f._id}
+                    onClick={() => void saveReply(f._id)}
+                    className="mt-2 rounded-lg border border-ash bg-surface-elevated px-3 py-1.5 text-xs font-semibold text-ink disabled:opacity-40"
+                  >
+                    {saving === f._id ? "Saving…" : "Save reply"}
+                  </button>
 
                   {/* Triage actions */}
                   <div className="mt-3 flex flex-wrap gap-2">
                     <TriageBtn
                       label="In progress"
                       active={f.status === "in_progress"}
-                      onClick={() => updateStatus({ id: f._id, status: "in_progress" })}
+                      onClick={() => void saveReply(f._id, "in_progress")}
                     />
                     <TriageBtn
                       label="Resolved"
                       active={f.status === "resolved"}
-                      onClick={() => updateStatus({ id: f._id, status: "resolved" })}
+                      onClick={() => void saveReply(f._id, "resolved")}
                     />
                     <TriageBtn
                       label="Won't fix"
                       active={f.status === "wontfix"}
-                      onClick={() => updateStatus({ id: f._id, status: "wontfix" })}
+                      onClick={() => void saveReply(f._id, "wontfix")}
                     />
                   </div>
                 </div>
