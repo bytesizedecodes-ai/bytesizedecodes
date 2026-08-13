@@ -52,6 +52,62 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "Python for ML",
     description: "Use lists, functions, and simple tests to prepare data for models.",
   },
+  // AI Observability course
+  {
+    id: "ai-observability",
+    label: "AI observability",
+    description: "Explain why AI systems need watching and what observability means.",
+  },
+  {
+    id: "system-logs",
+    label: "Logging",
+    description: "Read logs to explain why an AI produced a given output.",
+  },
+  {
+    id: "system-metrics",
+    label: "Metrics",
+    description: "Track latency, cost, error rate, and token use over time.",
+  },
+  {
+    id: "distributed-tracing",
+    label: "Tracing",
+    description: "Follow a single request end-to-end to find the slow or costly step.",
+  },
+  {
+    id: "llm-evaluation",
+    label: "LLM evaluation",
+    description: "Judge whether an AI's answer is good using rubrics and reviewers.",
+  },
+  {
+    id: "llm-hallucination",
+    label: "Hallucination",
+    description: "Spot confident-but-wrong outputs and explain how they slip through.",
+  },
+  {
+    id: "model-drift",
+    label: "Model drift",
+    description: "Recognise when a model slowly degrades as the world changes around it.",
+  },
+  {
+    id: "alerting",
+    label: "Alerting",
+    description: "Set thresholds that catch real problems without crying wolf.",
+  },
+  {
+    id: "observability-dashboards",
+    label: "Dashboards",
+    description: "Read a dashboard and know at a glance if a system is healthy.",
+  },
+  {
+    id: "llm-cost-latency",
+    label: "Cost and latency",
+    description: "Reason about the two bills that shape AI features: tokens and time.",
+  },
+  {
+    id: "observability-tools",
+    label: "Observability tools",
+    description: "Name the common observability tools and the job each one does.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {

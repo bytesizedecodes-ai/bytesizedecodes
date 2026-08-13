@@ -34,7 +34,9 @@ const courseUnits: LearningUnitSummary[] = COURSES.flatMap((course) =>
     trackPriority:
       course.slug === "machine-learning-for-layman"
         ? (["beginner", "founder"] as const)
-        : (["grad", "engineer", "founder", "beginner"] as const),
+        : course.slug === "ai-observability"
+          ? (["beginner", "founder", "engineer"] as const)
+          : (["grad", "engineer", "founder", "beginner"] as const),
   })),
 );
 

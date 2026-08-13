@@ -34,7 +34,19 @@ export type SkillId =
   | "gradient-descent"
   | "tensor-shapes"
   | "output-heads"
-  | "python-basics";
+  | "python-basics"
+  // AI Observability course
+  | "ai-observability"
+  | "system-logs"
+  | "system-metrics"
+  | "distributed-tracing"
+  | "llm-evaluation"
+  | "llm-hallucination"
+  | "model-drift"
+  | "alerting"
+  | "observability-dashboards"
+  | "llm-cost-latency"
+  | "observability-tools";
 
 export interface CodeExercise {
   id: string;

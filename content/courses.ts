@@ -56,7 +56,11 @@ export type CourseLevel = "beginner" | "intermediate" | "expert";
  * Top-level field a course belongs to. Drives the domain filter on `/courses`.
  * Add a new value here when you introduce a new field of study.
  */
-export type CourseDomain = "Machine Learning" | "Cybersecurity" | "Artificial Intelligence";
+export type CourseDomain =
+  | "Machine Learning"
+  | "Cybersecurity"
+  | "Artificial Intelligence"
+  | "AI Observability";
 
 /**
  * Monetization tier for browse/gate UX.
@@ -73,6 +77,7 @@ export const COURSE_DOMAINS: readonly CourseDomain[] = [
   "Machine Learning",
   "Cybersecurity",
   "Artificial Intelligence",
+  "AI Observability",
 ];
 
 /** Ordered list of access tiers, for filter UIs. */
@@ -1089,6 +1094,996 @@ for task, expected in cases:
               "Most ML failures on new inputs come from gaps in training data — the model is guessing outside what it has seen.",
           },
         ],
+      },
+    ],
+  },
+  {
+    slug: "ai-observability",
+    title: "AI Observability",
+    subtitle: "How to keep an eye on AI so it doesn’t quietly go wrong.",
+    description:
+      "A picture-led introduction to watching AI systems in the real world. You'll meet the three pillars — logs, metrics, and traces — learn to spot quiet failures like hallucination and drift, and see how teams use dashboards and alerts to catch problems before users do. No coding required.",
+    level: "beginner",
+    domain: "AI Observability",
+    access: "free",
+    lessons: [
+      {
+        slug: "what-is-observability",
+        title: "What is observability?",
+        blurb: "Seeing inside a system without opening it up.",
+        topic: "observability-foundations",
+        skillIds: ["ai-observability"],
+        capability: "Explain what observability means and why even a working system needs it.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you’re driving and the car feels fine. What’s the most reliable way to know the engine is healthy?",
+          choices: [
+            { id: "a", label: "Trust how it feels" },
+            { id: "b", label: "Glance at the dashboard gauges" },
+            { id: "c", label: "Wait until it breaks down" },
+          ],
+          answer: "b",
+          explanation:
+            "Feelings miss slow problems, and waiting for a breakdown is too late. Gauges show the engine’s hidden state before it fails.",
+        },
+        prose: [
+          "Observability means being able to tell what’s happening inside a system just by reading signals on the outside.",
+          "A car’s dashboard does this perfectly. You can’t see the engine, but the gauges tell you the speed, the fuel, and whether something is wrong — all without lifting the bonnet.",
+          "An AI is also a hidden engine. You only see its answers. Observability gives an AI its own dashboard: little readings that show how it’s really doing underneath, not just how confident it sounds.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does observability let you do?",
+            choices: [
+              { id: "a", label: "See a system’s source code" },
+              { id: "b", label: "Tell what’s happening inside a system from outside signals" },
+              { id: "c", label: "Make the system run faster" },
+            ],
+            answer: "b",
+            explanation:
+              "Observability is about insight into internal state from the outside — not code access or speed.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why is a car dashboard a good analogy for AI observability?",
+            choices: [
+              { id: "a", label: "Because cars and AIs both use fuel" },
+              {
+                id: "b",
+                label: "Because in both cases the important parts are hidden, so you need readings to know their state",
+              },
+              { id: "c", label: "Because both have screens" },
+            ],
+            answer: "b",
+            explanation:
+              "The shared idea is a hidden engine whose health you read through gauges — fuel and screens are surface details.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "An AI gives an answer that looks fine. Observability helps you…",
+            choices: [
+              { id: "a", label: "Know whether it’s actually fine underneath" },
+              { id: "b", label: "Make the answer longer" },
+              { id: "c", label: "Turn the AI off" },
+            ],
+            answer: "a",
+            explanation:
+              "Looking fine isn’t being fine. Observability reveals the hidden state behind a confident-looking answer.",
+          },
+        ],
+      },
+      {
+        slug: "why-ai-is-different",
+        title: "Why is AI different from normal software?",
+        blurb: "A vending machine always behaves the same. An AI doesn’t.",
+        topic: "observability-foundations",
+        skillIds: ["ai-observability"],
+        capability: "Explain why AI is non-deterministic and why that changes how we monitor it.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you ask an AI the exact same question twice. What will most likely happen?",
+          choices: [
+            { id: "a", label: "Both answers will be identical" },
+            { id: "b", label: "The answers will probably differ slightly" },
+            { id: "c", label: "The second answer will be blank" },
+          ],
+          answer: "b",
+          explanation:
+            "AI is non-deterministic: the same prompt can yield different wording, length, or choices on different runs.",
+        },
+        prose: [
+          "Normal software is like a vending machine. Press the same button, get the same thing, every single time. It’s predictable.",
+          "AI is more like a chef. Order the same dish twice and you’ll get two slightly different meals — both perfectly fine, but never identical.",
+          "This changes how we monitor it. With a vending machine you can test it once and trust it. With a chef, one good meal doesn’t promise the next — so you have to keep watching how each one turns out.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "In plain language, what does “non-deterministic” mean?",
+            choices: [
+              { id: "a", label: "The system is broken" },
+              { id: "b", label: "The same input can produce different outputs" },
+              { id: "c", label: "The system has no inputs" },
+            ],
+            answer: "b",
+            explanation:
+              "Non-deterministic means the output isn’t fixed by the input — it can vary. It doesn’t mean broken.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why can’t you test an AI once and trust it forever?",
+            choices: [
+              { id: "a", label: "Because it’s too slow to run twice" },
+              {
+                id: "b",
+                label: "Because the same prompt can give different answers on different runs",
+              },
+              { id: "c", label: "Because it deletes its old answers" },
+            ],
+            answer: "b",
+            explanation:
+              "One good run doesn’t guarantee the next. Non-determinism means each run needs watching.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Which behaves more like an AI — a vending machine or a chef?",
+            choices: [
+              { id: "a", label: "A vending machine" },
+              { id: "b", label: "A chef" },
+            ],
+            answer: "b",
+            explanation:
+              "A chef varies dish-to-dish, just as an AI varies answer-to-answer. A vending machine is fixed.",
+          },
+        ],
+      },
+      {
+        slug: "when-ai-goes-wrong",
+        title: "When AI goes wrong, it rarely crashes",
+        blurb: "Software fails loudly. AI fails quietly.",
+        topic: "observability-foundations",
+        skillIds: ["ai-observability", "llm-hallucination", "model-drift", "llm-cost-latency"],
+        capability: "Recognise that AI usually fails quietly, and name the three common quiet-failure modes.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI feature is broken. How will you most likely find out?",
+          choices: [
+            { id: "a", label: "A loud crash that everyone notices" },
+            { id: "b", label: "It quietly gives worse answers while the bill climbs" },
+            { id: "c", label: "The AI sends you an email" },
+          ],
+          answer: "b",
+          explanation:
+            "AI rarely crashes and doesn’t self-report. Without instruments, you usually only notice via worse answers, user complaints, or the bill.",
+        },
+        prose: [
+          "Normal software fails loudly. A page stops loading, an error pops up, the app freezes. Everyone notices, and someone fixes it.",
+          "AI tends to fail quietly. It keeps answering with a smile — but the answers quietly become wrong, the costs quietly climb, or the quality quietly drifts downward over time.",
+          "Because nothing actually crashes, nobody realises until the damage is done. That’s the core problem observability exists to solve: making quiet problems loud enough to catch early.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "How does AI failure usually differ from normal software failure?",
+            choices: [
+              { id: "a", label: "AI fails more loudly, with bigger error screens" },
+              { id: "b", label: "AI tends to fail quietly, without crashing" },
+              { id: "c", label: "AI never fails" },
+            ],
+            answer: "b",
+            explanation:
+              "AI keeps running and answering even when something is wrong, so the failure is silent rather than a crash.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which is NOT one of the three quiet-failure modes named in the lesson?",
+            choices: [
+              { id: "a", label: "Being confidently wrong" },
+              { id: "b", label: "Quietly climbing costs" },
+              { id: "c", label: "Running out of disk space" },
+            ],
+            answer: "c",
+            explanation:
+              "Disk space is a loud, classic crash. The three quiet modes are confident wrongness, rising cost, and slow drift.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why are quiet failures dangerous?",
+            choices: [
+              { id: "a", label: "They crash the whole app at once" },
+              { id: "b", label: "Nobody notices until damage is done" },
+              { id: "c", label: "They’re always expensive to fix" },
+            ],
+            answer: "b",
+            explanation:
+              "The danger is invisibility: since nothing crashes, the problem can run unnoticed for days or weeks.",
+          },
+        ],
+        application: {
+          title: "Spot the quiet failure",
+          prompt:
+            "Think of a time an app gave you an answer that looked fine but felt subtly off — a wrong fact, a too-confident guess, or a strange suggestion. What ‘quiet’ problem might have been happening behind the scenes, and what single number would you want on a dashboard to catch it next time?",
+        },
+      },
+      {
+        slug: "logs-what-ai-said",
+        title: "Logs: what the AI said",
+        blurb: "A diary of every exchange, so odd answers aren’t a mystery.",
+        topic: "observability-pillars",
+        skillIds: ["system-logs"],
+        capability: "Read a log entry and explain how logging helps answer ‘why did the AI say that?’.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI gave a weird answer yesterday. Today you want to know why. What do you most wish you had?",
+          choices: [
+            { id: "a", label: "The AI’s source code" },
+            { id: "b", label: "A record of exactly what was asked and answered" },
+            { id: "c", label: "A faster computer" },
+          ],
+          answer: "b",
+          explanation:
+            "Source code and speed don’t explain one specific answer. A record of the exchange lets you replay what actually happened.",
+        },
+        prose: [
+          "Logs are a diary of what the AI said. Every exchange — what was asked and what was answered — gets written down as it happens.",
+          "Without logs, an odd answer is a mystery. You remember it felt wrong, but the exact words, the time, and the model version are all gone.",
+          "With logs, you can scroll back, find the entry, and see the precise prompt, answer, timestamp, and version. ‘Why did it say that?’ becomes a question you can actually investigate.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What is a log, in plain terms?",
+            choices: [
+              { id: "a", label: "A diary recording what was said" },
+              { id: "b", label: "A type of AI model" },
+              { id: "c", label: "A summary number over time" },
+            ],
+            answer: "a",
+            explanation:
+              "A log is a record of events. (A summary number over time is a metric — that’s the next lesson.)",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which four things does a good AI log entry capture?",
+            choices: [
+              { id: "a", label: "Prompt, answer, timestamp, and model version" },
+              { id: "b", label: "The user’s name and home address" },
+              { id: "c", label: "The weather at the time" },
+            ],
+            answer: "a",
+            explanation:
+              "Those four let you reconstruct exactly what happened. Personal data and trivia aren’t needed to debug an answer.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Logging mostly helps you answer which question?",
+            choices: [
+              { id: "a", label: "“How do I make the AI faster?”" },
+              { id: "b", label: "“Why did the AI say that?”" },
+              { id: "c", label: "“How do I turn the AI off?”" },
+            ],
+            answer: "b",
+            explanation:
+              "Logs explain past behaviour. Speed is a metric question; turning it off is an ops decision.",
+          },
+        ],
+      },
+      {
+        slug: "metrics-counting-matters",
+        title: "Metrics: counting what matters",
+        blurb: "Turn “it feels slow” into numbers you can watch.",
+        topic: "observability-pillars",
+        skillIds: ["system-metrics", "llm-cost-latency"],
+        capability: "Name the key AI metrics and explain why watching them over time reveals quiet problems.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: users say your AI “feels slow”. What turns that feeling into something you can act on?",
+          choices: [
+            { id: "a", label: "Trust their feeling and guess" },
+            { id: "b", label: "A metric that measures response time" },
+            { id: "c", label: "A bigger server" },
+          ],
+          answer: "b",
+          explanation:
+            "A feeling can’t be fixed until it’s measured. A latency metric turns ‘feels slow’ into ‘1.8 seconds on average’.",
+        },
+        prose: [
+          "Metrics are numbers you count over time. Where a log records one event, a metric summarises thousands — ‘how slow, on average, over the last day?’.",
+          "For an AI, four numbers matter most: latency (how long an answer takes), cost (how much it spends), error rate (how often it fails), and token usage (how much it reads and writes).",
+          "On their own the numbers are just numbers. The magic is watching them move. A sudden spike in error rate is a quiet problem announcing itself — exactly what you’d miss without the dashboard. Try the 24h window on the dashboard above and spot the spike.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does a metric do that a log doesn’t?",
+            choices: [
+              { id: "a", label: "Summarises many events into a number over time" },
+              { id: "b", label: "Records one event’s exact words" },
+              { id: "c", label: "Turns the AI off automatically" },
+            ],
+            answer: "a",
+            explanation:
+              "A metric aggregates (e.g. average latency). A log records a single event verbatim. They answer different questions.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which is NOT one of the four key AI metrics named?",
+            choices: [
+              { id: "a", label: "Latency" },
+              { id: "b", label: "Cost" },
+              { id: "c", label: "The CEO’s mood" },
+            ],
+            answer: "c",
+            explanation:
+              "Latency, cost, error rate, and token usage are the four. Mood isn’t measurable — and that’s the point of metrics.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why is a spike in error rate useful?",
+            choices: [
+              { id: "a", label: "It means the AI is bored" },
+              { id: "b", label: "It’s a quiet problem becoming visible" },
+              { id: "c", label: "It makes the AI faster" },
+            ],
+            answer: "b",
+            explanation:
+              "A spike is a silent failure showing up as a number you can see and act on — the whole reason to track metrics.",
+          },
+        ],
+        application: {
+          title: "Pick your morning metric",
+          prompt:
+            "If you ran an AI feature for a week and could check only one metric each morning, which would you pick — and what change in it would make you worried? Why that one over the others?",
+        },
+      },
+      {
+        slug: "traces-the-journey",
+        title: "Traces: following a request’s journey",
+        blurb: "Follow one request end-to-end and find the slow step.",
+        topic: "observability-pillars",
+        skillIds: ["distributed-tracing"],
+        capability: "Read a trace and identify which step in a request is the bottleneck.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI answer takes a full second, but you don’t know why. What helps most?",
+          choices: [
+            { id: "a", label: "A trace showing the time taken by each step" },
+            { id: "b", label: "A bigger font size" },
+            { id: "c", label: "Restarting the server and hoping" },
+          ],
+          answer: "a",
+          explanation:
+            "You can’t fix what you can’t see. A trace breaks one slow request into its steps so you can point at the culprit.",
+        },
+        prose: [
+          "A trace follows one request on its full journey — from the moment a question arrives, through every step behind the scenes, to the final answer.",
+          "Each step gets its own little bar showing how long it took. Stacked together, they reveal the shape of the whole request: where the time goes and where the money goes.",
+          "The trick is that most steps are quick and one is slow. Without a trace, ‘the AI is slow’ is a vague complaint. With one, you can point at the exact step — usually the big model call — and say ‘there, that’s most of the time’. Try tapping the steps above.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does a trace show that a single metric can’t?",
+            choices: [
+              { id: "a", label: "The step-by-step journey of one request" },
+              { id: "b", label: "The average latency over a whole day" },
+              { id: "c", label: "The AI’s brand of model" },
+            ],
+            answer: "a",
+            explanation:
+              "A metric gives an average across many requests. A trace zooms into one request and shows every step inside it.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "In the example trace, which step was the bottleneck?",
+            choices: [
+              { id: "a", label: "The user question" },
+              { id: "b", label: "The LLM call" },
+              { id: "c", label: "The final answer" },
+            ],
+            answer: "b",
+            explanation:
+              "The LLM call’s bar was by far the longest — roughly 80% of the whole request. That’s the step to optimise.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Traces mostly help you turn ‘it’s slow’ into…",
+            choices: [
+              { id: "a", label: "‘it’s expensive’" },
+              { id: "b", label: "‘THIS step is slow’" },
+              { id: "c", label: "‘it’s broken’" },
+            ],
+            answer: "b",
+            explanation:
+              "A trace localises the slowness to a specific step, so effort goes where it actually matters.",
+          },
+        ],
+      },
+      {
+        slug: "is-the-answer-good",
+        title: "“Is the answer good?” — evaluation",
+        blurb: "Turn a fuzzy question into a rubric of checks.",
+        topic: "observability-quality",
+        skillIds: ["llm-evaluation"],
+        capability: "Explain how a rubric and a reviewer turn a fuzzy ‘is it good?’ into checkable evaluation.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI gives a grammatically perfect answer. Is it ‘good’?",
+          choices: [
+            { id: "a", label: "Yes — it reads well" },
+            { id: "b", label: "You can’t tell without checking it against what’s true and useful" },
+            { id: "c", label: "No — AI answers are never good" },
+          ],
+          answer: "b",
+          explanation:
+            "A well-written answer can still be wrong or unhelpful. ‘Good’ needs checking, not just reading.",
+        },
+        prose: [
+          "“Is this answer good?” is the hardest question in AI. An answer can read beautifully and still be wrong, unhelpful, or off-topic.",
+          "The trick is to stop asking one fuzzy question and ask several sharp ones instead — a rubric. Does it get the facts right? Is it helpful? Is it on-topic? Is it safe?",
+          "Then someone applies the rubric. A human reviewer is careful but slow; a second AI acting as a judge is fast but not perfect. Most teams blend both, checking a sample of answers on a regular schedule.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why is ‘is it good?’ a hard question?",
+            choices: [
+              { id: "a", label: "It’s fuzzy — a well-written answer can still be wrong or unhelpful" },
+              { id: "b", label: "Nobody knows what ‘good’ means at all" },
+              { id: "c", label: "AI answers are always good" },
+            ],
+            answer: "a",
+            explanation:
+              "We can define ‘good’; the problem is that surface polish hides factual or practical problems.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "What does a rubric do?",
+            choices: [
+              { id: "a", label: "Breaks ‘good’ into specific checkable parts" },
+              { id: "b", label: "Makes the AI run faster" },
+              { id: "c", label: "Deletes bad answers automatically" },
+            ],
+            answer: "a",
+            explanation:
+              "A rubric turns one fuzzy question into several sharp ones you can actually score.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "What’s the trade-off between a human reviewer and an AI judge?",
+            choices: [
+              { id: "a", label: "Humans are careful but slow; AI judges are fast but not perfect" },
+              { id: "b", label: "Humans are always wrong" },
+              { id: "c", label: "AI judges are always right" },
+            ],
+            answer: "a",
+            explanation:
+              "Each has a weakness, which is why teams usually blend human spot-checks with AI judging at scale.",
+          },
+        ],
+      },
+      {
+        slug: "hallucination-makes-things-up",
+        title: "Hallucination: confident, but wrong",
+        blurb: "A wrong answer that looks exactly like a right one.",
+        topic: "observability-quality",
+        skillIds: ["llm-hallucination", "llm-evaluation"],
+        capability: "Explain why AI hallucinates and how logs and evaluation catch confident falsehoods.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI says “The capital of Australia is Sydney” with total confidence. What’s true?",
+          choices: [
+            { id: "a", label: "If it sounds confident, it must be right" },
+            { id: "b", label: "It could still be wrong — confidence isn’t proof" },
+            { id: "c", label: "AI never states facts" },
+          ],
+          answer: "b",
+          explanation:
+            "Hallucinations sound just like facts. Confidence is a property of the wording, not of the truth.",
+        },
+        prose: [
+          "A hallucination is a wrong answer said with complete confidence. It looks identical to a correct one — there’s no warning in the wording.",
+          "This happens because the AI isn’t a database. It predicts which words tend to follow others, producing text that sounds plausible. Sometimes the most plausible-sounding line simply isn’t true.",
+          "Because a confident answer isn’t a checked answer, you catch hallucinations with observability: logs let you re-read what was said, and an evaluation rubric asks the dangerous question — ‘is this actually correct?’.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What is a hallucination, in this lesson’s words?",
+            choices: [
+              { id: "a", label: "A wrong answer said with confidence" },
+              { id: "b", label: "When the AI crashes" },
+              { id: "c", label: "A type of log file" },
+            ],
+            answer: "a",
+            explanation:
+              "It’s specifically a confident falsehood — not a crash and not a file. The confidence is what makes it dangerous.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why does the AI produce confident wrong answers?",
+            choices: [
+              { id: "a", label: "It predicts plausible-sounding words rather than looking up facts" },
+              { id: "b", label: "It’s programmed to lie" },
+              { id: "c", label: "It runs out of memory" },
+            ],
+            answer: "a",
+            explanation:
+              "There’s no intent — plausible-sounding text is just sometimes false. It’s the nature of prediction, not lying.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Which two observability tools catch hallucinations?",
+            choices: [
+              { id: "a", label: "Logs and evaluation" },
+              { id: "b", label: "A bigger font and a faster server" },
+              { id: "c", label: "Turning the AI off" },
+            ],
+            answer: "a",
+            explanation:
+              "Logs let you re-check what was said; evaluation asks if it’s correct. Together they surface confident lies.",
+          },
+        ],
+      },
+      {
+        slug: "drift-slowly-going-bad",
+        title: "Drift: when AI slowly goes bad",
+        blurb: "Slow decay as the world changes around a frozen model.",
+        topic: "observability-quality",
+        skillIds: ["model-drift"],
+        capability: "Explain model drift and why quality must be watched over time, not tested once.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: your AI tested perfectly a year ago. Can you trust it today?",
+          choices: [
+            { id: "a", label: "Yes — once tested, always good" },
+            { id: "b", label: "Not necessarily — it may have drifted as the world changed" },
+            { id: "c", label: "No — all AI breaks after a year" },
+          ],
+          answer: "b",
+          explanation:
+            "A frozen model stays the same while the world moves. Past perfection doesn’t guarantee present quality.",
+        },
+        prose: [
+          "Drift is slow decay. A model is frozen when it’s trained, but the world keeps moving — new words, new events, new user behaviour arrive every week.",
+          "Nothing crashes, and there’s no single moment of failure to point at. Like milk slowly turning sour, quality just slips a little at a time until, months later, the answers are subtly worse.",
+          "A one-off test can’t see a slide like this. The only way to catch drift is to keep measuring quality over time and watch the trend — so you notice the decline before your users do.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What is drift?",
+            choices: [
+              { id: "a", label: "A slow decline in quality as the world changes around a frozen model" },
+              { id: "b", label: "A sudden crash" },
+              { id: "c", label: "A new type of AI" },
+            ],
+            answer: "a",
+            explanation:
+              "Drift is gradual decay, not a crash. The model doesn’t change; its fit to the world does.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why does a one-off test miss drift?",
+            choices: [
+              { id: "a", label: "Drift is gradual — only a trend over time reveals it" },
+              { id: "b", label: "Tests are always wrong" },
+              { id: "c", label: "Drift doesn’t affect quality" },
+            ],
+            answer: "a",
+            explanation:
+              "A single test is a snapshot. Drift only shows up as a slope when you compare snapshots across weeks.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The lesson compares drift to…",
+            choices: [
+              { id: "a", label: "Milk slowly turning sour" },
+              { id: "b", label: "A car crashing into a wall" },
+              { id: "c", label: "A vending machine" },
+            ],
+            answer: "a",
+            explanation:
+              "Both go bad gradually and silently — no single breakage, just a slow slide you only notice by checking over time.",
+          },
+        ],
+        application: {
+          title: "What would drift look like for you?",
+          prompt:
+            "Imagine an AI that recommends what to buy. Over a year, what could change in the world or in shoppers’ behaviour that would slowly make its recommendations worse — even though nothing inside the AI itself broke?",
+        },
+      },
+      {
+        slug: "alerts-knowing-when-to-act",
+        title: "Alerts: knowing when to act",
+        blurb: "A smoke alarm for your AI — and the art of setting it right.",
+        topic: "observability-action",
+        skillIds: ["alerting"],
+        capability: "Explain the alert-threshold trade-off between false alarms and missed problems.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: your smoke alarm beeps every time you make toast. What tends to happen?",
+          choices: [
+            { id: "a", label: "You trust it more" },
+            { id: "b", label: "You start ignoring it — and might miss a real fire" },
+            { id: "c", label: "It gets louder" },
+          ],
+          answer: "b",
+          explanation:
+            "Too many false alarms train you to ignore the alarm — so when a real fire starts, you don’t react. The same applies to AI alerts.",
+        },
+        prose: [
+          "An alert is a rule with a threshold: ‘if the error rate goes above this number, wake me up’. It’s a smoke alarm for your AI.",
+          "The hard part is where you set the threshold. Too low and it fires at every wobble — you stop trusting it, and when a real fire starts you ignore it. Too high and it never fires at all, and a real problem burns quietly.",
+          "There’s no perfect setting, only a trade-off. The art is tuning it so you catch the real problems without crying wolf. Try dragging the threshold above and watch the two counters change.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What is an alert, in plain terms?",
+            choices: [
+              { id: "a", label: "A rule that wakes you up when a metric crosses a threshold" },
+              { id: "b", label: "A type of log file" },
+              { id: "c", label: "A new AI model" },
+            ],
+            answer: "a",
+            explanation:
+              "An alert is a threshold-based rule that turns a number into a notification. It’s not a record and not a model.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Set the threshold too LOW and you get…",
+            choices: [
+              { id: "a", label: "Too many false alarms (you start ignoring it)" },
+              { id: "b", label: "No alerts at all" },
+              { id: "c", label: "Faster answers" },
+            ],
+            answer: "a",
+            explanation:
+              "A low threshold fires on normal noise. Cry wolf often enough and people stop trusting the alert.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Set the threshold too HIGH and you get…",
+            choices: [
+              { id: "a", label: "Missed real problems" },
+              { id: "b", label: "More false alarms" },
+              { id: "c", label: "Lower costs" },
+            ],
+            answer: "a",
+            explanation:
+              "A high threshold rarely fires, so genuine problems slip past unnoticed. That’s the silent failure the alert was meant to catch.",
+          },
+        ],
+      },
+      {
+        slug: "dashboards-control-room",
+        title: "Dashboards: the control room",
+        blurb: "One screen you glance at to know if you’re healthy.",
+        topic: "observability-action",
+        skillIds: ["observability-dashboards"],
+        capability: "Explain what makes a good dashboard and why glancability matters.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a dashboard shows 40 tiny numbers. Is that a good dashboard?",
+          choices: [
+            { id: "a", label: "Yes — more data is always better" },
+            { id: "b", label: "No — you can’t read it at a glance" },
+            { id: "c", label: "Only if the numbers are colourful" },
+          ],
+          answer: "b",
+          explanation:
+            "A dashboard you have to study isn’t doing its job. Glancability — readable in one look — is the whole point.",
+        },
+        prose: [
+          "A dashboard is the one screen you glance at to know if a system is healthy — like the cockpit of a plane. You shouldn’t have to study it; one look should tell you ‘fine’ or ‘something’s wrong’.",
+          "The common mistake is to cram everything in. A dashboard with forty tiny readings is unreadable — a glance tells you nothing, so you eventually stop looking.",
+          "A good dashboard shows only the few numbers that matter, big and clear, with the bad ones obvious. Less, but louder. That’s what makes one glance enough.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What’s the main job of a dashboard?",
+            choices: [
+              { id: "a", label: "To tell you at a glance if the system is healthy" },
+              { id: "b", label: "To show every possible number" },
+              { id: "c", label: "To replace logs entirely" },
+            ],
+            answer: "a",
+            explanation:
+              "Glancability is the job. Logs and traces hold the detail; the dashboard holds the at-a-glance summary.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why is a dashboard with 40 tiny numbers a problem?",
+            choices: [
+              { id: "a", label: "You can’t read it at a glance, so you stop trusting it" },
+              { id: "b", label: "It uses too much computer memory" },
+              { id: "c", label: "It’s too colourful" },
+            ],
+            answer: "a",
+            explanation:
+              "The failure is human, not technical: unreadable dashboards get ignored, defeating their purpose.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A good dashboard shows…",
+            choices: [
+              { id: "a", label: "The few numbers that matter, big and clear" },
+              { id: "b", label: "Absolutely everything, just in case" },
+              { id: "c", label: "Only the happy metrics that look good" },
+            ],
+            answer: "a",
+            explanation:
+              "Less, but louder. Hiding bad metrics or showing everything both destroy the at-a-glance signal.",
+          },
+        ],
+      },
+      {
+        slug: "cost-and-speed",
+        title: "Cost and speed: the two big bills",
+        blurb: "Every AI feature pays in tokens and in time.",
+        topic: "observability-action",
+        skillIds: ["llm-cost-latency"],
+        capability: "Explain why cost and latency are the two key business bills for any AI feature.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: your AI feature is popular but you’re losing money on it. Which ‘bill’ is most likely the culprit?",
+          choices: [
+            { id: "a", label: "Latency" },
+            { id: "b", label: "Cost (tokens)" },
+            { id: "c", label: "The CEO’s salary" },
+            ],
+          answer: "b",
+          explanation:
+            "If usage is high and margins are negative, token cost is the usual suspect — every call spends money.",
+        },
+        prose: [
+          "Every AI feature pays two bills: cost — the tokens it reads and writes, like distance in a taxi — and latency — the time it takes to answer, like minutes on the road.",
+          "The two tend to travel together. A bigger, more capable answer usually costs more and takes longer; a smaller one is cheaper and faster but less capable.",
+          "Both are business problems, not just technical ones. Cost eats your profit margin — an unwatched, chatty feature can wipe it out. Latency loses users — people quietly abandon slow apps. Watching both is part of shipping AI responsibly.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What are the ‘two bills’ every AI feature pays?",
+            choices: [
+              { id: "a", label: "Cost (tokens) and latency (time)" },
+              { id: "b", label: "Rent and electricity" },
+              { id: "c", label: "Salary and coffee" },
+            ],
+            answer: "a",
+            explanation:
+              "Tokens and time are the two resources every AI call consumes and that observability tracks.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "When you make a call bigger and more capable, what usually happens to cost and latency?",
+            choices: [
+              { id: "a", label: "Both rise" },
+              { id: "b", label: "Both fall" },
+              { id: "c", label: "One rises and one falls" },
+            ],
+            answer: "a",
+            explanation:
+              "More tokens means more spend AND more time. They usually move together, which is why both need watching.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why does latency matter to a business?",
+            choices: [
+              { id: "a", label: "Slow apps lose users" },
+              { id: "b", label: "Latency reduces the electricity bill" },
+              { id: "c", label: "Latency improves answer accuracy" },
+            ],
+            answer: "a",
+            explanation:
+              "Real users abandon slow experiences. Latency is a retention problem dressed up as a technical one.",
+          },
+        ],
+      },
+      {
+        slug: "observability-toolkit",
+        title: "The observability toolkit",
+        blurb: "You don’t build this from scratch — you bolt on a tool.",
+        topic: "observability-realworld",
+        skillIds: ["observability-tools"],
+        capability: "Name common observability tools and the job each one does, and explain how to start.",
+        minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you want to watch your AI’s logs, metrics, and traces. What’s the practical first move?",
+          choices: [
+            { id: "a", label: "Build all the instruments yourself from scratch" },
+            { id: "b", label: "Bolt on an existing tool that collects them for you" },
+            { id: "c", label: "Give up and hope for the best" },
+          ],
+          answer: "b",
+          explanation:
+            "Building instruments from scratch wastes time. A ready-made tool collects the same signals so you can focus on reading them.",
+        },
+        prose: [
+          "You don’t build observability from scratch. Just like you’d wear a fitness tracker rather than build your own heart-rate monitor, you bolt on a tool that collects the logs, metrics, and traces for you.",
+          "There’s a healthy menu to choose from. Some tools focus on AI and LLMs — tracing calls and evaluating answers. Others are general-purpose, handling metrics, logs, and alerts for any software, AI included.",
+          "Don’t try to memorise the names. The point is simpler: whatever signal you need to watch, a tool already exists to collect it. Pick one that fits what you’re building and start there.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What’s the practical way to get observability?",
+            choices: [
+              { id: "a", label: "Bolt on an existing tool that collects the signals" },
+              { id: "b", label: "Build every instrument from scratch" },
+              { id: "c", label: "Avoid monitoring entirely" },
+            ],
+            answer: "a",
+            explanation:
+              "Mature tools let you focus on reading the signals instead of building the instruments — so you spend time on diagnosis, not construction.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Some tools focus on AI/LLMs. What do they typically do?",
+            choices: [
+              { id: "a", label: "Trace calls and evaluate answers" },
+              { id: "b", label: "Print documents" },
+              { id: "c", label: "Send marketing emails" },
+            ],
+            answer: "a",
+            explanation:
+              "LLM-focused tools specialise in tracing requests and judging answer quality — the two things generic tools do less well.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "What’s the recommended way to start?",
+            choices: [
+              { id: "a", label: "Pick one tool that fits and start simple" },
+              { id: "b", label: "Install all of them at once" },
+              { id: "c", label: "Wait until something breaks" },
+            ],
+            answer: "a",
+            explanation:
+              "Start with one tool, learn what its signals mean, then expand. Installing everything at once is overwhelming; waiting until a break is too late.",
+          },
+        ],
+      },
+      {
+        slug: "day-in-the-life",
+        title: "A day in the life of an AI team",
+        blurb: "The whole course as one connected story.",
+        topic: "observability-realworld",
+        skillIds: ["ai-observability"],
+        capability: "Describe the full observability loop — watch, alert, trace, log, fix — as one connected workflow.",
+        minutes: 6,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an AI feature starts returning worse answers weeks after launch. What’s the right first move?",
+          choices: [
+            { id: "a", label: "Panic and rewrite everything" },
+            { id: "b", label: "Follow the signals — check the dashboard, read the alert, open a trace" },
+            { id: "c", label: "Ignore it and hope it recovers" },
+          ],
+          answer: "b",
+          explanation:
+            "The signals tell you what’s wrong and where. Rewriting blindly wastes effort; ignoring it lets a quiet problem grow.",
+        },
+        prose: [
+          "Here’s the whole course in one story. A team ships an AI feature. From day one, logs, metrics, and traces flow quietly into a dashboard that reads healthy.",
+          "Weeks later, an alert fires — the error rate has crept past its threshold. Nothing crashed; the dashboard caught a quiet problem before users complained.",
+          "The team opens a trace for a failing request and pinpoints the slow step. The logs reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
+          "That’s the loop: keep watching, let alerts catch quiet problems, trace and log to find the cause, fix, and repeat. Every tool in this course is just a role in that loop.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What kicks off the investigation in the story?",
+            choices: [
+              { id: "a", label: "An alert fires when the error rate crosses the threshold" },
+              { id: "b", label: "The app crashes loudly" },
+              { id: "c", label: "A user emails the CEO" },
+            ],
+            answer: "a",
+            explanation:
+              "The alert — fed by a metric crossing a threshold — is what turns a quiet problem into an investigated one.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which two signals help find the cause?",
+            choices: [
+              { id: "a", label: "A trace (to find the step) and logs (to see why)" },
+              { id: "b", label: "A bigger server and a louder alarm" },
+              { id: "c", label: "A new logo and a catchier slogan" },
+            ],
+            answer: "a",
+            explanation:
+              "The trace localises the failure to a step; the logs explain what that step actually did wrong. Together they point at the cause.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The lesson describes observability as…",
+            choices: [
+              { id: "a", label: "A loop: watch → alert → trace → log → fix" },
+              { id: "b", label: "A one-time setup you can forget about" },
+              { id: "c", label: "A single magic tool" },
+            ],
+            answer: "a",
+            explanation:
+              "It’s a continuous loop, not a setup-and-forget step. Each fix feeds back into watching — that’s what keeps an AI healthy.",
+          },
+        ],
+        application: {
+          title: "Design your own loop",
+          prompt:
+            "Pick an AI feature you use or can imagine (a chatbot, a recommender, a summariser). Walk through one full loop in 3–4 sentences: which single metric would you watch on the dashboard, what threshold would trigger an alert, and which trace step or log entry would you inspect first if the alert fired?",
+        },
       },
     ],
   },

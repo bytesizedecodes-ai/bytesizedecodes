@@ -132,16 +132,21 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
 
-11. **Use the `infographics-animation` skill (v2) when creating or editing courses.**
+11. **Use the `infographics-interactive` skill (v3) when creating or editing courses.**
     Any new lesson, course page, or infographic **must** be built with the
-    `infographics-animation` skill (`.agents/skills/infographics-animation/SKILL.md`) —
-    read it first. **v2 is evidence-based and audience-aware:** it calibrates
-    *how* you tell the story to the course's `level` — **beginner** (layman:
-    picture-led, analogies, full narrative, no math), **intermediate**
-    (enthusiast: lighter analogies, some code/formulas), or **expert**
-    (practitioner: formal, problem-first, minimal scaffolding). Read the
-    `level` from `content/courses.ts` before authoring — what helps a beginner
-    *harms* an expert (the expertise reversal effect). Always build with the
+    `infographics-interactive` skill (`.agents/skills/infographics-interactive/SKILL.md`) —
+    read it first. It is the **latest** course-authoring skill — a superset of the
+    prior `infographics-animation` (v2, retained). **v3 is evidence-based,
+    audience-aware, and active:** it calibrates *how* you tell the story to the
+    course's `level` — **beginner** (layman: picture-led, analogies, full
+    narrative, no math), **intermediate** (enthusiast: lighter analogies, some
+    code/formulas), or **expert** (practitioner: formal, problem-first, minimal
+    scaffolding) — gives each level its **own named storytelling framework**
+    (§1.1), and adds an **interactivity layer** (§6) so learners *do*, not just
+    watch (Chi's ICAP ladder; aim for ≥1 *Constructive* beat — predict-then-reveal —
+    per lesson). Read the `level` from `content/courses.ts` before authoring —
+    what helps a beginner *harms* an expert (the expertise reversal effect).
+    Always build with the
     shared scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`, `Operator`,
     `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
     **Color discipline is mandatory:** one accent per scene, neutrals carry

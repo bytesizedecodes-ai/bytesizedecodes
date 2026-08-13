@@ -22,6 +22,20 @@ import { WhenMLFails } from "./WhenMLFails";
 import { TrainTestSplit } from "./TrainTestSplit";
 import { Overfitting } from "./Overfitting";
 import { DataQuality } from "./DataQuality";
+import { WhatIsObservability } from "./WhatIsObservability";
+import { WhyAIDifferent } from "./WhyAIDifferent";
+import { WhenAIGoesWrong } from "./WhenAIGoesWrong";
+import { LogsWhatAISaid } from "./LogsWhatAISaid";
+import { MetricsDashboard } from "./MetricsDashboard";
+import { TraceWaterfall } from "./TraceWaterfall";
+import { IsTheAnswerGood } from "./IsTheAnswerGood";
+import { HallucinationMakesThingsUp } from "./HallucinationMakesThingsUp";
+import { DriftSlowlyGoingBad } from "./DriftSlowlyGoingBad";
+import { AlertThresholdTuner } from "./AlertThresholdTuner";
+import { DashboardsControlRoom } from "./DashboardsControlRoom";
+import { CostAndSpeed } from "./CostAndSpeed";
+import { ObservabilityToolkit } from "./ObservabilityToolkit";
+import { DayInTheLife } from "./DayInTheLife";
 
 /**
  * Maps an infographic slug to its React component.
@@ -56,6 +70,21 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "train-test-split": TrainTestSplit,
   "overfitting": Overfitting,
   "data-quality": DataQuality,
+  // AI Observability course
+  "what-is-observability": WhatIsObservability,
+  "why-ai-is-different": WhyAIDifferent,
+  "when-ai-goes-wrong": WhenAIGoesWrong,
+  "logs-what-ai-said": LogsWhatAISaid,
+  "metrics-counting-matters": MetricsDashboard,
+  "traces-the-journey": TraceWaterfall,
+  "is-the-answer-good": IsTheAnswerGood,
+  "hallucination-makes-things-up": HallucinationMakesThingsUp,
+  "drift-slowly-going-bad": DriftSlowlyGoingBad,
+  "alerts-knowing-when-to-act": AlertThresholdTuner,
+  "dashboards-control-room": DashboardsControlRoom,
+  "cost-and-speed": CostAndSpeed,
+  "observability-toolkit": ObservabilityToolkit,
+  "day-in-the-life": DayInTheLife,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {
