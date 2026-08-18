@@ -132,29 +132,33 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
 
-11. **Use the `infographics-interactive` skill (v3) when creating or editing courses.**
-    Any new lesson, course page, or infographic **must** be built with the
-    `infographics-interactive` skill (`.agents/skills/infographics-interactive/SKILL.md`) —
-    read it first. It is the **latest** course-authoring skill — a superset of the
-    prior `infographics-animation` (v2, retained). **v3 is evidence-based,
-    audience-aware, and active:** it calibrates *how* you tell the story to the
-    course's `level` — **beginner** (layman: picture-led, analogies, full
-    narrative, no math), **intermediate** (enthusiast: lighter analogies, some
-    code/formulas), or **expert** (practitioner: formal, problem-first, minimal
-    scaffolding) — gives each level its **own named storytelling framework**
-    (§1.1), and adds an **interactivity layer** (§6) so learners *do*, not just
-    watch (Chi's ICAP ladder; aim for ≥1 *Constructive* beat — predict-then-reveal —
-    per lesson). Read the `level` from `content/courses.ts` before authoring —
-    what helps a beginner *harms* an expert (the expertise reversal effect).
-    Always build with the
-    shared scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`, `Operator`,
-    `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
+11. **Use the `infographics-interactive_v4` skill when creating or editing courses.**
+    Any new lesson, course page, or infographic **must** be built with
+    `infographics-interactive_v4`
+    (`.agents/skills/infographics-interactive_v4/SKILL.md`) — read it first.
+    It is the **latest** course-authoring skill — a superset of
+    `infographics-interactive` (v3.1, retained) and `infographics-animation`
+    (v2, retained). **v4 is evidence-based, audience-aware, active, and
+    story-fused:** it calibrates *how* you tell the story to the course's
+    `level` — **beginner** (layman: picture-led, analogies, full narrative, no
+    math), **intermediate** (enthusiast: lighter analogies, some code/formulas),
+    or **expert** (practitioner: formal, problem-first, minimal scaffolding) —
+    gives each level its **own named storytelling framework** (§1.1), adds an
+    **interactivity layer** (§6) so learners *do*, not just watch (Chi's ICAP;
+    aim for ≥1 *Constructive* beat per lesson), and requires **visual
+    interactive storytelling** (§1.3): one through-line picture, interaction on
+    a mapped beat (not a bolted-on widget), BEFORE→ACT→AFTER as a story turn.
+    Read the `level` from `content/courses.ts` before authoring — what helps a
+    beginner *harms* an expert (the expertise reversal effect). Always build
+    with the shared scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`,
+    `Operator`, `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
     **Color discipline is mandatory:** one accent per scene, neutrals carry
     the load, no rainbow palettes (cognitive overload), theme-safe tokens only
     (`bg-surface-elevated` not `bg-white`; `text-canvas` not `text-white`;
     `currentColor`/`var(--*)` in SVG, never literal hex). Lessons must read
     in both dark and light themes. A lesson that "works" but explains via a
-    table instead of pictures, or uses 4+ colors in one scene, is a bug.
+    table instead of pictures, uses 4+ colors in one scene, or is an animated
+    glossary with an unrelated widget, is a bug.
 
 ## Where things live
 

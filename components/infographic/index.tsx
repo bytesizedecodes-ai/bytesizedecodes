@@ -36,6 +36,34 @@ import { DashboardsControlRoom } from "./DashboardsControlRoom";
 import { CostAndSpeed } from "./CostAndSpeed";
 import { ObservabilityToolkit } from "./ObservabilityToolkit";
 import { DayInTheLife } from "./DayInTheLife";
+import { RequestToTrace } from "./RequestToTrace";
+import { InstrumentRightContext } from "./InstrumentRightContext";
+import { LogsWithoutLeaking } from "./LogsWithoutLeaking";
+import { LatencyCostBrokenDown } from "./LatencyCostBrokenDown";
+import { AIServiceLevelObjective } from "./AIServiceLevelObjective";
+import { QualityIsASignal } from "./QualityIsASignal";
+import { LLMAsAJudge } from "./LLMAsAJudge";
+import { ObserveRAGNotJustModel } from "./ObserveRAGNotJustModel";
+import { PromptModelToolRegressions } from "./PromptModelToolRegressions";
+import { AlertsPeopleTrust } from "./AlertsPeopleTrust";
+import { TriageAnIncident } from "./TriageAnIncident";
+import { OperatorDashboard } from "./OperatorDashboard";
+import { CapstoneRescueAssistant } from "./CapstoneRescueAssistant";
+import { TelemetryArchitectureContracts } from "./TelemetryArchitectureContracts";
+import { GenAISemanticConventions } from "./GenAISemanticConventions";
+import { SamplingCardinalityCost } from "./SamplingCardinalityCost";
+import { AIThreatModelOWASP } from "./AIThreatModelOWASP";
+import { DetectingAttacksInTelemetry } from "./DetectingAttacksInTelemetry";
+import { GuardrailsAndSafetySignals } from "./GuardrailsAndSafetySignals";
+import { PrivacyEngineeringForTelemetry } from "./PrivacyEngineeringForTelemetry";
+import { GovernanceFrameworks } from "./GovernanceFrameworks";
+import { EvaluationSystemsNotOneScore } from "./EvaluationSystemsNotOneScore";
+import { DetectingDriftRegressions } from "./DetectingDriftRegressions";
+import { CausalDiagnosisExperimentation } from "./CausalDiagnosisExperimentation";
+import { AgentToolObservability } from "./AgentToolObservability";
+import { ReliabilityObjectivesErrorBudgets } from "./ReliabilityObjectivesErrorBudgets";
+import { IncidentCommandLearningLoop } from "./IncidentCommandLearningLoop";
+import { CapstoneDesignReview } from "./CapstoneDesignReview";
 
 /**
  * Maps an infographic slug to its React component.
@@ -85,6 +113,36 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "cost-and-speed": CostAndSpeed,
   "observability-toolkit": ObservabilityToolkit,
   "day-in-the-life": DayInTheLife,
+  // LLM Observability course (intermediate)
+  "request-to-trace": RequestToTrace,
+  "instrument-right-context": InstrumentRightContext,
+  "logs-without-leaking": LogsWithoutLeaking,
+  "latency-cost-broken-down": LatencyCostBrokenDown,
+  "ai-service-level-objective": AIServiceLevelObjective,
+  "quality-is-a-signal": QualityIsASignal,
+  "llm-as-a-judge": LLMAsAJudge,
+  "observe-rag-not-just-model": ObserveRAGNotJustModel,
+  "prompt-model-tool-regressions": PromptModelToolRegressions,
+  "alerts-people-trust": AlertsPeopleTrust,
+  "triage-an-incident": TriageAnIncident,
+  "operator-dashboard": OperatorDashboard,
+  "capstone-rescue-assistant": CapstoneRescueAssistant,
+  // AI Observability: Reliability course (expert)
+  "telemetry-architecture-contracts": TelemetryArchitectureContracts,
+  "genai-semantic-conventions": GenAISemanticConventions,
+  "sampling-cardinality-cost": SamplingCardinalityCost,
+  "ai-threat-model-owasp": AIThreatModelOWASP,
+  "detecting-attacks-in-telemetry": DetectingAttacksInTelemetry,
+  "guardrails-and-safety-signals": GuardrailsAndSafetySignals,
+  "privacy-engineering-for-telemetry": PrivacyEngineeringForTelemetry,
+  "governance-frameworks": GovernanceFrameworks,
+  "evaluation-systems-not-one-score": EvaluationSystemsNotOneScore,
+  "detecting-drift-regressions": DetectingDriftRegressions,
+  "causal-diagnosis-experimentation": CausalDiagnosisExperimentation,
+  "agent-tool-observability": AgentToolObservability,
+  "reliability-objectives-error-budgets": ReliabilityObjectivesErrorBudgets,
+  "incident-command-learning-loop": IncidentCommandLearningLoop,
+  "capstone-design-review": CapstoneDesignReview,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

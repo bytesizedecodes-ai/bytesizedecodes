@@ -2087,6 +2087,2266 @@ for task, expected in cases:
       },
     ],
   },
+  {
+    slug: "llm-observability",
+    title: "LLM Observability",
+    subtitle: "Instrument, evaluate, and rescue one LLM/RAG feature in production.",
+    description:
+      "An intermediate, hands-on course that follows one customer-support assistant through a real incident. Trace requests, build evaluations, set SLOs, and diagnose a regression end-to-end. Some Python familiarity helps; there are a few short exercises.",
+    level: "intermediate",
+    domain: "AI Observability",
+    access: "free",
+    lessons: [
+      {
+        slug: "request-to-trace",
+        title: "From a request to a trace",
+        blurb: "One user turn becomes one trace of nested spans.",
+        topic: "tracing-foundations",
+        skillIds: ["distributed-tracing", "otel-genai"],
+        capability: "Read a trace of nested spans and reconstruct one user turn end-to-end.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: which step usually dominates an LLM request's wall-clock time?",
+          choices: [
+            { id: "a", label: "Retrieving documents" },
+            { id: "b", label: "The LLM generating tokens" },
+            { id: "c", label: "Sending the JSON response" },
+            { id: "d", label: "Parsing the user's prompt" },
+          ],
+          answer: "b",
+          explanation:
+            "Token-by-token generation is almost always the longest step. Retrieval and networking matter, but the model's decode loop owns most of the latency.",
+        },
+        prose: [
+          "A trace is a single request broken into spans. Each span is one unit of work — a retrieval, an LLM call, a tool invocation — with a start, an end, and a set of attributes that describe what happened. Spans nest: a root span for the whole request parents child spans for each step, so you can reconstruct the entire turn.",
+          "The glue is a correlation ID carried on the root span and inherited by every child. That ID is what lets you go from a slow user turn to the exact retrieval, model call, and tool interaction that composed it — across services, without guessing.",
+          "Without a trace you have only averages: 'latency is high'. With one, you have a story: the retrieval was fine, the model took 860ms, and a tool call stalled for 110ms. Diagnosis replaces guesswork.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What links child spans back to the single user request they belong to?",
+            choices: [
+              { id: "a", label: "The model id" },
+              { id: "b", label: "A correlation ID on the root span" },
+              { id: "c", label: "The user's email address" },
+              { id: "d", label: "The response status code" },
+            ],
+            answer: "b",
+            explanation:
+              "The correlation ID propagates from root to children, tying every span of one turn together across services.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why is 'average latency is high' a weaker signal than a trace?",
+            choices: [
+              { id: "a", label: "Averages are always wrong" },
+              { id: "b", label: "It hides which step (retrieval, model, tool) caused it" },
+              { id: "c", label: "Traces are cheaper to store than averages" },
+              { id: "d", label: "Averages can't be measured for LLMs" },
+            ],
+            answer: "b",
+            explanation:
+              "An average tells you something is slow; a trace tells you what. You can't fix what you can't attribute.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A tool call that errors is most likely to be misdiagnosed as what, without tracing?",
+            choices: [
+              { id: "a", label: "A retrieval problem" },
+              { id: "b", label: "A model problem" },
+              { id: "c", label: "A network problem" },
+              { id: "d", label: "A billing problem" },
+            ],
+            answer: "b",
+            explanation:
+              "If the tool's failure isn't a span of its own, the model gets blamed for a bad answer it couldn't help producing.",
+          },
+        ],
+        application: {
+          title: "Map the spans of a feature you know",
+          prompt:
+            "Pick an LLM feature you use or build. List the spans one user turn would contain (e.g. retrieval, model, tool), and name the one attribute per span you'd most want when debugging a slow answer.",
+        },
+      },
+      {
+        slug: "instrument-right-context",
+        title: "Instrument the right context",
+        blurb: "The few span attributes that explain a change — and the ones that leak.",
+        topic: "tracing-foundations",
+        skillIds: ["llm-instrumentation", "telemetry-privacy"],
+        capability: "Choose span attributes that aid debugging without leaking PII or adding noise.",
+        minutes: 9,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: which field is dangerous to log on every span, in full?",
+          choices: [
+            { id: "a", label: "model id" },
+            { id: "b", label: "prompt version" },
+            { id: "c", label: "raw prompt text" },
+            { id: "d", label: "tool name" },
+          ],
+          answer: "c",
+          explanation:
+            "Raw prompts carry PII and secrets. Instrument the version tag instead, and sample or redact the raw text.",
+        },
+        prose: [
+          "Good instrumentation is a small set of high-value dimensions: the model, the prompt version, the retrieval version, and any tool name. These are the variables that change between releases, so tagging every span with them turns 'something regressed' into 'it regressed when prompt v17 shipped'.",
+          "Two failure modes are equally common. The first is over-collection: logging raw prompts and user emails wholesale, which turns your telemetry store into a breach surface. The second is high-cardinality noise: a unique attribute per request (a raw timestamp, a full session id) that explodes index sizes without aiding any query.",
+          "The rule: capture the dimensions that explain a change, redact or sample everything that identifies a person, and leave out anything that's unique per request. A clean contract is small, private, and diagnostic.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why tag every span with a prompt version rather than the raw prompt?",
+            choices: [
+              { id: "a", label: "Versions are shorter to store" },
+              { id: "b", label: "The version explains changes between releases; the raw text leaks PII" },
+              { id: "c", label: "Raw prompts can't be parsed" },
+              { id: "d", label: "Versions are required by OpenTelemetry" },
+            ],
+            answer: "b",
+            explanation:
+              "The version lets you bisect releases; the raw text adds privacy risk without extra debugging value.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "A user's email as a span attribute is a problem because it is:",
+            choices: [
+              { id: "a", label: "Too short" },
+              { id: "b", label: "PII and high-cardinality" },
+              { id: "c", label: "Not a string" },
+              { id: "d", label: "Always identical across requests" },
+            ],
+            answer: "b",
+            explanation:
+              "It identifies a person (PII) and is near-unique per user (high cardinality), bloating indexes and creating exposure. Use an opaque tenant id instead.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Which set is the cleanest span contract for debugging a regression?",
+            choices: [
+              { id: "a", label: "model, prompt version, retrieval version, tool name" },
+              { id: "b", label: "raw prompt, raw answer, user email, IP address" },
+              { id: "c", label: "timestamp-to-the-nanosecond, session uuid, request hash" },
+              { id: "d", label: "model only" },
+            ],
+            answer: "a",
+            explanation:
+              "These four versioned dimensions explain a change, carry no PII, and stay low-cardinality.",
+          },
+        ],
+        application: {
+          title: "Audit a telemetry contract",
+          prompt:
+            "Imagine the five fields your team logs per request. For each, write whether it is useful (a versioned dimension), a privacy risk (PII/secrets), or noise (high-cardinality) — and what you'd change.",
+        },
+      },
+      {
+        slug: "logs-without-leaking",
+        title: "Logs that help without leaking data",
+        blurb: "Redact, minimise, and still debug.",
+        topic: "tracing-foundations",
+        skillIds: ["telemetry-privacy"],
+        capability: "Redact and minimise log content so debugging value survives without PII exposure.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a support user typed their card number into the chat. What should the log line store?",
+          choices: [
+            { id: "a", label: "The full card number, for debugging" },
+            { id: "b", label: "A redacted token like <REDACTED>, plus the model and prompt version" },
+            { id: "c", label: "Nothing at all" },
+            { id: "d", label: "Only the user's email" },
+          ],
+          answer: "b",
+          explanation:
+            "You keep the dimensions that explain behaviour (model, version) and drop the PII. Redaction preserves debuggability without exposure.",
+        },
+        prose: [
+          "Logs are where debugging value and privacy risk collide. The same line that helps you reconstruct a faulty turn can also contain a card number, an email, or a secret the model echoed back. The discipline is to separate the two: keep what explains behaviour, redact what identifies a person.",
+          "Minimisation comes before redaction. Ask whether a field needs to be logged at all; if it does, log the least identifying form — a hash of the user id, a token count instead of the raw prompt, a sampled answer rather than every one. Retention and consent then set how long even the redacted data lives.",
+          "The practical test is the 'breach' thought experiment: if this log table leaked tomorrow, what could someone learn about a user? Anything that fails that test gets cut, hashed, or sampled before it's written.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "Classify a log line",
+          prompt:
+            "A function should return 'leaky' if a log line contains an email ('@') or a long digit run (4+ digits in a row, like a card), and 'safe' otherwise. It currently never flags anything — fix it.",
+          starterCode: `def classify(line: str) -> str:
+    """Return 'leaky' if the line contains an email ('@') or a long digit run
+    (4+ digits in a row), otherwise 'safe'."""
+    return "safe"   # <-- wrong: never flags anything
+`,
+          testCode: `
+cases = [
+    ("user=john@acme.com", "leaky"),
+    ("prompt=card 4111 1111 1111 1111 here", "leaky"),
+    ("model=gpt-4o prompt_version=v17", "safe"),
+    ("answer=please contact support", "safe"),
+]
+ok = True
+message = "ok"
+for line, expected in cases:
+    got = classify(line)
+    if got != expected:
+        ok = False
+        message = f"classify({line!r}) -> {got!r}, expected {expected!r}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What's the first question to ask before logging a field?",
+            choices: [
+              { id: "a", label: "Is it a string?" },
+              { id: "b", label: "Does it need to be logged at all?" },
+              { id: "c", label: "Is it shorter than 80 characters?" },
+              { id: "d", label: "Does it contain JSON?" },
+            ],
+            answer: "b",
+            explanation:
+              "Minimisation first. If a field isn't needed for debugging or audit, don't log it; redaction is the fallback for what you must keep.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which is the safest replacement for logging a user's email?",
+            choices: [
+              { id: "a", label: "The full email, base64-encoded" },
+              { id: "b", label: "A hash of the user id, or an opaque tenant id" },
+              { id: "c", label: "The email with the domain removed" },
+              { id: "d", label: "The email, but only on weekends" },
+            ],
+            answer: "b",
+            explanation:
+              "A hash or opaque id preserves cohort slicing without exposing an identity. Encoding or partial masking still leaks.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The 'breach' thought experiment asks:",
+            choices: [
+              { id: "a", label: "Will this log make the model smarter?" },
+              { id: "b", label: "If this table leaked, what could someone learn about a user?" },
+              { id: "c", label: "Is the log JSON-formatted?" },
+              { id: "d", label: "Will retention save storage cost?" },
+            ],
+            answer: "b",
+            explanation:
+              "Designing for the worst case (the data gets out) is what forces redaction, hashing, and short retention.",
+          },
+        ],
+        application: {
+          title: "Rewrite a leaky log line",
+          prompt:
+            "Take this line — {user, raw_prompt, answer} — and rewrite it as a safe one that still lets an engineer debug a bad answer. Say what you redacted, hashed, or sampled, and why.",
+        },
+      },
+      {
+        slug: "latency-cost-broken-down",
+        title: "Latency and cost, broken down",
+        blurb: "Time-to-first-token vs total time; tokens by stage.",
+        topic: "performance-and-slos",
+        skillIds: ["llm-cost-latency"],
+        capability: "Split latency into TTFT vs total, and cost into tokens by stage.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: users say the answer 'takes ages to start'. Which metric is that?",
+          choices: [
+            { id: "a", label: "Total latency" },
+            { id: "b", label: "Time-to-first-token (TTFT)" },
+            { id: "c", label: "Tokens per second" },
+            { id: "d", label: "Cost per request" },
+            ],
+          answer: "b",
+          explanation:
+            "The delay before the first token appears is TTFT — dominated by prompt processing (prefill), not generation.",
+        },
+        prose: [
+          "Latency for an LLM turn has two faces. Time-to-first-token is how long the user waits before anything appears — dominated by prompt processing (prefill) and any blocking retrieval. Total latency adds the generation (decode) phase on top. Users feel TTFT as 'is it working?' and total time as 'is it done?'; they're separate problems with separate fixes.",
+          "Cost follows the tokens, not the milliseconds. Input tokens (the prompt and retrieved context) are priced differently from output tokens (the answer), and a long prompt with a short answer can cost more than the reverse. Breaking cost down by stage shows whether your bill is driven by over-retrieval, verbose prompts, or chatty outputs.",
+          "Percentiles matter more than averages. A p50 of 980ms with a p99 of 3.4s means most users are fine and a few are abandoned; chasing the average hides the tail. Report p50, p95, and p99 separately, and alert on the percentile that maps to user pain.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "A user complains the assistant 'thinks forever before replying'. Which metric is misbehaving?",
+            choices: [
+              { id: "a", label: "Total latency only" },
+              { id: "b", label: "Time-to-first-token" },
+              { id: "c", label: "Output tokens per second" },
+              { id: "d", label: "Cost per day" },
+            ],
+            answer: "b",
+            explanation:
+              "A long pause before the first token is a TTFT problem — look at prefill and blocking retrieval, not decode speed.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why report p95 and p99 instead of just the average latency?",
+            choices: [
+              { id: "a", label: "Averages are harder to compute" },
+              { id: "b", label: "The average hides the slow tail that real users hit" },
+              { id: "c", label: "p95 is always lower than the average" },
+              { id: "d", label: "LLMs don't have an average latency" },
+            ],
+            answer: "b",
+            explanation:
+              "Averages smooth out the worst experiences. Percentiles expose the tail where users actually abandon you.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Your token bill is rising but answers aren't getting longer. The likely culprit is:",
+            choices: [
+              { id: "a", label: "More output tokens" },
+              { id: "b", label: "More input tokens — over-retrieval or bloated prompts" },
+              { id: "c", label: "Lower model prices" },
+              { id: "d", label: "Fewer requests" },
+            ],
+            answer: "b",
+            explanation:
+              "Cost tracks tokens. If outputs are stable, the growth is in inputs — retrieved context or prompt templates inflating the prompt.",
+          },
+        ],
+        application: {
+          title: "Diagnose a latency complaint",
+          prompt:
+            "Users say your summariser is 'slow to start but fast once it begins'. Name the stage that's likely slow, the metric you'd check, and one change you'd try first.",
+        },
+      },
+      {
+        slug: "ai-service-level-objective",
+        title: "Define an AI service level objective",
+        blurb: "Turn 'helpful and fast' into a number with an error budget.",
+        topic: "performance-and-slos",
+        skillIds: ["ai-slo", "llm-evaluation"],
+        capability: "Turn a fuzzy quality goal into an SLI, a target, and an error budget.",
+        minutes: 9,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: if your SLO target is 99%, what fraction of answers is allowed to be bad?",
+          choices: [
+            { id: "a", label: "99%" },
+            { id: "b", label: "1%" },
+            { id: "c", label: "0%" },
+            { id: "d", label: "50%" },
+          ],
+          answer: "b",
+          explanation:
+            "The error budget is 100% minus the target — the bad outcomes you explicitly tolerate. A 99% target means a 1% budget.",
+        },
+        prose: [
+          "'Helpful and fast' isn't an objective; it's a wish. An SLO makes it measurable: pick a service-level indicator (say, the share of answers that pass evaluation), set a target (99% over 28 days), and derive the error budget — the 1% of bad outcomes you've decided to tolerate.",
+          "The error budget is the decision tool. While you have budget left, you can ship; when it's burning fast, you stop shipping and fix. A loose target (90%) tolerates too much user pain; a tight one (99.9%) burns the budget on noise and pages on-call constantly. The right target is empirical — set by what users actually do, then iterate.",
+          "Crucially, the SLI for an AI feature is usually a quality signal, not just latency. You measure not only 'did it respond fast' but 'did it answer well' — which means your SLO depends on the evaluation pipeline feeding it. No eval, no quality SLO.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What is the error budget for a 99.5% SLO target?",
+            choices: [
+              { id: "a", label: "99.5%" },
+              { id: "b", label: "0.5%" },
+              { id: "c", label: "5%" },
+              { id: "d", label: "0%" },
+            ],
+            answer: "b",
+            explanation:
+              "The budget is 100% − target = 0.5%. That's the bad-outcome allowance you've decided to live with.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "An AI quality SLO ('answers pass eval ≥ 99%') depends on what else existing first?",
+            choices: [
+              { id: "a", label: "A faster database" },
+              { id: "b", label: "An evaluation pipeline producing the pass/fail signal" },
+              { id: "c", label: "A bigger model" },
+              { id: "d", label: "More front-end logging" },
+            ],
+            answer: "b",
+            explanation:
+              "You can't target a quality SLI you don't measure. The eval pipeline is the prerequisite for a quality SLO.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Your budget is burning fast after a release. The disciplined response is to:",
+            choices: [
+              { id: "a", label: "Raise the target to 99.99%" },
+              { id: "b", label: "Stop shipping and roll back or fix" },
+              { id: "c", label: "Delete the alert" },
+              { id: "d", label: "Lower the target to 90%" },
+            ],
+            answer: "b",
+            explanation:
+              "Fast burn means users are hitting bad outcomes now. The budget exists to force this decision: freeze releases and remediate.",
+          },
+        ],
+        application: {
+          title: "Draft an SLO for a feature",
+          prompt:
+            "Pick an LLM feature. Write its SLI (the measurable signal), a target you'd defend, the resulting error budget, and the one condition under which you'd roll a release back.",
+        },
+      },
+      {
+        slug: "quality-is-a-signal",
+        title: "Quality is a production signal",
+        blurb: "Offline golden sets and online sampling each catch what the other misses.",
+        topic: "evaluation",
+        skillIds: ["offline-evaluation", "online-evaluation"],
+        capability: "Decide when to use offline vs online evaluation and unify the metric across both.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a prompt change passes your offline golden set but users still complain. What did offline miss?",
+          choices: [
+            { id: "a", label: "A faster model" },
+            { id: "b", label: "Novel prompts real users ask, which weren't in the golden set" },
+            { id: "c", label: "Lower cost" },
+            { id: "d", label: "A database migration" },
+          ],
+          answer: "b",
+          explanation:
+            "Offline tests only the cases you anticipated. New user behaviour shows up only in live traffic — which is why online eval exists.",
+        },
+        prose: [
+          "Offline evaluation runs your candidate change against a fixed, labelled golden set before it ships. It's repeatable, fast, and catches the regressions you can predict — the known failure modes your team has seen before. It's your deploy gate.",
+          "Online evaluation samples real production traffic and scores it continuously. It catches what offline can't: drift, surprising new prompts, and slow decay as the world changes. It's noisier and needs sampling and dedup to stay affordable, but it's the only signal for the unknown unknowns.",
+          "The two only work together if they share a metric. Define 'quality' one way (the same rubric, the same judge) and compute it on the golden set before deploy and on sampled live traffic after. Disagreement between the two is itself a signal — your golden set has drifted from reality.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Which kind of problem can offline evaluation almost never catch on its own?",
+            choices: [
+              { id: "a", label: "A regression on a known failure mode" },
+              { id: "b", label: "A novel prompt class users start asking" },
+              { id: "c", label: "A drop in golden-set pass rate" },
+              { id: "d", label: "A broken prompt template" },
+            ],
+            answer: "b",
+            explanation:
+              "Offline sees only the cases in the golden set. Genuinely new user behaviour has to be observed live.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why unify the metric definition across offline and online?",
+            choices: [
+              { id: "a", label: "It's required by law" },
+              { id: "b", label: "So the two are directly comparable and their disagreement is meaningful" },
+              { id: "c", label: "To save storage" },
+              { id: "d", label: "Because offline is always wrong" },
+            ],
+            answer: "b",
+            explanation:
+              "One shared definition makes 'offline says 94%, online says 71%' a real signal (your set is stale) rather than a units mismatch.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Online evaluation must sample and dedup traffic mainly to:",
+            choices: [
+              { id: "a", label: "Avoid angering users" },
+              { id: "b", label: "Keep eval cost and noise affordable" },
+              { id: "c", label: "Improve model quality" },
+              { id: "d", label: "Speed up the model" },
+            ],
+            answer: "b",
+            explanation:
+              "Scoring every live turn is expensive and noisy. Sampling + dedup gives a representative, affordable signal.",
+          },
+        ],
+        application: {
+          title: "Design an eval split",
+          prompt:
+            "For a feature, describe your offline golden set (what it contains, how big) and your online sampling plan (what % you'd score, how you'd dedup). Name the one shared metric both would compute.",
+        },
+      },
+      {
+        slug: "llm-as-a-judge",
+        title: "LLM-as-a-judge",
+        blurb: "A fast, cheap first pass — never the last word.",
+        topic: "evaluation",
+        skillIds: ["llm-judge", "eval-bias"],
+        capability: "Use an LLM judge and know when to calibrate it against humans.",
+        minutes: 9,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a confident-but-wrong answer and a plain-but-correct one. What does an LLM judge tend to do?",
+          choices: [
+            { id: "a", label: "Always picks the correct one" },
+            { id: "b", label: "Mistakenly rewards the fluent, confident one" },
+            { id: "c", label: "Refuses to score" },
+            { id: "d", label: "Scores them identically on every axis" },
+          ],
+          answer: "b",
+          explanation:
+            "Judges confuse fluency for correctness — a known bias. That's why they must be calibrated against human labels.",
+        },
+        prose: [
+          "An LLM judge uses one model to grade another's outputs — single scoring, pairwise comparison, or listwise ranking. It scales evaluation far past what humans can do by hand, which is what makes large offline and online eval pipelines affordable at all.",
+          "But a judge brings its own biases. It confuses verbosity for quality, prefers its own style (self-preference), and in pairwise comparisons is swayed by which answer came first (position bias). It can score fluency well while missing facts entirely — a polished lie beats a plain truth if you let it.",
+          "The discipline is calibration. Start from human labels, measure how often the judge agrees, and mitigate the big biases (swap answer order in pairs, control for length). Treat the judge's score as a cheap first pass to be spot-checked, not a ground truth. Where judge and human disagree systematically is exactly where your rubric needs work.",
+        ],
+        exercise: {
+          id: "ex2",
+          title: "Fix the rubric",
+          prompt:
+            "A rubric should pass an answer only if it is correct AND at least somewhat fluent (fluency >= 3). Right now a fluent lie still passes, because correctness is ignored. Fix the rule.",
+          starterCode: `def passes(correct: bool, fluency: int) -> bool:
+    """Pass only if the answer is correct AND fluency >= 3."""
+    return fluency >= 3   # <-- wrong: a fluent lie passes
+`,
+          testCode: `
+cases = [
+    (True, 5, True),
+    (False, 5, False),
+    (True, 2, False),
+    (False, 2, False),
+    (True, 3, True),
+]
+ok = True
+message = "ok"
+for correct, fluency, expected in cases:
+    got = passes(correct, fluency)
+    if got != expected:
+        ok = False
+        message = f"passes({correct}, {fluency}) -> {got}, expected {expected}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does 'position bias' mean for an LLM judge in a pairwise comparison?",
+            choices: [
+              { id: "a", label: "It prefers answers that mention positions" },
+              { id: "b", label: "Its pick is swayed by which answer is shown first" },
+              { id: "c", label: "It refuses to rank" },
+              { id: "d", label: "It scores only the first token" },
+            ],
+            answer: "b",
+            explanation:
+              "Judges lean toward whichever option they see first. Swapping order and averaging is the standard mitigation.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "The cheapest, highest-leverage way to trust an LLM judge is to:",
+            choices: [
+              { id: "a", label: "Use a bigger judge model and hope" },
+              { id: "b", label: "Calibrate it against human labels and measure agreement" },
+              { id: "c", label: "Never use a judge" },
+              { id: "d", label: "Run it only once" },
+            ],
+            answer: "b",
+            explanation:
+              "Human calibration tells you where the judge is reliable and where it's biased. Without it, scores are uninterpretable.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A judge gives a confidently-wrong answer a high score. The most likely root cause is:",
+            choices: [
+              { id: "a", label: "The answer was too short" },
+              { id: "b", label: "The judge confuses fluency with correctness" },
+              { id: "c", label: "The model was too cheap" },
+              { id: "d", label: "The prompt was in JSON" },
+            ],
+            answer: "b",
+            explanation:
+              "Judges reward confident, well-written text. Without a correctness check in the rubric, a lie reads as a good answer.",
+          },
+        ],
+        application: {
+          title: "Calibrate a judge",
+          prompt:
+            "You have 50 answers each scored by a human (1–5) and by your judge (1–5). Describe how you'd check agreement, name two biases you'd look for, and what you'd do if they disagree on the confidently-wrong answers.",
+        },
+      },
+      {
+        slug: "observe-rag-not-just-model",
+        title: "Observe RAG, not only the model",
+        blurb: "Faithfulness and context quality — the retrieval layer's metrics.",
+        topic: "evaluation",
+        skillIds: ["rag-evaluation"],
+        capability: "Measure RAG quality with faithfulness and context metrics, not just fluency.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a fluent answer that states a fact the retrieved docs never said. Which metric is low?",
+          choices: [
+            { id: "a", label: "Answer relevancy" },
+            { id: "b", label: "Faithfulness" },
+            { id: "c", label: "Context recall" },
+            { id: "d", label: "Latency" },
+          ],
+          answer: "b",
+          explanation:
+            "Faithfulness measures whether the answer is grounded in the retrieved context. An unsupported claim is an unfaithful (hallucinated) answer.",
+        },
+        prose: [
+          "RAG systems fail in two places, and only one is the model. The retrieval layer can return irrelevant chunks, bury the good one, or come back empty — and the model will still produce a fluent, confident answer on top of bad context. Fluency hides retrieval rot.",
+          "The metrics that expose this are retrieval-aware. Faithfulness asks whether every claim in the answer is supported by the retrieved context. Context precision asks whether the relevant chunks were ranked highly rather than buried. Context recall asks whether the needed information was retrieved at all. Answer relevancy, alone, is the one that can look fine while the others collapse.",
+          "When a RAG answer is bad, the instinct is to blame the model. The metrics tell you where: low context precision means fix the retriever ranking; low faithfulness with good context means fix the generation (or the prompt); empty retrieval is an index problem. Diagnose the layer before you touch the model.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Low faithfulness but high context precision means the problem is in:",
+            choices: [
+              { id: "a", label: "Retrieval ranking" },
+              { id: "b", label: "Generation — the model added unsupported claims despite good context" },
+              { id: "c", label: "The vector database index" },
+              { id: "d", label: "The front-end" },
+            ],
+            answer: "b",
+            explanation:
+              "Good context was retrieved and ranked well (high precision), yet the answer still strays from it (low faithfulness) — that's a generation/prompt problem.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Retrieval returned 4 chunks but only 1 was relevant, ranked third. Which metric is low?",
+            choices: [
+              { id: "a", label: "Context precision" },
+              { id: "b", label: "Answer relevancy" },
+              { id: "c", label: "Faithfulness" },
+              { id: "d", label: "Cost" },
+            ],
+            answer: "a",
+            explanation:
+              "Context precision rewards ranking the relevant chunks highly. Burying the one good chunk under junk gives a low score.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why can answer relevancy alone look healthy while the RAG system is failing?",
+            choices: [
+              { id: "a", label: "It measures the model, not the retrieval" },
+              { id: "b", label: "It's always 100%" },
+              { id: "c", label: "It requires a GPU" },
+              { id: "d", label: "It only works offline" },
+            ],
+            answer: "a",
+            explanation:
+              "A model can produce a relevant-sounding answer from bad context. Relevancy doesn't test grounding — faithfulness and context metrics do.",
+          },
+        ],
+        application: {
+          title: "Diagnose a RAG regression",
+          prompt:
+            "Your docs assistant's answers drift from the source docs. List the four RAG metrics you'd measure, and for each write the fix you'd reach for if it alone were low.",
+        },
+      },
+      {
+        slug: "prompt-model-tool-regressions",
+        title: "Prompt, model, and tool regressions",
+        blurb: "Bisect the one variable that changed — don't blame the model first.",
+        topic: "incidents",
+        skillIds: ["eval-gates"],
+        capability: "Bisect the changed variable instead of blaming the model by default.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: quality dropped after a release. The fastest correct diagnosis comes from:",
+          choices: [
+            { id: "a", label: "Retraining the model immediately" },
+            { id: "b", label: "Comparing versioned attributes to find what changed" },
+            { id: "c", label: "Increasing the temperature" },
+            { id: "d", label: "Disabling all tools" },
+          ],
+          answer: "b",
+          explanation:
+            "If you versioned prompt, model, retrieval, and tool, a diff tells you exactly what changed. Bisect, don't guess.",
+        },
+        prose: [
+          "Regressions feel like mysteries until you remember that only versioned things can regress. If you tag every span with prompt version, model, retrieval version, and tool version, then a drop in quality becomes a diff problem: what changed between the last healthy release and this one?",
+          "The instinct to blame the model first is almost always wrong, because the model is usually the thing you didn't change. Far more often the culprit is a prompt tweak, a retriever ranking change, a tool that now returns differently, or a quiet dependency update. A canary release makes this legible — ship to 5% of traffic, watch the eval, and only promote if it holds.",
+          "The discipline is to hold every other variable constant and change one. Eval gates in CI encode this: a candidate release must beat or match the incumbent on the golden set before it ships. When it doesn't, the diff between releases is your suspect list, already narrowed to a single variable.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What makes a regression 'legible' rather than mysterious?",
+            choices: [
+              { id: "a", label: "A bigger model" },
+              { id: "b", label: "Versioning prompt, model, retrieval, and tool on every span" },
+              { id: "c", label: "Removing all logs" },
+              { id: "d", label: "Higher temperature" },
+            ],
+            answer: "b",
+            explanation:
+              "Versioning turns 'it got worse' into a diff between releases — the changed variable is the suspect.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "A canary release ships a change to 5% of traffic first in order to:",
+            choices: [
+              { id: "a", label: "Save money" },
+              { id: "b", label: "Limit blast radius and catch a regression before full rollout" },
+              { id: "c", label: "Annoy fewer users deliberately" },
+              { id: "d", label: "Test the front-end only" },
+            ],
+            answer: "b",
+            explanation:
+              "Canaries expose regressions on a small slice of real traffic so you can roll back before a full-scale incident.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Quality dropped, but you didn't change the model. The most likely culprit is:",
+            choices: [
+              { id: "a", label: "The model forgot things" },
+              { id: "b", label: "A prompt, retrieval, or tool change — the variable you did change" },
+              { id: "c", label: "Solar flares" },
+              { id: "d", label: "The user's browser" },
+            ],
+            answer: "b",
+            explanation:
+              "Regressions follow changes. If the model is the same, look at what you did change: prompt, retriever, or tool.",
+          },
+        ],
+        application: {
+          title: "Bisect a bad release",
+          prompt:
+            "You shipped release v17 and quality dropped 18%. Write the ordered list of versioned variables you'd diff against v16, and the one you'd suspect first if the prompt template was edited in that release.",
+        },
+      },
+      {
+        slug: "alerts-people-trust",
+        title: "Alerts people trust",
+        blurb: "Burn-rate over static lines, with a runbook attached.",
+        topic: "incidents",
+        skillIds: ["alerting"],
+        capability: "Choose burn-rate alerting over static thresholds and attach a runbook.",
+        minutes: 8,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a static threshold pages 12 times overnight for zero real incidents. What happens over time?",
+          choices: [
+            { id: "a", label: "On-call starts trusting the alert more" },
+            { id: "b", label: "On-call mutes it — and misses the real one when it comes" },
+            { id: "c", label: "The system fixes itself" },
+            { id: "d", label: "Latency improves" },
+          ],
+          answer: "b",
+          explanation:
+            "False alarms cause alert fatigue. People mute noisy alerts, then the real incident slides through. Trust is the asset.",
+        },
+        prose: [
+          "An alert is only useful if on-call trusts it. A static threshold — page whenever a metric crosses a line — cries wolf on every blip, especially under low traffic when a few bad requests spike the rate. After a dozen false pages, engineers mute it, and the real incident sails through.",
+          "Burn-rate alerting pages on sustained user impact, not momentary spikes. It watches how fast the error budget is burning across multiple time windows: a brief blip doesn't burn enough to page, but a steady degradation trips a long-window check within minutes of real impact. It trades a little detection latency for a lot of precision.",
+          "Every alert needs a runbook — the first three steps on-call takes when it fires. An alert without a runbook is noise with a siren; an alert with one is a decision already half-made. Route by severity, deduplicate, and make the path from page to diagnosis obvious.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why does a static threshold 'cry wolf' especially at night?",
+            choices: [
+              { id: "a", label: "The model is sleepier" },
+              { id: "b", label: "Low traffic means a few bad requests spike the rate" },
+              { id: "c", label: "Alerts are louder at night" },
+              { id: "d", label: "Dashboards turn off" },
+            ],
+            answer: "b",
+            explanation:
+              "Rates are volatile at low volume. A handful of errors looks like a crisis at 3am traffic but is statistically nothing.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "What does a burn-rate alert actually page on?",
+            choices: [
+              { id: "a", label: "Any single bad request" },
+              { id: "b", label: "Sustained error-budget burn across time windows" },
+              { id: "c", label: "CPU usage" },
+              { id: "d", label: "The model's mood" },
+            ],
+            answer: "b",
+            explanation:
+              "Burn-rate pages when the budget is degrading fast enough over long enough to imply real user impact — not on a momentary blip.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "An alert without a runbook is best described as:",
+            choices: [
+              { id: "a", label: "A complete incident response" },
+              { id: "b", label: "Noise with a siren — no one knows the first step to take" },
+              { id: "c", label: "A dashboard" },
+              { id: "d", label: "An SLO" },
+            ],
+            answer: "b",
+            explanation:
+              "A runbook gives the first three diagnostic steps. Without it, on-call stares at a page with no idea where to start.",
+          },
+        ],
+        application: {
+          title: "Turn a noisy alert into a trusted one",
+          prompt:
+            "You have a static threshold alert that pages too often. Describe how you'd replace it with a burn-rate alert, and write the three-step runbook you'd attach so on-call knows exactly what to do when it fires.",
+        },
+      },
+      {
+        slug: "triage-an-incident",
+        title: "Triage a real-looking incident",
+        blurb: "Alert → dashboard → cohort → trace → fix, one hypothesis per step.",
+        topic: "incidents",
+        skillIds: ["ai-incident-response"],
+        capability: "Drill from alert to fix, testing one hypothesis at each step.",
+        minutes: 9,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an alert fires. What's the first thing you establish?",
+          choices: [
+            { id: "a", label: "Who to blame" },
+            { id: "b", label: "What kind of incident it is and where the blast radius is" },
+              { id: "c", label: "The exact line of code" },
+            { id: "d", label: "The cost so far" },
+          ],
+          answer: "b",
+          explanation:
+            "First, characterise: is it latency or quality, and which users/regions/clients are hit? Blast radius narrows everything that follows.",
+        },
+        prose: [
+          "Triage is a drill-down, not a leap. Start at the alert: what's burning — latency, quality, cost, safety? Then the dashboard: where is it burning — which region, client, cohort? Each step narrows the blast radius and rules out causes.",
+          "With the cohort identified, slice it for what's shared. If every bad turn carries the same tool version or the same prompt version, you've found your one changed variable. Open a representative trace to confirm the mechanism — a tool timing out, a retriever returning junk — and you have a hypothesis backed by evidence.",
+          "Act, then confirm. Roll back or patch the single variable, and watch the signal recover. The last step, often skipped, is writing the regression test so this exact failure can't ship again. An incident isn't closed when it's fixed; it's closed when it can't recur.",
+        ],
+        exercise: {
+          id: "ex3",
+          title: "Find the changed variable",
+          prompt:
+            "Given the before and after attribute sets for a release, return the name of the first key whose value changed. Right now it always blames the model — fix it.",
+          starterCode: `def changed_var(before: dict, after: dict) -> str:
+    """Return the name of the first key whose value differs between before and
+    after. Return '' if nothing changed."""
+    return "model"   # <-- wrong: always blames the model
+`,
+          testCode: `
+cases = [
+    ({"model": "gpt-4o", "prompt": "v16"}, {"model": "gpt-4o", "prompt": "v17"}, "prompt"),
+    ({"model": "gpt-4o", "prompt": "v16"}, {"model": "gpt-4o-mini", "prompt": "v16"}, "model"),
+    ({"model": "gpt-4o", "prompt": "v16"}, {"model": "gpt-4o", "prompt": "v16"}, ""),
+]
+ok = True
+message = "ok"
+for before, after, expected in cases:
+    got = changed_var(before, after)
+    if got != expected:
+        ok = False
+        message = f"changed_var({before}, {after}) -> {got!r}, expected {expected!r}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does the dashboard step of triage establish?",
+            choices: [
+              { id: "a", label: "The root cause" },
+              { id: "b", label: "The blast radius — where the impact is concentrated" },
+              { id: "c", label: "The fix" },
+              { id: "d", label: "The cost" },
+            ],
+            answer: "b",
+            explanation:
+              "Slicing by region/client/cohort shows where the incident lives, narrowing the search before you open a single trace.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Slicing a cohort of bad turns reveals they all share tool = billing v2.2. This is:",
+            choices: [
+              { id: "a", label: "Proof the model is broken" },
+              { id: "b", label: "A strong hypothesis — the one changed variable" },
+              { id: "c", label: "Unrelated noise" },
+              { id: "d", label: "A front-end bug" },
+            ],
+            answer: "b",
+            explanation:
+              "A shared attribute across every bad turn is the suspect. Confirm the mechanism with a trace, then act.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "When is an incident truly closed?",
+            choices: [
+              { id: "a", label: "When the metric recovers" },
+              { id: "b", label: "When the regression test that prevents recurrence is merged" },
+              { id: "c", label: "When on-call goes to sleep" },
+              { id: "d", label: "When the dashboard turns green" },
+            ],
+            answer: "b",
+            explanation:
+              "Recovery ends the outage; the regression test ends the incident class. Without it, the same change can reintroduce the failure.",
+          },
+        ],
+        application: {
+          title: "Runbook for one incident",
+          prompt:
+            "Write the five-step triage runbook for a quality-regression alert on your feature: what you'd check at each step (alert, dashboard, cohort, trace, fix), and the regression test you'd add at the end.",
+        },
+      },
+      {
+        slug: "operator-dashboard",
+        title: "Build the operator dashboard",
+        blurb: "The exec view answers 'are we healthy'; the on-call view answers 'what's broken'.",
+        topic: "operate",
+        skillIds: ["observability-dashboards"],
+        capability: "Separate the executive dashboard from the on-call diagnostic dashboard.",
+        minutes: 7,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an exec and an on-call engineer look at the same dashboard. What goes wrong?",
+          choices: [
+            { id: "a", label: "Nothing — one dashboard serves both perfectly" },
+            { id: "b", label: "It either hides the detail on-call needs or overwhelms the exec" },
+            { id: "c", label: "The exec breaks it" },
+            { id: "d", label: "It only works on mobile" },
+          ],
+          answer: "b",
+          explanation:
+            "The two audiences ask different questions. One dashboard can't serve both well — build two, tuned to each question.",
+        },
+        prose: [
+          "An executive dashboard answers one question — 'are we healthy?' — with a few big, calm numbers: quality, cost, incidents. It should be legible in a glance and hide the detail, because an exec reading it wants a status, not a diagnosis.",
+          "An on-call dashboard answers the opposite question — 'what's broken, where, since when?' It's drill-down-rich: latency by route, quality by cohort, error-budget burn, and a path from a red tile to the traces behind it. Density is the point; a calm on-call dashboard is one that has nothing to debug.",
+          "The mistake is forcing one view to serve both. An exec-facing dashboard with drill-downs gets ignored; an on-call dashboard with three big numbers is useless at 3am. Build both, share the underlying data, and let each audience see the system at its own altitude.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What question does an executive dashboard answer?",
+            choices: [
+              { id: "a", label: "Which trace is slowest?" },
+              { id: "b", label: "Are we healthy, at a glance?" },
+              { id: "c", label: "Which cohort regressed?" },
+              { id: "d", label: "What's the p99 by route?" },
+            ],
+            answer: "b",
+            explanation:
+              "Execs want status — a few big numbers that say healthy or not. Detail belongs elsewhere.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "An on-call dashboard should make it easy to:",
+            choices: [
+              { id: "a", label: "Hide bad news" },
+              { id: "b", label: "Drill from a red tile to the traces behind it" },
+              { id: "c", label: "Impress executives" },
+              { id: "d", label: "Show only averages" },
+            ],
+            answer: "b",
+            explanation:
+              "On-call debugs from the dashboard: a red tile must link to the cohort, then the trace. The path to diagnosis is the feature.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why not serve execs and on-call with a single combined dashboard?",
+            choices: [
+              { id: "a", label: "It's illegal" },
+              { id: "b", label: "It either hides on-call detail or overwhelms the exec" },
+              { id: "c", label: "Dashboards can't be shared" },
+              { id: "d", label: "It costs more" },
+            ],
+            answer: "b",
+            explanation:
+              "The audiences want different altitudes. One view compromises both; two views sharing the same data serve each cleanly.",
+          },
+        ],
+        application: {
+          title: "Two dashboards for your feature",
+          prompt:
+            "Sketch the exec dashboard (3 tiles) and the on-call dashboard (4 drill-downs) for your feature. Name the one tile they share, and the drill-down only on-call gets.",
+        },
+      },
+      {
+        slug: "capstone-rescue-assistant",
+        title: "Capstone: rescue the support assistant",
+        blurb: "Turn a vague hunch into a measured, diagnosable system.",
+        topic: "operate",
+        skillIds: ["ai-observability", "ai-incident-response"],
+        capability: "Assemble signals, an SLO, and a runbook into a working diagnosis.",
+        minutes: 10,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: support says the assistant 'seems worse'. Before writing any code, what do you need first?",
+          choices: [
+            { id: "a", label: "A bigger model" },
+            { id: "b", label: "A signal — a measurement that confirms 'worse' and points at where" },
+            { id: "c", label: "A marketing campaign" },
+            { id: "d", label: "More front-end animations" },
+          ],
+          answer: "b",
+          explanation:
+            "A hunch without a measurement is unfixable. The first job of observability is to turn 'seems worse' into a number with a source.",
+        },
+        prose: [
+          "The capstone ties the course together. The support assistant is slow and unhelpful after a release, and no one can say why — a hunch with no evidence. The work of this lesson is to convert that hunch into a measured, diagnosable system that names a root cause.",
+          "The recipe is everything you've learned: instrument the request into traces carrying prompt, model, retrieval, and tool versions; define three signals (faithfulness, p95 latency, context precision); set one quality SLO with an error budget; attach one burn-rate alert with a runbook. With those in place, the incident stops being a mystery and becomes a diff: release v17 changed the retriever ranker, context precision dropped, faithfulness followed.",
+          "That's the whole skill: instrument for where, evaluate for what, and set an SLO with a runbook for when. A feature you can measure is a feature you can rescue; one you can't is a feature you can only argue about.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does instrumentation give you that a hunch cannot?",
+            choices: [
+              { id: "a", label: "A bigger model" },
+              { id: "b", label: "Where the problem is — attributed to a specific span and release" },
+              { id: "c", label: "Cheaper inference" },
+              { id: "d", label: "Happier users automatically" },
+            ],
+            answer: "b",
+            explanation:
+              "Traces with version attributes turn a vague complaint into an attributed, located problem — the prerequisite for fixing it.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why pair a quality signal with an SLO rather than just an alert on latency?",
+            choices: [
+              { id: "a", label: "Latency is free" },
+              { id: "b", label: "A feature can be fast and still wrong — quality needs its own target and budget" },
+              { id: "c", label: "SLOs are required by law" },
+              { id: "d", label: "Latency can't be measured" },
+            ],
+            answer: "b",
+            explanation:
+              "Latency alone misses the common AI failure: a fast, wrong answer. A quality SLO makes 'wrong' visible and budgeted.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "In the capstone, the root cause turned out to be:",
+            choices: [
+              { id: "a", label: "The model regressed on its own" },
+              { id: "b", label: "Release v17 changed the retriever ranker, dropping context precision" },
+              { id: "c", label: "Users got pickier" },
+              { id: "d", label: "A solar flare" },
+            ],
+            answer: "b",
+            explanation:
+              "The diff pointed at one changed variable — the ranker — which collapsed retrieval quality and dragged faithfulness with it. The model was blameless.",
+          },
+        ],
+        application: {
+          title: "Rescue plan for a feature you own",
+          prompt:
+            "Write a one-page rescue plan for an LLM feature: the spans you'd instrument and their attributes, the three signals you'd watch, the one SLO with its target and budget, and the runbook for the alert that fires when the budget burns. End with the single most likely root cause you'd check first.",
+        },
+      },
+    ],
+  },
+  {
+    slug: "ai-observability-reliability",
+    title: "AI Observability: Reliability Engineering",
+    subtitle: "Design a scalable, secure, governed observability system for AI in production.",
+    description:
+      "An expert course built around a multi-agent financial-research system rolled out across regions and providers. Design telemetry contracts, build evaluation systems, and prove privacy, security, and governance — detecting regressions without exposing sensitive prompts. For senior ML, platform, and SRE engineers.",
+    level: "expert",
+    domain: "AI Observability",
+    access: "free",
+    lessons: [
+      {
+        slug: "telemetry-architecture-contracts",
+        title: "Telemetry architecture and contracts",
+        blurb: "A pipeline is a chain of contracts each stage must honour.",
+        topic: "telemetry-platform",
+        skillIds: ["telemetry-pipeline"],
+        capability: "Design a telemetry pipeline as a chain of contracts: propagation, fidelity, redaction, retention, semantics.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: where should PII scrubbing happen in the pipeline?",
+          choices: [
+            { id: "a", label: "At query time, in the dashboard" },
+            { id: "b", label: "At the collector, before storage" },
+            { id: "c", label: "Nowhere — store everything" },
+            { id: "d", label: "In the model itself" },
+          ],
+          answer: "b",
+          explanation:
+            "Redaction belongs at the collector boundary, before data hits storage. Once raw PII is persisted, every downstream component is a breach surface.",
+        },
+        prose: [
+          "A telemetry system is not a bucket; it's a chain of contracts. The app emits spans with correct attributes; the SDK propagates context and honours the semantic conventions; the collector redacts, samples, and routes; the backend indexes within a cardinality budget; the query layer serves correct aggregations. Each stage owns one guarantee the next stage depends on.",
+          "Break a contract and the failure migrates. If the SDK drops the correlation ID, traces fragment across services. If the collector doesn't redact, the backend becomes a breach surface. If the backend allows unbounded cardinality, query latency collapses under index bloat. The contract is the design unit — and the debugging unit when something breaks.",
+          "Owning this chain means deciding what each stage guarantees and who owns it. Version the schema, document the attributes each stage must set, and treat the collector as the security and cost boundary — the last place you can cheaply transform telemetry before it becomes a liability in storage.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "The collector's defining job, distinct from the app and backend, is:",
+            choices: [
+              { id: "a", label: "Generating model answers" },
+              { id: "b", label: "Redaction, sampling, and routing — the transformation boundary" },
+              { id: "c", label: "Running the model" },
+              { id: "d", label: "Rendering the dashboard" },
+            ],
+            answer: "b",
+            explanation:
+              "The collector is where you cheaply transform telemetry (scrub PII, tail-sample, route by tenant) before it's indexed. After storage, those changes are expensive or impossible.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "What breaks if the SDK fails to propagate the correlation ID?",
+            choices: [
+              { id: "a", label: "Nothing" },
+              { id: "b", label: "Traces fragment — you can't reconstruct a request across services" },
+              { id: "c", label: "The model slows down" },
+              { id: "d", label: "Cost rises" },
+            ],
+            answer: "b",
+            explanation:
+              "Context propagation is the SDK's core contract. Lose the ID and a single user turn scatters into unrelated spans across service boundaries.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why is schema versioning part of the contract, not an afterthought?",
+            choices: [
+              { id: "a", label: "It's required by OTel" },
+              { id: "b", label: "Consumers must tolerate attribute changes without silent breakage" },
+              { id: "c", label: "Schemas can't change" },
+              { id: "d", label: "It saves disk space" },
+            ],
+            answer: "b",
+            explanation:
+              "Attributes evolve. A versioned, documented schema lets dashboards and alerts degrade gracefully instead of silently reading the wrong field.",
+          },
+        ],
+        application: {
+          title: "Write the contract",
+          prompt:
+            "For a multi-service AI feature, list each pipeline stage (app, SDK, collector, backend, query) and the one contract it owns. Name the failure mode if each contract is broken.",
+        },
+      },
+      {
+        slug: "genai-semantic-conventions",
+        title: "GenAI semantic conventions in practice",
+        blurb: "OTel GenAI and OpenInference: layer them, don't fork.",
+        topic: "telemetry-platform",
+        skillIds: ["otel-genai", "telemetry-strategy"],
+        capability: "Choose between and layer OTel GenAI and OpenInference without forking a private schema.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you need vendor portability but your tool speaks OpenInference. What's the sound move?",
+          choices: [
+            { id: "a", label: "Fork a private attribute schema for full control" },
+            { id: "b", label: "Emit both OTel GenAI and OpenInference, extend rather than fork" },
+            { id: "c", label: "Pick one vendor and hard-lock" },
+            { id: "d", label: "Avoid attributes entirely" },
+          ],
+          answer: "b",
+          explanation:
+            "Dual-emit to stay portable while OTel GenAI stabilises, and extend the standard rather than invent a private schema that no tool can read.",
+        },
+        prose: [
+          "Two conventions describe the same LLM span. OpenTelemetry GenAI semantic conventions (gen_ai.*) are the converging, vendor-neutral standard, moving toward stability under the Cloud Native Computing Foundation. OpenInference, from the Arize/Phoenix community, is richer and more widely deployed today, with first-class retrieval and agent attributes.",
+          "They overlap heavily and differ in naming. The temptation is to pick one and hard-lock, or worse, invent a private schema for 'full control'. Both are mistakes: vendor lock-in today, or a schema no tooling can read. The sound move is to treat them as complementary layers — emit OTel GenAI for portability and OpenInference for tool richness — and to extend the standard rather than fork it.",
+          "'Extend, don't fork' is the discipline. When the standard lacks an attribute you need (a proprietary retrieval score, say), add it under your own prefix while keeping the standard attributes intact. Your schema then degrades gracefully in any tool, and you can drop the extension when the standard catches up.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What's wrong with forking a private attribute schema for your LLM spans?",
+            choices: [
+              { id: "a", label: "It's more work" },
+              { id: "b", label: "No standard tooling can read it, and you inherit maintenance forever" },
+              { id: "c", label: "It's illegal" },
+              { id: "d", label: "Schemas must be public" },
+            ],
+            answer: "b",
+            explanation:
+              "A private schema locks you into custom tooling and makes you the maintainer of a standard no one else follows. Extend the standard instead.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why dual-emit OTel GenAI and OpenInference today?",
+            choices: [
+              { id: "a", label: "It doubles your storage for no reason" },
+              { id: "b", label: "Portability via OTel GenAI, richness via OpenInference, while convergence is still in flight" },
+              { id: "c", label: "It's required by GDPR" },
+              { id: "d", label: "To confuse analysts" },
+            ],
+            answer: "b",
+            explanation:
+              "The conventions haven't fully converged. Dual-emitting keeps you portable and tool-rich until they do, at which point you drop one.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "You need an attribute the standard doesn't define. The right move is to:",
+            choices: [
+              { id: "a", label: "Wait indefinitely" },
+              { id: "b", label: "Add it under your own prefix while keeping standard attributes intact" },
+              { id: "c", label: "Overload an existing standard attribute" },
+              { id: "d", label: "Stop instrumenting" },
+            ],
+            answer: "b",
+            explanation:
+              "Extension under a private prefix preserves standard compatibility. Overloading an existing attribute silently breaks every consumer of that attribute.",
+          },
+        ],
+        application: {
+          title: "Map your attributes",
+          prompt:
+            "List the LLM attributes your team records. Mark which are OTel GenAI, which are OpenInference, and any private extensions. For each private one, write the prefix you'd use and the condition under which you'd retire it.",
+        },
+      },
+      {
+        slug: "sampling-cardinality-cost",
+        title: "Sampling, cardinality, and telemetry cost",
+        blurb: "Sample for fidelity (tail); cap cardinality before it caps you.",
+        topic: "telemetry-platform",
+        skillIds: ["telemetry-pipeline"],
+        capability: "Choose sampling for fidelity and cap cardinality to keep telemetry affordable.",
+        minutes: 10,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: head sampling drops 99% of traces at the source. What's the cost?",
+          choices: [
+            { id: "a", label: "It's too expensive" },
+            { id: "b", label: "It usually drops the rare erroring trace you needed" },
+            { id: "c", label: "It's illegal" },
+            { id: "d", label: "It slows the model" },
+            ],
+          answer: "b",
+          explanation:
+            "Head sampling decides before it knows which trace mattered. The one erroring trace you need is usually dropped — you pay storage but lose the evidence.",
+        },
+        prose: [
+          "Sampling is a debugging-fidelity decision dressed up as a cost decision. Head sampling drops traces at the source and is cheap, but blind: it discards the rare erroring trace you'd most want to see. Tail sampling evaluates the full trace at the collector and keeps the ones that matter — errors, slow turns, policy violations — giving you exemplar debugging at a fraction of the storage.",
+          "Cardinality is the silent budget killer. Every unique attribute value creates an index entry; a per-request timestamp or full session id is near-unique, so indexing it scales linearly with traffic. The result is index bloat, collapsing query latency, and a bill that surprises no one who has lived through it. Cap your dimensionality budget deliberately: low-cardinality dimensions for slicing, raw values sampled or hashed.",
+          "The two combine into a strategy: tail-sample to keep the interesting traces, and constrain dimensions so the ones you keep stay queryable. Cost then scales with the value you retain, not the traffic you see — which is the only sane scaling law for telemetry.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why is head sampling described as 'blind'?",
+            choices: [
+              { id: "a", label: "It runs without lights" },
+              { id: "b", label: "It drops traces before knowing which ones mattered" },
+              { id: "c", label: "It can't see the model" },
+              { id: "d", label: "It samples at night" },
+            ],
+            answer: "b",
+            explanation:
+              "Head sampling decides at emission time, so it can't preferentially keep the erroring or slow traces — those get dropped at the same rate as everything else.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which attribute is a cardinality hazard?",
+            choices: [
+              { id: "a", label: "model id (a few values)" },
+              { id: "b", label: "a full per-request timestamp or session uuid" },
+              { id: "c", label: "environment (dev/stage/prod)" },
+              { id: "d", label: "tool name (a handful)" },
+            ],
+            answer: "b",
+            explanation:
+              "Near-unique-per-request values explode index size. Keep dimensions low-cardinality; sample or hash the unique ones.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A sane telemetry cost scaling law is:",
+            choices: [
+              { id: "a", label: "Cost scales with total traffic" },
+              { id: "b", label: "Cost scales with the value you retain (tail-sampled, low-cardinality)" },
+              { id: "c", label: "Cost is always zero" },
+              { id: "d", label: "Cost scales with model size" },
+            ],
+            answer: "b",
+            explanation:
+              "Tail sampling + capped cardinality means you pay for interesting, queryable traces — not for every request that passes through.",
+          },
+        ],
+        application: {
+          title: "Design the sampling + cardinality budget",
+          prompt:
+            "For a high-traffic AI feature, write your tail-sampling policy (which traces you keep) and your dimensionality budget (which attributes are low-cardinality dimensions vs sampled/hashed). Estimate the storage difference versus head sampling at 100%.",
+        },
+      },
+      {
+        slug: "ai-threat-model-owasp",
+        title: "AI threat model: the OWASP LLM Top 10",
+        blurb: "Every risk maps to a telemetry signal you can detect.",
+        topic: "security-privacy",
+        skillIds: ["ai-security"],
+        capability: "Map the OWASP LLM Top 10 to telemetry detection signals.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: prompt injection is best detected via telemetry as:",
+          choices: [
+            { id: "a", label: "Faster responses" },
+            { id: "b", label: "A divergence between the user's intent and the plan the model executed" },
+            { id: "c", label: "Lower cost" },
+            { id: "d", label: "Fewer tokens" },
+          ],
+          answer: "b",
+          explanation:
+            "Injection rewrites the model's plan. Detecting intent-vs-action divergence, or unexpected tool calls, is the signal — not a new data source.",
+        },
+        prose: [
+          "The OWASP Top 10 for LLM Applications is the canonical threat list: prompt injection, sensitive information disclosure, supply chain, data and model poisoning, improper output handling, excessive agency, system prompt leakage, vector and embedding weaknesses, misinformation, and unbounded consumption. Each is a real failure mode with a documented attack pattern.",
+          "The reframe for observability is that each risk maps to a signal you can detect on telemetry you already collect. Prompt injection shows up as intent-versus-action divergence. Sensitive disclosure shows up in output scanners. Excessive agency shows up as a tool call outside policy. Unbounded consumption shows up as runaway token loops. Detection is a query on existing spans, rates, and args — not a new instrument.",
+          "This turns security from a separate discipline into a read on the same pipeline. You're not building a parallel security telemetry stack; you're adding the reads, thresholds, and alerts that surface the OWASP risks on the spans, tool calls, and outputs you already record.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does 'excessive agency' look like in telemetry?",
+            choices: [
+              { id: "a", label: "A faster response" },
+              { id: "b", label: "A tool call outside the task's scope or policy" },
+              { id: "c", label: "A shorter answer" },
+              { id: "d", label: "Lower latency" },
+            ],
+            answer: "b",
+            explanation:
+              "Excessive agency is the model taking an action it wasn't granted — visible as a tool span whose arguments fall outside the allowed policy.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Unbounded consumption (LLM DoS) is best caught by:",
+            choices: [
+              { id: "a", label: "Reading the user's email" },
+              { id: "b", label: "Token-rate and agent loop-depth limits" },
+              { id: "c", label: "A bigger dashboard" },
+              { id: "d", label: "Disabling logs" },
+            ],
+            answer: "b",
+            explanation:
+              "Runaway loops and huge contexts consume tokens and time. Rate and loop-depth limits on the agent span catch them before they consume the budget.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The reframe this lesson offers is that AI security detection is:",
+            choices: [
+              { id: "a", label: "A new, separate telemetry stack" },
+              { id: "b", label: "A read on the spans, rates, and args you already collect" },
+              { id: "c", label: "Impossible" },
+              { id: "d", label: "Only the model vendor's job" },
+            ],
+            answer: "b",
+            explanation:
+              "Each OWASP risk maps to a query on existing telemetry. Detection adds reads and thresholds, not a parallel system.",
+          },
+        ],
+        application: {
+          title: "Map your detection coverage",
+          prompt:
+            "Take the OWASP LLM Top 10. For each risk, write the telemetry signal that would detect it in your system — and mark which you currently alert on versus which you're blind to.",
+        },
+      },
+      {
+        slug: "detecting-attacks-in-telemetry",
+        title: "Detecting attacks in telemetry",
+        blurb: "Injection, extraction, exfiltration, unsafe tools — read from ordinary spans.",
+        topic: "security-privacy",
+        skillIds: ["ai-security", "ai-red-teaming"],
+        capability: "Detect injection, extraction, exfiltration, and unsafe tool use from ordinary telemetry.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: model-extraction attacks are best spotted as:",
+          choices: [
+            { id: "a", label: "A single weird request" },
+            { id: "b", label: "High-volume, near-identical queries probing the model from one identity" },
+            { id: "c", label: "Lower cost" },
+            { id: "d", label: "Faster latency" },
+          ],
+          answer: "b",
+          explanation:
+            "Extraction is a volume-and-similarity pattern: many near-duplicate probes against the decision surface. It's a rate anomaly per identity, not a single call.",
+        },
+        prose: [
+          "Attacks leave fingerprints on ordinary telemetry. Prompt injection rewrites the model's plan, so it shows up as intent-versus-action divergence or unexpected tool calls. Data exfiltration shows up in output scanners flagging secrets or PII the model returned. Neither needs a new data source — they need new reads on the spans you already record.",
+          "Model extraction and membership inference are rate-and-pattern problems rather than single-call problems. Extraction looks like a high volume of near-identical queries probing the model's decision surface from one identity. Membership inference looks like a cluster of correlated, calibrated probes trying to determine whether a specific record was in training. Both are detectable as per-identity query-rate and embedding-similarity anomalies.",
+          "Unsafe tool use is the most directly preventable. A tool called with arguments outside policy — a delete instead of a read, a cross-tenant lookup — is visible on the tool span. Validating tool args against an allowlist at the span turns a class of agent-security failures into a hard reject, with the attempt itself recorded for the audit trail.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why is membership inference detected as a 'cluster', not a single call?",
+            choices: [
+              { id: "a", label: "Single calls are invisible by law" },
+              { id: "b", label: "Inference requires many correlated, calibrated probes to infer membership statistically" },
+              { id: "c", label: "It only happens in clusters of machines" },
+              { id: "d", label: "One call never reaches the model" },
+            ],
+            answer: "b",
+            explanation:
+              "Inferring whether a record was in training is a statistical pattern across many probes. The fingerprint is the cluster, not any individual request.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Data exfiltration via the model's output is caught by:",
+            choices: [
+              { id: "a", label: "A faster dashboard" },
+              { id: "b", label: "Output-side DLP and secret scanners on the completion span" },
+              { id: "c", label: "Disabling the model" },
+              { id: "d", label: "Lowering temperature" },
+            ],
+            answer: "b",
+            explanation:
+              "If the model returns secrets or PII, output scanners on the completion catch it. The signal lives in what the model emitted, not what it was asked.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The most directly preventable agent-security failure is:",
+            choices: [
+              { id: "a", label: "Membership inference" },
+              { id: "b", label: "Unsafe tool parameters — validate args against an allowlist on the tool span" },
+              { id: "c", label: "Model extraction" },
+              { id: "d", label: "Training data poisoning" },
+            ],
+            answer: "b",
+            explanation:
+              "Tool args are structured and policy-checkable. An allowlist on the tool span turns an out-of-policy call into a hard reject with an audit record.",
+          },
+        ],
+        application: {
+          title: "Design three detection queries",
+          prompt:
+            "Write the telemetry query that would detect (1) a prompt-injection attempt shifting the plan, (2) a model-extraction campaign from one identity, and (3) an out-of-policy tool call. For each, name the alert threshold.",
+        },
+      },
+      {
+        slug: "guardrails-and-safety-signals",
+        title: "Guardrails and safety signals",
+        blurb: "Guardrails raise the bar; measure their attack-success rate.",
+        topic: "security-privacy",
+        skillIds: ["ai-guardrails"],
+        capability: "Apply guardrails and measure their attack-success rate honestly.",
+        minutes: 10,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you add an input/output guardrail. What should you assume?",
+          choices: [
+            { id: "a", label: "All attacks are now blocked" },
+            { id: "b", label: "It catches most known patterns but a fraction of evasions still succeed" },
+            { id: "c", label: "It's unnecessary" },
+            { id: "d", label: "It has no cost" },
+          ],
+          answer: "b",
+          explanation:
+            "Guardrails (NeMo, Lakera, Guardrails AI) catch most known attack patterns, but published evasions still succeed a meaningful fraction of the time. Measure it; don't assume safety.",
+        },
+        prose: [
+          "Guardrails are input and output checks in the runtime path — frameworks like NeMo Guardrails, Lakera Guard, and Guardrails AI. They catch known jailbreak patterns, harmful outputs, and policy violations before the request reaches the model or the response reaches the user. They raise the bar substantially over having no check at all.",
+          "The dangerous assumption is that a guardrail is a wall. Published research shows they're evadable: against adaptive adversaries, attack-success rates can be high. A guardrail that blocks 94% of known patterns still lets 6% through, and novel attacks aren't in the known set. Treating the guardrail as a guarantee is how you get breached.",
+          "The mature posture is to measure the attack-success rate (ASR) as a production metric and drive it down. Run continuous red-team evals against your guardrail, track ASR over time, and treat each new evasion as a regression to fix — exactly like a quality SLO. The guardrail is a control you invest in, not a checkbox you tick.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does it mean to treat a guardrail's attack-success rate as a production metric?",
+            choices: [
+              { id: "a", label: "Ignore it" },
+              { id: "b", label: "Measure ASR continuously with red-team evals and drive it down" },
+              { id: "c", label: "Hide it from the team" },
+              { id: "d", label: "Set it to 100%" },
+            ],
+            answer: "b",
+            explanation:
+              "ASR is a number you can track, regress, and improve. Continuous red-teaming feeds it the way a golden set feeds a quality SLO.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why is 'the guardrail blocks 94%' not a guarantee of safety?",
+            choices: [
+              { id: "a", label: "94% is low" },
+              { id: "b", label: "6% still gets through, and novel attacks aren't in the known set the 94% was measured against" },
+              { id: "c", label: "Guardrails are illegal" },
+              { id: "d", label: "It's actually 100%" },
+            ],
+            answer: "b",
+            explanation:
+              "The catch rate is measured against known patterns. Adaptive and novel attacks exploit exactly what the guardrail hasn't seen, so the residual risk is real and must be measured.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Guardrails sit where, relative to the model?",
+            choices: [
+              { id: "a", label: "After the user only" },
+              { id: "b", label: "In the runtime path, on input and/or output" },
+              { id: "c", label: "Inside the training data" },
+              { id: "d", label: "On the dashboard only" },
+            ],
+            answer: "b",
+            explanation:
+              "Guardrails run in the request path — checking the input before the model and the output before the user — which is why their decisions are themselves observable signals.",
+          },
+        ],
+        application: {
+          title: "Stand up an ASR metric",
+          prompt:
+            "Describe how you'd measure your guardrail's attack-success rate in production: the red-team eval set, the cadence, the ASR number you'd report, and the threshold below which you'd block a release.",
+        },
+      },
+      {
+        slug: "privacy-engineering-for-telemetry",
+        title: "Privacy engineering for telemetry",
+        blurb: "Observe a system that handles sensitive prompts without storing them.",
+        topic: "security-privacy",
+        skillIds: ["telemetry-privacy", "ai-audit-trail"],
+        capability: "Observe an AI system handling sensitive prompts without becoming a breach surface.",
+        minutes: 12,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: a regulated system can't store raw prompts. What do you log instead?",
+          choices: [
+            { id: "a", label: "Nothing — give up on observability" },
+            { id: "b", label: "Redacted/hashed dimensions (model, version, token counts) plus an immutable audit trail of access" },
+            { id: "c", label: "Store them in a spreadsheet" },
+            { id: "d", label: "Store them in plain text for convenience" },
+          ],
+          answer: "b",
+          explanation:
+            "You keep the dimensions that explain behaviour, redact or hash anything identifying, and record who accessed what via an immutable audit trail. Observability without exposure.",
+        },
+        prose: [
+          "The central question of privacy engineering for AI telemetry: can you observe the system without storing the prompt at all? Often, yes. The debugging value lives in the dimensions — model, prompt version, retrieval version, token counts, latency — not in the raw text. Detecting and redacting PII at the collector, then keeping only those dimensions, preserves debuggability without persisting the sensitive payload.",
+          "Where prompts must be kept, residency and isolation govern them. Regional data residency routes EU financial or health prompts to EU-region backends and enforces it in the collector — GDPR, HIPAA, and MiFID II all push toward this. Tenant isolation partitions telemetry by customer at storage, so one tenant's prompts can never surface in another tenant's queries. These are architectural commitments, not settings.",
+          "Access control and the audit trail close the loop. Raw prompts, if kept, sit behind role tiers: support sees metadata, security sees content under approval, most roles see neither. Every read of sensitive telemetry lands in an immutable, append-only audit trail — the evidence layer that accountability and regulators require, and the record that reconstructs who saw what, when.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Where is regional data residency best enforced?",
+            choices: [
+              { id: "a", label: "In the front-end" },
+              { id: "b", label: "In the collector routing layer" },
+              { id: "c", label: "In the dashboard" },
+              { id: "d", label: "Nowhere — rely on policy" },
+            ],
+            answer: "b",
+            explanation:
+              "Residency is an architectural routing decision at the collector. Enforcing it in code, not policy, is what keeps regulated data in its region.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "What does tenant isolation in telemetry storage guarantee?",
+            choices: [
+              { id: "a", label: "Faster queries" },
+              { id: "b", label: "One tenant's prompts can't surface in another tenant's queries" },
+              { id: "c", label: "Lower cost" },
+              { id: "d", label: "Better model quality" },
+            ],
+            answer: "b",
+            explanation:
+              "Partitioning by tenant at storage prevents cross-tenant data leakage — a hard requirement for multi-tenant platforms handling sensitive prompts.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "An immutable audit trail of prompt access primarily serves:",
+            choices: [
+              { id: "a", label: "Faster dashboards" },
+              { id: "b", label: "Accountability and regulatory evidence of who saw what, when" },
+              { id: "c", label: "Model training" },
+              { id: "d", label: "Cost reduction" },
+            ],
+            answer: "b",
+            explanation:
+              "The append-only record is the evidence layer. It deters misuse, enables investigation, and is what an auditor samples to confirm control effectiveness.",
+          },
+        ],
+        application: {
+          title: "Design a privacy-preserving pipeline",
+          prompt:
+            "For a system handling regulated prompts, describe what your collector redacts vs retains, how residency and tenant isolation are enforced, and what the RBAC tiers + audit trail record for every read.",
+        },
+      },
+      {
+        slug: "governance-frameworks",
+        title: "Governance frameworks",
+        blurb: "EU AI Act, NIST AI RMF, ISO 42001, SR 11-7 — all reduce to trace + measure + control.",
+        topic: "governance",
+        skillIds: ["ai-compliance", "eu-ai-act", "nist-ai-rmf"],
+        capability: "Map observability signals to the EU AI Act, NIST AI RMF, ISO 42001, and SR 11-7.",
+        minutes: 12,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an auditor asks 'prove this high-risk system is monitored.' Your evidence is:",
+          choices: [
+            { id: "a", label: "A verbal assurance" },
+            { id: "b", label: "Your traces, eval results, SLOs, and audit trail — the observability pipeline itself" },
+            { id: "c", label: "A marketing page" },
+            { id: "d", label: "The model's parameter count" },
+          ],
+          answer: "b",
+          explanation:
+            "Governance frameworks ask for traceability, measurement, and control. Your observability pipeline IS that evidence — traces prove traceability, evals prove measurement, gates prove control.",
+        },
+        prose: [
+          "Four frameworks dominate enterprise AI governance. The EU AI Act risk-classifies systems and imposes duties on high-risk ones — traceability, human oversight, auditability — and obligations on general-purpose model providers. NIST's AI Risk Management Framework structures the work as Govern, Map, Measure, and Manage across the lifecycle. ISO/IEC 42001 is the AI management-system standard an organisation can be certified against. SR 11-7 imports model risk management from banking: validation, monitoring, and change control.",
+          "They read differently but ask the same three things: can you trace a decision, can you measure the system's behaviour, and can you control changes to it. Observability is the evidence layer for all three. Traces and the audit trail are traceability. Evals, drift, and SLOs are measurement. Eval gates, versioned releases, and rollback are control. The frameworks don't demand new instrumentation; they demand that the instrumentation you have is governed, owned, and reviewable.",
+          "The mistake is treating governance as a compliance checklist appended at the end. It's a system-lifecycle posture: who owns each signal, what the review cadence is, what triggers a rollback, and where the evidence lives. Build that posture once, and the four frameworks become different lenses on the same operating system rather than four separate audits.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What do the EU AI Act's high-risk duties (traceability, oversight, auditability) map to in your stack?",
+            choices: [
+              { id: "a", label: "Nothing — they're aspirational" },
+              { id: "b", label: "Traces + audit trail (traceability/auditability) and quality SLOs (oversight)" },
+              { id: "c", label: "A faster model" },
+              { id: "d", label: "More front-end logging" },
+            ],
+            answer: "b",
+            explanation:
+              "Your observability pipeline already produces the evidence: traces reconstruct decisions, the audit trail records access, and SLOs feed human oversight.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "In NIST AI RMF terms, your eval and drift signals belong to which function?",
+            choices: [
+              { id: "a", label: "Govern" },
+              { id: "b", label: "Measure" },
+              { id: "c", label: "Map" },
+              { id: "d", label: "Ignore" },
+            ],
+            answer: "b",
+            explanation:
+              "Measure is the function that assesses the system — exactly what eval, drift, and SLO signals do. Alerts and rollback are Manage; ownership is Govern.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Treating governance as a 'checklist at the end' fails because:",
+            choices: [
+              { id: "a", label: "Checklists are too short" },
+              { id: "b", label: "It's a lifecycle posture (ownership, cadence, rollback, evidence), not a one-time artefact" },
+              { id: "c", label: "Auditors dislike lists" },
+              { id: "d", label: "It's illegal to use checklists" },
+            ],
+            answer: "b",
+            explanation:
+              "Governance is how you operate continuously — who owns what, what's reviewed, when you roll back. A checklist can't substitute for an operating posture.",
+          },
+        ],
+        application: {
+          title: "Map one framework to your pipeline",
+          prompt:
+            "Pick one framework (EU AI Act, NIST AI RMF, ISO 42001, or SR 11-7). For each of its core requirements, name the concrete part of your observability pipeline that serves as evidence, and the owner.",
+        },
+      },
+      {
+        slug: "evaluation-systems-not-one-score",
+        title: "Evaluation systems, not one score",
+        blurb: "Representative, repeatable, agreed, calibrated, intervalled, drift-watched.",
+        topic: "evaluation-and-drift",
+        skillIds: ["llm-judge", "eval-bias"],
+        capability: "Build a trustworthy evaluation system rather than trust a single tidy score.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: your eval score moved from 92 to 90. What's missing before you act on it?",
+          choices: [
+            { id: "a", label: "A bigger model" },
+            { id: "b", label: "A confidence interval — a 2-point move might be noise" },
+            { id: "c", label: "More logs" },
+            { id: "d", label: "A new vendor" },
+          ],
+          answer: "b",
+          explanation:
+            "Without a confidence interval, a 2-point move is indistinguishable from sampling noise. Report intervals so you don't chase ghosts.",
+        },
+        prose: [
+          "A single tidy score is comforting and almost meaningless. Trustworthy evaluation is a system with six parts: a representative task suite that mirrors real usage, a repeatable rubric that gives the same answer twice, inter-rater agreement (Cohen's κ) that proves two raters concur, a calibrated judge measured against humans, confidence intervals that separate signal from noise, and distribution-shift watch that catches the mean holding while the shape changes.",
+          "Each part plugs a specific failure. A stale suite passes everything. A vague rubric adds noise that swamps real change. Low κ means the score is a coin flip. An uncalibrated judge inherits biases. Missing intervals make you chase noise. And a stable mean can hide a distribution growing bimodal — more 1s and 5s, fewer 3s — which is a real regression the average conceals.",
+          "The discipline is to ship the system, not the score. Report intervals alongside means, show distributions not just averages, and track κ and judge-agreement over time. When a release 'improves' the score by a point, the first question is whether the interval even excludes the previous value — and if the distribution shifted, which direction helped and which hurt.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Cohen's κ tells you:",
+            choices: [
+              { id: "a", label: "The model's parameter count" },
+              { id: "b", label: "Whether two raters agree enough that the score is meaningful" },
+              { id: "c", label: "The latency p99" },
+              { id: "d", label: "The cost per token" },
+            ],
+            answer: "b",
+            explanation:
+              "κ measures agreement beyond chance. Below ~0.6, rater disagreement is large enough that the score itself is unreliable.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "The mean quality score is stable, but the distribution is growing bimodal. This indicates:",
+            choices: [
+              { id: "a", label: "Nothing — the mean is fine" },
+              { id: "b", label: "A real regression the average is hiding" },
+              { id: "c", label: "A faster model" },
+              { id: "d", label: "Lower cost" },
+            ],
+            answer: "b",
+            explanation:
+              "More extreme scores at both ends while the mean holds means the system is getting less consistent — a regression you'd miss watching only the average.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "Why pair every eval score with a confidence interval?",
+            choices: [
+              { id: "a", label: "It's required by OTel" },
+              { id: "b", label: "So small moves can be told apart from sampling noise before anyone acts" },
+              { id: "c", label: "To make dashboards busier" },
+              { id: "d", label: "To increase cost" },
+            ],
+            answer: "b",
+            explanation:
+              "Intervals quantify uncertainty. A 2-point change inside the interval is noise; outside it, it's signal worth investigating.",
+          },
+        ],
+        application: {
+          title: "Audit your eval system",
+          prompt:
+            "Score your evaluation against the six parts (suite, rubric, κ, judge calibration, intervals, distribution watch). For each gap, write the smallest change that would close it.",
+        },
+      },
+      {
+        slug: "detecting-drift-regressions",
+        title: "Detecting drift and regressions",
+        blurb: "Distributions move before averages do.",
+        topic: "evaluation-and-drift",
+        skillIds: ["model-drift", "llm-drift"],
+        capability: "Catch input, output, and retrieval drift in distributions before averages move.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: input drift (PSI) has crossed 0.20 but the mean quality is unchanged. What's true?",
+          choices: [
+            { id: "a", label: "There's no problem" },
+            { id: "b", label: "The input distribution shifted; a regression is likely coming even though the mean lags" },
+            { id: "c", label: "PSI is irrelevant" },
+            { id: "d", label: "The model improved" },
+          ],
+          answer: "b",
+          explanation:
+            "Drift shows up in distributions before averages. A PSI over 0.20 means the inputs your system sees have materially changed — the mean just hasn't caught up yet.",
+        },
+        prose: [
+          "Drift in generative systems is distributional, and distributions move before averages do. Input drift — measured by metrics like the population stability index (PSI) — tells you the prompts your system sees have changed, even if average quality hasn't. Output drift tells you the shape of the answers is changing. Retrieval drift tells you the context being surfaced is moving. All three can cross a threshold while the mean score looks perfectly healthy.",
+          "This is why a change-point, not a threshold on the mean, is the right detection primitive. Sequential monitoring watches the distribution over time and flags the moment it shifts relative to a cohort-aware baseline. A global baseline hides region or cohort-specific drift; baselines per cohort catch a degradation that's real in one segment and invisible in the aggregate.",
+          "The practical implication: watch distributions, not just means, and set baselines per cohort. The mean is the last signal to move; by the time it drops, users have already felt the drift for days. Distribution metrics give you the leading indicator that lets you act before the mean confirms the problem.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why watch PSI (input drift) rather than just the mean quality score?",
+            choices: [
+              { id: "a", label: "PSI is cheaper to compute" },
+              { id: "b", label: "PSI moves first — inputs shift before quality averages drop" },
+              { id: "c", label: "Means are illegal" },
+              { id: "d", label: "PSI improves accuracy" },
+            ],
+            answer: "b",
+            explanation:
+              "The mean is a lagging indicator. PSI catches the input distribution changing before that change propagates into a measurable quality drop.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "A global drift baseline can hide:",
+            choices: [
+              { id: "a", label: "Lower cost" },
+              { id: "b", label: "Drift concentrated in one region or cohort that's invisible in the aggregate" },
+              { id: "c", label: "Faster latency" },
+              { id: "d", label: "Better quality" },
+            ],
+            answer: "b",
+            explanation:
+              "Aggregation dilutes local drift. Cohort-aware baselines catch a segment-specific regression that a global metric averages away.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A change-point detector is preferred over a static mean-threshold because it:",
+            choices: [
+              { id: "a", label: "Uses less memory" },
+              { id: "b", label: "Flags the moment a distribution shifts over time, not a fixed line crossed" },
+              { id: "c", label: "Is required by GDPR" },
+              { id: "d", label: "Improves accuracy" },
+            ],
+            answer: "b",
+            explanation:
+              "Change-point detection is temporal and distributional — it spots a shift relative to a baseline, which is what drift actually is, rather than waiting for a static average to cross a line.",
+          },
+        ],
+        application: {
+          title: "Set three drift baselines",
+          prompt:
+            "For your system, define the input (PSI), output, and retrieval drift metrics you'd watch, the cohort slices you'd baseline separately, and the change-point threshold that would trigger investigation.",
+        },
+      },
+      {
+        slug: "causal-diagnosis-experimentation",
+        title: "Causal diagnosis and experimentation",
+        blurb: "Correlation gives suspects; experiments give causes.",
+        topic: "diagnosis-and-agents",
+        skillIds: ["eval-gates"],
+        capability: "Establish cause with feature flags, canaries, shadow traffic, and holdouts.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: quality dropped the same week a new model shipped. The naive call is to roll back the model. Why might that be wrong?",
+          choices: [
+            { id: "a", label: "Models can't regress" },
+            { id: "b", label: "Something else shipped the same week — correlation isn't cause" },
+            { id: "c", label: "Quality never drops" },
+            { id: "d", label: "Rollbacks are free" },
+          ],
+          answer: "b",
+          explanation:
+            "Two changes in one week give you a suspect, not a cause. Without a controlled comparison, you blame the wrong variable and fix nothing.",
+        },
+        prose: [
+          "Correlation gives suspects; experiments give causes. When a regression coincides with a release, the tempting move — roll back the most visible change — often fixes nothing, because the real cause was a second change shipped the same day. The disciplined alternative is to isolate the variable with a controlled experiment.",
+          "The toolkit is feature flags, canaries, shadow traffic, and holdouts. Feature-flag the candidate so you can turn it off instantly and so on/off cohorts are comparable. Canary to a small slice of traffic so a regression's blast radius is bounded. Shadow traffic runs the new path without serving it, surfacing failures before users see them. A holdout keeps a cohort permanently on the old version so you always have a clean comparison for the metric that matters.",
+          "The discipline is to compare flag-on versus flag-off on the same metric, with the same judge and the same interval, before you act. If the candidate loses on the controlled comparison, you've found the cause — roll it back. If it wins, ship it. Either way you acted on evidence, not on the coincidence of a calendar.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "What does a feature flag give you that a direct deploy doesn't?",
+            choices: [
+              { id: "a", label: "Faster model" },
+              { id: "b", label: "An instant off-switch and a comparable on/off cohort" },
+              { id: "c", label: "Lower cost" },
+              { id: "d", label: "Better UI" },
+            ],
+            answer: "b",
+            explanation:
+              "A flag lets you kill a bad change instantly and compare the cohort with the flag on against the cohort with it off — the basis for a causal read.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Shadow traffic is useful because it:",
+            choices: [
+              { id: "a", label: "Serves users faster" },
+              { id: "b", label: "Exercises the new path on real requests without showing users the result" },
+              { id: "c", label: "Removes the need for evals" },
+              { id: "d", label: "Reduces latency" },
+            ],
+            answer: "b",
+            explanation:
+              "Shadow runs the candidate alongside production without serving its output, so failures surface in telemetry before any user is exposed.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A permanent holdout cohort exists so that you always have:",
+            choices: [
+              { id: "a", label: "Cheaper traffic" },
+              { id: "b", label: "A clean baseline to compare the current version against" },
+              { id: "c", label: "Fewer users" },
+              { id: "d", label: "Lower latency" },
+            ],
+            answer: "b",
+            explanation:
+              "A holdout stays on the old version, giving you a standing comparison group so the metric impact of a change is always measurable against a known baseline.",
+          },
+        ],
+        application: {
+          title: "Design the experiment",
+          prompt:
+            "A regression appeared with release v17. Describe the feature-flag + canary + holdout experiment you'd run to confirm or refute that v17 caused it, including the metric, the judge, and the decision threshold.",
+        },
+      },
+      {
+        slug: "agent-tool-observability",
+        title: "Agent and tool-use observability",
+        blurb: "Observe the graph — tools, loops, budgets, MCP — not just the LLM node.",
+        topic: "diagnosis-and-agents",
+        skillIds: ["agent-tracing", "mcp-observability"],
+        capability: "Observe the agent graph: tool calls, loops, budgets, state transitions, and MCP spans.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an agent's outputs have degraded but each LLM call looks fine. Where does the problem likely live?",
+          choices: [
+            { id: "a", label: "The model weights" },
+            { id: "b", label: "The agent graph — tool failures, loops, or budget exhaustion between calls" },
+            { id: "c", label: "The dashboard" },
+            { id: "d", label: "The front-end" },
+          ],
+          answer: "b",
+          explanation:
+            "Per-call metrics miss the graph. A tool that 502s or a loop that retries until the budget dies looks fine call-by-call but breaks the task. Observe the graph.",
+        },
+        prose: [
+          "An agent is not one LLM call; it's a graph of calls, tools, and state. Plain LLM observability watches the node — the model's latency and tokens — and misses the edges: which tool was called, whether it succeeded, how many times the agent retried, whether it hit a budget, and how the call-graph shape changed. Agent reliability lives in the graph, not the node.",
+          "The agent-specific signals are tool-call success per tool, loop and retry depth, budget exhaustion, state transitions, MCP spans across servers, and trace-graph anomalies. Climbing retry depth is the leading indicator of a stuck agent. Budget exhaustion mid-task produces truncated, low-quality outputs that look like model failures. A novel cycle in the call graph is often a bug before it's an outage.",
+          "Each tool call — including Model Context Protocol calls across servers — needs its own span, attributed to the agent goal that spawned it. Without that attribution you can't say which agent, using which tool, on which server, burned the budget or looped. The unit of diagnosis is the task span parenting its children, not the individual completion.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Climbing retry depth is a leading indicator of:",
+            choices: [
+              { id: "a", label: "A faster agent" },
+              { id: "b", label: "A stuck agent before it fully fails" },
+              { id: "c", label: "Lower cost" },
+              { id: "d", label: "Better answers" },
+            ],
+            answer: "b",
+            explanation:
+              "Retries climbing means the agent isn't converging. Catch it early and you intervene before the task exhausts its budget or times out.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Why attribute each tool span to the agent task that spawned it?",
+            choices: [
+              { id: "a", label: "For billing only" },
+              { id: "b", label: "So you can diagnose which agent + tool + server caused a budget or loop problem" },
+              { id: "c", label: "It's required by law" },
+              { id: "d", label: "To slow the agent down" },
+            ],
+            answer: "b",
+            explanation:
+              "Attribution links a tool failure or budget burn back to the responsible agent goal. Without it, you see a failed tool but can't say which task it broke.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "A novel cycle in the agent's call graph is best treated as:",
+            choices: [
+              { id: "a", label: "An optimisation" },
+              { id: "b", label: "A bug signal — often a problem before it becomes an outage" },
+              { id: "c", label: "Irrelevant" },
+              { id: "d", label: "A cost saving" },
+            ],
+            answer: "b",
+            explanation:
+              "Call-graph shape is a signal. A new cycle the agent didn't exhibit before usually means a logic change that will eventually waste budget or loop forever.",
+          },
+        ],
+        application: {
+          title: "Instrument the graph",
+          prompt:
+            "For a multi-agent system, list the spans you'd emit per task (task span, tool spans, MCP spans) and the graph-level metrics you'd alert on (retry depth, budget exhaustion, new cycles). Name the leading indicator you'd watch first.",
+        },
+      },
+      {
+        slug: "reliability-objectives-error-budgets",
+        title: "Reliability objectives and error budgets",
+        blurb: "A portfolio of SLOs with one non-negotiable safety gate.",
+        topic: "operation",
+        skillIds: ["ai-slo"],
+        capability: "Hold a portfolio of SLOs with a non-negotiable safety gate and resolve conflicts via budgets.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: you cut cost by routing to a cheaper model and quality drops. What does this reveal?",
+          choices: [
+            { id: "a", label: "SLOs are independent" },
+            { id: "b", label: "SLOs conflict — cost vs quality must be resolved explicitly" },
+            { id: "c", label: "Quality is free" },
+            { id: "d", label: "Cost can't be measured" },
+          ],
+          answer: "b",
+          explanation:
+            "SLOs trade off. Optimising cost moved quality. The conflicts must be resolved with explicit targets and gates, not vibes.",
+        },
+        prose: [
+          "An AI feature has several reliability objectives at once: availability, latency, quality, cost, and safety. They conflict. Routing to a cheaper model cuts cost but often drops quality and changes latency. Chasing quality raises cost. The naive stance — optimise one — silently degrades the others. A portfolio makes the trade-offs explicit.",
+          "Error budgets resolve the conflicts. Each objective gets a target and a budget; you ship while budgets allow and freeze when they burn. The exception is safety, which is a gate rather than a budget: a safety regression blocks a release regardless of how much cost or quality budget remains. Treating safety as negotiable is how systems get harmful outputs into production.",
+          "The release gate is where the portfolio becomes operational. A candidate must beat or match the incumbent on the measured objectives — quality on the golden set, cost within budget, latency within SLO — and pass the safety gate, before it ships. Conflicts are resolved at the gate with evidence, not in a meeting after the regression has already reached users.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "Why is safety a 'gate' rather than a 'budget'?",
+            choices: [
+              { id: "a", label: "Safety is easy" },
+              { id: "b", label: "Safety regressions block release outright — you don't spend an 'allowed amount of harm'" },
+              { id: "c", label: "Budgets are illegal" },
+              { id: "d", label: "Safety can't be measured" },
+            ],
+            answer: "b",
+            explanation:
+              "Latency or quality budgets tolerate some shortfall. Safety doesn't — a harmful-output regression must block the release, full stop.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Routing to a cheaper model and watching quality drop demonstrates that:",
+            choices: [
+              { id: "a", label: "Cost and quality are unrelated" },
+              { id: "b", label: "SLOs conflict and must be resolved with explicit targets" },
+              { id: "c", label: "Quality is impossible" },
+              { id: "d", label: "Cheaper is always better" },
+            ],
+            answer: "b",
+            explanation:
+              "The trade-off is the point: changing one objective moved another. A portfolio makes the relationship explicit so you choose the trade-off deliberately.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The release gate resolves SLO conflicts by:",
+            choices: [
+              { id: "a", label: "Ignoring them" },
+              { id: "b", label: "Requiring the candidate to meet every objective and the safety gate before shipping" },
+              { id: "c", label: "Picking the cheapest option" },
+              { id: "d", label: "Picking the highest quality" },
+            ],
+            answer: "b",
+            explanation:
+              "At the gate, the candidate must satisfy the portfolio (quality, cost, latency) and pass safety. Trade-offs are surfaced and decided with evidence before release.",
+          },
+        ],
+        application: {
+          title: "Define the SLO portfolio",
+          prompt:
+            "Write the SLO portfolio for your feature: the target and budget for availability, latency, quality, and cost, the safety gate that blocks release, and the rule for resolving a conflict between cost and quality.",
+        },
+      },
+      {
+        slug: "incident-command-learning-loop",
+        title: "Incident command and the learning loop",
+        blurb: "An incident is closed when its postmortem becomes a regression test.",
+        topic: "operation",
+        skillIds: ["ai-incident-response"],
+        capability: "Run an AI incident end-to-end and close it with an automated regression test.",
+        minutes: 11,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: an incident is mitigated and users are happy again. Is it closed?",
+          choices: [
+            { id: "a", label: "Yes — users are happy" },
+            { id: "b", label: "No — it's closed when the postmortem becomes an automated regression test" },
+            { id: "c", label: "Only on weekends" },
+            { id: "d", label: "Only if the CEO says so" },
+          ],
+          answer: "b",
+          explanation:
+            "Mitigation ends the outage. The incident class is closed only when a regression test prevents the same failure from shipping again.",
+        },
+        prose: [
+          "An AI incident has a lifecycle, and skipping the last step is what makes incidents repeat. Detect via a real signal — a burn-rate alert on quality, not just latency. Coordinate with a commander who owns the response and clear roles for comms, diagnosis, and fix. Mitigate by rolling back the changed variable first; live root-causing can wait, users can't.",
+          "Communicate honestly and on a clock: what we know, what we're doing, the next update. Silence during an outage breeds worse narratives than the outage itself. After mitigation, hold a blameless postmortem — blameless on people, rigorous on systems — that reconstructs what happened, what we believed and why it was wrong, and the systemic fix.",
+          "The learning loop closes when the postmortem's action becomes an automated regression test in CI. Without that step, the same change can reintroduce the same failure next quarter. An incident isn't closed when it's fixed; it's closed when the system has been changed so that specific failure can't recur.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "During an active incident, the right first technical action is usually to:",
+            choices: [
+              { id: "a", label: "Root-cause it live while users suffer" },
+              { id: "b", label: "Mitigate — roll back the changed variable to stop user impact" },
+              { id: "c", label: "Wait and see" },
+              { id: "d", label: "Email everyone" },
+            ],
+            answer: "b",
+            explanation:
+              "Mitigation is for users; root-cause is for later. Roll back the suspect variable to stop the bleeding, then investigate from a stable system.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "A blameless postmortem is:",
+            choices: [
+              { id: "a", label: "Soft on accountability" },
+              { id: "b", label: "Blameless on people, rigorous on systems and processes" },
+              { id: "c", label: "Optional paperwork" },
+              { id: "d", label: "A way to name a culprit" },
+            ],
+            answer: "b",
+            explanation:
+              "Blameless doesn't mean consequence-free; it means the analysis fixes systems, not individuals, so people report honestly and the real causes surface.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "What turns a one-time incident into a prevented class?",
+            choices: [
+              { id: "a", label: "A longer postmortem" },
+              { id: "b", label: "An automated regression test in CI derived from the postmortem" },
+              { id: "c", label: "A new dashboard" },
+              { id: "d", label: "A meeting" },
+            ],
+            answer: "b",
+            explanation:
+              "A regression test encodes the failure into CI, so the same change can't ship again. That's the step that actually closes the incident class.",
+          },
+        ],
+        application: {
+          title: "Close a past incident properly",
+          prompt:
+            "Take an incident your team handled. Write the blameless postmortem (what happened, what we believed, the systemic fix) and the specific automated regression test that would have prevented it. If that test doesn't exist yet, that's the open action.",
+        },
+      },
+      {
+        slug: "capstone-design-review",
+        title: "Capstone: production design review",
+        blurb: "Observe quality, safety, and cost at scale — privately, gated, and auditable.",
+        topic: "capstone",
+        skillIds: ["ai-observability"],
+        capability: "Defend an end-to-end observability design across cost, privacy, debuggability, release safety, and security.",
+        minutes: 14,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the visual: the central tension of observing a regulated multi-agent system is:",
+          choices: [
+            { id: "a", label: "Cost vs nothing" },
+            { id: "b", label: "Observing quality/safety/cost thoroughly without exposing sensitive prompts" },
+            { id: "c", label: "Speed vs speed" },
+            { id: "d", label: "Models vs dashboards" },
+          ],
+          answer: "b",
+          explanation:
+            "The whole course resolves one tension: see enough to operate the system reliably, while keeping the sensitive data that flows through it private and governed.",
+        },
+        prose: [
+          "The capstone asks you to defend a complete design for the multi-agent financial system across every axis the course covered: privacy, cost, debuggability, release safety, and security. The naive design logs raw prompts across regions, samples at 100%, watches only the model, ships by hope, and detects no attacks. It's both a breach surface and a debugging dead-end.",
+          "The hardened design redacts at ingest, enforces EU residency, and isolates tenants; it tail-samples and caps cardinality; it traces the agent graph including MCP; it gates releases behind evals and canaries; and it reads the OWASP signals and measures its guardrail's attack-success rate. Each choice is a contract owned by a specific layer, and together they resolve the central tension — the system is observable and safe to operate.",
+          "That is the enterprise bar this course builds toward: prove you can trace every decision, measure quality and safety continuously, control every change through gates, and keep every sensitive payload private and audited. Observability, done at this level, is what turns a powerful AI system into a trustworthy one.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt: "The naive design fails on privacy primarily because it:",
+            choices: [
+              { id: "a", label: "Uses too few dashboards" },
+              { id: "b", label: "Logs raw prompts across regions, becoming a breach surface" },
+              { id: "c", label: "Is too cheap" },
+              { id: "d", label: "Samples too little" },
+            ],
+            answer: "b",
+            explanation:
+              "Raw prompts persisted across regions without redaction or residency control make the telemetry store itself the liability the system was meant to avoid.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "Which combination closes the gap between 'observable' and 'safe to operate'?",
+            choices: [
+              { id: "a", label: "More dashboards" },
+              { id: "b", label: "Redaction + residency + tail sampling + agent-graph tracing + eval gates + OWASP signal reads" },
+              { id: "c", label: "A bigger model" },
+              { id: "d", label: "Faster queries" },
+            ],
+            answer: "b",
+            explanation:
+              "Each axis the course covered must be addressed: privacy at ingest, cost via sampling/cardinality, debuggability via the graph, release safety via gates, security via detection reads.",
+          },
+          {
+            id: "q3",
+            kind: "mcq",
+            prompt: "The enterprise bar this capstone sets is:",
+            choices: [
+              { id: "a", label: "Lowest cost possible" },
+              { id: "b", label: "Trace, measure, control, and keep private+audited — observability that makes the system trustworthy" },
+              { id: "c", label: "Fastest model" },
+              { id: "d", label: "Most dashboards" },
+            ],
+            answer: "b",
+            explanation:
+              "Power without trust is a liability. The bar is an operating system that proves traceability, measurement, control, privacy, and auditability together.",
+          },
+        ],
+        application: {
+          title: "Defend your design",
+          prompt:
+            "Write a one-page design review for a regulated multi-agent AI system: the telemetry contract per stage, the privacy controls (redaction, residency, tenant isolation, RBAC, audit), the security signal reads (OWASP + guardrail ASR), the eval and SLO portfolio with the safety gate, and the release + incident process. End with the one axis you'd invest in first and why.",
+        },
+      },
+    ],
+  },
 ] as const;
 
 export function allCourseSlugs(): string[] {

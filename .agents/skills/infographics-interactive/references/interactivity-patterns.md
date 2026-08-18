@@ -1,4 +1,4 @@
-# Interactivity patterns (v3)
+# Interactivity patterns (v3.1)
 
 The concrete recipes for the three interactive-widget patterns referenced from
 `../SKILL.md` §6. Each pattern is a small, self-contained **`"use client"`
@@ -39,6 +39,45 @@ Each pattern's "Upgrade to Constructive" note below shows how.
 
 ---
 
+## Affordance & discoverability (every widget)
+
+A control the learner can't see or doesn't know to use is dead weight — it adds
+load without any active-learning payoff. Before any widget ships, it must clear
+the **three gates** from `SKILL.md` §6. In concrete terms:
+
+- **Restraint (gate 1).** If toggling / clicking / dragging wouldn't reveal
+  something a passive scene couldn't, don't add the control. The default lesson
+  is passive + a `PredictionCard`; a widget is the exception.
+- **Affordance — look clickable (gate 2).** Wrap a toggle's buttons in a visible
+  container (the reference uses `rounded-full border border-ash bg-canvas p-1`),
+  give the **selected** button a brand fill (`bg-brand text-ink`) and the
+  **unselected** buttons a clearly lighter treatment (`text-ink-soft`), and keep
+  each target ≥ ~32px tall with `focus-ring` + `hover:` feedback. A row of bare
+  words — even if each is a `<button>` — reads as a label, not a control, and
+  won't get clicked.
+- **Discoverability — an explicit, verb-led instruction (gate 3)** in the
+  `<InfographicHeader subtitle>` (or directly above the control), e.g. *"Toggle
+  to compare the states"*, *"Click a row to investigate"*, *"Drag the slider to
+  feel the trade-off."* This is a **baseline**, not a Constructive upgrade —
+  every widget needs one. The *upgrade* is to frame that same instruction as a
+  guess ("Which state reveals the spike? Guess, then toggle.").
+
+```tsx
+// Visible button group: bordered pill, selected = brand fill, ≥32px targets.
+<div role="group" aria-label="Time window"
+     className="flex gap-1 rounded-full border border-ash bg-canvas p-1">
+  {WINDOWS.map((w) => (
+    <button key={w} aria-pressed={win === w} onClick={() => setWin(w)}
+      className={`focus-ring min-h-[32px] rounded-full px-3 py-1 text-xs font-bold transition-colors ${
+        win === w ? "bg-brand text-ink" : "text-ink-soft hover:text-ink"}`}>
+      {w}
+    </button>
+  ))}
+</div>
+```
+
+---
+
 ## Pattern 1 — Toggle-compare  (Active)
 
 **Concept shape:** a comparison between discrete states — time windows, modes,
@@ -63,20 +102,25 @@ export function MetricsDashboard() {
   // …render tiles from DATA[*].data[win]…
 }
 ```
-**The toggle** is a real button group with `aria-pressed`:
+**The toggle** is a real, visibly-clickable button group with `aria-pressed`
+(bordered pill, selected = brand fill, ≥32px targets — see affordance above):
 ```tsx
-<div role="group" aria-label="Time window" className="flex gap-1 rounded-full border border-ash bg-canvas p-1">
+<div role="group" aria-label="Time window"
+     className="flex gap-1 rounded-full border border-ash bg-canvas p-1">
   {WINDOWS.map((w) => (
     <button key={w} aria-pressed={win === w} onClick={() => setWin(w)}
-      className={`rounded-full px-3 py-1 text-xs font-bold ${win === w ? "bg-brand text-ink" : "text-ink-soft"}`}>
+      className={`focus-ring min-h-[32px] rounded-full px-3 py-1 text-xs font-bold transition-colors ${
+        win === w ? "bg-brand text-ink" : "text-ink-soft hover:text-ink"}`}>
       {w}
     </button>
   ))}
 </div>
 ```
-**Upgrade to Constructive:** add a predict line above the toggle — *"Which window
-will reveal a spike? Pick, then toggle to check."* The learner commits, then the
-toggle confirms/refutes.
+**Baseline (discoverability):** the header subtitle already tells the learner to
+toggle (e.g. *"Toggle the time window and watch the readings change"*). **Upgrade
+to Constructive:** frame that as a guess — *"Which window will reveal a spike?
+Pick, then toggle to check."* The learner commits, then the toggle confirms or
+refutes.
 
 ---
 
@@ -106,9 +150,12 @@ Each row is a `<button aria-pressed={i === selected}>`; bar width is inline
 `style={{ width: \`${pct}%\` }}`. One accent fills the bottleneck bar; others
 use a neutral (`var(--color-ink-faint)`) — length carries the meaning, not colour.
 
-**Upgrade to Constructive:** default the selection to a *quick* step (not the
-bottleneck) and prompt: *"Which step is the bottleneck? Click each to find out."*
-The learner discovers the longest bar rather than being shown it.
+**Baseline (discoverability):** a subtitle like *"Click a step to inspect it"*
+tells the learner the rows are clickable — and rows must look clickable, too (a
+selected row gets `border-brand bg-brand-wash`). **Upgrade to Constructive:**
+default the selection to a *quick* step (not the bottleneck) and prompt: *"Which
+step is the bottleneck? Click each to find out."* The learner discovers the
+longest bar rather than being shown it.
 
 ---
 
@@ -135,9 +182,56 @@ The control is a labelled `<input type="range">`; the chart is inline SVG
 (brand line, one semantic-red problem band, ink dashed threshold line). Style
 the native thumb with `accent-brand`.
 
-**Upgrade to Constructive:** prompt above the slider — *"Where would you set it
-to catch the fire with few false alarms? Drag to test your guess."* The learner
-commits a mental answer first, then the drag tests it.
+**Baseline (discoverability):** a subtitle like *"Drag the threshold and watch
+the trade-off"* tells the learner the slider is there to move. **Upgrade to
+Constructive:** frame it as a guess — *"Where would you set it to catch the fire
+with few false alarms? Drag to test your guess."* The learner commits a mental
+answer first, then the drag tests it.
+
+---
+
+## Pattern 4 — Evidence matrix (Constructive)
+
+**Concept shape:** multiple signals can support competing explanations; the
+learner must distinguish observation from conclusion. Best for intermediate and
+expert diagnostic lessons such as RAG regressions, model-release comparison,
+and incident triage.
+
+**Interaction:** present 3–5 compact evidence cards (for example, evaluation
+score, retrieval-empty rate, latency, prompt version, release time) and 2–3
+claims. Ask: *“Which claim is supported strongly enough to investigate first?”*
+The learner selects a claim, then the visual highlights only the relevant
+evidence and names what remains uncertain.
+
+**Feedback contract:** identify the tempting correlation, the evidence that
+weakens it, and the next slice to inspect. Example: “Latency rose after the
+release, but failures cluster only where retrieval is empty. Inspect index
+freshness before rolling back the model.” Never call a correlation proof.
+
+**Design limits:** keep to at most five evidence cards and three claims. Use
+neutral cards and one brand accent for the selected evidence; reserve semantic
+bad only for a real anomaly. This is not a dashboard recreation.
+
+---
+
+## Pattern 5 — Decision gate (Constructive)
+
+**Concept shape:** a release or incident decision has trade-offs and needs a
+justified next action. Best for intermediate rollout lessons and expert SLO,
+safety, or reliability-governance lessons.
+
+**Interaction:** give a bounded scenario plus 3–4 real actions: *ship, canary,
+pause/rollback, investigate*. The learner selects an action and one reason; the
+reveal explains the user impact, evidence threshold, and next runbook step.
+
+**Feedback contract:** distinguish a defensible action from a universally
+correct answer. State the missing evidence that would change the decision. On
+expert lessons, show a counter-example where the same metric demands a
+different action for a different cohort or safety constraint.
+
+**Design limits:** do not turn the lesson into a branching game. One decision,
+one evidence set, one next action. The desired output is a reasoned decision,
+not exhaustive exploration.
 
 ---
 
@@ -148,6 +242,23 @@ already runs a predict-then-reveal MCQ *before* every infographic. When a lesson
 has a widget, align the prediction with the widget's concept (e.g. the threshold
 lesson's prediction is about a smoke alarm crying wolf). Two layers of the same
 idea — the cheapest, highest-leverage move in this skill.
+
+## Diagnostic feedback and learning evidence
+
+Every interactive pattern needs the four-part loop:
+
+1. **Commit:** the learner predicts, selects a claim, or makes a decision.
+2. **Reveal:** the visual exposes the relevant state or evidence.
+3. **Explain:** feedback names the misconception or correct reasoning and ties
+   it to the evidence.
+4. **Transfer:** a question or prompt asks for a decision in a nearby case.
+
+For future analytics, the design may specify only privacy-safe event categories:
+prediction/choice, meaningful state change, submitted conclusion, and
+misconception category. Never make raw prompts, model outputs, secrets, or
+free-text learner content a default lesson-analytics payload. Do not optimise
+for control clicks or time spent; completion evidence and delayed retrieval are
+the useful signals.
 
 ## Accessibility (non-negotiable, all patterns)
 
@@ -168,6 +279,8 @@ idea — the cheapest, highest-leverage move in this skill.
 
 - The concept is a definition or a single relationship → a passive
   scroll-reveal infographic + a prediction MCQ is enough (and better).
+- Toggling / clicking / dragging wouldn't reveal anything a static scene
+  couldn't → the control is unearned; stay passive (gate 1, restraint).
 - You can't name the concept the interaction teaches → it's a seductive detail.
 - The audience is **beginner** and the interaction would be open-ended →
   constrain to 2–3 presets with worked data, or stay passive.
@@ -175,8 +288,13 @@ idea — the cheapest, highest-leverage move in this skill.
 ## Verification (per SKILL §7 Step 5)
 
 - [ ] `npm run typecheck` passes (the `"use client"` boundary compiles).
+- [ ] A passive reveal wouldn't teach the same thing — the control earned its
+      place (gate 1, restraint).
 - [ ] Every control is keyboard-reachable; Tab to it, activate with Enter/Space
       or arrow keys.
+- [ ] Every control **looks** clickable (visible chrome + clear selected state)
+      and carries a verb-led instruction the learner can't miss (gates 2 + 3,
+      affordance + discoverability).
 - [ ] DevTools → Rendering → "Emulate prefers-reduced-motion: reduce" → the
       widget still communicates everything (state, not motion).
 - [ ] **Dark mode:** every tile, bar, chart line, and label is legible.
@@ -184,3 +302,8 @@ idea — the cheapest, highest-leverage move in this skill.
       overflow.
 - [ ] At least one beat is Constructive (predict-then-reveal or task-framed
       discovery); the interaction teaches a named concept.
+- [ ] The feedback addresses a named misconception, points to evidence, and
+      recommends one next investigation; the transfer task requires a decision
+      or explanation.
+- [ ] The measurement plan, if implemented, captures only learning-relevant,
+      privacy-safe event categories.

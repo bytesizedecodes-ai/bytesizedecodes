@@ -46,7 +46,31 @@ export type SkillId =
   | "alerting"
   | "observability-dashboards"
   | "llm-cost-latency"
-  | "observability-tools";
+  | "observability-tools"
+  // LLM Observability (intermediate) + AI Observability: Reliability (expert)
+  | "otel-genai"
+  | "llm-instrumentation"
+  | "telemetry-privacy"
+  | "ai-slo"
+  | "offline-evaluation"
+  | "online-evaluation"
+  | "llm-judge"
+  | "eval-bias"
+  | "rag-evaluation"
+  | "eval-gates"
+  | "ai-incident-response"
+  | "telemetry-strategy"
+  | "telemetry-pipeline"
+  | "ai-security"
+  | "ai-red-teaming"
+  | "ai-guardrails"
+  | "ai-audit-trail"
+  | "ai-compliance"
+  | "eu-ai-act"
+  | "nist-ai-rmf"
+  | "llm-drift"
+  | "agent-tracing"
+  | "mcp-observability";
 
 export interface CodeExercise {
   id: string;

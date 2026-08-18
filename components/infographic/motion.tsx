@@ -7,7 +7,7 @@
  * Client Component cleanly.
  *
  * Implements the motion system documented in
- * .agents/skills/infographics-animation/. Read its SKILL.md + references before
+ * .agents/skills/infographics-interactive_v4/. Read its SKILL.md + references before
  * editing here.
  *
  * Requires the `motion` package:  npm install motion   (NOT framer-motion)
@@ -20,7 +20,7 @@ import type { ReactNode } from "react";
 
 /* ------------------------------------------------------------------ */
 /* Tokens — the single source of truth for the motion language.        */
-/* See infographics-animation/references/motion-tokens.md.             */
+/* See infographics-interactive_v4/references/motion-tokens.md.        */
 /* ------------------------------------------------------------------ */
 
 export const MOTION = {

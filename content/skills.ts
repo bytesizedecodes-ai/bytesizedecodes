@@ -108,6 +108,122 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "Observability tools",
     description: "Name the common observability tools and the job each one does.",
   },
+  // LLM Observability (intermediate) + AI Observability: Reliability (expert)
+  {
+    id: "otel-genai",
+    label: "GenAI telemetry standards",
+    description: "Read an OpenTelemetry GenAI / OpenInference span and choose what to instrument.",
+  },
+  {
+    id: "llm-instrumentation",
+    label: "Instrumenting LLM apps",
+    description: "Add the right context (model, prompt, retrieval, tool, release) to every span.",
+  },
+  {
+    id: "telemetry-privacy",
+    label: "Telemetry privacy",
+    description: "Keep prompts and outputs out of logs that shouldn't see them.",
+  },
+  {
+    id: "ai-slo",
+    label: "AI service levels",
+    description: "Turn fuzzy quality goals into measurable SLOs and error budgets.",
+  },
+  {
+    id: "offline-evaluation",
+    label: "Offline evaluation",
+    description: "Build a golden set and regression suite to validate changes before shipping.",
+  },
+  {
+    id: "online-evaluation",
+    label: "Online evaluation",
+    description: "Sample and evaluate live traffic to catch what offline misses.",
+  },
+  {
+    id: "llm-judge",
+    label: "LLM-as-a-judge",
+    description: "Use a model to grade outputs, and know when a judge disagrees with humans.",
+  },
+  {
+    id: "eval-bias",
+    label: "Evaluation bias",
+    description: "Spot and reduce position, verbosity, and self-preference bias in judges.",
+  },
+  {
+    id: "rag-evaluation",
+    label: "RAG evaluation",
+    description: "Measure retrieval and grounding with faithfulness, relevance, and context metrics.",
+  },
+  {
+    id: "eval-gates",
+    label: "Eval gates & releases",
+    description: "Compare releases, canary, and block deploys on regressions.",
+  },
+  {
+    id: "ai-incident-response",
+    label: "AI incident response",
+    description: "Triage an AI incident from alert to written diagnosis.",
+  },
+  {
+    id: "telemetry-strategy",
+    label: "Telemetry strategy",
+    description: "Choose standards and vendors without locking in.",
+  },
+  {
+    id: "telemetry-pipeline",
+    label: "Telemetry pipeline",
+    description: "Design collection, sampling, storage, and retention at scale.",
+  },
+  {
+    id: "ai-security",
+    label: "AI security (OWASP LLM)",
+    description: "Map the OWASP LLM Top 10 to telemetry signals you can detect.",
+  },
+  {
+    id: "ai-red-teaming",
+    label: "AI red-teaming",
+    description: "Probe for prompt injection, extraction, and exfiltration at scale.",
+  },
+  {
+    id: "ai-guardrails",
+    label: "AI guardrails",
+    description: "Apply input/output guardrails and read their (evadable) signals honestly.",
+  },
+  {
+    id: "ai-audit-trail",
+    label: "AI audit trails",
+    description: "Build immutable, replayable evidence for accountability.",
+  },
+  {
+    id: "ai-compliance",
+    label: "AI compliance",
+    description: "Map observability to controls: EU AI Act, NIST AI RMF, ISO 42001, SR 11-7.",
+  },
+  {
+    id: "eu-ai-act",
+    label: "EU AI Act",
+    description: "Classify AI risk and meet traceability, oversight, and auditability duties.",
+  },
+  {
+    id: "nist-ai-rmf",
+    label: "NIST AI RMF",
+    description: "Apply Govern, Map, Measure, and Manage to an AI system.",
+  },
+  {
+    id: "llm-drift",
+    label: "LLM drift",
+    description: "Detect input, output, and semantic drift in generative systems.",
+  },
+  {
+    id: "agent-tracing",
+    label: "Agent & tool tracing",
+    description: "Trace agent loops, tool calls, handoffs, and budget exhaustion.",
+  },
+  {
+    id: "mcp-observability",
+    label: "MCP observability",
+    description: "Observe Model Context Protocol tool calls across multi-agent systems.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {

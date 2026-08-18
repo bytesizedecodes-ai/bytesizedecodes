@@ -30,6 +30,7 @@ as future; treat them as strategy history unless exit criteria still apply.
 | [`03-course-and-track-roadmap.md`](./03-course-and-track-roadmap.md) | Tracks, skills, curriculum |
 | [`04-interactive-learning-design.md`](./04-interactive-learning-design.md) | Active learning interaction patterns |
 | [`05-product-execution-roadmap.md`](./05-product-execution-roadmap.md) | Strategy overview, shared backend/metrics, decision gates |
+| [`06-ai-observability-intermediate-and-advanced.md`](./06-ai-observability-intermediate-and-advanced.md) | Proposed intermediate and expert AI observability curriculum |
 | [`release-and-deploy.md`](./release-and-deploy.md) | `dev` → `main`, CI, Netlify, Convex production |
 
 ## Delivery phases

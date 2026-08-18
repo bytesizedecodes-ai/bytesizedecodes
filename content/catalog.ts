@@ -36,7 +36,11 @@ const courseUnits: LearningUnitSummary[] = COURSES.flatMap((course) =>
         ? (["beginner", "founder"] as const)
         : course.slug === "ai-observability"
           ? (["beginner", "founder", "engineer"] as const)
-          : (["grad", "engineer", "founder", "beginner"] as const),
+          : course.slug === "llm-observability"
+            ? (["engineer", "grad", "founder"] as const)
+            : course.slug === "ai-observability-reliability"
+              ? (["grad", "engineer", "founder"] as const)
+              : (["grad", "engineer", "founder", "beginner"] as const),
   })),
 );
 

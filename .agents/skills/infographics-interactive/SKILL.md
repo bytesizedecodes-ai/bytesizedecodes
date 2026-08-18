@@ -1,14 +1,13 @@
 ---
 name: infographics-interactive
-description: THE LATEST and default skill for building ByteSizeDecodes infographic lessons and course pages. v3 — evidence-based visual storytelling for three audience levels (beginner / intermediate / expert), the scroll-triggered motion system, AND an active-learning interactivity layer (ICAP: make learners do, not just watch). Use whenever the user wants to create a lesson, add a course, design a visual explanation, build an interactive widget/dashboard/simulator, animate infographics, or build a course page. Triggers on: build infographic, create lesson, add course, new course page, animate infographics, scroll reveal, stagger entrance, interactive widget, make it interactive, "make the scenes animate", infographic storytelling. Read this file fully before generating any lesson markup.
+description: Retained v3.1 course-authoring skill (superseded as default by infographics-interactive_v4). Evidence-based visual storytelling for beginner/intermediate/expert, scroll motion, and ICAP interactivity. Prefer infographics-interactive_v4 for new lessons unless explicitly maintaining legacy v3 content. Triggers on: infographics-interactive v3, legacy interactive infographic, v3.1 lesson skill.
 ---
 
-# infographics-interactive (v3)
+# infographics-interactive (v3.1)
 
-The latest default skill for building ByteSizeDecodes lessons — **a superset
-of `infographics-animation` (v2)**. v3 keeps everything from v2 (evidence-based
-pedagogy, the motion system, theme-safe color) and adds two things the research
-demands:
+**Superseded as the default** by `infographics-interactive_v4` (`CLAUDE.md`
+rule 11). Keep this skill for reference and legacy v3 lessons. v3.1 is a
+superset of `infographics-animation` (v2) and adds:
 
 - **An interactivity layer (§6).** Active learning decisively beats passive
   (Freeman 2014, *PNAS*; Chi's ICAP ladder). Motion alone is *Passive* viewing;
@@ -19,6 +18,9 @@ demands:
   effect is now meta-analytic (Tetzlaff 2025): guidance *helps novices but harms
   experts*. So each level gets its own named narrative structure — not just
   stronger/weaker versions of the same one.
+- **A learning-evidence contract (§7).** A lesson is not complete because a
+  learner clicked something; it is complete when the interaction surfaces a
+  misconception, gives useful feedback, and asks for transfer.
 
 Every course has a `level`: **beginner** (layman), **intermediate**
 (tech enthusiast), or **expert** (technical expert). The level controls
@@ -103,6 +105,24 @@ Full beat-by-beat definitions, why each suits its level, and the wider library
 of reusable story shapes (story-mountain, ABT, POE, 5E, case method, CER, …)
 live in **`references/narrative-structures.md`**. Pick the framework for your
 course's `level` in Step 1 of the workflow and emit its beats in Step 3.
+
+### 1.2 Course continuity — a case that earns its return
+
+For **intermediate and expert courses**, define one persistent, realistic case
+before authoring the first lesson. Every module should add one piece of evidence,
+constraint, or decision to that case; the capstone uses the accumulated case
+rather than inventing a disconnected final exercise. This turns individual
+infographics into a coherent investigation.
+
+| Level | Course-case rule |
+| --- | --- |
+| Beginner | Optional recurring character/story; never let it obscure the core concept. |
+| Intermediate | One bounded product incident or build. Each lesson reveals a new signal or action. |
+| Expert | One production design or failure case with competing constraints. Each lesson adds evidence, uncertainty, or a counter-example. |
+
+Write the case in 2–4 sentences, state the final learner artifact, and name the
+lesson where each major piece of evidence first appears. The case is a scaffold,
+not a screenplay: omit it when a standalone definition is genuinely clearer.
 
 ---
 
@@ -334,6 +354,45 @@ patterns to reuse.
 > teaches, cut it — decorative interaction is a seductive detail that *harms*
 > learning (Harp & Mayer).
 
+### Three gates every control must pass
+A toggle, a clickable step, or a slider only belongs in a lesson when it clears
+all three. Fail one and the control hurts more than it helps:
+
+1. **Restraint — earn the control.** Add a control only when the concept
+   *requires* the learner to act to grasp it — a comparison they must run, a
+   sequence they must investigate, a trade-off they must feel by moving a knob.
+   If a passive scroll-reveal teaches the same thing (most definitions and
+   single-relationship lessons), **stay passive.** A toggle slapped on to "make
+   it interactive" is decorative interaction — it adds load and *harms* learning
+   (P8). The default is *no* control; the control is the exception.
+2. **Affordance — it must look clickable.** A control has to *read as a control
+   at rest*: visible button chrome (a bordered pill or container with its own
+   background), a clearly different **selected** state (brand fill) from the
+   unselected state, a comfortable touch target (≥ ~32px tall), and a
+   `focus-ring` on keyboard focus. A bare word that is secretly a `<button>`, or
+   a clickable SVG region with no chrome, is invisible — learners don't click
+   what doesn't look clickable.
+3. **Discoverability — tell the learner to use it.** Every widget carries an
+   explicit, **verb-led instruction** the learner can't miss: *"Toggle to
+   compare the states"*, *"Click a row to investigate"*, *"Drag the slider to
+   feel the trade-off."* Put it in the `<InfographicHeader subtitle>` or
+   directly above the control. If learners don't know they can act, most scroll
+   straight past — and the whole active layer is wasted.
+
+### Feedback contract — interaction must teach, not only reveal
+
+Before building a widget, name the **likely wrong conclusion**, the feedback
+that corrects it, and the **next investigation** the learner should make. A
+widget that changes a number but leaves the learner to infer why is only a
+visual toy. Feedback should be specific to the state or choice, short enough to
+read beside the visual, and should point to evidence—not merely say “correct”
+or “incorrect”.
+
+For example: “The 24-hour view hides the short spike. Inspect the one-hour
+window before declaring the service healthy.” The next investigation might be
+opening the trace slice for the spike. On expert lessons, feedback can remain
+minimal, but it must identify the evidence that supports or weakens the claim.
+
 ### The ICAP ladder (target at least *Constructive*)
 | Rung | What the learner does | Example on the platform |
 |---|---|---|
@@ -346,15 +405,18 @@ The biggest jump is **Active → Constructive**. Every lesson should land at lea
 one Constructive beat; the cheapest way is *predict-then-reveal* — ask the
 learner to commit before the widget reveals the answer.
 
-### The three widget patterns (reuse these)
+### The widget patterns (reuse these)
 | Pattern | Reference build | ICAP | Use when the concept is… |
 |---|---|---|---|
 | **Toggle-compare** | `MetricsDashboard` (1h/24h/7d tiles + sparklines) | Active | a *comparison between states* (window, mode, before/after) |
 | **Click-to-elaborate** | `TraceWaterfall` (step → detail panel) | Active | a *whole with parts worth inspecting* one at a time |
 | **Drag-to-tune** | `AlertThresholdTuner` (threshold ↔ false-alarm/missed trade-off) | Active→Constructive | a *trade-off you can feel* by moving one knob |
+| **Evidence matrix** | proposed | Constructive | several signals support competing explanations; learner chooses the claim the evidence supports |
+| **Decision gate** | proposed | Constructive | a release or incident decision has real trade-offs and a justified next action |
 
-Concrete code recipes for each (props, state shape, accessibility), the
-client-boundary rules, and the Constructive upgrade paths are in
+Concrete code recipes for the reference patterns, technical-course recipes for
+the evidence patterns, the client-boundary rules, and the Constructive upgrade
+paths are in
 **`references/interactivity-patterns.md`**. A minimal copy-paste starter lives
 in **`assets/interactive-widget-template.tsx`**.
 
@@ -372,11 +434,36 @@ The *form* of interactivity reverses with expertise, just like analogies:
   default. Never make a concept reachable *only* through animation.
 - Every control is a real `<button>` / `<input type="range">` (keyboard- and
   screen-reader-reachable), with `aria-pressed` / `aria-label` as appropriate.
+- Real controls must also **look** like controls and **announce themselves** —
+  visible chrome + a clear selected state + a verb-led instruction are part of
+  accessibility, not decoration (the three gates above).
 - Same color discipline as everywhere else (§3): one accent per scene, theme-safe tokens, semantic red only for the anomaly/failure.
+
+### Measurement plan — optional implementation, required design
+
+For every widget, write a small measurement plan even if the product does not
+yet record events. It must answer: *which prediction/choice matters, what counts
+as meaningful investigation, what misconception can this expose, and how would
+we know whether the learner transferred the idea?* Track only learning-relevant,
+privacy-safe events if analytics is later implemented: selected answer/state,
+meaningful investigation, submitted conclusion, and misconception category.
+
+Never collect raw user prompts, model responses, secrets, or free-text learner
+answers merely to measure lesson engagement. Aggregate or pseudonymise where
+possible. Optimise for demonstrated understanding, not clicks, dwell time, or
+number of controls touched.
 
 ---
 
-## 7. The 5-step workflow
+## 7. The authoring workflow
+
+### Step 0 — Write the learning contract before markup
+
+Complete the compact template in **`references/lesson-contract.md`**:
+objective, prerequisite misconception, framework beats, learner
+prediction/action, diagnostic feedback, transfer task, and evidence plan. For
+intermediate/expert course lessons, link it to the course case from §1.2. If the
+contract cannot explain why a widget exists, do not build the widget.
 
 ### Step 1 — Read the course level, calibrate, and pick the framework
 Read the course's `level` (beginner/intermediate/expert) in
@@ -387,10 +474,10 @@ Intermediate → Predict–Investigate–Case; Expert → Problem-First Diagnost
 **If unsure of the level, ask.**
 
 ### Step 2 — Define the learning objective + the aha
-State in one sentence: *what should the learner understand after this
-lesson that they didn't before?* Then identify the **aha moment** — the
-insight where a hidden relationship becomes visible. The whole lesson
-builds toward that.
+State in one sentence: *what should the learner understand after this lesson
+that they didn't before?* Then identify the **aha moment** — the insight where
+a hidden relationship becomes visible. Also name the likely wrong conclusion
+and the evidence that corrects it. The whole lesson builds toward that.
 
 ### Step 3 — Structure the story (framework + P5 + P6)
 Lay out the scenes in the beat order of the framework you picked in Step 1
@@ -419,15 +506,21 @@ Theme-safe colors only (§3). Motion via `Stagger`/`MotionChild`/`Reveal` (§5).
    All motion collapses to instant.
 5. **Color check:** one accent per scene, neutrals dominate, no rainbow.
    Resting state feels calm, not loud.
-6. **Interactivity check (if the lesson has a widget):** every widget has a
-   stated learning goal; at least one beat is Constructive (predict-then-reveal
-   or task-framed discovery); no decorative interaction; every control is
-   keyboard-reachable and labelled; the widget works in **both** themes and at
-   mobile width (375px, no horizontal overflow).
+6. **Interactivity check (if the lesson has a widget):** the widget earned its
+   place (a passive reveal wouldn't teach the same thing — gate 1); every
+   control **looks** clickable (chrome + clear selected state — gate 2) and
+   carries a visible verb-led instruction (gate 3); at least one beat is
+   Constructive (predict-then-reveal or task-framed discovery); no decorative
+   interaction; every control is keyboard-reachable and labelled; the widget
+   works in **both** themes and at mobile width (375px, no horizontal overflow).
 7. **Pedagogy check:** does the aha land? Is there a concrete anchor (if
    beginner)? Is the density appropriate to the level? Did you say where the
    analogy breaks (if beginner/intermediate)? Did you follow the level's
    framework beats (§1.1)?
+8. **Evidence check:** the lesson contract exists; feedback addresses a named
+   misconception and recommends the next investigation; the transfer prompt
+   requires a decision or explanation rather than recall; the measurement plan
+   avoids raw sensitive content.
 
 ---
 
@@ -450,9 +543,15 @@ Theme-safe colors only (§3). Motion via `Stagger`/`MotionChild`/`Reveal` (§5).
   MCQ all saying the same thing). Say it once (P1 redundancy).
 - **Don't install `framer-motion`.** Use `motion`.
 - **Don't ship motion without `MotionConfig reducedMotion="user"`.**
-- **Don't add decorative interactivity.** A toggle/sparkle that doesn't teach a
-  concept is a seductive detail — it *harms* learning (P8). Every widget must
-  justify itself against the learning objective.
+- **Don't add a control you haven't earned.** If a passive reveal teaches the
+  same thing, stay passive. A toggle/click/drag added just to "make it
+  interactive" is decorative interaction — a seductive detail that *harms*
+  learning (P8; gate 1, restraint).
+- **Don't ship a control that doesn't look clickable, or that the learner isn't
+  told to click.** Visible chrome, a clear selected state, and a verb-led
+  instruction ("Toggle…", "Click…", "Drag…") are mandatory — a `<button>` that
+  renders as plain text is invisible, and most learners will scroll straight
+  past it (gates 2 + 3, affordance + discoverability).
 - **Don't build an open sandbox for beginners.** Constrain to 2–3 presets with
   worked data; open discovery backfires for novices (Lazonder & Harmsen 2016).
 - **Don't ship a widget without a learning goal, keyboard access, and a
@@ -460,6 +559,10 @@ Theme-safe colors only (§3). Motion via `Stagger`/`MotionChild`/`Reveal` (§5).
   animation or a mouse drag, it's broken.
 - **Don't stop at Active.** Aim at least one beat per lesson at *Constructive*
   (predict-then-reveal) — that's where the retrieval/generation gains live (P8).
+- **Don't give generic feedback.** “Correct” or “try again” without naming the
+  evidence and next investigation wastes the learner’s decision.
+- **Don't optimise a lesson for clicks.** Instrument learning evidence only;
+  never treat raw prompts, model outputs, or time-on-page as engagement fuel.
 
 ---
 
@@ -468,9 +571,12 @@ Theme-safe colors only (§3). Motion via `Stagger`/`MotionChild`/`Reveal` (§5).
 - `references/narrative-structures.md` — **(new in v3)** the three level
   frameworks (Anchored Story-Mountain, Predict–Investigate–Case, Problem-First
   Diagnostic) with beats, plus the library of reusable story shapes.
-- `references/interactivity-patterns.md` — **(new in v3)** concrete recipes for
-  the three widget patterns (toggle-compare, click-to-elaborate, drag-to-tune),
-  ICAP levels, Constructive upgrade paths, and the client-boundary + accessibility rules.
+- `references/interactivity-patterns.md` — concrete recipes for the reference
+  and evidence-based widget patterns, ICAP levels, Constructive upgrade paths,
+  feedback contracts, and the client-boundary + accessibility rules.
+- `references/lesson-contract.md` — **(new in v3.1)** compact pre-markup brief
+  linking an objective and misconception to interaction, feedback, transfer,
+  course case, and learning evidence.
 - `assets/interactive-widget-template.tsx` — **(new in v3)** a minimal
   `"use client"` widget starter (state + aria + theme-safe tokens).
 - `references/motion-tokens.md` — exact easing/duration/variant/stagger values.
