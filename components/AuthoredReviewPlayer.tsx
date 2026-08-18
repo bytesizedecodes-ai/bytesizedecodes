@@ -7,6 +7,7 @@ import type { ResolvedAuthoredReview } from "@/content/review";
 import { useGradeReview, useToday } from "@/lib/data/provider";
 import type { AttemptResult, AuthoredReviewCard } from "@/lib/data/types";
 import type { SrsGrade } from "@/lib/srs";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { capabilityForTopic } from "@/lib/capabilityLabels";
 
 export function AuthoredReviewPlayer({
@@ -27,6 +28,18 @@ export function AuthoredReviewPlayer({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const correct = selection === resolved.question.answer;
+
+  useChoiceKeys({
+    count: resolved.question.choices.length,
+    onPick: (index) => {
+      if (revealed) return;
+      setSelection(resolved.question.choices[index]!.id);
+    },
+    onConfirm: () => {
+      if (!revealed && selection) setRevealed(true);
+    },
+    enabled: !revealed,
+  });
 
   async function submitGrade(grade: SrsGrade) {
     if (!revealed || pending || reward) return;
@@ -92,6 +105,11 @@ export function AuthoredReviewPlayer({
           );
         })}
       </div>
+      {!revealed && (
+        <p className="text-[11px] text-ink-faint">
+          Tip: press 1–{resolved.question.choices.length} to pick, Enter to reveal.
+        </p>
+      )}
 
       {!revealed && (
         <button

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
 import { Scene } from "./scenes";
 
@@ -8,11 +11,18 @@ import { Scene } from "./scenes";
  * time, but the world keeps changing — new words, new events, new behaviour —
  * so quality slips a little each week, like milk slowly turning sour. The aha:
  * there’s no single breakage to point at, only a gentle downward line, which is
- * why you must watch quality over time rather than trust a one-off test. Brand
- * line; a single red marker at the decayed ‘now’ end is the only non-brand
- * colour, used solely to teach ‘this is the degraded state’.
+ * why you must watch quality over time rather than trust a one-off test.
+ *
+ * Interactive (toggle-compare on the "watch" beat): the learner compares a
+ * one-off check (a single reading — ambiguous) with the weeks-long line (the
+ * slide, obvious). Brand line; the decayed end turns semantic red only to mark
+ * the degraded state.
  */
+type View = "one-off" | "over-time";
+
 export function DriftSlowlyGoingBad() {
+  const [view, setView] = useState<View>("one-off");
+
   return (
     <Infographic>
       <InfographicHeader
@@ -37,12 +47,46 @@ export function DriftSlowlyGoingBad() {
         </p>
       </Scene>
 
-      {/* ③ Watch quality over time to catch it */}
+      {/* ③ Interactive: one-off check vs watching over time */}
       <Scene caption="③ You catch drift by watching quality over time">
-        <QualityLine phase="watch" />
+        <div
+          role="group"
+          aria-label="How you check quality"
+          className="mx-auto flex w-fit gap-1 rounded-full border border-ash bg-canvas p-1"
+        >
+          {(
+            [
+              ["one-off", "One-off check"],
+              ["over-time", "Watch over time"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setView(value)}
+              aria-pressed={view === value}
+              className={`focus-ring rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
+                view === value
+                  ? "bg-brand text-ink"
+                  : "text-ink-soft hover:text-ink"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-center text-[11px] font-medium uppercase tracking-wide text-brand-deep">
+          Toggle to compare the two ways of checking
+        </p>
+        <QualityLine phase="watch" mode={view} />
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          A one-off test can’t see a slow slide. A line over weeks shows the decay
-          <em> before</em> users start complaining.
+          {view === "one-off" ? (
+            <>A single reading can&rsquo;t tell you whether this is a bad day or a bad{" "}
+            <em>direction</em>. One number, no story.</>
+          ) : (
+            <>The weeks-long line shows the slide — drift becomes visible{" "}
+            <em>before</em> users start complaining.</>
+          )}
         </p>
       </Scene>
 
@@ -56,8 +100,15 @@ export function DriftSlowlyGoingBad() {
   );
 }
 
-/** A small quality-over-weeks line. `phase` controls how far it has decayed. */
-function QualityLine({ phase }: { phase: "then" | "drift" | "watch" }) {
+/** A small quality-over-weeks line. `phase` controls how far it has decayed;
+ *  `mode: "one-off"` hides the line and shows only the latest reading. */
+function QualityLine({
+  phase,
+  mode = "over-time",
+}: {
+  phase: "then" | "drift" | "watch";
+  mode?: View;
+}) {
   // y is inverted: higher value = higher on chart = better quality.
   const series: Record<typeof phase, number[]> = {
     then: [88, 90, 89, 91, 90, 91, 90, 91],
@@ -88,15 +139,17 @@ function QualityLine({ phase }: { phase: "then" | "drift" | "watch" }) {
         {/* acceptable threshold */}
         <line x1={pad} y1={h - pad - ((70 - min) / (max - min)) * (h - pad * 2)} x2={w - pad} y2={h - pad - ((70 - min) / (max - min)) * (h - pad * 2)} stroke="var(--color-ink-faint)" strokeWidth="1" strokeDasharray="3 4" />
         <text x={w - pad} y={h - pad - ((70 - min) / (max - min)) * (h - pad * 2) - 4} textAnchor="end" fontSize="9" fill="var(--color-ink-faint)">acceptable</text>
-        {/* the quality line */}
-        <polyline
-          points={coords.map((c) => `${c.x},${c.y}`).join(" ")}
-          fill="none"
-          stroke={lineColor}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        {/* the quality line — hidden in one-off mode: a single check sees one dot */}
+        {mode === "over-time" && (
+          <polyline
+            points={coords.map((c) => `${c.x},${c.y}`).join(" ")}
+            fill="none"
+            stroke={lineColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )}
         {/* end marker */}
         <circle cx={last.x} cy={last.y} r="4" fill={lineColor} />
         <text x={last.x - 8} y={last.y - 8} textAnchor="end" fontSize="10" fontWeight="bold" fill={lineColor}>

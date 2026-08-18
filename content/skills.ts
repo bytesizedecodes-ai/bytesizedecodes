@@ -28,6 +28,66 @@ export const SKILLS: readonly SkillDefinition[] = [
     description: "Frame labelled examples as classification or regression.",
   },
   {
+    id: "unsupervised-learning",
+    label: "Unsupervised learning",
+    description: "Discover groups and structure in data that has no labels.",
+  },
+  {
+    id: "reinforcement-learning",
+    label: "Reinforcement learning",
+    description: "Explain how an agent learns from rewards and penalties by trying.",
+  },
+  {
+    id: "feature-engineering",
+    label: "Features",
+    description: "Turn raw facts about a sample into numbers a model can learn from.",
+  },
+  {
+    id: "classification-basics",
+    label: "Classification",
+    description: "Predict a category for a new sample by drawing a decision boundary.",
+  },
+  {
+    id: "k-nearest-neighbors",
+    label: "k-nearest neighbours",
+    description: "Classify a new sample by letting its closest neighbours vote.",
+  },
+  {
+    id: "centroid-classifier",
+    label: "Centroid classifier",
+    description: "Classify by distance to the average member of each class.",
+  },
+  {
+    id: "decision-trees",
+    label: "Decision trees",
+    description: "Read and build rule trees that split data one question at a time.",
+  },
+  {
+    id: "ml-applications",
+    label: "ML in the wild",
+    description: "Recognise the machine learning already running in products you use daily.",
+  },
+  {
+    id: "ml-limits",
+    label: "Limits of ML",
+    description: "Anticipate how ML fails — bias, bad data, and brittleness — before it ships.",
+  },
+  {
+    id: "train-test-split",
+    label: "Train/test split",
+    description: "Grade a model on data it has never seen, not on what it studied.",
+  },
+  {
+    id: "overfitting",
+    label: "Overfitting",
+    description: "Tell memorising from understanding and spot each in results.",
+  },
+  {
+    id: "data-quality",
+    label: "Data quality",
+    description: "Reason about how bad data poisons a model before algorithms matter.",
+  },
+  {
     id: "classification-metrics",
     label: "Classification metrics",
     description: "Compute and choose metrics under different error costs.",

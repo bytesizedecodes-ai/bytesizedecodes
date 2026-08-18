@@ -580,41 +580,16 @@ export const getRecentXp = query({
   },
 });
 
-// ---------- cross-user (leaderboard + counts) ----------
+// ---------- cross-user (public stats) ----------
 //
-// The first queries that read across all profiles. No userId — these are global.
+// The queries that read across all profiles. No userId — these are global.
 // At dev scale (~20 seeded profiles) a full collect+sort in JS is cheap. When real
 // volume arrives, the by_xp index on profiles supports an indexed top-N read instead.
-
-interface LeaderboardRow {
-  rank: number;
-  displayName: string;
-  xpTotal: number;
-  level: number;
-  currentStreak: number;
-  track: "grad" | "beginner" | "engineer" | "founder";
-}
-
-export const getLeaderboard = query({
-  args: { limit: v.optional(v.number()) },
-  handler: async (ctx, { limit }): Promise<LeaderboardRow[]> => {
-    const profiles = await ctx.db.query("profiles").collect();
-    // Never show demo/seed rows (see seedDemoProfiles) on the public leaderboard —
-    // real launch means real users only, no fabricated social proof.
-    const real = profiles.filter((p) => !p.seed);
-    return real
-      .sort((a, b) => b.xpTotal - a.xpTotal)
-      .slice(0, limit ?? 20)
-      .map((p, i) => ({
-        rank: i + 1,
-        displayName: p.displayName,
-        xpTotal: p.xpTotal,
-        level: levelProgress(p.xpTotal).level,
-        currentStreak: p.currentStreak,
-        track: p.track,
-      }));
-  },
-});
+//
+// Note: the global-XP leaderboard query was removed deliberately — it conflicts
+// with the engagement strategy (never rank beginners against experienced users;
+// see docs/engagement-and-retention.md "Leaderboard decision"). If comparison
+// returns, build cohort/weekly or personal-best, not global lifetime XP.
 
 interface UserCounts {
   totalLearners: number;
@@ -665,6 +640,98 @@ export const getUserCounts = query({
     ).size;
 
     return { totalLearners, practicingNow, drillsAnswered, avgStreak };
+  },
+});
+
+/**
+ * Raw lifetime stats the /progress milestones are derived from. Everything is
+ * computed from existing tables — no new writes, no new milestone state.
+ */
+export const getMilestones = query({
+  args: { userId: v.string(), today: v.string() },
+  handler: async (ctx, { userId, today }) => {
+    const uid = await getUserId(ctx, { userId });
+    const day = asDayKey(today);
+    const [profile, progressRows, attemptRows, evidenceRows] = await Promise.all([
+      loadProfile(ctx, uid),
+      ctx.db
+        .query("byteProgress")
+        .withIndex("by_user", (q) => q.eq("userId", uid))
+        .collect(),
+      ctx.db
+        .query("attempts")
+        .withIndex("by_user", (q) => q.eq("userId", uid))
+        .collect(),
+      ctx.db
+        .query("skillEvidence")
+        .withIndex("by_user", (q) => q.eq("userId", uid))
+        .collect(),
+    ]);
+    const settled = profile ? settleForDisplay(profile, day) : null;
+    return {
+      lessonsCompleted: progressRows.filter((row) => row.status === "completed")
+        .length,
+      correctAnswers: attemptRows.filter((attempt) => attempt.correct).length,
+      answersLogged: attemptRows.length,
+      codeTestsPassed: new Set(evidenceRows.map((row) => row.sourceKey)).size,
+      longestStreak: settled?.longestStreak ?? 0,
+      xpTotal: profile?.xpTotal ?? 0,
+    };
+  },
+});
+
+/**
+ * Topics the learner got wrong in the last two days (yesterday + today), for
+ * the "Repair" card on /today. Only incorrect attempts count — the point is
+ * to resurface the misconception, not the streak of wins.
+ */
+export const getRecentMisses = query({
+  args: { userId: v.string(), today: v.string() },
+  handler: async (ctx, { userId, today }) => {
+    const uid = await getUserId(ctx, { userId });
+    const day = asDayKey(today);
+    const yesterday = addDays(day, -1);
+    const attempts = await ctx.db
+      .query("attempts")
+      .withIndex("by_user_day", (q) => q.eq("userId", uid).eq("day", yesterday))
+      .collect();
+    const todays = await ctx.db
+      .query("attempts")
+      .withIndex("by_user_day", (q) => q.eq("userId", uid).eq("day", day))
+      .collect();
+    const misses = [...attempts, ...todays].filter((attempt) => !attempt.correct);
+    const byTopic = new Map<string, { topic: string; missed: number }>();
+    for (const miss of misses) {
+      const entry = byTopic.get(miss.topic);
+      if (entry) entry.missed += 1;
+      else byTopic.set(miss.topic, { topic: miss.topic, missed: 1 });
+    }
+    return [...byTopic.values()].sort((a, b) => b.missed - a.missed).slice(0, 3);
+  },
+});
+
+/**
+ * The user's own feedback submissions, with admin replies — closes the loop
+ * so a reply from /admin actually reaches the person who asked.
+ */
+export const getMyFeedback = query({
+  args: { userId: v.string() },
+  handler: async (ctx, { userId }) => {
+    const uid = await getUserId(ctx, { userId });
+    const rows = await ctx.db
+      .query("feedback")
+      .withIndex("by_user", (q) => q.eq("userId", uid))
+      .collect();
+    return rows
+      .sort((a, b) => b.createdAt - a.createdAt)
+      .slice(0, 10)
+      .map((row) => ({
+        kind: row.kind,
+        body: row.body,
+        adminReply: row.adminReply ?? null,
+        status: row.status,
+        createdAt: row.createdAt,
+      }));
   },
 });
 

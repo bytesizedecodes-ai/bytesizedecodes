@@ -25,7 +25,9 @@ import type {
   DailyPlan,
   DayProgress,
   DayXp,
-  LeaderboardRow,
+  FeedbackItem,
+  MilestoneStats,
+  MissedTopic,
   OnboardingInput,
   Profile,
   ReviewCard,
@@ -210,9 +212,34 @@ export function useRecentXp(days: number, today: DayKey): DayXp[] | undefined {
   return data as DayXp[] | undefined;
 }
 
-export function useLeaderboard(limit?: number): LeaderboardRow[] | undefined {
-  const data = useQuery(api.queries.getLeaderboard, limit ? { limit } : {});
-  return data as LeaderboardRow[] | undefined;
+export function useMilestones(today: DayKey): MilestoneStats | undefined {
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getMilestones,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
+  return data as MilestoneStats | undefined;
+}
+
+export function useRecentMisses(today: DayKey): MissedTopic[] | undefined {
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getRecentMisses,
+    ready && authed ? { userId: AUTH_USER_ID, today } : "skip",
+  );
+  if (!ready || !authed) return undefined;
+  return data as MissedTopic[] | undefined;
+}
+
+export function useMyFeedback(): FeedbackItem[] | undefined {
+  const { ready, authed } = useAuthGate();
+  const data = useQuery(
+    api.queries.getMyFeedback,
+    ready && authed ? { userId: AUTH_USER_ID } : "skip",
+  );
+  if (!ready || !authed) return undefined;
+  return data as FeedbackItem[] | undefined;
 }
 
 export function useUserCounts(): UserCounts | undefined {

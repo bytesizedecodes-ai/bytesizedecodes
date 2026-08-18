@@ -19,6 +19,7 @@ export function LessonBody({
   questions,
   skillIds,
   capability,
+  nextLesson,
 }: {
   progressKey: string;
   attemptPrefix: string;
@@ -28,6 +29,7 @@ export function LessonBody({
   questions: ByteQuestion[];
   skillIds?: readonly SkillId[];
   capability?: string;
+  nextLesson?: { href: string; title: string; label?: string };
 }) {
   return (
     <>
@@ -47,6 +49,7 @@ export function LessonBody({
         exercise={exercise}
         skillIds={skillIds}
         capability={capability}
+        nextLesson={nextLesson}
       />
     </>
   );

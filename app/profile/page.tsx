@@ -23,6 +23,7 @@ import {
   useDeleteAccountData,
   useExportProgress,
   useImportProgress,
+  useMyFeedback,
   useResetProgress,
   useToday,
   useReviewQueue,
@@ -36,6 +37,7 @@ export default function ProfilePage() {
   const progress = useAllByteProgress();
   const today = useToday();
   const due = useReviewQueue(today);
+  const feedback = useMyFeedback();
   const { signOut } = useAuthActions();
   const exportProgress = useExportProgress();
   const importProgress = useImportProgress();
@@ -286,6 +288,41 @@ export default function ProfilePage() {
               </ul>
             )}
           </section>
+
+          {/* Feedback loop — admin replies reach the user here */}
+          {feedback !== undefined && feedback.length > 0 && (
+            <section className="card space-y-4 p-6">
+              <div>
+                <h2 className="text-lg font-semibold text-ink">Your feedback</h2>
+                <p className="mt-1 text-xs leading-relaxed text-ink-soft">
+                  Everything you&rsquo;ve sent us, with replies when we&rsquo;ve answered.
+                </p>
+              </div>
+              <ul className="space-y-3">
+                {feedback.map((item, index) => (
+                  <li key={index} className="rounded-xl border border-ash bg-surface-elevated p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-[11px] font-bold uppercase tracking-wide text-ink-faint">
+                        {item.kind}
+                      </span>
+                      <Badge tone={item.status === "resolved" ? "good" : "brand"}>
+                        {item.status}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 line-clamp-3 text-sm text-ink-soft">{item.body}</p>
+                    {item.adminReply && (
+                      <p className="mt-3 rounded-xl border border-brand-muted bg-brand-wash px-3 py-2.5 text-sm leading-relaxed text-ink">
+                        <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wide text-brand-deep">
+                          Reply from the team
+                        </span>
+                        {item.adminReply}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           {/* Privacy */}
           <section className="card space-y-4 p-6">

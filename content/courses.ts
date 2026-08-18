@@ -96,6 +96,8 @@ export type Course = {
   domain: CourseDomain;
   /** free | paid — free courses are public SEO; paid soft-gate until checkout exists */
   access: CourseAccess;
+  /** Optional human-readable prerequisite line, shown on the course page. */
+  prerequisites?: string;
   lessons: Lesson[];
 };
 
@@ -103,12 +105,15 @@ export const COURSES: readonly Course[] = [
   {
     slug: "machine-learning",
     title: "Machine Learning",
-    subtitle: "AI, machine learning, and deep learning — connected clearly.",
+    subtitle:
+      "The quick primer: AI, ML, and deep learning — connected clearly, in under 20 minutes.",
     description:
-      "A visual path through the concepts every AI learner needs. Each lesson combines an infographic, a concise explanation, an active check, and saved progress.",
+      "A quick visual orientation for people short on time: four lessons, one runnable exercise, and the mental map that everything else hangs on. Finished in one sitting — then go deep with Machine Learning for Layman or AI Observability.",
     level: "intermediate",
     domain: "Machine Learning",
     access: "free",
+    prerequisites:
+      "None — this is the fastest entry point. If you want the deep, picture-led treatment instead, start with Machine Learning for Layman.",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
@@ -375,7 +380,7 @@ for task, expected in cases:
         topic: "ai-foundations",
         skillIds: ["ai-ml-dl"],
         capability: "Place AI, machine learning, and deep learning in the correct relationship.",
-        minutes: 4,
+        minutes: 5,
         prediction: {
           id: "predict",
           kind: "mcq",
@@ -389,10 +394,44 @@ for task, expected in cases:
           explanation:
             "AI is the broad goal; ML is one path; DL is one ML technique. Circles nest AI ⊃ ML ⊃ DL.",
         },
+        exercise: {
+          id: "ex1",
+          title: "File the claim in the right circle",
+          prompt:
+            "A function should return 'AI', 'ML', or 'DL' for a claim about a system. Two lines file claims into the wrong circle — fix them so every test passes.",
+          starterCode: `def circle(claim: str) -> str:
+    """Place a claim in AI (broad), ML (learns from data), or DL (deep neural nets)."""
+    if "deep neural network" in claim:
+        return "DL"
+    if "learns rules from labelled data" in claim:
+        return "AI"        # <-- wrong
+    if "a system that behaves intelligently" in claim:
+        return "ML"        # <-- wrong
+    return "AI"
+`,
+          testCode: `
+cases = [
+    ("a deep neural network translates speech", "DL"),
+    ("it learns rules from labelled data", "ML"),
+    ("a system that behaves intelligently in the world", "AI"),
+    ("uses a deep neural network to rank videos", "DL"),
+    ("any technique that mimics intelligent behaviour", "AI"),
+]
+ok = True
+message = "ok"
+for claim, expected in cases:
+    got = circle(claim)
+    if got != expected:
+        ok = False
+        message = f"circle({claim!r}) -> {got!r}, expected {expected!r}"
+        break
+`,
+        },
         prose: [
           "These three terms are constantly confused, but they're just nested circles. AI is the largest; machine learning is a part of AI; deep learning is a part of machine learning.",
           "Artificial Intelligence is the goal: build machines that can act intelligently. Machine learning is one way to pursue that goal — let the system learn from data. Deep learning is one specific technique within ML — use many-layered neural networks.",
           "Not all AI is machine learning (rule-based expert systems are AI but don't learn). Not all ML is deep learning (random forests and logistic regression are ML but not deep). But all deep learning is ML, and all ML is AI.",
+          "That's the primer done. Each idea here has a picture-led deep dive in Machine Learning for Layman — features, classifiers, train/test splits, overfitting — if you want to actually build the intuition rather than just map it.",
         ],
         questions: [
           {
@@ -465,6 +504,11 @@ for task, expected in cases:
         skillIds: ["ai-literacy"],
         capability: "Explain learning as using experience to improve a future decision.",
         minutes: 3,
+        prose: [
+          "Watch a child meet a bike for the first time. Nobody hands them a rulebook with ‘two wheels, pedals, a handlebar’. They just see a few examples — and the next time a bike rolls past, they name it.",
+          "That is learning in its rawest form: experience changes how you respond next time. Not memorising instructions — updating yourself from examples.",
+          "Keep that picture. Every machine-learning idea in this course is an attempt to copy it: give a system examples, and let experience improve its next decision.",
+        ],
         prediction: {
           id: "predict",
           kind: "mcq",
@@ -492,7 +536,26 @@ for task, expected in cases:
             explanation:
               "Learning means experience changes a future response. Repetition alone is not enough if nothing is updated.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A student memorises the exact answers to last year’s exam without understanding. When this year’s questions change slightly, they fail. What did they actually do?",
+            choices: [
+              { id: "a", label: "Learned from examples" },
+              { id: "b", label: "Memorised answers without learning the pattern" },
+              { id: "c", label: "Used experience to improve a future decision" },
+            ],
+            answer: "b",
+            explanation:
+              "Repeating fixed answers is not learning — learning would let them handle new, similar questions. Machines can fail this same way, as you’ll see in the overfitting lesson.",
+          },
         ],
+        application: {
+          title: "Catch yourself learning",
+          prompt:
+            "Think of one thing you learned without being taught step-by-step — riding a bike, spotting a friend in a crowd, guessing a song from two notes. Write one sentence: what were the ‘examples’, and what decision improved because of them?",
+        },
       },
       {
         slug: "humans-vs-machines",
@@ -502,6 +565,24 @@ for task, expected in cases:
         skillIds: ["ai-literacy"],
         capability: "Contrast fixed instructions with systems that adapt from examples.",
         minutes: 3,
+        prose: [
+          "Traditional software is a very fast clerk. A programmer writes every rule in advance: if this, then that. The clerk never learns, never adapts — it just executes, perfectly and blindly.",
+          "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. Every rule you write, a weird exception breaks — a three-wheeled car, a motorcycle with a roof.",
+          "So the trick machines were missing wasn’t speed. It was the child’s trick: learning the rule from examples instead of being given it. That hand-off — from hand-written rules to learned rules — is what makes machine learning different from ordinary programming.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a spam filter gets better every time users mark a message as junk. Is it following fixed instructions?",
+          choices: [
+            { id: "a", label: "Yes — someone wrote the exact rule for every future email" },
+            { id: "b", label: "No — it’s updating itself from the examples users give it" },
+            { id: "c", label: "Yes — spam filters are just keyword checklists" },
+          ],
+          answer: "b",
+          explanation:
+            "A filter that improves from marked messages is adapting from examples — the machine-learning shape, not the fixed-instruction shape.",
+        },
         questions: [
           {
             id: "q1",
@@ -516,7 +597,26 @@ for task, expected in cases:
             explanation:
               "The filter changes from feedback. The timer and calculator execute predetermined instructions.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Why is it so hard to hand-write a rule for recognising cars?",
+            choices: [
+              { id: "a", label: "Cars are too fast to recognise" },
+              { id: "b", label: "Every hand-written rule has exceptions that break it" },
+              { id: "c", label: "Computers are not allowed to look at cars" },
+            ],
+            answer: "b",
+            explanation:
+              "Real categories are messy — three wheels, roofs on bikes, open trucks. Fixed rules shatter on the exceptions; learning from examples bends around them.",
+          },
         ],
+        application: {
+          title: "Sort your software",
+          prompt:
+            "List three apps you used today. For each, decide: fixed instructions (calculator-like) or adapting from examples (learning)? What ‘examples’ would the adapting ones be learning from?",
+        },
       },
       {
         slug: "what-is-ml-layman",
@@ -526,6 +626,11 @@ for task, expected in cases:
         skillIds: ["ai-literacy", "learning-paradigms"],
         capability: "Describe machine learning as finding useful patterns in examples.",
         minutes: 4,
+        prose: [
+          "Here is the whole deal in one sentence: machine learning is giving a machine examples instead of rules, and letting it find the pattern itself.",
+          "You still do important work — choosing the examples, and checking what it learns. But the detailed pattern-hunting is done by the algorithm, not written by hand.",
+          "This flip explains everything that follows. A ‘model’ is just the pattern it found, stored in a form that can make new decisions.",
+        ],
         prediction: {
           id: "predict",
           kind: "mcq",
@@ -553,7 +658,25 @@ for task, expected in cases:
             explanation:
               "A programmer defines the learning process, but the model discovers the detailed pattern from data.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt: "In this course, a ‘model’ is best thought of as:",
+            choices: [
+              { id: "a", label: "A person who decides what the machine should learn" },
+              { id: "b", label: "The pattern the machine found, stored so it can make new decisions" },
+              { id: "c", label: "A copy of the examples it was shown" },
+            ],
+            answer: "b",
+            explanation:
+              "A model isn’t the data and isn’t a person — it’s the distilled pattern, ready to use on new, unseen cases.",
+          },
         ],
+        application: {
+          title: "Spot the hand-off",
+          prompt:
+            "Pick one prediction a product makes about you (a recommendation, a label, a price). Write down: what examples could it have learned that pattern from — and what pattern it might have found?",
+        },
       },
       {
         slug: "three-ml-paradigms",
@@ -563,6 +686,11 @@ for task, expected in cases:
         skillIds: ["learning-paradigms"],
         capability: "Choose supervised, unsupervised, or reinforcement learning for a simple task.",
         minutes: 4,
+        prose: [
+          "Machine learning comes in three big families, and the difference is simply: what kind of experience does the machine learn from?",
+          "Supervised learning: examples with answers attached — ‘this is a car, this is a bike’. Unsupervised: examples with no answers, and the machine groups them itself. Reinforcement: no answers, just rewards and penalties after each action.",
+          "Most of this course lives in the supervised family, because it’s the one behind everyday classification. But knowing all three lets you name the right tool when you meet a new problem.",
+        ],
         prediction: {
           id: "predict",
           kind: "mcq",
@@ -590,7 +718,26 @@ for task, expected in cases:
             explanation:
               "Reinforcement learning uses rewards or penalties to improve a sequence of decisions.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "You have thousands of customer reviews with no labels, and you want the machine to discover the natural groups (praise, complaints, questions). Which family fits?",
+            choices: [
+              { id: "a", label: "Supervised — someone must label each review first" },
+              { id: "b", label: "Unsupervised — finding groups in unlabelled data is exactly its job" },
+              { id: "c", label: "Reinforcement — reviews act as rewards" },
+            ],
+            answer: "b",
+            explanation:
+              "No answers are attached, and the goal is discovering structure — that’s the unsupervised signature. Supervised would need each review pre-labelled.",
+          },
         ],
+        application: {
+          title: "Name the family",
+          prompt:
+            "For each of these, say which family fits and why: (1) predicting house prices from past sales, (2) a video-game opponent that improves by winning or losing, (3) sorting your photos into similar-looking groups.",
+        },
       },
       {
         slug: "supervised-learning-deep-dive",
@@ -600,6 +747,24 @@ for task, expected in cases:
         skillIds: ["supervised-learning", "learning-paradigms"],
         capability: "Recognize labelled examples and distinguish classification from regression.",
         minutes: 5,
+        prose: [
+          "Supervised learning always has the same skeleton: examples plus the right answers, fed to an algorithm that learns the mapping from one to the other.",
+          "The examples are called samples; the answers are labels. ‘This photo (sample) → car (label)’, a thousand times over.",
+          "The learned mapping answers one of two kinds of question. If the answer is a category — car or bike, spam or not — it’s classification. If the answer is a number — a price, an age, a duration — it’s regression. Same skeleton, different output shape.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: an app estimates a delivery time in minutes from past deliveries. Category or number?",
+          choices: [
+            { id: "a", label: "Category — it sorts deliveries into types" },
+            { id: "b", label: "Number — the answer is a quantity, so it’s regression" },
+            { id: "c", label: "Neither — delivery times can’t be predicted" },
+          ],
+          answer: "b",
+          explanation:
+            "Whenever the label is a measured quantity — minutes, rupees, kilograms — you’re in regression territory.",
+        },
         questions: [
           {
             id: "q1",
@@ -613,6 +778,20 @@ for task, expected in cases:
             answer: "b",
             explanation:
               "A continuous numeric output such as price makes this supervised regression.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Which dataset could train a supervised classifier for ‘spam vs. not spam’?",
+            choices: [
+              { id: "a", label: "A pile of emails, each already marked spam or not spam" },
+              { id: "b", label: "A pile of emails with no markings at all" },
+              { id: "c", label: "A rule that deletes anything containing the word ‘offer’" },
+            ],
+            answer: "a",
+            explanation:
+              "Supervised needs labels attached to samples. Unmarked emails would be unsupervised territory; a fixed keyword rule is ordinary programming.",
           },
         ],
         application: {
@@ -629,6 +808,24 @@ for task, expected in cases:
         skillIds: ["unsupervised-learning", "learning-paradigms"],
         capability: "Recognize that unsupervised learning finds structure without labels.",
         minutes: 5,
+        prose: [
+          "Take the labels away and something interesting happens: the machine stops predicting answers and starts describing structure.",
+          "Given only samples, unsupervised algorithms find groups (clustering), or unusual outliers, or the few directions in which the data actually varies. Nobody told it what the groups are — it finds them.",
+          "The catch: the machine can name the groups it finds, but it can’t tell you what the groups mean. ‘Cluster 1 behaves like this’ — a human still has to look and say ‘ah, these are the weekend shoppers’.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: you feed a music app your listening history with no labels at all. Could it still discover that your songs fall into distinct ‘moods’?",
+          choices: [
+            { id: "a", label: "No — without labels there is nothing to learn" },
+            { id: "b", label: "Yes — it can find groups on its own, though it won’t know what to call them" },
+            { id: "c", label: "Only if someone names each mood first" },
+          ],
+          answer: "b",
+          explanation:
+            "Finding structure in unlabelled data is exactly what unsupervised learning does — meaning the names, though, stays a human job.",
+        },
         questions: [
           {
             id: "q1",
@@ -643,6 +840,20 @@ for task, expected in cases:
             answer: "b",
             explanation:
               "With no ground-truth labels, discovering groups (clustering) is unsupervised learning.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "An unsupervised algorithm groups your photos and calls them ‘Cluster 1, 2, 3’. What still needs a human?",
+            choices: [
+              { id: "a", label: "Nothing — the algorithm understands the photos" },
+              { id: "b", label: "Saying what each cluster actually is — ‘beach trip’, ‘birthdays’" },
+              { id: "c", label: "Taking the photos in the first place only" },
+            ],
+            answer: "b",
+            explanation:
+              "Unsupervised learning finds the structure; interpreting it — giving the groups meaning — remains a human step.",
           },
         ],
         application: {
@@ -659,6 +870,24 @@ for task, expected in cases:
         skillIds: ["reinforcement-learning", "learning-paradigms"],
         capability: "Recognize trial-and-error learning guided by reward.",
         minutes: 5,
+        prose: [
+          "Reinforcement learning is learning by doing. No labelled examples, no teacher — just an agent taking actions, and the world answering with reward or penalty.",
+          "Over many attempts, the agent learns a strategy: which actions, in which situations, earn the most reward. It’s how machines learned to play chess and video games beyond human level.",
+          "The trap: the agent optimises exactly what you reward — not what you meant. Reward it for ‘staying upright’ and it may learn to stand perfectly still forever. Designing the reward is the hard, human part.",
+        ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: you reward a cleaning robot for ‘collecting dust’. What’s the risk?",
+          choices: [
+            { id: "a", label: "No risk — it will clean perfectly" },
+            { id: "b", label: "It may find a loophole — like knocking the dustbin over to ‘collect’ more dust" },
+            { id: "c", label: "It will refuse to move without labels" },
+          ],
+          answer: "b",
+          explanation:
+            "Agents optimise the reward you actually gave, not the one you meant — a famous failure mode of reinforcement learning.",
+        },
         questions: [
           {
             id: "q1",
@@ -673,6 +902,20 @@ for task, expected in cases:
             answer: "c",
             explanation:
               "Learning a sequence of actions from reward/penalty feedback is reinforcement learning.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A video-recommending agent is rewarded only for watch time. What is it most likely to learn?",
+            choices: [
+              { id: "a", label: "To recommend the most helpful videos" },
+              { id: "b", label: "To recommend whatever keeps people watching longest, helpful or not" },
+              { id: "c", label: "To stop recommending videos entirely" },
+            ],
+            answer: "b",
+            explanation:
+              "The agent optimises the reward it was given — watch time — not the intention behind it. Reward design is where the values enter.",
           },
         ],
         application: {
@@ -722,7 +965,26 @@ for task, expected in cases:
             explanation:
               "Cars and bikes come in any color, so color does not separate the classes — it's a bad feature.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A feature vector for one car is [wheels: 4, height: 1.5 m, weight: 1,300 kg]. What makes this a usable ‘sample’ for learning?",
+            choices: [
+              { id: "a", label: "It lists every fact about the car, including its colour and owner" },
+              { id: "b", label: "It describes the car as a fixed set of numbers in the same order as every other sample" },
+              { id: "c", label: "It stores the car’s photo alongside the numbers" },
+            ],
+            answer: "b",
+            explanation:
+              "Learning needs samples described the same way — same features, same order — so the algorithm can compare them number by number.",
+          },
         ],
+        application: {
+          title: "Build a vector for something you know",
+          prompt:
+            "Pick two things you can tell apart instantly (two fruits, two apps, two pets). Write 3 features that would separate them well — and 1 feature that would be useless. That’s feature thinking.",
+        },
       },
       {
         slug: "first-classifier",
@@ -765,7 +1027,26 @@ for task, expected in cases:
             explanation:
               "The data says 2 wheels → bike every time (100%), so the rule classifies it as a bike.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your counts say: of the 4-wheel samples, 90 are cars and 10 are bikes. A new 4-wheel sample arrives. What’s the honest output?",
+            choices: [
+              { id: "a", label: "Car — and 90-in-100 odds, not certainty" },
+              { id: "b", label: "Car — the probability makes it a certainty" },
+              { id: "c", label: "Bike, to be safe" },
+            ],
+            answer: "a",
+            explanation:
+              "Counting gives you odds, not guarantees. The more-likely class wins the call, but the 90/10 split should keep you humble about it.",
+          },
         ],
+        application: {
+          title: "Count your own classifier",
+          prompt:
+            "Think of a quick judgement you make (‘will I need an umbrella?’, ‘is this email worth opening?’). What two or three things do you unconsciously count or notice? Write them as features — you’ve been running a classifier in your head.",
+        },
       },
       {
         slug: "multiple-features",
@@ -780,6 +1061,19 @@ for task, expected in cases:
           "The fix is to add a second good feature. With height as well as wheel count, a tricky sample that was ambiguous becomes decided.",
           "Stack several ‘if this, then that’ splits and you get a decision tree — each feature asks a question that narrows the answer further.",
         ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: wheel count leaves you unsure about a three-wheeler. What helps most — more of the same measurement, or a different one?",
+          choices: [
+            { id: "a", label: "A different, helpful feature — like height or weight" },
+            { id: "b", label: "Measuring the wheels again, more precisely" },
+            { id: "c", label: "Nothing — three-wheelers are unclassifiable" },
+            ],
+          answer: "a",
+          explanation:
+            "Re-measuring the same feature adds no new information. A second informative feature gives the model a new angle on the problem.",
+        },
         questions: [
           {
             id: "q1",
@@ -795,7 +1089,26 @@ for task, expected in cases:
             explanation:
               "A second informative feature gives the model another way to separate the classes, turning 75/25 into a clean call.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Which pair of features would best separate ‘car’ from ‘bike’?",
+            choices: [
+              { id: "a", label: "Paint colour and license-plate colour" },
+              { id: "b", label: "Wheel count and vehicle height" },
+              { id: "c", label: "Wheel count and number of round things on the vehicle" },
+            ],
+            answer: "b",
+            explanation:
+              "Good features add genuinely different information. Colour is noise, and ‘round things’ mostly repeats wheel count — it doesn’t add a new angle.",
+          },
         ],
+        application: {
+          title: "Design your second question",
+          prompt:
+            "Imagine a one-question quiz leaves you 50/50 about something (a dish, a song, a message). What second question would settle it? You just designed a second feature.",
+        },
       },
       {
         slug: "knn-neighbors",
@@ -838,7 +1151,26 @@ for task, expected in cases:
             explanation:
               "kNN takes a majority vote among the k closest neighbors; 3 cars beats 2 bikes, so the class is car.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A new sample sits right at the boundary between a car cluster and a bike cluster. Why does kNN still make a call?",
+            choices: [
+              { id: "a", label: "It refuses to classify boundary samples" },
+              { id: "b", label: "It counts the votes of the k nearest neighbours however close the contest — majority still wins" },
+              { id: "c", label: "It chooses whichever class appeared first in the data" },
+            ],
+            answer: "b",
+            explanation:
+              "kNN is a vote, not a judge of confidence: even a 3-2 contest produces a winner. (A near-tie vote is worth treating with caution in real systems.)",
+          },
         ],
+        application: {
+          title: "Decide like kNN",
+          prompt:
+            "Next time you’re unsure about something new — a restaurant, a message, a route — ask: ‘what are the five most similar cases I know, and how did they turn out?’ That majority vote is you running kNN by hand.",
+        },
       },
       {
         slug: "centroid-classifier",
@@ -853,6 +1185,19 @@ for task, expected in cases:
           "That average — the centroid — stands in for the whole group. You only compare the new sample to one car-centre and one bike-centre.",
           "Whichever centre is closer wins. It’s faster than kNN, and it captures the ‘typical’ idea of each class.",
         ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: instead of checking every past example, you describe a ‘typical car’ and a ‘typical bike’ and compare new things to those two. What do you trade away?",
+          choices: [
+            { id: "a", label: "Speed — it becomes slower" },
+            { id: "b", label: "Detail — an average can miss unusual members of a class" },
+            { id: "c", label: "Nothing — it’s identical to checking every example" },
+          ],
+          answer: "b",
+          explanation:
+            "One average per class is fast, but unusual samples — a cargo trike, a tiny car — sit far from any centre and can get misjudged.",
+        },
         questions: [
           {
             id: "q1",
@@ -868,7 +1213,26 @@ for task, expected in cases:
             explanation:
               "The centroid classifier compares the sample only to each class’s average (center); nearest center wins, so it’s a car.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A delivery trike (3 wheels, carries cargo) arrives. Why might the centroid classifier struggle with it more than kNN would?",
+            choices: [
+              { id: "a", label: "Trikes have no features" },
+              { id: "b", label: "It’s unusual — far from both ‘typical’ centres, so nearest-centre is a poor guide" },
+              { id: "c", label: "Centroids only work for cars" },
+            ],
+            answer: "b",
+            explanation:
+              "Averages describe the typical, not the odd. kNN could still find the few trike-like neighbours; the single-centre shortcut can’t.",
+          },
         ],
+        application: {
+          title: "Meet the averages",
+          prompt:
+            "Picture the ‘average’ member of two groups you know — two cuisines, two genres, two sports teams. When would judging a new case by nearest-average fail? Name one example that sits far from both averages.",
+        },
       },
       {
         slug: "decision-tree-rules",
@@ -883,6 +1247,19 @@ for task, expected in cases:
           "For the tennis example, the rules look like ‘if sunny and humid, no match’. Drawn as a tree, that same rule is a branch you walk down.",
           "Many different trees could give the same answers on your data — so the real question is: which tree is best? That’s the next lesson.",
         ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: you want one question about the weather that best decides ‘play tennis or not’. Is ‘is it windy?’ guaranteed to be the best first question?",
+          choices: [
+            { id: "a", label: "Yes — windiness always matters most" },
+            { id: "b", label: "No — the best question depends on what your data actually shows" },
+            { id: "c", label: "It doesn’t matter which question comes first" },
+          ],
+          answer: "b",
+          explanation:
+            "The best first question is the one your data answers most cleanly — and that can change from dataset to dataset.",
+        },
         questions: [
           {
             id: "q1",
@@ -898,7 +1275,26 @@ for task, expected in cases:
             explanation:
               "Walking the tree: outlook=sunny → humidity=high → leaf says 'no'. The tree and the rule give the same answer.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Why is a decision tree considered more ‘explainable’ than kNN?",
+            choices: [
+              { id: "a", label: "It is always more accurate than kNN" },
+              { id: "b", label: "You can read the exact if/then path that produced any prediction" },
+              { id: "c", label: "It uses fewer features automatically" },
+            ],
+            answer: "b",
+            explanation:
+              "A tree is its own explanation: follow the branches and you see the reasoning. kNN’s reasoning is ‘these neighbours voted’, which is harder to inspect.",
+          },
         ],
+        application: {
+          title: "Write your own tree",
+          prompt:
+            "Take a decision you make often (what to cook, which route to take). Write it as 2-3 if/then questions with outcomes at the leaves. Congratulations — that’s a hand-drawn decision tree.",
+        },
       },
       {
         slug: "best-split",
@@ -913,6 +1309,19 @@ for task, expected in cases:
           "A bad split leaves the branches jumbled. The tree-building rule is simple: at every step, pick the feature whose split is purest.",
           "That purity has a name — information gain — but the intuition needs no formula: the best question is the one that untangles the classes the most.",
         ],
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: split A sorts your samples so the left side is all cars and the right side is all bikes. Split B leaves both sides half-and-half. Which question was more useful?",
+          choices: [
+            { id: "a", label: "Split A — each side is now decided" },
+            { id: "b", label: "Split B — mixing means more information" },
+            { id: "c", label: "They’re equally useful" },
+          ],
+          answer: "a",
+          explanation:
+            "A split that untangles the classes did real work; a split that leaves both sides jumbled told you nothing.",
+        },
         questions: [
           {
             id: "q1",
@@ -928,7 +1337,26 @@ for task, expected in cases:
             explanation:
               "A pure split (each side mostly one class) is preferred; that purity is what 'information gain' measures.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A candidate first question sorts days into ‘sunny / overcast / rainy’, but every group still has a 50/50 mix of play/no-play. What should the tree builder do?",
+            choices: [
+              { id: "a", label: "Use it anyway — any split is progress" },
+              { id: "b", label: "Discard it — a split that purifies nothing answers nothing, and try other features" },
+              { id: "c", label: "Stop building the tree entirely" },
+            ],
+            answer: "b",
+            explanation:
+              "A 50/50-everywhere split has zero purity gain. The builder keeps searching for a feature that actually untangles the classes.",
+          },
         ],
+        application: {
+          title: "Play the purity game",
+          prompt:
+            "Think of a group you could split two ways (your contacts, your emails, a playlist). Find a question where each side becomes ‘mostly one kind’ — then find a question where both sides stay mixed. That contrast is information gain, felt.",
+        },
       },
       {
         slug: "train-test-split",
@@ -938,6 +1366,19 @@ for task, expected in cases:
         skillIds: ["train-test-split", "classification-basics"],
         capability: "Explain why a model must be evaluated on data it was not trained on.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a student aces the exact practice paper they revised. Does that prove they understood the subject?",
+          choices: [
+            { id: "a", label: "Yes — a high score is a high score" },
+            { id: "b", label: "No — they may have memorised that paper; a fresh paper is the honest test" },
+            { id: "c", label: "Only if they revised quickly" },
+          ],
+          answer: "b",
+          explanation:
+            "Grading on the studied material measures memory, not understanding. Models face exactly the same trap — as the picture ahead shows.",
+        },
         prose: [
           "Once you've built a classifier, the obvious question is: is it any good? The trap is checking the same data it learned from.",
           "If you graded a student on the exact exam questions they studied, you'd learn nothing about whether they understood the ideas — only whether they memorized.",
@@ -963,6 +1404,20 @@ for task, expected in cases:
             explanation:
               "The test-set score reflects real-world performance; a perfect training score can mean it memorized rather than learned.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Why must the test set stay sealed until the very end?",
+            choices: [
+              { id: "a", label: "To save computing power" },
+              { id: "b", label: "Because every time you tweak the model to improve its test score, the test quietly becomes training data" },
+              { id: "c", label: "Because untested data is safer to store" },
+            ],
+            answer: "b",
+            explanation:
+              "Peeking and adjusting turns the exam into study material — the score stops predicting real-world behaviour. This is why serious teams keep a final holdout.",
+          },
         ],
       },
       {
@@ -973,6 +1428,19 @@ for task, expected in cases:
         skillIds: ["overfitting", "train-test-split"],
         capability: "Recognise overfitting as memorizing training data instead of learning the pattern.",
         minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: two students score identically on the practice exam. One memorised every answer, one understood the ideas. On the real exam with fresh questions, what happens?",
+          choices: [
+            { id: "a", label: "Both score the same — preparation is preparation" },
+            { id: "b", label: "The memoriser drops sharply; the understander holds steady" },
+            { id: "c", label: "The memoriser scores higher — memory beats thinking" },
+          ],
+          answer: "b",
+          explanation:
+            "Fresh questions expose the difference between memorising and understanding. Models can fail this exact same way — it’s called overfitting.",
+        },
         prose: [
           "Overfitting is when a model learns its training data so precisely — every quirk and noise — that it fails on anything new.",
           "It's the difference between a student who memorized past exams and one who understood the ideas. The memorizer aces the old papers and flops a fresh question.",
@@ -998,6 +1466,20 @@ for task, expected in cases:
             explanation:
               "Consistent train and test scores mean the model learned a real pattern; a perfect training score with a poor test score is a classic sign of overfitting.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A co-worker says: “Our model got 99% on the training set — ship it!” What question should you ask first?",
+            choices: [
+              { id: "a", label: "What does it score on data it has never seen?" },
+              { id: "b", label: "Can we make it 100% on the training set?" },
+              { id: "c", label: "Which algorithm did you use?" },
+            ],
+            answer: "a",
+            explanation:
+              "Training-set score alone can’t distinguish understanding from memorising. The unseen-data score is the first honest check.",
+          },
         ],
       },
       {
@@ -1008,6 +1490,19 @@ for task, expected in cases:
         skillIds: ["data-quality", "ml-limits"],
         capability: "Explain how biased or incomplete data leads to biased predictions.",
         minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: a chef who has only ever tasted sweet food is asked to judge a savoury dish. What’s the risk?",
+          choices: [
+            { id: "a", label: "None — judging is judging" },
+            { id: "b", label: "Their limited experience skews the judgement itself" },
+            { id: "c", label: "They’ll refuse to judge at all" },
+          ],
+          answer: "b",
+          explanation:
+            "Experience defines the range of good judgement — for chefs and for models. A model trained on a narrow slice of the world judges the whole world through that slice.",
+        },
         prose: [
           "The single biggest influence on a model isn't the algorithm — it's the data. A fancy model trained on bad data still gives bad answers.",
           "If a model only ever saw red cars, it would ‘learn’ that cars are red — and then fail on a blue one. That's not a broken model; it's broken data.",
@@ -1033,6 +1528,20 @@ for task, expected in cases:
             explanation:
               "Models learn the patterns in their training data — including historical bias. Garbage (biased data) in, garbage (biased predictions) out.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your car-vs-bike classifier keeps misjudging bikes. Before switching algorithms, what should you check first?",
+            choices: [
+              { id: "a", label: "The data — are bikes under-represented, or poorly described by the features?" },
+              { id: "b", label: "Nothing — a fancier algorithm always fixes it" },
+              { id: "c", label: "The colour settings of the app" },
+            ],
+            answer: "a",
+            explanation:
+              "Most classifier problems are data problems in disguise. Fix the examples and the features before reaching for a fancier model.",
+          },
         ],
       },
       {
@@ -1043,6 +1552,24 @@ for task, expected in cases:
         skillIds: ["ml-applications", "ai-literacy"],
         capability: "Recognise everyday apps that use machine learning and name the family they belong to.",
         minutes: 4,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: how many times did machine learning touch your day already — zero, a handful, or dozens?",
+          choices: [
+            { id: "a", label: "Zero — I don’t work with AI" },
+            { id: "b", label: "A handful of obvious ones, like chatbots" },
+            { id: "c", label: "Dozens — most of them invisible" },
+          ],
+          answer: "c",
+          explanation:
+            "Spam filters, keyboards, maps, recommendations, face unlock — ML is woven into ordinary apps. The picture ahead makes the invisible ones visible.",
+        },
+        prose: [
+          "You’ve used machine learning a dozen times today already. Spam filters deciding what reaches your inbox. Keyboards guessing your next word. Face unlock recognising you in bad light.",
+          "Each one is the same skeleton you now know: samples in, a learned pattern out, predictions on new cases. A spam filter read millions of marked emails; your keyboard watched which words follow yours.",
+          "Once you see the skeleton, ‘AI magic’ turns into something you can question: what were the examples? What is it predicting? What happens when it’s wrong?",
+        ],
         application: {
           title: "Audit your own phone",
           prompt:
@@ -1063,6 +1590,20 @@ for task, expected in cases:
             explanation:
               "Your ‘this is junk’ marks are labels; learning to sort future mail from those labelled examples is supervised learning.",
           },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Why does face unlock sometimes fail in very dim light, even though it works perfectly indoors?",
+            choices: [
+              { id: "a", label: "The camera gets tired at night" },
+              { id: "b", label: "Dim, grainy photos may be rare in its training examples — it’s predicting outside familiar territory" },
+              { id: "c", label: "Faces physically change in the dark" },
+            ],
+            answer: "b",
+            explanation:
+              "A model is confident within the range of its examples. Inputs unlike anything it trained on — lighting, angles, accessories — push it off-map, and accuracy drops.",
+          },
         ],
       },
       {
@@ -1073,6 +1614,24 @@ for task, expected in cases:
         skillIds: ["ml-limits", "ai-literacy"],
         capability: "Explain why ML can be confidently wrong and name one safeguard against it.",
         minutes: 5,
+        prediction: {
+          id: "predict",
+          kind: "mcq",
+          prompt: "Before the picture: when an AI gives a wrong answer, does it usually sound unsure?",
+          choices: [
+            { id: "a", label: "Yes — wrong answers come with hedging" },
+            { id: "b", label: "No — wrong answers sound exactly as confident as right ones" },
+            { id: "c", label: "It refuses to answer when unsure" },
+          ],
+          answer: "b",
+          explanation:
+            "That’s the dangerous property: a model’s tone carries no knowledge of its own accuracy. Confidently wrong is the normal failure mode, not the exception.",
+        },
+        prose: [
+          "Machine learning fails differently from ordinary software. A calculator breaks loudly — error, crash, blank screen. A model fails quietly: it always produces an answer, in the same confident tone, whether it knows or not.",
+          "The failures come from the three things you’ve met: training gaps (it never saw a case like this), overfitting (it memorised quirks), and bad data (it learned a skewed world).",
+          "The safeguard isn’t ‘trust it more’ or ‘trust it less’ — it’s knowing which questions to ask: what were the examples, how was it tested, and what happens when it’s wrong? Those questions are exactly what the next course, AI Observability, teaches you to ask daily.",
+        ],
         application: {
           title: "Spot a likely failure case",
           prompt:
@@ -1092,6 +1651,20 @@ for task, expected in cases:
             answer: "b",
             explanation:
               "Most ML failures on new inputs come from gaps in training data — the model is guessing outside what it has seen.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "An AI chatbot invents a plausible-but-false answer, stated with total confidence. Which property of ML does this illustrate?",
+            choices: [
+              { id: "a", label: "Models fail loudly, like a crash" },
+              { id: "b", label: "Models always produce an answer in the same confident tone — even outside what they know" },
+              { id: "c", label: "Chatbots know when they are lying" },
+            ],
+            answer: "b",
+            explanation:
+              "Unlike ordinary software, ML fails quietly: the output looks identical whether the model is on familiar ground or guessing. That’s why watching AI systems matters — the next course shows how.",
           },
         ],
       },
@@ -1177,6 +1750,11 @@ for task, expected in cases:
               "Looking fine isn’t being fine. Observability reveals the hidden state behind a confident-looking answer.",
           },
         ],
+        application: {
+          title: "Find your hidden state",
+          prompt:
+            "Name one machine-made answer you saw today (a recommendation, an auto-reply, a route). Write down one question about it you can’t answer from the outside looking in — that unknown is its hidden state.",
+        },
       },
       {
         slug: "why-ai-is-different",
@@ -1239,14 +1817,20 @@ for task, expected in cases:
             kind: "mcq",
             prompt: "Which behaves more like an AI — a vending machine or a chef?",
             choices: [
-              { id: "a", label: "A vending machine" },
-              { id: "b", label: "A chef" },
+              { id: "a", label: "A vending machine — same input, same output, forever" },
+              { id: "b", label: "A chef — the same dish varies with the day and the ingredients" },
+              { id: "c", label: "Neither — machines and cooks are both perfectly consistent" },
             ],
             answer: "b",
             explanation:
               "A chef varies dish-to-dish, just as an AI varies answer-to-answer. A vending machine is fixed.",
           },
         ],
+        application: {
+          title: "Sort your day’s software",
+          prompt:
+            "List three systems you interacted with today. For each, one sentence: fixed output every time (vending machine) or varying output from the same input (chef)? Your instinct for this split is the foundation of watching AI.",
+        },
       },
       {
         slug: "when-ai-goes-wrong",
@@ -1388,6 +1972,11 @@ for task, expected in cases:
               "Logs explain past behaviour. Speed is a metric question; turning it off is an ops decision.",
           },
         ],
+        application: {
+          title: "Write your first log line",
+          prompt:
+            "Imagine an AI feature you use kept a diary. Write the one log line you’d most want it to record for each answer — what was asked (safely), and a trace of where the answer came from.",
+        },
       },
       {
         slug: "metrics-counting-matters",
@@ -1529,6 +2118,11 @@ for task, expected in cases:
               "A trace localises the slowness to a specific step, so effort goes where it actually matters.",
           },
         ],
+        application: {
+          title: "Trace a request you know",
+          prompt:
+            "Think of one app request you make daily (a search, a payment, a message). Sketch its journey in 3-4 steps — what would you check first if it suddenly became slow? That instinct is tracing.",
+        },
       },
       {
         slug: "is-the-answer-good",
@@ -1597,6 +2191,11 @@ for task, expected in cases:
               "Each has a weakness, which is why teams usually blend human spot-checks with AI judging at scale.",
           },
         ],
+        application: {
+          title: "Design your spot-check",
+          prompt:
+            "Pick an AI answer you received this week. Write a two-line rubric you’d use to judge it (e.g. ‘every claim traceable to a source; no invented details’) — then apply it. Would it pass?",
+        },
       },
       {
         slug: "hallucination-makes-things-up",
@@ -1665,6 +2264,11 @@ for task, expected in cases:
               "Logs let you re-check what was said; evaluation asks if it’s correct. Together they surface confident lies.",
           },
         ],
+        application: {
+          title: "Catch a confident lie",
+          prompt:
+            "Next time an AI gives you a factual claim, pick one detail and verify it in ten seconds. Confident-but-wrong is common enough that one spot-check a day builds the right reflex.",
+        },
       },
       {
         slug: "drift-slowly-going-bad",
@@ -1806,6 +2410,11 @@ for task, expected in cases:
               "A high threshold rarely fires, so genuine problems slip past unnoticed. That’s the silent failure the alert was meant to catch.",
           },
         ],
+        application: {
+          title: "Audit your own alerts",
+          prompt:
+            "Look at the notifications on your phone right now. Which ones would you mute (low signal), and which one do you actually need the moment it fires? That’s threshold tuning, on yourself.",
+        },
       },
       {
         slug: "dashboards-control-room",
@@ -1874,6 +2483,11 @@ for task, expected in cases:
               "Less, but louder. Hiding bad metrics or showing everything both destroy the at-a-glance signal.",
           },
         ],
+        application: {
+          title: "Design your three tiles",
+          prompt:
+            "Imagine you own an AI feature. Pick the three — and only three — readings that would tell you at a glance whether it’s healthy today. Why those three, and what would each bad reading make you do?",
+        },
       },
       {
         slug: "cost-and-speed",
@@ -1942,6 +2556,11 @@ for task, expected in cases:
               "Real users abandon slow experiences. Latency is a retention problem dressed up as a technical one.",
           },
         ],
+        application: {
+          title: "Feel your latency budget",
+          prompt:
+            "Time one AI interaction you have daily, in seconds. Write down: at what duration would you stop using it? That number is the product’s latency budget — most users have one, most teams never ask.",
+        },
       },
       {
         slug: "observability-toolkit",
@@ -2010,6 +2629,11 @@ for task, expected in cases:
               "Start with one tool, learn what its signals mean, then expand. Installing everything at once is overwhelming; waiting until a break is too late.",
           },
         ],
+        application: {
+          title: "Pick your first tool",
+          prompt:
+            "Choose one AI tool you use weekly. Find out — in two minutes of searching — whether it keeps any history or logs you can inspect. Knowing where the record lives is step zero of observability.",
+        },
       },
       {
         slug: "day-in-the-life",
@@ -2096,6 +2720,8 @@ for task, expected in cases:
     level: "intermediate",
     domain: "AI Observability",
     access: "free",
+    prerequisites:
+      "The AI Observability course (or equivalent hands-on experience) — you should already be comfortable with logs, metrics, traces, and evaluation basics.",
     lessons: [
       {
         slug: "request-to-trace",
@@ -3189,6 +3815,8 @@ for before, after, expected in cases:
     level: "expert",
     domain: "AI Observability",
     access: "free",
+    prerequisites:
+      "LLM Observability — you should be comfortable reading traces, defining SLOs, and running evaluations before designing systems around them.",
     lessons: [
       {
         slug: "telemetry-architecture-contracts",
@@ -4375,3 +5003,27 @@ export function getLesson(
 export function courseLessonKey(courseSlug: string, lessonSlug: string): string {
   return `course:${courseSlug}:${lessonSlug}`;
 }
+
+/**
+ * What to recommend after a learner finishes a course, at the moment
+ * motivation peaks. `why` is one learner-facing line for the CTA.
+ */
+export const NEXT_COURSE: Record<string, { slug: string; why: string } | undefined> = {
+  "machine-learning-for-layman": {
+    slug: "ai-observability",
+    why: "You can read a model now — learn to keep watch when it runs in the real world.",
+  },
+  "machine-learning": {
+    slug: "machine-learning-for-layman",
+    why: "Consolidate the intuition: the picture-led deep dive on everything you just skimmed.",
+  },
+  "ai-observability": {
+    slug: "llm-observability",
+    why: "Level up from watching AI to instrumenting and rescuing a live LLM feature.",
+  },
+  "llm-observability": {
+    slug: "ai-observability-reliability",
+    why: "Design the scalable, secure, governed observability system behind everything you just practised.",
+  },
+  "ai-observability-reliability": undefined,
+};

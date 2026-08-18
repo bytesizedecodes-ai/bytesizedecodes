@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CodeCell } from "@/components/CodeCell";
 import { RewardBanner } from "@/components/RewardBanner";
@@ -17,6 +18,7 @@ import {
 } from "@/lib/data/provider";
 import type { AttemptResult } from "@/lib/data/types";
 import type { DayKey } from "@/lib/day";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 
 /**
  * The interactive "byte" body: MCQ self-check questions, an optional runnable
@@ -31,6 +33,7 @@ export function ByteBody({
   skillIds = [],
   capability,
   today: todayProp,
+  nextLesson,
 }: {
   progressSlug: string;
   attemptPrefix: string;
@@ -40,6 +43,7 @@ export function ByteBody({
   skillIds?: readonly SkillId[];
   capability?: string;
   today?: DayKey;
+  nextLesson?: { href: string; title: string; label?: string };
 }) {
   const todayFromHook = useToday();
   const today = todayProp ?? todayFromHook;
@@ -116,6 +120,25 @@ export function ByteBody({
     questions.every((q) => checked[q.id] && answers[q.id] === q.answer);
   const canComplete = questionsDone && (!exercise || exercisePassed);
 
+  // Keyboard shortcuts act on the first unchecked question, so learners can
+  // fly through self-checks with 1–4 + Enter.
+  const activeQuestion = questions.find((q) => !checked[q.id]);
+  useChoiceKeys({
+    count: activeQuestion?.choices.length ?? 0,
+    onPick: (index) => {
+      const q = activeQuestion;
+      if (!q) return;
+      questionStartedAt.current[q.id] ??= Date.now();
+      setAnswers((a) => ({ ...a, [q.id]: q.choices[index]!.id }));
+    },
+    onConfirm: () => {
+      const q = activeQuestion;
+      if (!q || !answers[q.id]) return;
+      void checkQuestion(q.id);
+    },
+    enabled: Boolean(activeQuestion),
+  });
+
   const [authOpen, setAuthOpen] = useState(false);
 
   async function checkQuestion(id: string) {
@@ -176,14 +199,20 @@ export function ByteBody({
       {questions.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-lg font-semibold tracking-tight">Check yourself</h2>
+          {questions.length > 0 && activeQuestion && (
+            <p className="text-[11px] text-ink-faint">
+              Tip: press 1–{activeQuestion.choices.length} to pick, Enter to check.
+            </p>
+          )}
           {questions.map((q) => {
             const isChecked = !!checked[q.id];
             const isCorrect = answers[q.id] === q.answer;
+            const isActive = activeQuestion?.id === q.id;
             return (
               <div key={q.id} className="card space-y-3 p-5">
                 <p className="text-sm font-medium text-ink">{q.prompt}</p>
                 <div className="space-y-2">
-                  {q.choices.map((c) => {
+                  {q.choices.map((c, choiceIndex) => {
                     let tone = "border-ash hover:border-brand/50";
                     if (isChecked) {
                       if (c.id === q.answer) tone = "border-good bg-good-wash";
@@ -204,7 +233,7 @@ export function ByteBody({
                         className={`flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left text-sm ${tone}`}
                       >
                         <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[11px] font-semibold uppercase">
-                          {c.id}
+                          {isActive ? choiceIndex + 1 : c.id}
                         </span>
                         {c.label}
                       </button>
@@ -305,7 +334,22 @@ export function ByteBody({
                 ? `You can now: ${capability.charAt(0).toLowerCase()}${capability.slice(1)}`
                 : null
             }
+            next={nextLesson}
           />
+        )}
+        {alreadyDone && !reward && nextLesson && (
+          <Link
+            href={nextLesson.href}
+            className="focus-ring flex items-center justify-between gap-3 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-canvas transition-colors hover:bg-brand-deep"
+          >
+            <span className="min-w-0">
+              <span className="block text-[10px] font-bold uppercase tracking-wide text-canvas/70">
+                {nextLesson.label ?? "Up next"}
+              </span>
+              <span className="block truncate">{nextLesson.title}</span>
+            </span>
+            <span aria-hidden>→</span>
+          </Link>
         )}
       </section>
     </div>

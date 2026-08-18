@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { HighlightedCode } from "@/components/Code";
 import type { Block } from "@/lib/drills/types";
 
 /** Tiny inline formatter: `code` and **bold**. No full markdown parser. */
@@ -60,7 +61,9 @@ export function BlockList({ blocks }: { blocks: readonly Block[] }) {
               key={i}
               className="overflow-x-auto rounded-xl bg-ink px-4 py-3 font-mono text-[13px] leading-relaxed text-canvas"
             >
-              <code>{b.code}</code>
+              <code>
+                <HighlightedCode code={b.code} />
+              </code>
             </pre>
           );
         }

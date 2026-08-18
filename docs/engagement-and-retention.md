@@ -27,16 +27,17 @@ this is the *what exists and what to build next*.
 
 These are the gaps that matter for retention. Ranked by leverage.
 
-### 1. No external triggers — the user is never pulled back ⚠️ (highest-impact gap)
-There are **zero notifications, reminders, or emails**. The only cron (when
-enabled) settles streaks internally; it sends nothing outward. The product
-relies entirely on the user opening the app unprompted.
-- SRS due cards are a strong *internal* trigger, but the user doesn't know
-  they're waiting without opening the app.
-- No "your streak is at risk" nudge, no "2 cards due" push, no weekly recap.
-- Social OAuth can supply **email** from Google/GitHub; outbound daily mail is
-  still deferred until product enables Resend (or similar) — a real decision,
-  not a missing toggle.
+### 1. External triggers are generic, not personalized ⚠️ (highest-impact gap)
+Outbound email infrastructure **now exists**: `convex/crons.ts` runs
+`daily_due_reminder` (09:00 IST) and `weekly_digest` (Mon 10:00 IST) through
+Resend (`convex/admin/emailActions.ts`), admin-toggleable in `adminTriggers`,
+plus broadcast campaigns (`app/admin/email/page.tsx`). But the current sends are
+generic `{{name}}` broadcasts to all users with an email — not per-user content.
+- **SRS due cards are a strong *internal* trigger, but the user doesn't know
+  they're waiting without opening the app. A personalized daily email ("3 cards
+  due, ~4 min, starts with the skill you missed yesterday") is the top gap.**
+- No "your streak is at risk" nudge, no per-user weekly recap with real stats.
+  Web push / notifications: still zero code.
 
 ### 2. The leaderboard is fully built but hidden (and conflicts with strategy)
 `components/Leaderboard.tsx`, `useLeaderboard`, and demo-seeded profiles
@@ -68,7 +69,9 @@ modal or streak-milestone celebration.
 1. **Decide on a channel.** Email is available after social sign-in for many
    users; Web push needs service worker + VAPID. **In-app (shipped):**
    `/today` shows due count + time estimate and Continue CTA with due
-   context. **Next:** daily email once Resend (or similar) is wired with opt-in.
+   context. **Shipped but generic:** Resend daily/weekly admin triggers
+   (`convex/crons.ts`). **Next:** personalize the daily send (due count, est.
+   time, the exact skill/step, one deep link) with per-user opt-in.
 2. **Reminder content** (from the strategy): due count, est. time, the exact
    skill/step, one deep link. Never *"your streak is about to die."*
 3. **New-content trigger:** publish 2 visual concepts/week; reminders point at
@@ -107,16 +110,28 @@ or leave comparison out for v1.**
 
 1. ~~Activate `weeklyMinutes` as a tracked weekly goal on `/today`~~ (estimate on `/today`)
 2. ~~Add in-app “N due” on `/today`~~
-3. Decide leaderboard (rebuild query or remove orphan component).
+3. ~~Decide leaderboard~~ (orphaned global-XP component + query removed; revisit as
+   cohort/weekly or personal-best only if comparison ships later)
 4. ~~Plant a return hook in onboarding~~ (copy); reminder opt-in later.
 5. ~~Capability-statement rewards~~ (RewardBanner + lesson capability)
-6. ~~Level-up treatment~~ (RewardBanner highlight) — still no modal
-7. **After** opt-in + outbound channel: daily reminder email using OAuth email.
+6. ~~Level-up treatment~~ (CelebrationModal for level-ups and streak milestones)
+7. Personalize the outbound daily reminder (Resend infra exists; sends are
+   still generic broadcasts, not per-user due counts).
 8. Product-facing effort currency is **Energy** (not XP).
 9. Pro = advanced courses + GitHub AI project portal (work/startup/hobby) — not an AI coach.
 10. ~~Course skill map squares~~
 11. ~~Mastery Challenge packaging~~ (`/review`, daily plan, Progress)
 12. ~~Khan-style mastery ladder labels on Progress topics~~
+
+## Pending at launch (deferred on purpose)
+
+Tasks deliberately parked until launch time. Do them last; don't pull them
+into the current phase.
+
+| # | Task | Why it's deferred | Where it will touch |
+| --- | --- | --- | --- |
+| L1 | **Personalize the daily reminder email** — per-user content ("3 cards due, ~4 min, starting with the skill you missed yesterday") with per-user opt-in, replacing the generic `{{name}}` broadcast | Highest-impact remaining retention lever, but belongs to the launch push alongside opt-in flows and send-window tuning | `convex/crons.ts`, `convex/admin/emailActions.ts`, `app/admin/email/page.tsx`; see checklist item 7 |
+| L2 | **Manual visual + flow QA pass before deploy** — one full lesson in dark *and* light themes, the course-completion flow (last lesson → completion card → next-course CTA), `/today` per track, and the celebration modals | Verifies the celebration/CTA/repair-card changes render correctly in both themes before real users see them | Manual pass; no code expected unless bugs surface |
 
 ## Ethical guardrails (non-negotiable)
 

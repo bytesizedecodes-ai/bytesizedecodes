@@ -6,15 +6,18 @@ import { Shell } from "@/components/Shell";
 import { CoursePager } from "@/components/CoursePager";
 import { JsonLd } from "@/components/JsonLd";
 import { PredictionCard } from "@/components/PredictionCard";
+import { ReadingProgress } from "@/components/ReadingProgress";
 import { getInfographicComponent } from "@/components/infographic";
 import {
   allCourseSlugs,
   courseLessonKey,
   getCourse,
   getLesson,
+  NEXT_COURSE,
   type Course,
 } from "@/content/courses";
 import { absoluteUrl } from "@/lib/site";
+import { getSkill } from "@/content/skills";
 import { LessonBody } from "./LessonBody";
 
 export function generateStaticParams() {
@@ -62,8 +65,22 @@ export default async function LessonPage({
   const prev = index > 0 ? lessonAt(course, index - 1) : null;
   const next = index < course.lessons.length - 1 ? lessonAt(course, index + 1) : null;
 
+  // At the reward moment, momentum should carry the learner forward: to the
+  // next lesson, or — on the final lesson — straight into the next course.
+  const nextCourse = NEXT_COURSE[courseSlug];
+  const nextLesson = next
+    ? { href: `/courses/${courseSlug}/${next.slug}`, title: next.title }
+    : nextCourse
+      ? {
+          href: `/courses/${nextCourse.slug}`,
+          title: getCourse(nextCourse.slug)?.title ?? nextCourse.slug,
+          label: "Course complete · up next",
+        }
+      : { href: `/courses/${courseSlug}`, title: `Back to ${course.title}`, label: "Course complete" };
+
   return (
     <Shell active={`/courses/${courseSlug}`}>
+      <ReadingProgress />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -136,6 +153,15 @@ export default async function LessonPage({
                 +Energy on complete
               </span>
             )}
+            {(lesson.skillIds ?? []).map((skillId) => (
+              <span
+                key={skillId}
+                title={getSkill(skillId).description}
+                className="rounded-full border border-brand-muted px-2.5 py-1 text-[11px] font-medium text-ink-soft"
+              >
+                {getSkill(skillId).label}
+              </span>
+            ))}
           </div>
         </header>
 
@@ -159,6 +185,7 @@ export default async function LessonPage({
             questions={lesson.questions ?? []}
             skillIds={lesson.skillIds}
             capability={lesson.capability}
+            nextLesson={nextLesson}
           />
           {lesson.application && (
             <ApplicationCase
@@ -168,7 +195,12 @@ export default async function LessonPage({
           )}
         </div>
 
-        <CoursePager courseSlug={courseSlug} prev={prev} next={next} />
+        <CoursePager
+          courseSlug={courseSlug}
+          courseTitle={course.title}
+          prev={prev}
+          next={next}
+        />
       </div>
     </Shell>
   );

@@ -167,3 +167,30 @@
 @utility animate-pop {
   animation: pop-in 220ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
 }
+
+/* --- Code syntax tokens ------------------------------------------------
+ * Code panels are always dark (`bg-ink`) in both page themes, so these are
+ * calibrated once against that surface. Soft, low-saturation hues only.
+ * Rendered by components/Code.tsx from lib/highlight.ts. */
+.tok-keyword {
+  color: #7cc4ff;
+}
+.tok-builtin {
+  color: #9fd0c5;
+}
+.tok-defname {
+  color: #f0c674;
+}
+.tok-string {
+  color: #c3ab6f;
+}
+.tok-number {
+  color: #d8a657;
+}
+.tok-comment {
+  color: color-mix(in srgb, var(--color-canvas) 55%, transparent);
+  font-style: italic;
+}
+.tok-operator {
+  color: color-mix(in srgb, var(--color-canvas) 80%, transparent);
+}

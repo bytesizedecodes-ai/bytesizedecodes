@@ -2,19 +2,24 @@
 
 import Link from "next/link";
 import { ArrowRight, Brain, CheckCircle2, Clock3, TrendingUp } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { RequireAuth } from "@/components/RequireAuth";
 import { StatsHud } from "@/components/StatsHud";
+import { COURSES } from "@/content/courses";
+import { courseLessonKey } from "@/content/courses";
 import { LEARNING_UNITS, getUnitsForTrack } from "@/content/catalog";
 import { getLearningTrack } from "@/content/tracks";
 import {
   useAllByteProgress,
   useCurrentUser,
+  useMilestones,
   useRecentXp,
   useReviewQueue,
   useToday,
   useTopicMastery,
 } from "@/lib/data/provider";
+import { levelFromXp } from "@/lib/data/xp";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { ProUpsell } from "@/components/ProUpsell";
 import {
@@ -41,6 +46,7 @@ export default function ProgressPage() {
   const mastery = useTopicMastery(today);
   const queue = useReviewQueue(today);
   const recent = useRecentXp(7, today);
+  const milestones = useMilestones(today);
 
   if (
     profile === undefined ||
@@ -64,6 +70,49 @@ export default function ProgressPage() {
   const pathPct = Math.round((pathCompleted / Math.max(1, pathUnits.length)) * 100);
   const pathDone = pathCompleted >= pathUnits.length && pathUnits.length > 0;
   const dueForChallenge = Math.min(queue.length, MASTERY_CHALLENGE_CAP);
+
+  // Milestones: derived from lifetime stats + the course registry. A course
+  // counts as finished when every one of its lessons is completed.
+  const coursesFinished = COURSES.filter((course) =>
+    course.lessons.every(
+      (lesson) =>
+        progress[courseLessonKey(course.slug, lesson.slug)]?.status === "completed",
+    ),
+  ).length;
+  const level = milestones ? levelFromXp(milestones.xpTotal) : 1;
+  const milestoneList = [
+    {
+      title: "First lesson done",
+      detail: "The hardest step, taken.",
+      done: (milestones?.lessonsCompleted ?? 0) >= 1,
+    },
+    {
+      title: "Course conqueror",
+      detail: "Finish every lesson in any course.",
+      done: coursesFinished >= 1,
+    },
+    {
+      title: "Week of showing up",
+      detail: "A 7-day streak at any point.",
+      done: (milestones?.longestStreak ?? 0) >= 7,
+    },
+    {
+      title: "Level 5",
+      detail: "Energy compounds — level up five times.",
+      done: level >= 5,
+    },
+    {
+      title: "100 correct answers",
+      detail: "Retrieval, repeated, until it sticks.",
+      done: (milestones?.correctAnswers ?? 0) >= 100,
+    },
+    {
+      title: "Hands-on builder",
+      detail: "Pass a runnable code exercise.",
+      done: (milestones?.codeTestsPassed ?? 0) >= 1,
+    },
+  ];
+  const milestonesEarned = milestoneList.filter((m) => m.done).length;
 
   return (
     <Shell active="/progress">
@@ -93,6 +142,51 @@ export default function ProgressPage() {
         />
 
         <StatsHud profile={profile} dueCount={queue.length} />
+
+        <section className="card p-5 sm:p-6">
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold text-ink">Milestones</h2>
+              <p className="mt-0.5 text-xs text-ink-faint">
+                Small proof points, earned by learning — not by logging in.
+              </p>
+            </div>
+            <span className="text-sm font-semibold text-brand-deep">
+              {milestonesEarned}/{milestoneList.length}
+            </span>
+          </div>
+          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {milestoneList.map((m) => (
+              <li
+                key={m.title}
+                className={`rounded-2xl border px-3.5 py-3.5 ${
+                  m.done
+                    ? "border-good/40 bg-good-wash"
+                    : "border-ash bg-surface-elevated"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
+                      m.done ? "bg-good text-canvas" : "bg-ash text-ink-faint"
+                    }`}
+                    aria-hidden
+                  >
+                    {m.done ? "✓" : <Lock className="h-3 w-3" />}
+                  </span>
+                </div>
+                <p
+                  className={`mt-2 text-[13px] font-semibold leading-snug ${
+                    m.done ? "text-ink" : "text-ink-soft"
+                  }`}
+                >
+                  {m.title}
+                </p>
+                <p className="mt-1 text-[11px] leading-snug text-ink-faint">{m.detail}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {queue.length > 0 && (
           <div className="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">

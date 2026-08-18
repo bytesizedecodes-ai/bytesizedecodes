@@ -172,14 +172,29 @@ export interface DayXp {
   practised: boolean;
 }
 
-/** One row of the global leaderboard. Level is derived server-side from xpTotal. */
-export interface LeaderboardRow {
-  rank: number;
-  displayName: string;
+/** Lifetime stats the /progress milestone grid derives from. */
+export interface MilestoneStats {
+  lessonsCompleted: number;
+  correctAnswers: number;
+  answersLogged: number;
+  codeTestsPassed: number;
+  longestStreak: number;
   xpTotal: number;
-  level: number;
-  currentStreak: number;
-  track: Track;
+}
+
+/** A topic the learner missed recently — surfaced for repair on /today. */
+export interface MissedTopic {
+  topic: string;
+  missed: number;
+}
+
+/** One of the user's feedback submissions, with the admin's reply if any. */
+export interface FeedbackItem {
+  kind: string;
+  body: string;
+  adminReply: string | null;
+  status: string;
+  createdAt: number;
 }
 
 /** Homepage stat board — cross-user counts. practicingNow is real (recent-activity proxy), not fabricated. */

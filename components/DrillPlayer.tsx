@@ -18,6 +18,7 @@ import {
   type GeneratedQuestion,
 } from "@/lib/drills";
 import type { SrsGrade } from "@/lib/srs";
+import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import {
   capabilityForGenerator,
   capabilityForTopic,
@@ -84,6 +85,17 @@ function QuestionCard({
   const [reward, setReward] = useState<AttemptResult | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const mcqChoices = question.answer.kind === "mcq" ? question.answer.choices : null;
+  useChoiceKeys({
+    count: mcqChoices?.length ?? 0,
+    onPick: (index) => {
+      if (!mcqChoices || result || pending) return;
+      setSelection(mcqChoices[index]!.id);
+    },
+    onConfirm: () => void check(),
+    enabled: Boolean(mcqChoices) && !result && !pending,
+  });
 
   async function check() {
     if (!selection || pending) return;
@@ -188,6 +200,9 @@ function QuestionCard({
                 </button>
               );
             })}
+            <p className="text-[11px] text-ink-faint">
+              Tip: press 1–{answer.choices.length} to pick, Enter to check.
+            </p>
           </div>
         );
       })()}

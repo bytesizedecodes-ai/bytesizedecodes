@@ -13,7 +13,6 @@ import {
   ChartNoAxesCombined,
   Eye,
   Hammer,
-  Star,
   Target,
 } from "lucide-react";
 
@@ -147,46 +146,39 @@ export default function HomePage() {
         </ol>
       </section>
 
-      {/* ===== Testimonials marquee ===== */}
-      <section className="overflow-hidden py-12">
-        <div className="mb-8 text-center">
+      {/* ===== How lessons work — honest product facts, no invented quotes ===== */}
+      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
+        <div className="mb-10 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">
-            Loved by learners
+            How every lesson works
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">
-            What people are saying
+            Built on how people actually learn
           </h2>
         </div>
-        <div className="relative">
-          {/* edge fades */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-canvas sm:w-20" style={{ background: "linear-gradient(to right, var(--color-canvas), transparent)" }} />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-canvas sm:w-20" style={{ background: "linear-gradient(to left, var(--color-canvas), transparent)" }} />
-          <div className="flex w-max gap-4 hover:[animation-play-state:paused]" style={{ animation: "marquee 60s linear infinite" }}>
-            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
-              <figure
-                key={i}
-                className="flex w-72 shrink-0 flex-col gap-3 rounded-2xl border border-ash bg-surface-elevated p-5 shadow-sm sm:w-80"
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {LESSON_FACTS.map((fact, index) => {
+            const Icon = fact.icon;
+            return (
+              <div
+                key={fact.title}
+                className="rounded-2xl border border-ash bg-surface-elevated p-5 shadow-sm"
               >
-                <div className="flex gap-0.5 text-warm">
-                  {Array.from({ length: 5 }).map((_, s) => (
-                    <Star key={s} className="h-3.5 w-3.5 fill-current" />
-                  ))}
+                <div className="flex items-center gap-3">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-wash text-brand-deep">
+                    <Icon className="h-4.5 w-4.5" strokeWidth={1.75} aria-hidden />
+                  </span>
+                  <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
+                    0{index + 1}
+                  </span>
                 </div>
-                <blockquote className="text-sm leading-relaxed text-ink">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-auto flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-wash text-xs font-bold text-brand-deep">
-                    {t.initials}
-                  </span>
-                  <span>
-                    <span className="block text-xs font-bold text-ink">{t.name}</span>
-                    <span className="block text-[11px] text-ink-faint">{t.role}</span>
-                  </span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+                <h3 className="mt-3 text-sm font-semibold text-ink">{fact.title}</h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+                  {fact.body}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -358,65 +350,25 @@ const START_STEPS = [
   },
 ] as const;
 
-const TESTIMONIALS = [
+const LESSON_FACTS = [
   {
-    quote: "I finally understand what a model actually learns — and why it can be wrong. The pictures made it click.",
-    name: "Priya Sharma",
-    role: "Marketing Manager",
-    initials: "PS",
+    title: "Predict before you read",
+    body: "Every lesson opens by asking you to guess first. Committing to an answer is what makes the explanation stick.",
+    icon: Eye,
   },
   {
-    quote: "Tried so many AI courses. This is the first one that didn't lose me in the first 10 minutes.",
-    name: "Daniel Okafor",
-    role: "Product Designer",
-    initials: "DO",
+    title: "Pictures carry the idea",
+    body: "No walls of text. Each concept is an animated, often interactive visual you can play with — not a slide of jargon.",
+    icon: BookOpen,
   },
   {
-    quote: "The car-vs-bike examples are silly simple, but that's exactly why they work. I finally get classification.",
-    name: "Mei Lin",
-    role: "CS Student",
-    initials: "ML",
+    title: "Five minutes, one idea",
+    body: "Lessons are byte-sized by design: one concept, a quick self-check, and a real-world application before you move on.",
+    icon: CalendarDays,
   },
   {
-    quote: "I'm 52 and thought AI was beyond me. Three lessons in and I'm explaining ML to my colleagues.",
-    name: "Robert Chen",
-    role: "Operations Lead",
-    initials: "RC",
-  },
-  {
-    quote: "No math, no jargon, no shame. Just clear pictures and one idea at a time. Exactly what I needed.",
-    name: "Aisha Patel",
-    role: "Healthcare Analyst",
-    initials: "AP",
-  },
-  {
-    quote: "The spaced review is sneaky good. I keep coming back because the streak makes it feel like a game.",
-    name: "Marcus Webb",
-    role: "Startup Founder",
-    initials: "MW",
-  },
-  {
-    quote: "My team builds ML products. Now I can actually follow what they're talking about in standup.",
-    name: "Elena Rossi",
-    role: "Project Manager",
-    initials: "ER",
-  },
-  {
-    quote: "Every lesson takes 5 minutes and I walk away actually remembering the idea. That's rare.",
-    name: "James Carter",
-    role: "Teacher",
-    initials: "JC",
-  },
-  {
-    quote: "I was scared of AI. Now I'm curious. That shift happened in one afternoon on this site.",
-    name: "Fatima Al-Sayed",
-    role: "Recent Graduate",
-    initials: "FA",
-  },
-  {
-    quote: "The 'when ML gets it wrong' lesson should be required viewing for everyone using AI tools.",
-    name: "Tom Becker",
-    role: "Software Engineer",
-    initials: "TB",
+    title: "Review that remembers",
+    body: "Spaced repetition resurfaces what you learned just as you're about to forget it — so it stays with you.",
+    icon: ChartNoAxesCombined,
   },
 ] as const;

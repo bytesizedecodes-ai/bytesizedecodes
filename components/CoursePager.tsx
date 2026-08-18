@@ -9,10 +9,12 @@ import Link from "next/link";
  */
 export function CoursePager({
   courseSlug,
+  courseTitle,
   prev,
   next,
 }: {
   courseSlug: string;
+  courseTitle: string;
   prev: { slug: string; title: string } | null;
   next: { slug: string; title: string } | null;
 }) {
@@ -66,7 +68,7 @@ export function CoursePager({
               Course complete
             </span>
             <span className="block text-sm font-medium text-canvas">
-              Back to {courseTitle(courseSlug)}
+              Back to {courseTitle}
             </span>
           </span>
           <span className="text-lg text-canvas">✓</span>
@@ -74,13 +76,4 @@ export function CoursePager({
       )}
     </nav>
   );
-}
-
-// Avoid importing the registry into this client-safe component; the course title
-// is passed implicitly via the slug. For the "finish" card we keep it generic.
-function courseTitle(slug: string): string {
-  return slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
 }

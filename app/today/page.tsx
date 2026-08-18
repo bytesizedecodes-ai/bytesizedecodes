@@ -5,6 +5,7 @@ import { CalendarCheck2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { DailyPlanCard } from "@/components/DailyPlanCard";
 import { ProUpsell } from "@/components/ProUpsell";
+import { RepairCard } from "@/components/RepairCard";
 import { RequireOnboarding } from "@/components/RequireOnboarding";
 import { RequireAuth } from "@/components/RequireAuth";
 import { Shell } from "@/components/Shell";
@@ -14,6 +15,7 @@ import {
   useCurrentUser,
   useDailyPlan,
   useDayProgress,
+  useRecentMisses,
   useRecentXp,
   useReviewQueue,
   useToday,
@@ -29,6 +31,7 @@ export default function TodayPage() {
   const day = useDayProgress(today);
   const queue = useReviewQueue(today);
   const recent = useRecentXp(7, today);
+  const misses = useRecentMisses(today);
   const track = getLearningTrack(profile?.track ?? "beginner");
   const modeMeta = TIME_MODES.find((m) => m.id === mode) ?? TIME_MODES[1]!;
 
@@ -98,6 +101,8 @@ export default function TodayPage() {
             ) : (
               <PlanSkeleton />
             )}
+
+            {misses && misses.length > 0 && <RepairCard misses={misses} />}
 
             <div className="grid gap-4 lg:grid-cols-[1fr_0.75fr]">
               {recent && (

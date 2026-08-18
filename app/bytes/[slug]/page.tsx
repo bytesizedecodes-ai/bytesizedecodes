@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Shell } from "@/components/Shell";
 import { JsonLd } from "@/components/JsonLd";
+import { HighlightedCode } from "@/components/Code";
 import { allSlugs, getByte } from "@/content";
 import { SITE_NAME, absoluteUrl } from "@/lib/site";
 import { ByteRunner } from "./ByteRunner";
@@ -80,7 +81,9 @@ export default async function BytePage({
               ))}
               {section.code && (
                 <pre className="overflow-x-auto rounded-xl bg-ink px-4 py-3 font-mono text-[13px] leading-relaxed text-canvas">
-                  <code>{section.code.source}</code>
+                  <code>
+                    <HighlightedCode code={section.code.source} />
+                  </code>
                 </pre>
               )}
             </section>
