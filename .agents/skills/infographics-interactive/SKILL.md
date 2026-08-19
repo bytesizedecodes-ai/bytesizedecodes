@@ -1,12 +1,12 @@
 ---
 name: infographics-interactive
-description: Retained v3.1 course-authoring skill (superseded as default by infographics-interactive_v4). Evidence-based visual storytelling for beginner/intermediate/expert, scroll motion, and ICAP interactivity. Prefer infographics-interactive_v4 for new lessons unless explicitly maintaining legacy v3 content. Triggers on: infographics-interactive v3, legacy interactive infographic, v3.1 lesson skill.
+description: Retained v3.1 course-authoring skill (superseded as default by infographics-interactive_v5, via v4). Evidence-based visual storytelling for beginner/intermediate/expert, scroll motion, and ICAP interactivity. Prefer infographics-interactive_v5 for new lessons unless explicitly maintaining legacy v3 content. Triggers on: infographics-interactive v3, legacy interactive infographic, v3.1 lesson skill.
 ---
 
 # infographics-interactive (v3.1)
 
-**Superseded as the default** by `infographics-interactive_v4` (`CLAUDE.md`
-rule 11). Keep this skill for reference and legacy v3 lessons. v3.1 is a
+**Superseded as the default** by `infographics-interactive_v5` (`CLAUDE.md`
+rule 11; v4 sits in between and is itself superseded). Keep this skill for reference and legacy v3 lessons. v3.1 is a
 superset of `infographics-animation` (v2) and adds:
 
 - **An interactivity layer (§6).** Active learning decisively beats passive

@@ -18,6 +18,68 @@
 
 import type { ByteQuestion, CodeExercise, SkillId } from "./types";
 
+/**
+ * The 4-step concept brief that opens a lesson (v5 authoring contract):
+ * What / Why / Where / When NOT — each 1-2 sharp sentences, key terms in
+ * **bold** (rendered through the shared Inline formatter).
+ */
+export type ConceptBrief = {
+  /** What: the 10-second plain-English summary. */
+  what: string;
+  /** Why: the core benefit or problem it solves. */
+  why: string;
+  /** Where: 2-3 specific real-world applications. */
+  where: readonly string[];
+  /** When NOT to use: the practical boundary rule. */
+  whenNot: string;
+};
+
+/**
+ * The standardized system diagram rendered BELOW a lesson's story infographic
+ * (v5 contract). Plain data — the renderer maps it onto the shared flow
+ * primitives (`components/infographic/flow.tsx`). It is the compact reference
+ * view of the idea the infographic above told as a story: bracket node
+ * patterns, terse captions, no re-narration.
+ */
+export type DiagramNodeKind = "input" | "process" | "output" | "decision";
+
+export type DiagramTree =
+  | {
+      kind: "decision";
+      /** The question, rendered as < question >. */
+      question: string;
+      caption?: string;
+      branches: readonly { label: string; node: DiagramTree }[];
+    }
+  | {
+      kind: "leaf";
+      /** The outcome, rendered as [ answer ]. */
+      answer: string;
+      caption?: string;
+    };
+
+export type LessonDiagram =
+  | {
+      kind: "flow";
+      steps: readonly {
+        kind: DiagramNodeKind;
+        text: string;
+        caption?: string;
+      }[];
+      /** Loop-back annotation for cyclical processes. */
+      loop?: string;
+    }
+  | {
+      kind: "compare";
+      left: { title: string; subtitle?: string };
+      right: { title: string; subtitle?: string };
+      rows: readonly { label: string; left: string; right: string }[];
+    }
+  | {
+      kind: "decision";
+      root: DiagramTree;
+    };
+
 export type Lesson = {
   /** Folder/component slug. Must match a key in components/infographic/index.tsx. */
   slug: string;
@@ -30,16 +92,16 @@ export type Lesson = {
   capability?: string;
   /** Estimated minutes to read + attempt. Shown in the byte chip. */
   minutes?: number;
-  /** Guess-first MCQ shown before the infographic (local only). */
-  prediction?: ByteQuestion;
+  /** 4-step explanation (What/Why/Where/When NOT) shown before the infographic. */
+  concept?: ConceptBrief;
+  /** Standardized system diagram shown below the infographic (reference view). */
+  diagram?: LessonDiagram;
   /** ~100-200 words of explanation, rendered as paragraphs under the infographic. */
   prose?: string[];
   /** Optional runnable Python exercise (Pyodide). */
   exercise?: CodeExercise;
-  /** 2-3 self-check MCQs. All must be answered correctly to complete the byte. */
+  /** Exactly 2 real-life scenario MCQs (v5 contract). All correct to complete. */
   questions?: ByteQuestion[];
-  /** Short real-world transfer prompt after the checks. */
-  application?: { title: string; prompt: string };
 };
 
 /**
@@ -123,73 +185,54 @@ export const COURSES: readonly Course[] = [
         skillIds: ["ai-literacy", "ai-ml-dl"],
         capability: "Distinguish adaptive AI systems from fixed-rule software.",
         minutes: 4,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: which machine is acting more 'intelligently'?",
-          choices: [
-            { id: "a", label: "A microwave with fixed cook times" },
-            { id: "b", label: "A recommendation system that changes after your clicks" },
-            { id: "c", label: "A wall clock that always ticks the same way" },
+        concept: {
+          what: "**AI** is the branch of computer science building machines that **reason, learn, perceive, and decide** — instead of only executing fixed instructions.",
+          why: "It separates systems that **adapt from experience** (a spam filter improving with every marked email) from **fixed-rule software** (a calculator that never changes).",
+          where: [
+            "**Recommendation systems** that change as you click",
+            "**Spam filters** that improve as they see more mail",
+            "A **microwave timer** — the contrast case: fixed, never adapts",
           ],
-          answer: "b",
-          explanation:
-            "Intelligence here means adapting from experience. Fixed timers and clocks don't update their behaviour from data.",
+          whenNot:
+            "Not AI when the behaviour is **fully pre-programmed** — same input, same output, forever, with nothing learned from data.",
         },
         prose: [
-          "Artificial Intelligence is the branch of computer science that tries to build machines which can act intelligently — reason, learn, perceive, and decide — instead of only executing fixed instructions.",
-          "The key divide is between a machine that follows rules and one that figures things out. A calculator is not intelligent: the same input always yields the same output, and it never adapts. A spam filter that improves as it sees more email is.",
-          "AI is the broadest label. Everything underneath it — machine learning, deep learning, large language models — is a technique for reaching that goal. Think of AI as the destination, and ML/DL as vehicles for getting there.",
+          "Artificial Intelligence is the branch of computer science that tries to build machines which can act intelligently — **reason, learn, perceive, and decide** — instead of only executing fixed instructions.",
+          "The key divide is between a machine that **follows rules** and one that **figures things out**. A calculator is not intelligent: the same input always yields the same output, and it never adapts. A spam filter that improves as it sees more email is.",
+          "AI is the broadest label. Everything underneath it — machine learning, deep learning, large language models — is a technique for reaching that goal. Think of **AI as the destination**, and ML/DL as vehicles for getting there.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Which of these is the clearest example of an intelligent (non-dumb) machine?",
+            prompt:
+              "Your team is auditing a smart-home app for its 'AI-powered' marketing claim. One feature is a thermostat that runs the same fixed schedule every day; another reshuffles lighting scenes based on which rooms occupants actually use over time. Which feature genuinely behaves like AI?",
             choices: [
-              { id: "a", label: "A washing machine with 12 preset cycles" },
-              { id: "b", label: "An email spam filter that improves as it sees more mail" },
-              { id: "c", label: "A calculator that always returns the exact same answer" },
-              { id: "d", label: "A digital clock" },
+              { id: "a", label: "The thermostat — schedules are a form of intelligence" },
+              { id: "b", label: "The adaptive lighting — it changes behaviour from data about use" },
+              { id: "c", label: "Both equally — anything automated counts as AI" },
+              { id: "d", label: "Neither — home apps can't contain AI" },
             ],
             answer: "b",
             explanation:
-              "The spam filter adapts its behaviour from data over time — that's the hallmark of intelligence. The other three do exactly what they were programmed to, every time.",
+              "The lighting feature adapts its behaviour from accumulated data — the hallmark of AI. The thermostat executes a pre-written schedule: same input, same output, nothing learned, so the 'AI-powered' claim only half-holds.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "AI, ML, and DL are best described as:",
+            prompt:
+              "A colleague claims the payroll system is 'intelligent' because it computes taxes perfectly, the same way, every single month. What is the honest verdict?",
             choices: [
-              { id: "a", label: "Three unrelated fields that happen to sound similar" },
-              { id: "b", label: "Three names for the exact same thing" },
-              { id: "c", label: "Nested: DL is a subset of ML, which is a subset of AI" },
-              { id: "d", label: "Competing products from different companies" },
-            ],
-            answer: "c",
-            explanation:
-              "Deep learning is one approach within machine learning, and machine learning is one approach within AI. Each inner circle is a specialisation of the one containing it.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A traditional program where 'same input → same output, always' is:",
-            choices: [
-              { id: "a", label: "Intelligent, because it's deterministic" },
-              { id: "b", label: "Non-intelligent — it cannot learn or adapt" },
-              { id: "c", label: "A neural network" },
-              { id: "d", label: "An example of deep learning" },
+              { id: "a", label: "It's intelligent — consistency is the definition of AI" },
+              { id: "b", label: "It's not AI — fixed rules mean same input → same output, with no adapting from experience" },
+              { id: "c", label: "It's a neural network that has finished training" },
+              { id: "d", label: "It becomes AI once it runs in the cloud" },
             ],
             answer: "b",
             explanation:
-              "Determinism alone isn't intelligence. Intelligence implies the system can change its behaviour based on data or experience; a fixed lookup cannot.",
+              "Determinism isn't intelligence. The payroll engine never updates itself from data; a system that can't change its behaviour isn't reasoning or learning — it's a very fast clerk.",
           },
         ],
-        application: {
-          title: "Spot adaptive systems around you",
-          prompt:
-            "List two apps you use daily. For each, write one sentence: does it follow fixed rules, or does it change from your behaviour? If you're unsure, name what evidence would convince you.",
-        },
       },
       {
         slug: "what-is-machine-learning",
@@ -199,24 +242,43 @@ export const COURSES: readonly Course[] = [
         skillIds: ["ai-literacy", "learning-paradigms"],
         capability: "Explain how ML learns patterns and identify its three main families.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: how does a spam filter usually get better over time?",
-          choices: [
-            { id: "a", label: "A programmer rewrites every rule by hand each night" },
-            { id: "b", label: "It learns patterns from labelled examples of spam and not-spam" },
-            { id: "c", label: "It randomly guesses until users give up" },
+        concept: {
+          what: "**Machine learning** replaces hand-written rules with **patterns learned from data** — the system writes its own rules from examples, structures, or rewards.",
+          why: "Hand-coding every rule breaks on messy reality; **learning from data** scales where rules can't be enumerated.",
+          where: [
+            "**Spam detection** learned from millions of marked emails",
+            "**Recommendations** tuned by your watch history",
+            "**Game agents** trained by winning and losing",
           ],
-          answer: "b",
-          explanation:
-            "ML systems improve by fitting patterns in data. Hand-rewriting every rule is traditional programming, not learning from examples.",
+          whenNot:
+            "Not ML when a **complete, exact rule already exists** — a payroll tax table should be programmed, not learned.",
         },
         prose: [
-          "Machine Learning is a technique for building AI systems that learn patterns from data themselves, rather than relying on a programmer to hand-code every rule.",
-          "The classic framing: instead of writing a program that says 'if an email contains these words, it's spam', you show the system thousands of labelled spam and non-spam emails and let it discover the patterns. The more data it sees, the better it gets.",
-          "There are three broad families. Supervised learning trains on labelled examples (predict the label of new inputs). Unsupervised learning finds structure in unlabelled data (cluster similar items). Reinforcement learning learns by trial and error, rewarded for good decisions and penalised for bad ones.",
+          "Machine Learning is a technique for building AI systems that **learn patterns from data themselves**, rather than relying on a programmer to hand-code every rule.",
+          "The classic framing: instead of writing a program that says 'if an email contains these words, it's spam', you show the system **thousands of labelled examples** and let it discover the patterns. The more data it sees, the better it gets.",
+          "There are three broad families. **Supervised learning** trains on labelled examples (predict the label of new inputs). **Unsupervised learning** finds structure in unlabelled data (cluster similar items). **Reinforcement learning** learns by trial and error, rewarded for good decisions and penalised for bad ones.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "What does the system learn from?",
+            branches: [
+              {
+                label: "labelled examples",
+                node: { kind: "leaf", answer: "Supervised" },
+              },
+              {
+                label: "rewards / penalties",
+                node: { kind: "leaf", answer: "Reinforcement" },
+              },
+              {
+                label: "raw data, nothing else",
+                node: { kind: "leaf", answer: "Unsupervised" },
+              },
+            ],
+          },
+        },
         exercise: {
           id: "ex1",
           title: "Spot the family",
@@ -251,51 +313,34 @@ for task, expected in cases:
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What distinguishes ML from traditional programming?",
+            prompt:
+              "A fintech team is building fraud detection. Engineer A wants to hand-write rules like 'flag any transfer over ₹50,000'; Engineer B wants to train a model on five years of past transactions, each labelled fraud or genuine. New fraud patterns appear every month. Whose approach keeps working, and why?",
             choices: [
-              { id: "a", label: "ML runs faster" },
-              { id: "b", label: "ML learns patterns from data instead of hand-coded rules" },
-              { id: "c", label: "ML only works in Python" },
-              { id: "d", label: "ML never makes mistakes" },
+              { id: "a", label: "A — fixed thresholds are always more reliable than models" },
+              { id: "b", label: "B — a model retrained on fresh labelled data can pick up patterns nobody hand-wrote" },
+              { id: "c", label: "A — hand rules automatically adapt as fraudsters change tactics" },
+              { id: "d", label: "Neither — fraud detection cannot be automated" },
             ],
             answer: "b",
             explanation:
-              "The defining shift is who writes the rules: in traditional code the programmer does, in ML the system infers them from data. Speed and language are incidental.",
+              "Hand-written thresholds freeze on day one; new fraud patterns sail past them. Learning from labelled history is exactly the case where ML beats rules — the patterns are too many and too shifting to enumerate by hand.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Training an agent by giving it rewards for good actions is called:",
+            prompt:
+              "A delivery startup wants to predict each order's arrival time in minutes. It has thousands of past deliveries, each recorded with the actual time it took. Which family does this fall into, and what kind of output is it?",
             choices: [
-              { id: "a", label: "Supervised learning" },
-              { id: "b", label: "Unsupervised learning" },
-              { id: "c", label: "Reinforcement learning" },
-              { id: "d", label: "Deterministic programming" },
+              { id: "a", label: "Supervised learning — regression, because the answer is a number" },
+              { id: "b", label: "Supervised learning — classification, because deliveries are sorted" },
+              { id: "c", label: "Unsupervised learning — no labels are involved" },
+              { id: "d", label: "Reinforcement learning — late deliveries are penalties" },
             ],
-            answer: "c",
+            answer: "a",
             explanation:
-              "Reinforcement learning is the trial-and-error-with-rewards family. Supervised needs labels; unsupervised has neither labels nor rewards.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Grouping similar customers together, with no labels given, is:",
-            choices: [
-              { id: "a", label: "Supervised — you supervise the grouping" },
-              { id: "b", label: "Unsupervised — the system finds structure in unlabelled data" },
-              { id: "c", label: "Reinforcement — rewards guide the groups" },
-              { id: "d", label: "Not machine learning at all" },
-            ],
-            answer: "b",
-            explanation:
-              "No labels and no rewards means unsupervised: the algorithm discovers inherent structure (like clusters) in the raw data.",
+              "Past deliveries labelled with actual times are textbook supervised data, and 'minutes' is a quantity — regression. Classification would predict a category, not a number.",
           },
         ],
-        application: {
-          title: "Name the learning family",
-          prompt:
-            "Pick one problem at work or school (fraud, recommendations, grouping customers, a game bot). Write which family fits — supervised, unsupervised, or reinforcement — and one sentence why.",
-        },
       },
       {
         slug: "what-is-deep-learning",
@@ -305,73 +350,66 @@ for task, expected in cases:
         skillIds: ["ai-ml-dl"],
         capability: "Explain what makes a neural network deep and why layers help.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: what does 'deep' most precisely mean here?",
-          choices: [
-            { id: "a", label: "The model has many stacked layers" },
-            { id: "b", label: "The training data is philosophically profound" },
-            { id: "c", label: "The GPU is physically deep underground" },
+        concept: {
+          what: "**Deep learning** trains **many-layered neural networks** to turn raw data into increasingly abstract features — edges → shapes → objects.",
+          why: "Layers **learn features directly from raw data**, removing hand-engineered features — why DL dominates hard perception tasks.",
+          where: [
+            "**Image recognition** straight from raw pixels",
+            "**Speech-to-text** straight from raw audio",
+            "**LLMs** like ChatGPT, trained on text tokens",
           ],
-          answer: "a",
-          explanation:
-            "'Deep' counts layers in the network. It is an architecture word, not a claim about understanding.",
+          whenNot:
+            "Overkill for **small tabular datasets** — a random forest or logistic regression often wins there with far less data and compute.",
         },
         prose: [
-          "Deep Learning is a subfield of machine learning that uses artificial neural networks — structures loosely inspired by the brain — with many layers stacked one after another.",
-          "'Deep' simply refers to the number of layers. A network with one or two layers is shallow; a deep network might have dozens. Each layer transforms its input into a slightly more abstract representation: early layers might detect edges, middle layers detect shapes, and later layers detect whole objects.",
-          "Because deep networks learn features directly from raw data (pixels, audio samples, text tokens), they remove the need for a human to hand-design features. That's why they dominate hard perception tasks — image recognition, speech-to-text, translation, and the language models behind tools like ChatGPT.",
+          "Deep Learning is a subfield of machine learning that uses **artificial neural networks** — structures loosely inspired by the brain — with many layers stacked one after another.",
+          "'Deep' simply refers to **the number of layers**. A network with one or two layers is shallow; a deep network might have dozens. Each layer transforms its input into a slightly more abstract representation: early layers might detect edges, middle layers detect shapes, and later layers detect whole objects.",
+          "Because deep networks **learn features directly from raw data** (pixels, audio samples, text tokens), they remove the need for a human to hand-design features. That's why they dominate hard perception tasks — image recognition, speech-to-text, translation, and the language models behind tools like ChatGPT.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Raw pixels / audio / text" },
+            {
+              kind: "process",
+              text: "Layered neural network",
+              caption: "each layer builds more abstract features",
+            },
+            { kind: "output", text: "Object / transcript / answer" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does the 'deep' in 'deep learning' refer to?",
+            prompt:
+              "Two radiology startups tackle fracture detection from X-rays. Startup A feeds raw pixels into a 50-layer network; Startup B has engineers hand-craft edge-detector features and feeds those into a two-layer model. A's system wins on subtle hairline fractures. What advantage explains it?",
             choices: [
-              { id: "a", label: "The model understands concepts profoundly" },
-              { id: "b", label: "The number of layers in the neural network" },
-              { id: "c", label: "The depth of the training data" },
-              { id: "d", label: "How much GPU memory is used" },
+              { id: "a", label: "A's network learns each level of features from the data itself — edges up to fracture patterns" },
+              { id: "b", label: "A has more GPU memory, which always wins" },
+              { id: "c", label: "B's hand-crafted features were too accurate, confusing the model" },
+              { id: "d", label: "A's network needed no training data" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "'Deep' is purely architectural — it counts the layers. A deep network stacks many; a shallow one has few. It says nothing about the model's 'understanding'.",
+              "Depth lets the network build features hierarchically from raw pixels — no human decides what matters. B's engineers baked in their assumptions, and hairline fractures fell outside them.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why are deep networks good at tasks like image recognition?",
+            prompt:
+              "Your marketing team has 800 rows of customer data (age, spend, plan, churned-or-not) and wants to predict churn. A data scientist recommends a small logistic regression instead of a 100-layer network. Why is that the right call?",
             choices: [
-              { id: "a", label: "They run on faster hardware" },
-              { id: "b", label: "They learn features directly from raw data, layer by layer" },
-              { id: "c", label: "They don't need any data" },
-              { id: "d", label: "They always use less memory than alternatives" },
+              { id: "a", label: "It isn't — deep networks are always more accurate" },
+              { id: "b", label: "Small, structured tabular data suits simpler models; a 100-layer network would mostly memorise noise with so few rows" },
+              { id: "c", label: "Logistic regression is a deep learning technique anyway" },
+              { id: "d", label: "Churn labels can't be learned from data" },
             ],
             answer: "b",
             explanation:
-              "Stacked layers let the network build features hierarchically — edges → shapes → objects — straight from pixels, removing the need for hand-engineered features.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Deep learning is best described as:",
-            choices: [
-              { id: "a", label: "A replacement for machine learning" },
-              { id: "b", label: "A subset of machine learning that uses multi-layer neural networks" },
-              { id: "c", label: "The same thing as artificial intelligence" },
-              { id: "d", label: "Unrelated to neural networks" },
-            ],
-            answer: "b",
-            explanation:
-              "Deep learning sits inside ML — it's one technique (multi-layer neural networks) within the broader field of learning from data, which in turn sits inside AI.",
+              "Deep learning earns its cost on raw, high-volume perception data. On 800 tidy rows, a simple model generalises better and can't hide its reasoning — the 'when NOT to use DL' boundary in action.",
           },
         ],
-        application: {
-          title: "Feature hierarchy in plain words",
-          prompt:
-            "Describe a photo app that tags 'dog'. In one sentence each, invent what an early layer, a middle layer, and a late layer might notice — even if you are guessing.",
-        },
       },
       {
         slug: "ai-vs-ml-vs-dl",
@@ -381,19 +419,6 @@ for task, expected in cases:
         skillIds: ["ai-ml-dl"],
         capability: "Place AI, machine learning, and deep learning in the correct relationship.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: which nesting is correct?",
-          choices: [
-            { id: "a", label: "DL contains ML, which contains AI" },
-            { id: "b", label: "AI contains ML, which contains DL" },
-            { id: "c", label: "The three fields are unrelated" },
-          ],
-          answer: "b",
-          explanation:
-            "AI is the broad goal; ML is one path; DL is one ML technique. Circles nest AI ⊃ ML ⊃ DL.",
-        },
         exercise: {
           id: "ex1",
           title: "File the claim in the right circle",
@@ -427,61 +452,55 @@ for claim, expected in cases:
         break
 `,
         },
+        concept: {
+          what: "**AI ⊃ ML ⊃ DL** — nested circles: AI is the goal, ML pursues it by learning from data, DL is ML with many-layered neural networks.",
+          why: "Correct nesting prevents mislabeling — not all AI learns (**rule-based expert systems**), not all ML is deep (**random forests, logistic regression**).",
+          where: [
+            "A **hand-coded chess engine** — AI, but not ML",
+            "A **random-forest spam filter** — ML, but not DL",
+            "A **GPT-style translator** — DL (and therefore ML and AI)",
+          ],
+          whenNot:
+            "Don't call a fixed-rule system 'machine learning' — if no behaviour is **learned from data**, it's AI at most, never ML or DL.",
+        },
         prose: [
-          "These three terms are constantly confused, but they're just nested circles. AI is the largest; machine learning is a part of AI; deep learning is a part of machine learning.",
-          "Artificial Intelligence is the goal: build machines that can act intelligently. Machine learning is one way to pursue that goal — let the system learn from data. Deep learning is one specific technique within ML — use many-layered neural networks.",
-          "Not all AI is machine learning (rule-based expert systems are AI but don't learn). Not all ML is deep learning (random forests and logistic regression are ML but not deep). But all deep learning is ML, and all ML is AI.",
+          "These three terms are constantly confused, but they're just **nested circles**. AI is the largest; machine learning is a part of AI; deep learning is a part of machine learning.",
+          "Artificial Intelligence is the **goal**: build machines that can act intelligently. Machine learning is one **way** to pursue that goal — let the system learn from data. Deep learning is one specific **technique** within ML — use many-layered neural networks.",
+          "Not all AI is machine learning (**rule-based expert systems** are AI but don't learn). Not all ML is deep learning (**random forests and logistic regression** are ML but not deep). But all deep learning is ML, and all ML is AI.",
           "That's the primer done. Each idea here has a picture-led deep dive in Machine Learning for Layman — features, classifiers, train/test splits, overfitting — if you want to actually build the intuition rather than just map it.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Which statement is correct?",
+            prompt:
+              "At a careers fair, a vendor says: 'Our medical expert system encodes 3,000 if-then rules a human wrote — it's machine learning because it's smart.' What's wrong with the claim?",
             choices: [
-              { id: "a", label: "AI is a subset of ML, which is a subset of DL" },
-              { id: "b", label: "DL is a subset of ML, which is a subset of AI" },
-              { id: "c", label: "All three are the same thing" },
-              { id: "d", label: "AI, ML, and DL share no relationship" },
+              { id: "a", label: "Nothing — acting intelligently is the definition of ML" },
+              { id: "b", label: "It's AI but not ML — no rule was learned from data; humans wrote every one" },
+              { id: "c", label: "It's deep learning — if-then rules are neural layers" },
+              { id: "d", label: "It's none of AI, ML, or DL" },
             ],
             answer: "b",
             explanation:
-              "The nesting goes AI ⊃ ML ⊃ DL. DL is the innermost, most specialised; AI is the broadest.",
+              "ML means the system infers its rules from data. A hand-built expert system can act intelligently (AI circle) but sits outside ML — and therefore outside DL too.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "A logistic regression model that learns weights from data is:",
+            prompt:
+              "Sort three real systems: (1) a video ranker using a deep neural network, (2) a logistic-regression fraud scorer trained on labelled data, (3) a fixed route planner with hand-coded shortest-path rules. Which ordering is DL / ML-not-DL / AI-not-ML?",
             choices: [
-              { id: "a", label: "AI only — it's not learning" },
-              { id: "b", label: "ML, but not deep learning" },
-              { id: "c", label: "Deep learning, but not ML" },
-              { id: "d", label: "None of the above" },
+              { id: "a", label: "1 → 2 → 3" },
+              { id: "b", label: "3 → 2 → 1" },
+              { id: "c", label: "1 → 3 → 2" },
+              { id: "d", label: "2 → 1 → 3" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Logistic regression learns from data (so it's ML) but has no multi-layer neural network (so it's not deep learning). It sits inside the ML circle, outside the DL one.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "An old-school expert system with hand-coded 'if-then' medical rules is:",
-            choices: [
-              { id: "a", label: "Deep learning" },
-              { id: "b", label: "Machine learning" },
-              { id: "c", label: "AI, but not machine learning (it doesn't learn from data)" },
-              { id: "d", label: "None of AI, ML, or DL" },
-            ],
-            answer: "c",
-            explanation:
-              "It can act intelligently (AI) but it never learns — a human wrote every rule. So it's AI but not ML, and therefore not DL either.",
+              "The deep ranker is DL (deepest circle). The fraud scorer learns from data but has no multi-layer network — ML, not DL. The route planner never learns — AI at most, not ML.",
           },
         ],
-        application: {
-          title: "Place a real system in the circles",
-          prompt:
-            "Take ChatGPT, a spam filter, or a medical expert system with hand-written rules. Write which circles it sits in (AI / ML / DL) and one reason for each boundary you draw.",
-        },
       },
     ],
   },
@@ -505,36 +524,35 @@ for claim, expected in cases:
         capability: "Explain learning as using experience to improve a future decision.",
         minutes: 3,
         prose: [
-          "Watch a child meet a bike for the first time. Nobody hands them a rulebook with ‘two wheels, pedals, a handlebar’. They just see a few examples — and the next time a bike rolls past, they name it.",
-          "That is learning in its rawest form: experience changes how you respond next time. Not memorising instructions — updating yourself from examples.",
-          "Keep that picture. Every machine-learning idea in this course is an attempt to copy it: give a system examples, and let experience improve its next decision.",
+          "Watch a child meet a bike for the first time. Nobody hands them a rulebook with ‘two wheels, pedals, a handlebar’. They just see a few **examples** — and the next time a bike rolls past, they name it.",
+          "That is learning in its rawest form: **experience changes how you respond next time**. Not memorising instructions — **updating yourself from examples**.",
+          "Keep that picture. Every machine-learning idea in this course is an attempt to copy it: give a system examples, and let **experience improve its next decision**.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a child has never seen a bike. You show them three, each labelled ‘bike’. Next time they see a new one, what’s most likely?",
-          choices: [
-            { id: "a", label: "They recognise it as a bike" },
-            { id: "b", label: "They still have no idea" },
-            { id: "c", label: "They forget everything" },
+        concept: {
+          what: "**Learning** means **experience changes how you respond next time** — you see examples, and future decisions get better because of them.",
+          why: "It solves the problem of rules nobody can write: no one can list every rule for ‘what makes a bike’, but a handful of **labelled examples** teaches it for free.",
+          where: [
+            "A **child naming a bike** after seeing a few labelled examples",
+            "Recognising a **friend’s face** in a crowd — no rulebook involved",
+            "Guessing a **song from two notes** — past listening tunes the guess",
           ],
-          answer: "a",
-          explanation:
-            "Experience with examples is what turns ‘no idea’ into recognition — that’s the core of learning, for humans and machines alike.",
+          whenNot:
+            "It is not learning when nothing changes downstream — **repeating without updating** any future behaviour is replay, not learning.",
         },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What makes an experience useful for learning?",
+            prompt:
+              "Your friend watches the same dance video 50 times but never notices whether their own attempts match it. You watch it 5 times, compare each attempt to the video, and adjust. Next week at the party, whose dancing has actually improved — and what made the difference?",
             choices: [
-              { id: "a", label: "It changes how you respond to a similar situation later" },
-              { id: "b", label: "It is repeated without noticing the result" },
-              { id: "c", label: "Someone writes every future instruction in advance" },
+              { id: "a", label: "Yours — each watch changed how you danced the next time" },
+              { id: "b", label: "Your friend's — 50 repetitions beats 5 comparisons" },
+              { id: "c", label: "Neither — dancing can't be learned from videos" },
             ],
             answer: "a",
             explanation:
-              "Learning means experience changes a future response. Repetition alone is not enough if nothing is updated.",
+              "Learning means experience changes a future response. Repetition alone is not enough if nothing is updated — your friend replayed, you updated.",
           },
           {
             id: "q2",
@@ -551,11 +569,6 @@ for claim, expected in cases:
               "Repeating fixed answers is not learning — learning would let them handle new, similar questions. Machines can fail this same way, as you’ll see in the overfitting lesson.",
           },
         ],
-        application: {
-          title: "Catch yourself learning",
-          prompt:
-            "Think of one thing you learned without being taught step-by-step — riding a bike, spotting a friend in a crowd, guessing a song from two notes. Write one sentence: what were the ‘examples’, and what decision improved because of them?",
-        },
       },
       {
         slug: "humans-vs-machines",
@@ -566,57 +579,51 @@ for claim, expected in cases:
         capability: "Contrast fixed instructions with systems that adapt from examples.",
         minutes: 3,
         prose: [
-          "Traditional software is a very fast clerk. A programmer writes every rule in advance: if this, then that. The clerk never learns, never adapts — it just executes, perfectly and blindly.",
-          "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. Every rule you write, a weird exception breaks — a three-wheeled car, a motorcycle with a roof.",
-          "So the trick machines were missing wasn’t speed. It was the child’s trick: learning the rule from examples instead of being given it. That hand-off — from hand-written rules to learned rules — is what makes machine learning different from ordinary programming.",
+          "Traditional software is a very fast clerk. A programmer writes every **fixed instruction** in advance: if this, then that. The clerk never learns, never adapts — it just executes, perfectly and blindly.",
+          "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. Every rule you write, a weird **exception** breaks — a three-wheeled car, a motorcycle with a roof.",
+          "So the trick machines were missing wasn’t speed. It was the child’s trick: **learning the rule from examples** instead of being given it. That hand-off — from hand-written rules to learned rules — is what makes **machine learning** different from ordinary programming.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a spam filter gets better every time users mark a message as junk. Is it following fixed instructions?",
-          choices: [
-            { id: "a", label: "Yes — someone wrote the exact rule for every future email" },
-            { id: "b", label: "No — it’s updating itself from the examples users give it" },
-            { id: "c", label: "Yes — spam filters are just keyword checklists" },
+        concept: {
+          what: "**Traditional software follows fixed instructions** written in advance; **machine learning writes its own rules from examples**.",
+          why: "Hand-written rules shatter on exceptions — three-wheeled cars, roofs on bikes. **Learned rules bend around messy reality** instead of breaking on it.",
+          where: [
+            "A **spam filter** that improves every time users mark junk",
+            "**Face unlock** adapting to your look — not a fixed feature checklist",
+            "A **calculator** — the contrast case: same formula, forever",
           ],
-          answer: "b",
-          explanation:
-            "A filter that improves from marked messages is adapting from examples — the machine-learning shape, not the fixed-instruction shape.",
+          whenNot:
+            "Don’t use learning when the rules are **few, stable, and fully known** — a timer doesn’t need examples to ring after ten minutes.",
         },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Which system is adapting rather than only following fixed instructions?",
+            prompt:
+              "You're sorting apps on a new phone. One is a meditation timer that always rings after exactly ten minutes. Another is a spam filter that visibly improves after you mark a few unwanted messages as junk. Which one is adapting rather than only following fixed instructions?",
             choices: [
-              { id: "a", label: "A timer that rings after exactly ten minutes" },
-              { id: "b", label: "A filter that improves after users mark unwanted messages" },
-              { id: "c", label: "A calculator evaluating the same formula" },
+              { id: "a", label: "The meditation timer — it adapts to your breathing" },
+              { id: "b", label: "The spam filter — it changes its behaviour from your marks" },
+              { id: "c", label: "Both — anything on a phone is adaptive" },
             ],
             answer: "b",
             explanation:
-              "The filter changes from feedback. The timer and calculator execute predetermined instructions.",
+              "The filter changes from feedback. The timer executes a predetermined instruction — ten minutes, every time, no matter what you do.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Why is it so hard to hand-write a rule for recognising cars?",
+              "A city tries to automate vehicle checks by hand-writing rules: 'a car has 4 wheels and a metal roof'. On day one, a three-wheeled delivery van and a motorcycle with a roof trailer both roll in and get misclassified. What's the lesson?",
             choices: [
-              { id: "a", label: "Cars are too fast to recognise" },
-              { id: "b", label: "Every hand-written rule has exceptions that break it" },
-              { id: "c", label: "Computers are not allowed to look at cars" },
+              { id: "a", label: "The cameras were too slow to photograph them" },
+              { id: "b", label: "Every hand-written rule has real-world exceptions that break it" },
+              { id: "c", label: "Vehicles simply can't be recognised by machines" },
             ],
             answer: "b",
             explanation:
               "Real categories are messy — three wheels, roofs on bikes, open trucks. Fixed rules shatter on the exceptions; learning from examples bends around them.",
           },
         ],
-        application: {
-          title: "Sort your software",
-          prompt:
-            "List three apps you used today. For each, decide: fixed instructions (calculator-like) or adapting from examples (learning)? What ‘examples’ would the adapting ones be learning from?",
-        },
       },
       {
         slug: "what-is-ml-layman",
@@ -627,56 +634,51 @@ for claim, expected in cases:
         capability: "Describe machine learning as finding useful patterns in examples.",
         minutes: 4,
         prose: [
-          "Here is the whole deal in one sentence: machine learning is giving a machine examples instead of rules, and letting it find the pattern itself.",
-          "You still do important work — choosing the examples, and checking what it learns. But the detailed pattern-hunting is done by the algorithm, not written by hand.",
-          "This flip explains everything that follows. A ‘model’ is just the pattern it found, stored in a form that can make new decisions.",
+          "Here is the whole deal in one sentence: **machine learning is giving a machine examples instead of rules**, and letting it find the pattern itself.",
+          "You still do important work — choosing the examples, and checking what it learns. But the detailed pattern-hunting is done by the **algorithm**, not written by hand.",
+          "This flip explains everything that follows. A **‘model’** is just the pattern it found, stored in a form that can make new decisions.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: to make a machine recognise cars, who works out the detailed rule for ‘what is a car’?",
-          choices: [
-            { id: "a", label: "A programmer writes every rule by hand" },
-            { id: "b", label: "The machine figures it out from examples" },
-            { id: "c", label: "Nobody — it happens by accident" },
+        concept: {
+          what: "**Machine learning is giving a machine examples instead of rules** — and letting it find the pattern itself.",
+          why: "It removes the impossible job of hand-writing every rule. The **algorithm does the pattern-hunting**; you choose the examples and check what it learns.",
+          where: [
+            "**Recommendations** — your past behaviour is the example set",
+            "**Spam detection** — millions of already-marked emails",
+            "**Price estimates** — past sales teach the pattern",
           ],
-          answer: "b",
-          explanation:
-            "That hand-off — the programmer gives examples, the machine finds the rule — is the whole idea of machine learning.",
+          whenNot:
+            "It’s the wrong tool when an **exact, complete rule already exists** — no need to learn what you can program precisely.",
         },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "In machine learning, who discovers the detailed pattern?",
+            prompt:
+              "A photo-app team wants the machine to recognise cars. The programmer sets up the learning process and supplies a million labelled photos — but never writes a 'what is a car' rule. When the app later labels a photo correctly, who actually worked out the detailed pattern?",
             choices: [
-              { id: "a", label: "The learning algorithm, from examples" },
-              { id: "b", label: "A programmer, by writing every possible rule" },
-              { id: "c", label: "The user, after the prediction is made" },
+              { id: "a", label: "The learning algorithm — it discovered the pattern from the examples" },
+              { id: "b", label: "The programmer — the rules were hidden in the setup code" },
+              { id: "c", label: "The user — their tap confirmed what a car is" },
             ],
             answer: "a",
             explanation:
-              "A programmer defines the learning process, but the model discovers the detailed pattern from data.",
+              "A programmer defines the learning process, but the model discovers the detailed pattern from data. That hand-off is the whole idea of ML.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "In this course, a ‘model’ is best thought of as:",
+            prompt:
+              "After training on those million labelled photos, the app ships a file that instantly labels new pictures — without the million photos on the phone. What is that file best thought of as?",
             choices: [
               { id: "a", label: "A person who decides what the machine should learn" },
               { id: "b", label: "The pattern the machine found, stored so it can make new decisions" },
-              { id: "c", label: "A copy of the examples it was shown" },
+              { id: "c", label: "A copy of all the examples it was shown" },
             ],
             answer: "b",
             explanation:
-              "A model isn’t the data and isn’t a person — it’s the distilled pattern, ready to use on new, unseen cases.",
+              "A model isn’t the data and isn’t a person — it’s the distilled pattern, ready to use on new, unseen cases without dragging the dataset along.",
           },
         ],
-        application: {
-          title: "Spot the hand-off",
-          prompt:
-            "Pick one prediction a product makes about you (a recommendation, a label, a price). Write down: what examples could it have learned that pattern from — and what pattern it might have found?",
-        },
       },
       {
         slug: "three-ml-paradigms",
@@ -687,22 +689,50 @@ for claim, expected in cases:
         capability: "Choose supervised, unsupervised, or reinforcement learning for a simple task.",
         minutes: 4,
         prose: [
-          "Machine learning comes in three big families, and the difference is simply: what kind of experience does the machine learn from?",
-          "Supervised learning: examples with answers attached — ‘this is a car, this is a bike’. Unsupervised: examples with no answers, and the machine groups them itself. Reinforcement: no answers, just rewards and penalties after each action.",
-          "Most of this course lives in the supervised family, because it’s the one behind everyday classification. But knowing all three lets you name the right tool when you meet a new problem.",
+          "Machine learning comes in **three big families**, and the difference is simply: what kind of experience does the machine learn from?",
+          "**Supervised learning**: examples with answers attached — ‘this is a car, this is a bike’. **Unsupervised**: examples with no answers, and the machine groups them itself. **Reinforcement**: no answers, just rewards and penalties after each action.",
+          "Most of this course lives in the supervised family, because it’s the one behind everyday **classification**. But knowing all three lets you name the right tool when you meet a new problem.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a robot learns to win a game by getting points for good moves and losing points for bad ones. Does it need labelled examples of ‘correct moves’?",
-          choices: [
-            { id: "a", label: "Yes — it needs someone to label each move" },
-            { id: "b", label: "No — the points are enough feedback" },
-            { id: "c", label: "It needs both" },
+        concept: {
+          what: "ML comes in **three families** — **supervised** (labelled examples), **unsupervised** (no labels, find the structure), and **reinforcement** (rewards and penalties).",
+          why: "The families differ by **what kind of experience** the machine learns from — name the family and you’ve named the right tool for the job.",
+          where: [
+            "**Supervised**: spam vs. not-spam, learned from marked emails",
+            "**Unsupervised**: grouping photos or shoppers nobody labelled",
+            "**Reinforcement**: game agents improving by winning or losing",
           ],
-          answer: "b",
-          explanation:
-            "Learning from reward/penalty without labelled answers is its own family — reinforcement learning. The picture ahead shows all three families side by side.",
+          whenNot:
+            "Don’t force supervised when **no labels exist** — if answers can’t be attached to examples, it’s the wrong family. Feedback that is only reward or penalty means reinforcement, not supervision.",
+        },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Are the examples labelled with answers?",
+            branches: [
+              {
+                label: "Yes",
+                node: { kind: "leaf", answer: "Supervised", caption: "spam vs. not-spam" },
+              },
+              {
+                label: "No",
+                node: {
+                  kind: "decision",
+                  question: "Is the feedback a reward or penalty?",
+                  branches: [
+                    {
+                      label: "Yes",
+                      node: { kind: "leaf", answer: "Reinforcement", caption: "games, robots" },
+                    },
+                    {
+                      label: "No",
+                      node: { kind: "leaf", answer: "Unsupervised", caption: "groups, outliers" },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
         },
         questions: [
           {
@@ -733,11 +763,6 @@ for claim, expected in cases:
               "No answers are attached, and the goal is discovering structure — that’s the unsupervised signature. Supervised would need each review pre-labelled.",
           },
         ],
-        application: {
-          title: "Name the family",
-          prompt:
-            "For each of these, say which family fits and why: (1) predicting house prices from past sales, (2) a video-game opponent that improves by winning or losing, (3) sorting your photos into similar-looking groups.",
-        },
       },
       {
         slug: "supervised-learning-deep-dive",
@@ -748,57 +773,63 @@ for claim, expected in cases:
         capability: "Recognize labelled examples and distinguish classification from regression.",
         minutes: 5,
         prose: [
-          "Supervised learning always has the same skeleton: examples plus the right answers, fed to an algorithm that learns the mapping from one to the other.",
-          "The examples are called samples; the answers are labels. ‘This photo (sample) → car (label)’, a thousand times over.",
-          "The learned mapping answers one of two kinds of question. If the answer is a category — car or bike, spam or not — it’s classification. If the answer is a number — a price, an age, a duration — it’s regression. Same skeleton, different output shape.",
+          "Supervised learning always has the same skeleton: **examples plus the right answers**, fed to an algorithm that learns the mapping from one to the other.",
+          "The examples are called **samples**; the answers are **labels**. ‘This photo (sample) → car (label)’, a thousand times over.",
+          "The learned mapping answers one of two kinds of question. If the answer is a category — car or bike, spam or not — it’s **classification**. If the answer is a number — a price, an age, a duration — it’s **regression**. Same skeleton, different output shape.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: an app estimates a delivery time in minutes from past deliveries. Category or number?",
-          choices: [
-            { id: "a", label: "Category — it sorts deliveries into types" },
-            { id: "b", label: "Number — the answer is a quantity, so it’s regression" },
-            { id: "c", label: "Neither — delivery times can’t be predicted" },
+        concept: {
+          what: "**Supervised learning** feeds an algorithm **samples with labels attached**, so it learns the mapping from one to the other.",
+          why: "Once the mapping is learned, it **answers new cases you’ve never seen** — the workhorse behind everyday classification and prediction.",
+          where: [
+            "**Classification**: spam or not, car or bike — a category comes out",
+            "**Regression**: delivery time, house price — a number comes out",
+            "**Face unlock**: labelled photos of you map to ‘let it open’",
           ],
-          answer: "b",
-          explanation:
-            "Whenever the label is a measured quantity — minutes, rupees, kilograms — you’re in regression territory.",
+          whenNot:
+            "Not usable when you **can’t get labels** — piles of unlabelled data belong to the unsupervised family, not this one.",
+        },
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Labelled samples", caption: "photo + ‘car’, a thousand times" },
+            { kind: "process", text: "Learning algorithm", caption: "finds the sample → label mapping" },
+            {
+              kind: "output",
+              text: "Prediction on a new case",
+              caption: "category = classification · number = regression",
+            },
+          ],
         },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Predicting a house price from examples of houses and their sale prices is:",
+            prompt:
+              "A real-estate site shows you past sales — each house described by size and location, each labelled with the price it actually sold for — and then estimates your house's price in rupees. What kind of supervised problem is this?",
             choices: [
-              { id: "a", label: "Classification, because houses have categories" },
-              { id: "b", label: "Regression, because the output is a number" },
-              { id: "c", label: "Unsupervised learning, because prices vary" },
+              { id: "a", label: "Classification — houses get sorted into price bands" },
+              { id: "b", label: "Regression — the answer is a measured number" },
+              { id: "c", label: "Unsupervised — no answers were attached" },
             ],
             answer: "b",
             explanation:
-              "A continuous numeric output such as price makes this supervised regression.",
+              "Whenever the label is a measured quantity — rupees, minutes, kilograms — it's regression. The sale prices attached to each example make it supervised.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Which dataset could train a supervised classifier for ‘spam vs. not spam’?",
+              "Your team must build a supervised spam classifier by Monday. One colleague hands you a dump of 10,000 emails with no markings; another hands you 5,000 emails where users have already flagged each as junk or not. Which pile can you actually train on?",
             choices: [
-              { id: "a", label: "A pile of emails, each already marked spam or not spam" },
-              { id: "b", label: "A pile of emails with no markings at all" },
-              { id: "c", label: "A rule that deletes anything containing the word ‘offer’" },
+              { id: "a", label: "The flagged 5,000 — each sample carries its label" },
+              { id: "b", label: "The unmarked 10,000 — more data always wins" },
+              { id: "c", label: "Either — supervised learning works on both" },
             ],
             answer: "a",
             explanation:
-              "Supervised needs labels attached to samples. Unmarked emails would be unsupervised territory; a fixed keyword rule is ordinary programming.",
+              "Supervised needs labels attached to samples. Unmarked emails would be unsupervised territory — and no amount of extra unmarked data fixes that.",
           },
         ],
-        application: {
-          title: "Spot supervised learning around you",
-          prompt:
-            "Name two predictions an app makes for you (a price, a label, a yes/no). For each, write what the labelled ‘answers’ in its training data might have been.",
-        },
       },
       {
         slug: "unsupervised-learning-deep-dive",
@@ -809,22 +840,32 @@ for claim, expected in cases:
         capability: "Recognize that unsupervised learning finds structure without labels.",
         minutes: 5,
         prose: [
-          "Take the labels away and something interesting happens: the machine stops predicting answers and starts describing structure.",
-          "Given only samples, unsupervised algorithms find groups (clustering), or unusual outliers, or the few directions in which the data actually varies. Nobody told it what the groups are — it finds them.",
-          "The catch: the machine can name the groups it finds, but it can’t tell you what the groups mean. ‘Cluster 1 behaves like this’ — a human still has to look and say ‘ah, these are the weekend shoppers’.",
+          "Take the labels away and something interesting happens: the machine stops predicting answers and starts **describing structure**.",
+          "Given only samples, unsupervised algorithms find groups (**clustering**), or unusual **outliers**, or the few directions in which the data actually varies. Nobody told it what the groups are — it finds them.",
+          "The catch: the machine can name the groups it finds, but it **can’t tell you what the groups mean**. ‘Cluster 1 behaves like this’ — a human still has to look and say ‘ah, these are the weekend shoppers’.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: you feed a music app your listening history with no labels at all. Could it still discover that your songs fall into distinct ‘moods’?",
-          choices: [
-            { id: "a", label: "No — without labels there is nothing to learn" },
-            { id: "b", label: "Yes — it can find groups on its own, though it won’t know what to call them" },
-            { id: "c", label: "Only if someone names each mood first" },
+        concept: {
+          what: "**Unsupervised learning** gets samples with **no labels** and finds the structure — groups, outliers, patterns — on its own.",
+          why: "It works where **labelling is impossible or expensive**, revealing structure in data nobody thought to mark up.",
+          where: [
+            "**Clustering** shoppers by habit, with no pre-assigned groups",
+            "Spotting **unusual transactions** that fit no known group",
+            "Grouping a **music library** into moods nobody named",
           ],
-          answer: "b",
-          explanation:
-            "Finding structure in unlabelled data is exactly what unsupervised learning does — meaning the names, though, stays a human job.",
+          whenNot:
+            "It can’t answer ‘what is this?’ — the machine finds the groups but **can’t name their meaning**. Interpretation stays a human job.",
+        },
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Samples, no labels" },
+            { kind: "process", text: "Clustering algorithm" },
+            {
+              kind: "output",
+              text: "Discovered groups + outliers",
+              caption: "naming the groups stays a human job",
+            },
+          ],
         },
         questions: [
           {
@@ -856,11 +897,6 @@ for claim, expected in cases:
               "Unsupervised learning finds the structure; interpreting it — giving the groups meaning — remains a human step.",
           },
         ],
-        application: {
-          title: "Find a cluster in your day",
-          prompt:
-            "Think of the people or items around you. Describe one group that ‘belongs together’ by behaviour or habit — with nobody having assigned the labels. That grouping is unsupervised.",
-        },
       },
       {
         slug: "reinforcement-learning-deep-dive",
@@ -871,22 +907,29 @@ for claim, expected in cases:
         capability: "Recognize trial-and-error learning guided by reward.",
         minutes: 5,
         prose: [
-          "Reinforcement learning is learning by doing. No labelled examples, no teacher — just an agent taking actions, and the world answering with reward or penalty.",
-          "Over many attempts, the agent learns a strategy: which actions, in which situations, earn the most reward. It’s how machines learned to play chess and video games beyond human level.",
-          "The trap: the agent optimises exactly what you reward — not what you meant. Reward it for ‘staying upright’ and it may learn to stand perfectly still forever. Designing the reward is the hard, human part.",
+          "Reinforcement learning is **learning by doing**. No labelled examples, no teacher — just an **agent** taking actions, and the world answering with **reward or penalty**.",
+          "Over many attempts, the agent learns a **strategy**: which actions, in which situations, earn the most reward. It’s how machines learned to play chess and video games beyond human level.",
+          "The trap: the agent **optimises exactly what you reward — not what you meant**. Reward it for ‘staying upright’ and it may learn to stand perfectly still forever. Designing the reward is the hard, human part.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: you reward a cleaning robot for ‘collecting dust’. What’s the risk?",
-          choices: [
-            { id: "a", label: "No risk — it will clean perfectly" },
-            { id: "b", label: "It may find a loophole — like knocking the dustbin over to ‘collect’ more dust" },
-            { id: "c", label: "It will refuse to move without labels" },
+        concept: {
+          what: "**Reinforcement learning** is an **agent acting, the world answering with reward or penalty**, and the agent’s strategy improving with every attempt.",
+          why: "It learns **sequences of decisions** no one can label in advance — the only family that improves by trial and error.",
+          where: [
+            "**Game agents** improving through wins and losses",
+            "**Robot control** — walking, grasping — shaped by reward",
+            "**Recommendation tuning** against watch-time or click reward",
           ],
-          answer: "b",
-          explanation:
-            "Agents optimise the reward you actually gave, not the one you meant — a famous failure mode of reinforcement learning.",
+          whenNot:
+            "Beware when the **reward can’t capture what you actually mean** — the agent optimises the reward you gave, loopholes included. And if a single labelled answer exists, supervised is the simpler tool.",
+        },
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "State — the situation now" },
+            { kind: "process", text: "Agent picks an action" },
+            { kind: "output", text: "Reward or penalty" },
+          ],
+          loop: "Strategy updates · repeat thousands of times",
         },
         questions: [
           {
@@ -918,11 +961,6 @@ for claim, expected in cases:
               "The agent optimises the reward it was given — watch time — not the intention behind it. Reward design is where the values enter.",
           },
         ],
-        application: {
-          title: "Notice reward-shaped learning",
-          prompt:
-            "Name one game, app, or habit of yours that gives you points or streaks. Write one sentence: what ‘move’ does it reward, and what did you learn to do more of?",
-        },
       },
       {
         slug: "features-and-vectors",
@@ -933,37 +971,35 @@ for claim, expected in cases:
         capability: "Represent an object as a feature vector and spot useless features.",
         minutes: 5,
         prose: [
-          "A machine can’t ‘see’ a car the way you do — it only reads numbers. So the first job is to describe each object with measurable features: number of wheels, height, weight, colour.",
-          "One object becomes a list of values, called a vector. The whole learning step that follows depends on this translation being right.",
-          "Not every feature helps. A feature only earns its place if it separates the classes — colour doesn’t, because cars and bikes come in every colour.",
+          "A machine can’t ‘see’ a car the way you do — it only reads **numbers**. So the first job is to describe each object with measurable **features**: number of wheels, height, weight, colour.",
+          "One object becomes a list of values, called a **vector**. The whole learning step that follows depends on this translation being right.",
+          "Not every feature helps. A feature only earns its place if it **separates the classes** — colour doesn’t, because cars and bikes come in every colour.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: to teach a machine to tell cars from bikes, which feature would be least helpful?",
-          choices: [
-            { id: "a", label: "Number of wheels" },
-            { id: "b", label: "Height" },
-            { id: "c", label: "Paint colour" },
+        concept: {
+          what: "A machine can’t see objects — it reads **numbers**. Each object becomes a **feature vector**: a fixed, ordered list of measurements.",
+          why: "**All learning depends on this translation** — good features separate the classes; useless ones bury the signal.",
+          where: [
+            "A car as **[wheels: 4, height: 1.5 m, weight: 1300 kg]**",
+            "**Spam filters** turning emails into word-count vectors",
+            "**Face unlock** turning faces into measurement patterns",
           ],
-          answer: "c",
-          explanation:
-            "Cars and bikes come in any colour, so it can’t separate them. The picture ahead turns each object into a list of useful features.",
+          whenNot:
+            "A feature earns its place **only if it separates the classes** — colour doesn’t (cars and bikes come in every colour), so it’s noise, not a feature.",
         },
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Classifying car vs. bike, which feature is least useful?",
+              "Your team is picking features for a car-vs-bike classifier at a toll booth. A teammate proposes: wheel count, vehicle height, and paint colour. Cameras at the booth can measure all three. Which feature will hurt rather than help?",
             choices: [
-              { id: "a", label: "Number of wheels" },
-              { id: "b", label: "Height" },
-              { id: "c", label: "Color" },
+              { id: "a", label: "Wheel count — two vs. four separates the classes" },
+              { id: "b", label: "Paint colour — cars and bikes come in every colour" },
+              { id: "c", label: "Vehicle height — it differs between the classes" },
             ],
-            answer: "c",
+            answer: "b",
             explanation:
-              "Cars and bikes come in any color, so color does not separate the classes — it's a bad feature.",
+              "A feature only earns its place if it separates the classes. Colour doesn't — both classes come in red, blue, black — so it adds noise, not signal.",
           },
           {
             id: "q2",
@@ -980,11 +1016,6 @@ for claim, expected in cases:
               "Learning needs samples described the same way — same features, same order — so the algorithm can compare them number by number.",
           },
         ],
-        application: {
-          title: "Build a vector for something you know",
-          prompt:
-            "Pick two things you can tell apart instantly (two fruits, two apps, two pets). Write 3 features that would separate them well — and 1 feature that would be useless. That’s feature thinking.",
-        },
       },
       {
         slug: "first-classifier",
@@ -995,22 +1026,20 @@ for claim, expected in cases:
         capability: "Build a classifier by counting outcomes and picking the more likely class.",
         minutes: 5,
         prose: [
-          "Once your samples are vectors with labels, you can build your first classifier with nothing more than counting.",
-          "Look at all the 4-wheel examples: if every one is a car, then a new 4-wheel sample is almost certainly a car too. That ‘probability from counting’ is the whole rule.",
-          "Pick the class that’s more likely given the feature, and you have a working classifier — built from scratch, no maths beyond counting.",
+          "Once your samples are vectors with labels, you can build your first classifier with nothing more than **counting**.",
+          "Look at all the 4-wheel examples: if every one is a car, then a new 4-wheel sample is almost certainly a car too. That **‘probability from counting’** is the whole rule.",
+          "Pick the class that’s **more likely given the feature**, and you have a working classifier — built from scratch, no maths beyond counting.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: in your data, every 4-wheel sample is a car and every 2-wheel sample is a bike. A new sample has 4 wheels. What would you guess?",
-          choices: [
-            { id: "a", label: "Car" },
-            { id: "b", label: "Bike" },
-            { id: "c", label: "Can’t tell" },
+        concept: {
+          what: "Your first classifier is pure **counting**: look at past examples with the same feature value and **pick the more likely class**.",
+          why: "With no maths beyond counting you get a working, **probability-based decision rule** — the seed of every classifier ahead.",
+          where: [
+            "4 wheels → in your data, always a **car**",
+            "**Medical screening** from how often symptoms led to a diagnosis",
+            "**Weather guessing** from how similar days turned out",
           ],
-          answer: "a",
-          explanation:
-            "You just counted the data and picked the more likely class — that’s exactly what the classifier ahead does, mechanically.",
+          whenNot:
+            "Counting fails when the data is **thin or mixed** — 90/10 gives odds, not certainty, and a feature value you’ve never seen gives no answer at all.",
         },
         questions: [
           {
@@ -1042,11 +1071,6 @@ for claim, expected in cases:
               "Counting gives you odds, not guarantees. The more-likely class wins the call, but the 90/10 split should keep you humble about it.",
           },
         ],
-        application: {
-          title: "Count your own classifier",
-          prompt:
-            "Think of a quick judgement you make (‘will I need an umbrella?’, ‘is this email worth opening?’). What two or three things do you unconsciously count or notice? Write them as features — you’ve been running a classifier in your head.",
-        },
       },
       {
         slug: "multiple-features",
@@ -1057,22 +1081,20 @@ for claim, expected in cases:
         capability: "Resolve an ambiguous classification by adding a second good feature.",
         minutes: 5,
         prose: [
-          "A single feature often isn’t enough. Wheel count might leave you 75% sure it’s a bike — better than a coin flip, but not a clean call.",
-          "The fix is to add a second good feature. With height as well as wheel count, a tricky sample that was ambiguous becomes decided.",
-          "Stack several ‘if this, then that’ splits and you get a decision tree — each feature asks a question that narrows the answer further.",
+          "A single feature often isn’t enough. Wheel count might leave you **75% sure** it’s a bike — better than a coin flip, but not a clean call.",
+          "The fix is to **add a second good feature**. With height as well as wheel count, a tricky sample that was ambiguous becomes decided.",
+          "Stack several ‘if this, then that’ splits and you get a **decision tree** — each feature asks a question that narrows the answer further.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: wheel count leaves you unsure about a three-wheeler. What helps most — more of the same measurement, or a different one?",
-          choices: [
-            { id: "a", label: "A different, helpful feature — like height or weight" },
-            { id: "b", label: "Measuring the wheels again, more precisely" },
-            { id: "c", label: "Nothing — three-wheelers are unclassifiable" },
-            ],
-          answer: "a",
-          explanation:
-            "Re-measuring the same feature adds no new information. A second informative feature gives the model a new angle on the problem.",
+        concept: {
+          what: "When one feature leaves you unsure, **add a second informative feature** — stack the questions and you get a **decision tree**.",
+          why: "A second good feature turns an ambiguous **75/25 into a clean call**; re-measuring the same feature adds nothing at all.",
+          where: [
+            "Wheel count + **height** settles the three-wheeler",
+            "**Spam filters** stacking sender, suspicious words, links",
+            "Medical triage stacking **age, blood pressure, symptoms**",
+          ],
+          whenNot:
+            "Don’t add features that **repeat information** (wheel count + ‘number of round things’) or carry noise (colour) — more isn’t better; **different** is.",
         },
         questions: [
           {
@@ -1093,22 +1115,17 @@ for claim, expected in cases:
             id: "q2",
             kind: "mcq",
             prompt:
-              "Which pair of features would best separate ‘car’ from ‘bike’?",
+              "A delivery startup's classifier keeps confusing scooters with motorbikes using wheel count alone. The engineers propose three feature pairs to add. Which pair actually adds a new angle on the problem?",
             choices: [
-              { id: "a", label: "Paint colour and license-plate colour" },
-              { id: "b", label: "Wheel count and vehicle height" },
-              { id: "c", label: "Wheel count and number of round things on the vehicle" },
+              { id: "a", label: "Paint colour and sticker colour" },
+              { id: "b", label: "Engine size and seat height" },
+              { id: "c", label: "Wheel count and number of round parts on the vehicle" },
             ],
             answer: "b",
             explanation:
-              "Good features add genuinely different information. Colour is noise, and ‘round things’ mostly repeats wheel count — it doesn’t add a new angle.",
+              "Good features add genuinely different information. Colours are noise, and ‘round parts’ mostly repeats wheel count — engine size and seat height give the model a genuinely new view.",
           },
         ],
-        application: {
-          title: "Design your second question",
-          prompt:
-            "Imagine a one-question quiz leaves you 50/50 about something (a dish, a song, a message). What second question would settle it? You just designed a second feature.",
-        },
       },
       {
         slug: "knn-neighbors",
@@ -1119,22 +1136,33 @@ for claim, expected in cases:
         capability: "Classify a sample by the majority class among its k nearest neighbors.",
         minutes: 5,
         prose: [
-          "Instead of counting the whole dataset, k-Nearest-Neighbors only looks at the samples closest to the new one.",
-          "‘Closest’ means most similar in their features — the same idea as physical nearness, just measured in numbers.",
-          "Take a vote among those k neighbours: whichever class is the majority wins. Simple, and surprisingly effective.",
+          "Instead of counting the whole dataset, **k-Nearest-Neighbors** only looks at the samples **closest** to the new one.",
+          "‘Closest’ means **most similar in their features** — the same idea as physical nearness, just measured in numbers.",
+          "Take a **vote** among those k neighbours: whichever class is the majority wins. Simple, and surprisingly effective.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a new sample is surrounded by mostly cars. If you had to guess its class from its neighbours, what would you pick?",
-          choices: [
-            { id: "a", label: "Car — go with the majority nearby" },
-            { id: "b", label: "Bike — go with the minority" },
-            { id: "c", label: "Neither — ignore the neighbours" },
+        concept: {
+          what: "**k-Nearest Neighbors (kNN)** classifies a new sample by a **majority vote among its k closest, most similar examples**.",
+          why: "There is no model-building step at all — **the data is the model**. Simple, and surprisingly effective.",
+          where: [
+            "**Recommendations** — ‘people similar to you’ is kNN, literally",
+            "**Fraud flags** raised from the most similar past transactions",
+            "Boundary calls — votes decide even a **3-to-2 contest**",
           ],
-          answer: "a",
-          explanation:
-            "Going with the majority of nearby examples is the k-Nearest-Neighbors idea — the picture ahead shows it visually.",
+          whenNot:
+            "It’s slow at scale (a new sample is compared against **every example**) and unreliable when the nearest neighbours are **noisy or uninformative**.",
+        },
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "New sample" },
+            {
+              kind: "process",
+              text: "Measure distance to every example",
+              caption: "most similar = closest",
+            },
+            { kind: "process", text: "Keep the k nearest" },
+            { kind: "output", text: "Majority class wins the vote" },
+          ],
         },
         questions: [
           {
@@ -1166,11 +1194,6 @@ for claim, expected in cases:
               "kNN is a vote, not a judge of confidence: even a 3-2 contest produces a winner. (A near-tie vote is worth treating with caution in real systems.)",
           },
         ],
-        application: {
-          title: "Decide like kNN",
-          prompt:
-            "Next time you’re unsure about something new — a restaurant, a message, a route — ask: ‘what are the five most similar cases I know, and how did they turn out?’ That majority vote is you running kNN by hand.",
-        },
       },
       {
         slug: "centroid-classifier",
@@ -1181,22 +1204,43 @@ for claim, expected in cases:
         capability: "Classify a sample by comparing it to each class’s average member.",
         minutes: 5,
         prose: [
-          "Comparing a new sample to every single example is a lot of work. The centroid classifier has a shortcut: summarise each class by one average member.",
-          "That average — the centroid — stands in for the whole group. You only compare the new sample to one car-centre and one bike-centre.",
-          "Whichever centre is closer wins. It’s faster than kNN, and it captures the ‘typical’ idea of each class.",
+          "Comparing a new sample to every single example is a lot of work. The **centroid classifier** has a shortcut: summarise each class by one **average member**.",
+          "That average — the **centroid** — stands in for the whole group. You only compare the new sample to one car-centre and one bike-centre.",
+          "Whichever centre is **closer wins**. It’s faster than kNN, and it captures the ‘typical’ idea of each class.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: instead of checking every past example, you describe a ‘typical car’ and a ‘typical bike’ and compare new things to those two. What do you trade away?",
-          choices: [
-            { id: "a", label: "Speed — it becomes slower" },
-            { id: "b", label: "Detail — an average can miss unusual members of a class" },
-            { id: "c", label: "Nothing — it’s identical to checking every example" },
+        concept: {
+          what: "The **centroid classifier** summarises each class by one **average member** (the centroid) and assigns a new sample to the **nearest center**.",
+          why: "One comparison per class instead of thousands — **much faster than kNN**, while still capturing the ‘typical’ idea of each class.",
+          where: [
+            "A **typical car** vs. a **typical bike** — two centers decide",
+            "**Document topics** matched by average word patterns",
+            "Quick **routing** of support tickets to the closest team profile",
           ],
-          answer: "b",
-          explanation:
-            "One average per class is fast, but unusual samples — a cargo trike, a tiny car — sit far from any centre and can get misjudged.",
+          whenNot:
+            "Averages miss **unusual members** — a cargo trike sits far from every center and gets misjudged. Odd-shaped classes need kNN or trees instead.",
+        },
+        diagram: {
+          kind: "compare",
+          left: {
+            title: "k-Nearest Neighbors",
+            subtitle: "compare against every example",
+          },
+          right: {
+            title: "Centroid classifier",
+            subtitle: "compare against one average per class",
+          },
+          rows: [
+            {
+              label: "Where to use",
+              left: "Accuracy first, moderate data size — recommendations, fraud flags",
+              right: "Speed first, compact well-separated classes — routing, topic matching",
+            },
+            {
+              label: "When NOT to use",
+              left: "Huge datasets (slow) or noisy, uninformative neighbours",
+              right: "Odd-shaped classes or unusual members that an average can’t represent",
+            },
+          ],
         },
         questions: [
           {
@@ -1228,11 +1272,6 @@ for claim, expected in cases:
               "Averages describe the typical, not the odd. kNN could still find the few trike-like neighbours; the single-centre shortcut can’t.",
           },
         ],
-        application: {
-          title: "Meet the averages",
-          prompt:
-            "Picture the ‘average’ member of two groups you know — two cuisines, two genres, two sports teams. When would judging a new case by nearest-average fail? Name one example that sits far from both averages.",
-        },
       },
       {
         slug: "decision-tree-rules",
@@ -1243,22 +1282,52 @@ for claim, expected in cases:
         capability: "Read a decision tree as a set of rules and follow it to a prediction.",
         minutes: 5,
         prose: [
-          "A decision tree is just a list of if/then rules, drawn as a path. Start at the top, answer each question, and you land on a prediction.",
-          "For the tennis example, the rules look like ‘if sunny and humid, no match’. Drawn as a tree, that same rule is a branch you walk down.",
-          "Many different trees could give the same answers on your data — so the real question is: which tree is best? That’s the next lesson.",
+          "A **decision tree** is just a list of if/then rules, drawn as a path. Start at the top, answer each question, and you land on a prediction.",
+          "For the tennis example, the rules look like **‘if sunny and humid, no match’**. Drawn as a tree, that same rule is a branch you walk down.",
+          "Many different trees could give the same answers on your data — so the real question is: **which tree is best?** That’s the next lesson.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: you want one question about the weather that best decides ‘play tennis or not’. Is ‘is it windy?’ guaranteed to be the best first question?",
-          choices: [
-            { id: "a", label: "Yes — windiness always matters most" },
-            { id: "b", label: "No — the best question depends on what your data actually shows" },
-            { id: "c", label: "It doesn’t matter which question comes first" },
+        concept: {
+          what: "A **decision tree** is a list of **if/then questions drawn as a path** — start at the top, answer each one, land on a prediction.",
+          why: "The tree **explains itself**: you can read the exact branch path behind any answer, making it the most explainable classifier you’ll meet.",
+          where: [
+            "**‘Sunny and humid → no tennis’** as a walkable branch",
+            "**Triage questionnaires** — three answers, one verdict",
+            "**Loan rules** auditors can check branch by branch",
           ],
-          answer: "b",
-          explanation:
-            "The best first question is the one your data answers most cleanly — and that can change from dataset to dataset.",
+          whenNot:
+            "A poor fit when features are **smooth numbers with no natural yes/no questions**, and deep trees risk **memorising noise** — overfitting, covered later in the course.",
+        },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Outlook?",
+            branches: [
+              {
+                label: "sunny",
+                node: {
+                  kind: "decision",
+                  question: "Humidity high?",
+                  branches: [
+                    { label: "yes", node: { kind: "leaf", answer: "No play" } },
+                    { label: "no", node: { kind: "leaf", answer: "Play" } },
+                  ],
+                },
+              },
+              { label: "overcast", node: { kind: "leaf", answer: "Play" } },
+              {
+                label: "rain",
+                node: {
+                  kind: "decision",
+                  question: "Windy?",
+                  branches: [
+                    { label: "yes", node: { kind: "leaf", answer: "No play" } },
+                    { label: "no", node: { kind: "leaf", answer: "Play" } },
+                  ],
+                },
+              },
+            ],
+          },
         },
         questions: [
           {
@@ -1279,22 +1348,17 @@ for claim, expected in cases:
             id: "q2",
             kind: "mcq",
             prompt:
-              "Why is a decision tree considered more ‘explainable’ than kNN?",
+              "A bank's regulator asks why a loan application was denied. The bank has two models that scored the application identically: a decision tree and a kNN classifier. Which one lets the bank show the regulator the exact reasoning?",
             choices: [
-              { id: "a", label: "It is always more accurate than kNN" },
-              { id: "b", label: "You can read the exact if/then path that produced any prediction" },
-              { id: "c", label: "It uses fewer features automatically" },
+              { id: "a", label: "The decision tree — walk the branches and read the if/then path to the decision" },
+              { id: "b", label: "The kNN classifier — show the neighbours that voted" },
+              { id: "c", label: "Neither — regulators don't accept model reasoning" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "A tree is its own explanation: follow the branches and you see the reasoning. kNN’s reasoning is ‘these neighbours voted’, which is harder to inspect.",
+              "A tree is its own explanation: follow the branches and you see the reasoning. kNN's reasoning is ‘these neighbours voted’, which is harder to inspect — and regulators need the path.",
           },
         ],
-        application: {
-          title: "Write your own tree",
-          prompt:
-            "Take a decision you make often (what to cook, which route to take). Write it as 2-3 if/then questions with outcomes at the leaves. Congratulations — that’s a hand-drawn decision tree.",
-        },
       },
       {
         slug: "best-split",
@@ -1305,22 +1369,37 @@ for claim, expected in cases:
         capability: "Judge a good split as one whose branches are mostly pure.",
         minutes: 5,
         prose: [
-          "When a tree asks a question, it splits the data into branches. A good split leaves each branch mostly one class — that’s called ‘pure’.",
-          "A bad split leaves the branches jumbled. The tree-building rule is simple: at every step, pick the feature whose split is purest.",
-          "That purity has a name — information gain — but the intuition needs no formula: the best question is the one that untangles the classes the most.",
+          "When a tree asks a question, it **splits the data into branches**. A good split leaves each branch mostly one class — that’s called **‘pure’**.",
+          "A bad split leaves the branches jumbled. The tree-building rule is simple: at every step, **pick the feature whose split is purest**.",
+          "That purity has a name — **information gain** — but the intuition needs no formula: the best question is the one that untangles the classes the most.",
         ],
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: split A sorts your samples so the left side is all cars and the right side is all bikes. Split B leaves both sides half-and-half. Which question was more useful?",
-          choices: [
-            { id: "a", label: "Split A — each side is now decided" },
-            { id: "b", label: "Split B — mixing means more information" },
-            { id: "c", label: "They’re equally useful" },
+        concept: {
+          what: "When a tree asks a question it **splits the data**; the best split leaves each branch **mostly one class — ‘pure’**.",
+          why: "The tree-building rule — **always pick the purest split** — is how the tree decides which question to ask first, no formula needed.",
+          where: [
+            "‘Wheel count?’ **untangles** cars from bikes in one cut",
+            "‘Humidity?’ settles tennis days cleanly",
+            "A **50/50-everywhere split** is useless — discard it",
           ],
-          answer: "a",
-          explanation:
-            "A split that untangles the classes did real work; a split that leaves both sides jumbled told you nothing.",
+          whenNot:
+            "A split earns its place **only if it purifies** — one that leaves both sides equally mixed answers nothing, however sensible the question sounds.",
+        },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Which question splits the data best?",
+            branches: [
+              {
+                label: "each side one class",
+                node: { kind: "leaf", answer: "Use it first", caption: "pure = information gain" },
+              },
+              {
+                label: "both sides mixed",
+                node: { kind: "leaf", answer: "Discard it", caption: "zero gain, no matter how sensible" },
+              },
+            ],
+          },
         },
         questions: [
           {
@@ -1352,11 +1431,6 @@ for claim, expected in cases:
               "A 50/50-everywhere split has zero purity gain. The builder keeps searching for a feature that actually untangles the classes.",
           },
         ],
-        application: {
-          title: "Play the purity game",
-          prompt:
-            "Think of a group you could split two ways (your contacts, your emails, a playlist). Find a question where each side becomes ‘mostly one kind’ — then find a question where both sides stay mixed. That contrast is information gain, felt.",
-        },
       },
       {
         slug: "train-test-split",
@@ -1366,29 +1440,39 @@ for claim, expected in cases:
         skillIds: ["train-test-split", "classification-basics"],
         capability: "Explain why a model must be evaluated on data it was not trained on.",
         minutes: 4,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a student aces the exact practice paper they revised. Does that prove they understood the subject?",
-          choices: [
-            { id: "a", label: "Yes — a high score is a high score" },
-            { id: "b", label: "No — they may have memorised that paper; a fresh paper is the honest test" },
-            { id: "c", label: "Only if they revised quickly" },
+        concept: {
+          what: "**Split the data**: a training pile to learn from, and a **sealed test pile** the model never sees — grade only on the test.",
+          why: "Scoring the studied material measures **memory**; only unseen data measures whether the model **generalizes**.",
+          where: [
+            "A **fresh exam paper** vs. the one the student revised",
+            "A model at **100% on training, 60% on test** — 60 is the honest score",
+            "Serious teams keep a **final holdout** nobody touches",
           ],
-          answer: "b",
-          explanation:
-            "Grading on the studied material measures memory, not understanding. Models face exactly the same trap — as the picture ahead shows.",
+          whenNot:
+            "The test score stays meaningful **only while the test stays sealed** — every peek-and-tweak quietly turns the exam into study material.",
+        },
+        diagram: {
+          kind: "compare",
+          left: { title: "Training score", subtitle: "graded on studied data" },
+          right: { title: "Test score", subtitle: "graded on unseen data" },
+          rows: [
+            {
+              label: "What it measures",
+              left: "Memory — how well the model fits what it saw",
+              right: "Generalization — how it will behave in the real world",
+            },
+            {
+              label: "When NOT to trust it",
+              left: "As a quality claim — 100% here can be pure memorization",
+              right: "After peeking: tweak-until-it-passes turns the test into training data",
+            },
+          ],
         },
         prose: [
-          "Once you've built a classifier, the obvious question is: is it any good? The trap is checking the same data it learned from.",
-          "If you graded a student on the exact exam questions they studied, you'd learn nothing about whether they understood the ideas — only whether they memorized.",
-          "The fix is to split your data: a training pile the model learns from, and a separate test pile it never sees. Only the test score tells you if it generalizes.",
+          "Once you've built a classifier, the obvious question is: is it any good? The trap is **checking the same data it learned from**.",
+          "If you graded a student on the exact exam questions they studied, you'd learn nothing about whether they understood the ideas — only whether they **memorized**.",
+          "The fix is to split your data: a **training pile** the model learns from, and a separate **test pile** it never sees. Only the test score tells you if it **generalizes**.",
         ],
-        application: {
-          title: "Feel the split in your own life",
-          prompt:
-            "Think of a test or interview you prepared for. Write one sentence: what would ‘training data’ be for you, and what would ‘test data’ be? Why can't they be the same questions?",
-        },
         questions: [
           {
             id: "q1",
@@ -1408,15 +1492,15 @@ for claim, expected in cases:
             id: "q2",
             kind: "mcq",
             prompt:
-              "Why must the test set stay sealed until the very end?",
+              "A teammate keeps retraining the model whenever its test-set score dips, tuning until the test score looks great. Weeks later, real traffic performs far worse than that score promised. What happened?",
             choices: [
-              { id: "a", label: "To save computing power" },
-              { id: "b", label: "Because every time you tweak the model to improve its test score, the test quietly becomes training data" },
-              { id: "c", label: "Because untested data is safer to store" },
+              { id: "a", label: "The test set leaked — every tweak against it quietly turned the exam into study material" },
+              { id: "b", label: "The model got tired of being retrained" },
+              { id: "c", label: "Real traffic is always identical to test data" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Peeking and adjusting turns the exam into study material — the score stops predicting real-world behaviour. This is why serious teams keep a final holdout.",
+              "Peeking and adjusting turns the exam into study material — the score stops predicting real-world behaviour. This is why serious teams keep a final holdout nobody tunes against.",
           },
         ],
       },
@@ -1428,29 +1512,39 @@ for claim, expected in cases:
         skillIds: ["overfitting", "train-test-split"],
         capability: "Recognise overfitting as memorizing training data instead of learning the pattern.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: two students score identically on the practice exam. One memorised every answer, one understood the ideas. On the real exam with fresh questions, what happens?",
-          choices: [
-            { id: "a", label: "Both score the same — preparation is preparation" },
-            { id: "b", label: "The memoriser drops sharply; the understander holds steady" },
-            { id: "c", label: "The memoriser scores higher — memory beats thinking" },
+        concept: {
+          what: "**Overfitting** is learning the training data **too precisely** — every quirk and noise — and failing on anything new.",
+          why: "It’s the **memoriser vs. understander** gap: perfect scores on old papers, flops on fresh questions. The most common way good-looking models fail.",
+          where: [
+            "**100% on training, 50% on test** — the classic signature",
+            "A model that nailed **only red cars** during training",
+            "Quiz apps that ace their own questions, then fail transfers",
           ],
-          answer: "b",
-          explanation:
-            "Fresh questions expose the difference between memorising and understanding. Models can fail this exact same way — it’s called overfitting.",
+          whenNot:
+            "Don’t chase **training-set perfection** — a simpler model with **matching train and test scores** (85/85) usually wins in the real world.",
+        },
+        diagram: {
+          kind: "compare",
+          left: { title: "Memorizing", subtitle: "learned every quirk by heart" },
+          right: { title: "Understanding", subtitle: "learned the real pattern" },
+          rows: [
+            {
+              label: "Signature",
+              left: "100% on training · drops hard on new data",
+              right: "Similar scores on both, e.g. 85% / 85%",
+            },
+            {
+              label: "When NOT to use",
+              left: "Ever as a shipping model — it fails fresh questions",
+              right: "When it underfits — too simple to capture the pattern at all",
+            },
+          ],
         },
         prose: [
-          "Overfitting is when a model learns its training data so precisely — every quirk and noise — that it fails on anything new.",
-          "It's the difference between a student who memorized past exams and one who understood the ideas. The memorizer aces the old papers and flops a fresh question.",
-          "The goal is the sweet spot: simple enough to generalize, complex enough to capture the real pattern.",
+          "**Overfitting** is when a model learns its training data so precisely — every quirk and noise — that it fails on anything new.",
+          "It's the difference between a student who **memorized** past exams and one who **understood** the ideas. The memorizer aces the old papers and flops a fresh question.",
+          "The goal is the sweet spot: **simple enough to generalize, complex enough to capture the real pattern**.",
         ],
-        application: {
-          title: "Spot overfitting around you",
-          prompt:
-            "Name a time you (or someone) memorized something word-for-word but couldn't use it in a new situation. Write one sentence: what was the ‘training data’, and what was the ‘new data’ it failed on?",
-        },
         questions: [
           {
             id: "q1",
@@ -1490,29 +1584,22 @@ for claim, expected in cases:
         skillIds: ["data-quality", "ml-limits"],
         capability: "Explain how biased or incomplete data leads to biased predictions.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: a chef who has only ever tasted sweet food is asked to judge a savoury dish. What’s the risk?",
-          choices: [
-            { id: "a", label: "None — judging is judging" },
-            { id: "b", label: "Their limited experience skews the judgement itself" },
-            { id: "c", label: "They’ll refuse to judge at all" },
+        concept: {
+          what: "**Garbage in, garbage out**: the data — not the algorithm — is the **single biggest influence** on what a model learns.",
+          why: "A model trained on a **narrow or biased slice** of the world judges the whole world through that slice.",
+          where: [
+            "A model that only saw **red cars** fails on a blue one",
+            "**Hiring models** reproducing past demographic bias",
+            "**Face unlock** failing on faces it never trained on",
           ],
-          answer: "b",
-          explanation:
-            "Experience defines the range of good judgement — for chefs and for models. A model trained on a narrow slice of the world judges the whole world through that slice.",
+          whenNot:
+            "Don’t reach for a fancier algorithm **before auditing the data** — most classifier problems are data problems in disguise.",
         },
         prose: [
-          "The single biggest influence on a model isn't the algorithm — it's the data. A fancy model trained on bad data still gives bad answers.",
-          "If a model only ever saw red cars, it would ‘learn’ that cars are red — and then fail on a blue one. That's not a broken model; it's broken data.",
-          "Before tuning the algorithm, ask: is the data varied, balanced, and representative of the real world the model will meet?",
+          "The single biggest influence on a model isn't the algorithm — it's **the data**. A fancy model trained on **bad data** still gives bad answers.",
+          "If a model only ever saw **red cars**, it would ‘learn’ that cars are red — and then fail on a blue one. That's not a broken model; it's **broken data**.",
+          "Before tuning the algorithm, ask: is the data **varied, balanced, and representative** of the real world the model will meet?",
         ],
-        application: {
-          title: "Audit a dataset's bias",
-          prompt:
-            "Pick an ML feature you use (recommendations, search, spam). Write one way its training data could be biased — and one prediction that bias would produce.",
-        },
         questions: [
           {
             id: "q1",
@@ -1552,29 +1639,22 @@ for claim, expected in cases:
         skillIds: ["ml-applications", "ai-literacy"],
         capability: "Recognise everyday apps that use machine learning and name the family they belong to.",
         minutes: 4,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: how many times did machine learning touch your day already — zero, a handful, or dozens?",
-          choices: [
-            { id: "a", label: "Zero — I don’t work with AI" },
-            { id: "b", label: "A handful of obvious ones, like chatbots" },
-            { id: "c", label: "Dozens — most of them invisible" },
+        concept: {
+          what: "You already use ML **dozens of times a day** — spam filters, keyboards, face unlock, maps — most of it invisible.",
+          why: "Each one runs the skeleton you now know: **samples in, a learned pattern out, predictions on new cases** — so ‘AI magic’ becomes something you can question.",
+          where: [
+            "**Spam filters** that read millions of marked emails",
+            "**Keyboards** guessing your next word from your history",
+            "**Face unlock** recognising you in bad light",
           ],
-          answer: "c",
-          explanation:
-            "Spam filters, keyboards, maps, recommendations, face unlock — ML is woven into ordinary apps. The picture ahead makes the invisible ones visible.",
+          whenNot:
+            "Not every clever feature is ML — a **fixed rule** (timer, calculator, sort-by-date) is ordinary programming. Ask what examples it learned from to tell them apart.",
         },
         prose: [
-          "You’ve used machine learning a dozen times today already. Spam filters deciding what reaches your inbox. Keyboards guessing your next word. Face unlock recognising you in bad light.",
-          "Each one is the same skeleton you now know: samples in, a learned pattern out, predictions on new cases. A spam filter read millions of marked emails; your keyboard watched which words follow yours.",
-          "Once you see the skeleton, ‘AI magic’ turns into something you can question: what were the examples? What is it predicting? What happens when it’s wrong?",
+          "You’ve used **machine learning a dozen times today already**. Spam filters deciding what reaches your inbox. Keyboards guessing your next word. Face unlock recognising you in bad light.",
+          "Each one is the same skeleton you now know: **samples in, a learned pattern out, predictions on new cases**. A spam filter read millions of marked emails; your keyboard watched which words follow yours.",
+          "Once you see the skeleton, ‘AI magic’ turns into something you can question: **what were the examples? What is it predicting? What happens when it’s wrong?**",
         ],
-        application: {
-          title: "Audit your own phone",
-          prompt:
-            "Open the apps you used today. Pick two and write one sentence each: what does it predict or sort for you, and what past behaviour of yours is it learning from?",
-        },
         questions: [
           {
             id: "q1",
@@ -1614,29 +1694,43 @@ for claim, expected in cases:
         skillIds: ["ml-limits", "ai-literacy"],
         capability: "Explain why ML can be confidently wrong and name one safeguard against it.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the picture: when an AI gives a wrong answer, does it usually sound unsure?",
-          choices: [
-            { id: "a", label: "Yes — wrong answers come with hedging" },
-            { id: "b", label: "No — wrong answers sound exactly as confident as right ones" },
-            { id: "c", label: "It refuses to answer when unsure" },
+        concept: {
+          what: "ML **fails quietly**: it always produces an answer, in the same confident tone, **whether it knows or not**.",
+          why: "Unlike a calculator that crashes loudly, a **confidently wrong** model looks identical to a right one — that’s the dangerous property.",
+          where: [
+            "**Face unlock** failing on faces it never trained on",
+            "A **chatbot** inventing answers with total confidence",
+            "Failures traced to **training gaps, overfitting, or bad data**",
           ],
-          answer: "b",
-          explanation:
-            "That’s the dangerous property: a model’s tone carries no knowledge of its own accuracy. Confidently wrong is the normal failure mode, not the exception.",
+          whenNot:
+            "Never trust tone as a signal of accuracy — the safeguard is asking **what were the examples, how was it tested, and what happens when it’s wrong?**",
+        },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "When NOT to trust the output?",
+            branches: [
+              {
+                label: "input unlike any training example",
+                node: { kind: "leaf", answer: "Training gap" },
+              },
+              {
+                label: "perfect on training, poor on test",
+                node: { kind: "leaf", answer: "Overfitting" },
+              },
+              {
+                label: "data was narrow or biased",
+                node: { kind: "leaf", answer: "Bad data" },
+              },
+            ],
+          },
         },
         prose: [
-          "Machine learning fails differently from ordinary software. A calculator breaks loudly — error, crash, blank screen. A model fails quietly: it always produces an answer, in the same confident tone, whether it knows or not.",
-          "The failures come from the three things you’ve met: training gaps (it never saw a case like this), overfitting (it memorised quirks), and bad data (it learned a skewed world).",
-          "The safeguard isn’t ‘trust it more’ or ‘trust it less’ — it’s knowing which questions to ask: what were the examples, how was it tested, and what happens when it’s wrong? Those questions are exactly what the next course, AI Observability, teaches you to ask daily.",
+          "Machine learning **fails differently** from ordinary software. A calculator breaks loudly — error, crash, blank screen. A model fails **quietly**: it always produces an answer, in the same confident tone, whether it knows or not.",
+          "The failures come from the three things you’ve met: **training gaps** (it never saw a case like this), **overfitting** (it memorised quirks), and **bad data** (it learned a skewed world).",
+          "The safeguard isn’t ‘trust it more’ or ‘trust it less’ — it’s knowing **which questions to ask**: what were the examples, how was it tested, and what happens when it’s wrong? Those questions are exactly what the next course, **AI Observability**, teaches you to ask daily.",
         ],
-        application: {
-          title: "Spot a likely failure case",
-          prompt:
-            "Name one ML feature you rely on. Describe one input or situation where you’d distrust its output, and one reason your training-data knowledge gives for that doubt.",
-        },
         questions: [
           {
             id: "q1",
@@ -1688,73 +1782,52 @@ for claim, expected in cases:
         skillIds: ["ai-observability"],
         capability: "Explain what observability means and why even a working system needs it.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you’re driving and the car feels fine. What’s the most reliable way to know the engine is healthy?",
-          choices: [
-            { id: "a", label: "Trust how it feels" },
-            { id: "b", label: "Glance at the dashboard gauges" },
-            { id: "c", label: "Wait until it breaks down" },
+        concept: {
+          what: "**Observability** means telling what’s happening **inside** a system just by reading **signals on the outside** — no opening it up.",
+          why: "It turns a hidden engine into a dashboarded one: you see **how it’s really doing underneath**, not just how confident it looks.",
+          where: [
+            "A **car dashboard** — speed, fuel, engine warnings without lifting the bonnet",
+            "An **AI answer service** — readings behind every confident answer",
+            "A **delivery app** — where your package actually is, not where it should be",
           ],
-          answer: "b",
-          explanation:
-            "Feelings miss slow problems, and waiting for a breakdown is too late. Gauges show the engine’s hidden state before it fails.",
+          whenNot:
+            "It can’t tell you what to *fix* — observability **reveals state**, it doesn’t repair it. And it’s overkill for a system too small to fail quietly.",
         },
         prose: [
-          "Observability means being able to tell what’s happening inside a system just by reading signals on the outside.",
-          "A car’s dashboard does this perfectly. You can’t see the engine, but the gauges tell you the speed, the fuel, and whether something is wrong — all without lifting the bonnet.",
-          "An AI is also a hidden engine. You only see its answers. Observability gives an AI its own dashboard: little readings that show how it’s really doing underneath, not just how confident it sounds.",
+          "Observability means being able to tell what’s happening **inside a system just by reading signals on the outside**.",
+          "A car’s dashboard does this perfectly. You can’t see the engine, but the **gauges** tell you the speed, the fuel, and whether something is wrong — all without lifting the bonnet.",
+          "An AI is also a hidden engine. You only see its answers. Observability gives an AI its own dashboard: little readings that show **how it’s really doing underneath**, not just how confident it sounds.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does observability let you do?",
+            prompt:
+              "You’re driving to the airport and the car feels completely normal. What’s the most reliable way to know the engine is actually healthy before a 300 km drive?",
             choices: [
-              { id: "a", label: "See a system’s source code" },
-              { id: "b", label: "Tell what’s happening inside a system from outside signals" },
-              { id: "c", label: "Make the system run faster" },
+              { id: "a", label: "Trust how it feels — feel is data" },
+              { id: "b", label: "Glance at the dashboard gauges before setting off" },
+              { id: "c", label: "Wait for the engine to break down and then decide" },
             ],
             answer: "b",
             explanation:
-              "Observability is about insight into internal state from the outside — not code access or speed.",
+              "Feelings miss slow problems and breakdowns are too late. Gauges reveal the engine’s hidden state — exactly what observability gives you for an AI.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why is a car dashboard a good analogy for AI observability?",
+            prompt:
+              "Your company’s chatbot gives an answer that looks perfectly fine to users. With observability in place, what can the team do that they couldn’t before?",
             choices: [
-              { id: "a", label: "Because cars and AIs both use fuel" },
-              {
-                id: "b",
-                label: "Because in both cases the important parts are hidden, so you need readings to know their state",
-              },
-              { id: "c", label: "Because both have screens" },
-            ],
-            answer: "b",
-            explanation:
-              "The shared idea is a hidden engine whose health you read through gauges — fuel and screens are surface details.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "An AI gives an answer that looks fine. Observability helps you…",
-            choices: [
-              { id: "a", label: "Know whether it’s actually fine underneath" },
-              { id: "b", label: "Make the answer longer" },
-              { id: "c", label: "Turn the AI off" },
+              { id: "a", label: "Read the readings behind the answer to check whether it’s actually fine underneath" },
+              { id: "b", label: "Make every answer longer automatically" },
+              { id: "c", label: "Read the chatbot’s source code on the user’s phone" },
             ],
             answer: "a",
             explanation:
-              "Looking fine isn’t being fine. Observability reveals the hidden state behind a confident-looking answer.",
+              "Looking fine isn’t being fine. Observability reveals the hidden state — latency, cost, groundedness — behind a confident-looking answer. It isn’t about code access or longer text.",
           },
         ],
-        application: {
-          title: "Find your hidden state",
-          prompt:
-            "Name one machine-made answer you saw today (a recommendation, an auto-reply, a route). Write down one question about it you can’t answer from the outside looking in — that unknown is its hidden state.",
-        },
       },
       {
         slug: "why-ai-is-different",
@@ -1764,73 +1837,52 @@ for claim, expected in cases:
         skillIds: ["ai-observability"],
         capability: "Explain why AI is non-deterministic and why that changes how we monitor it.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you ask an AI the exact same question twice. What will most likely happen?",
-          choices: [
-            { id: "a", label: "Both answers will be identical" },
-            { id: "b", label: "The answers will probably differ slightly" },
-            { id: "c", label: "The second answer will be blank" },
+        concept: {
+          what: "AI is **non-deterministic**: the same input can produce **different outputs** on different runs — like a chef, not a vending machine.",
+          why: "It breaks test-once-trust-forever monitoring: one good answer **doesn’t promise the next**, so each run needs watching.",
+          where: [
+            "A **chatbot** answering the same question differently across days",
+            "**Image generators** producing a new picture every click",
+            "A **vending machine** — the contrast case: same button, same can, forever",
           ],
-          answer: "b",
-          explanation:
-            "AI is non-deterministic: the same prompt can yield different wording, length, or choices on different runs.",
+          whenNot:
+            "Not the whole story for **deterministic** pipelines around the AI — caches, routers, and validators behave like ordinary software and can be tested once.",
         },
         prose: [
-          "Normal software is like a vending machine. Press the same button, get the same thing, every single time. It’s predictable.",
-          "AI is more like a chef. Order the same dish twice and you’ll get two slightly different meals — both perfectly fine, but never identical.",
-          "This changes how we monitor it. With a vending machine you can test it once and trust it. With a chef, one good meal doesn’t promise the next — so you have to keep watching how each one turns out.",
+          "Normal software is like a **vending machine**. Press the same button, get the same thing, every single time. It’s predictable.",
+          "AI is more like a **chef**. Order the same dish twice and you’ll get two slightly different meals — both perfectly fine, but never identical.",
+          "This changes how we monitor it. With a vending machine you can test it once and trust it. With a chef, one good meal doesn’t promise the next — so you have to **keep watching how each one turns out**.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "In plain language, what does “non-deterministic” mean?",
+            prompt:
+              "A QA tester sends the same prompt to your support chatbot on Monday and Tuesday and gets two slightly different answers. Both read fine. Has something broken?",
             choices: [
-              { id: "a", label: "The system is broken" },
-              { id: "b", label: "The same input can produce different outputs" },
-              { id: "c", label: "The system has no inputs" },
+              { id: "a", label: "No — the same input can produce different outputs; that’s non-determinism, not breakage" },
+              { id: "b", label: "Yes — identical prompts must always return identical answers" },
+              { id: "c", label: "It means the chatbot has no inputs" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Non-deterministic means the output isn’t fixed by the input — it can vary. It doesn’t mean broken.",
+              "Non-deterministic means the output isn’t fixed by the input — it can vary. It doesn’t mean broken. Two fine-but-different answers is normal AI behaviour.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why can’t you test an AI once and trust it forever?",
+            prompt:
+              "Your team certified a vending-machine-style checkout flow with one week of tests and shipped it. Now they want to apply the same test-once approach to the new AI assistant. Why won’t it work?",
             choices: [
-              { id: "a", label: "Because it’s too slow to run twice" },
-              {
-                id: "b",
-                label: "Because the same prompt can give different answers on different runs",
-              },
-              { id: "c", label: "Because it deletes its old answers" },
+              { id: "a", label: "The AI is too slow to test twice" },
+              { id: "b", label: "One good run doesn’t guarantee the next — the same prompt can answer differently over time, so every run needs watching" },
+              { id: "c", label: "The AI deletes its old answers after testing" },
             ],
             answer: "b",
             explanation:
-              "One good run doesn’t guarantee the next. Non-determinism means each run needs watching.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Which behaves more like an AI — a vending machine or a chef?",
-            choices: [
-              { id: "a", label: "A vending machine — same input, same output, forever" },
-              { id: "b", label: "A chef — the same dish varies with the day and the ingredients" },
-              { id: "c", label: "Neither — machines and cooks are both perfectly consistent" },
-            ],
-            answer: "b",
-            explanation:
-              "A chef varies dish-to-dish, just as an AI varies answer-to-answer. A vending machine is fixed.",
+              "Deterministic software passes once and stays passed. AI varies run-to-run, so certification has to become continuous observation.",
           },
         ],
-        application: {
-          title: "Sort your day’s software",
-          prompt:
-            "List three systems you interacted with today. For each, one sentence: fixed output every time (vending machine) or varying output from the same input (chef)? Your instinct for this split is the foundation of watching AI.",
-        },
       },
       {
         slug: "when-ai-goes-wrong",
@@ -1840,70 +1892,52 @@ for claim, expected in cases:
         skillIds: ["ai-observability", "llm-hallucination", "model-drift", "llm-cost-latency"],
         capability: "Recognise that AI usually fails quietly, and name the three common quiet-failure modes.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI feature is broken. How will you most likely find out?",
-          choices: [
-            { id: "a", label: "A loud crash that everyone notices" },
-            { id: "b", label: "It quietly gives worse answers while the bill climbs" },
-            { id: "c", label: "The AI sends you an email" },
+        concept: {
+          what: "AI **fails quietly**: it keeps answering in the same confident tone while answers quietly turn wrong, **costs climb**, or quality **drifts** — nothing crashes.",
+          why: "Silent failures run for **days or weeks** before anyone notices; observability exists to make quiet problems **loud enough to catch early**.",
+          where: [
+            "A support bot **hallucinating a refund policy** no one notices",
+            "An assistant whose **token bill doubles** over a month",
+            "A ranking model whose **quality drifts** after a data change",
           ],
-          answer: "b",
-          explanation:
-            "AI rarely crashes and doesn’t self-report. Without instruments, you usually only notice via worse answers, user complaints, or the bill.",
+          whenNot:
+            "Not the failure shape of ordinary software — a crashed page or full disk is already loud; that’s classic monitoring, not AI observability.",
         },
         prose: [
           "Normal software fails loudly. A page stops loading, an error pops up, the app freezes. Everyone notices, and someone fixes it.",
-          "AI tends to fail quietly. It keeps answering with a smile — but the answers quietly become wrong, the costs quietly climb, or the quality quietly drifts downward over time.",
-          "Because nothing actually crashes, nobody realises until the damage is done. That’s the core problem observability exists to solve: making quiet problems loud enough to catch early.",
+          "AI tends to fail **quietly**. It keeps answering with a smile — but the answers quietly become wrong, the costs quietly climb, or the quality quietly **drifts** downward over time.",
+          "Because nothing actually crashes, nobody realises until the damage is done. That’s the core problem observability exists to solve: **making quiet problems loud enough to catch early**.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "How does AI failure usually differ from normal software failure?",
+            prompt:
+              "For three weeks, your company’s chatbot has been inventing a return policy that doesn’t exist — politely, confidently, and with zero error messages. Users are following the fake policy. Why did nobody catch it for so long?",
             choices: [
-              { id: "a", label: "AI fails more loudly, with bigger error screens" },
-              { id: "b", label: "AI tends to fail quietly, without crashing" },
-              { id: "c", label: "AI never fails" },
+              { id: "a", label: "The failure was loud but support was understaffed" },
+              { id: "b", label: "AI fails quietly — nothing crashed, so the confident wrongness ran unnoticed until users complained" },
+              { id: "c", label: "The chatbot was working exactly as intended" },
             ],
             answer: "b",
             explanation:
-              "AI keeps running and answering even when something is wrong, so the failure is silent rather than a crash.",
+              "AI keeps running and answering even when something is wrong, so the failure is silent rather than a crash. Invisibility is exactly what makes quiet failures expensive.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which is NOT one of the three quiet-failure modes named in the lesson?",
+            prompt:
+              "A teammate lists the incidents from last quarter: (1) the website went down when disk filled up, (2) the chatbot started citing a deleted policy, (3) the AI feature’s bill doubled silently. Which two are AI quiet-failure modes?",
             choices: [
-              { id: "a", label: "Being confidently wrong" },
-              { id: "b", label: "Quietly climbing costs" },
-              { id: "c", label: "Running out of disk space" },
-            ],
-            answer: "c",
-            explanation:
-              "Disk space is a loud, classic crash. The three quiet modes are confident wrongness, rising cost, and slow drift.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why are quiet failures dangerous?",
-            choices: [
-              { id: "a", label: "They crash the whole app at once" },
-              { id: "b", label: "Nobody notices until damage is done" },
-              { id: "c", label: "They’re always expensive to fix" },
+              { id: "a", label: "1 and 2 — both are crashes" },
+              { id: "b", label: "2 and 3 — confident wrongness and quietly climbing cost" },
+              { id: "c", label: "1 and 3 — disk and money are the same kind of problem" },
             ],
             answer: "b",
             explanation:
-              "The danger is invisibility: since nothing crashes, the problem can run unnoticed for days or weeks.",
+              "Disk space is a loud, classic crash. The AI quiet modes are being confidently wrong and costs drifting up — no error screen, just slow damage.",
           },
         ],
-        application: {
-          title: "Spot the quiet failure",
-          prompt:
-            "Think of a time an app gave you an answer that looked fine but felt subtly off — a wrong fact, a too-confident guess, or a strange suggestion. What ‘quiet’ problem might have been happening behind the scenes, and what single number would you want on a dashboard to catch it next time?",
-        },
       },
       {
         slug: "logs-what-ai-said",
@@ -1913,70 +1947,52 @@ for claim, expected in cases:
         skillIds: ["system-logs"],
         capability: "Read a log entry and explain how logging helps answer ‘why did the AI say that?’.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI gave a weird answer yesterday. Today you want to know why. What do you most wish you had?",
-          choices: [
-            { id: "a", label: "The AI’s source code" },
-            { id: "b", label: "A record of exactly what was asked and answered" },
-            { id: "c", label: "A faster computer" },
+        concept: {
+          what: "**Logs** are a diary of what the AI said — every exchange written down **as it happens**.",
+          why: "Without logs, an odd answer is a mystery; with them, **‘why did it say that?’ becomes investigable** — exact prompt, answer, timestamp, version.",
+          where: [
+            "Scrolling back to the **exact odd answer** a user screenshotted",
+            "Checking which **model version** answered a support ticket",
+            "Reconstructing a **complaint** from words, not memory",
           ],
-          answer: "b",
-          explanation:
-            "Source code and speed don’t explain one specific answer. A record of the exchange lets you replay what actually happened.",
+          whenNot:
+            "Logs don’t tell you trends — ‘is it getting slower overall?’ is a **metric** question, not a diary lookup.",
         },
         prose: [
-          "Logs are a diary of what the AI said. Every exchange — what was asked and what was answered — gets written down as it happens.",
+          "Logs are a **diary of what the AI said**. Every exchange — what was asked and what was answered — gets written down as it happens.",
           "Without logs, an odd answer is a mystery. You remember it felt wrong, but the exact words, the time, and the model version are all gone.",
-          "With logs, you can scroll back, find the entry, and see the precise prompt, answer, timestamp, and version. ‘Why did it say that?’ becomes a question you can actually investigate.",
+          "With logs, you can scroll back, find the entry, and see the precise **prompt, answer, timestamp, and version**. ‘Why did it say that?’ becomes a question you can actually investigate.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What is a log, in plain terms?",
+            prompt:
+              "A user tweets a screenshot of your support bot promising a ‘full lifetime refund’ — but doesn’t say when it happened. Without logs, what’s your situation?",
             choices: [
-              { id: "a", label: "A diary recording what was said" },
-              { id: "b", label: "A type of AI model" },
-              { id: "c", label: "A summary number over time" },
+              { id: "a", label: "You can find the exact exchange instantly" },
+              { id: "b", label: "You only have a memory of it feeling wrong — the exact words, time, and model version are gone" },
+              { id: "c", label: "Nothing — tweets aren’t real incidents" },
             ],
-            answer: "a",
+            answer: "b",
             explanation:
-              "A log is a record of events. (A summary number over time is a metric — that’s the next lesson.)",
+              "A log is the record of events that makes ‘why did it say that?’ investigable. Without it, you’re reconstructing from screenshots and memory.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which four things does a good AI log entry capture?",
+            prompt:
+              "Your team is writing the log-entry standard for a new chatbot. One engineer wants prompt + answer + timestamp + model version; another wants to also store each user’s full name and home address ‘for context’. Which four fields are the right core?",
             choices: [
               { id: "a", label: "Prompt, answer, timestamp, and model version" },
-              { id: "b", label: "The user’s name and home address" },
-              { id: "c", label: "The weather at the time" },
+              { id: "b", label: "Full name, address, timestamp, and weather" },
+              { id: "c", label: "Only the answers — prompts take too much space" },
             ],
             answer: "a",
             explanation:
-              "Those four let you reconstruct exactly what happened. Personal data and trivia aren’t needed to debug an answer.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Logging mostly helps you answer which question?",
-            choices: [
-              { id: "a", label: "“How do I make the AI faster?”" },
-              { id: "b", label: "“Why did the AI say that?”" },
-              { id: "c", label: "“How do I turn the AI off?”" },
-            ],
-            answer: "b",
-            explanation:
-              "Logs explain past behaviour. Speed is a metric question; turning it off is an ops decision.",
+              "Those four reconstruct exactly what happened. Personal data isn’t needed to debug an answer — and storing it creates a privacy problem instead of solving a debugging one.",
           },
         ],
-        application: {
-          title: "Write your first log line",
-          prompt:
-            "Imagine an AI feature you use kept a diary. Write the one log line you’d most want it to record for each answer — what was asked (safely), and a trace of where the answer came from.",
-        },
       },
       {
         slug: "metrics-counting-matters",
@@ -1986,70 +2002,60 @@ for claim, expected in cases:
         skillIds: ["system-metrics", "llm-cost-latency"],
         capability: "Name the key AI metrics and explain why watching them over time reveals quiet problems.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: users say your AI “feels slow”. What turns that feeling into something you can act on?",
-          choices: [
-            { id: "a", label: "Trust their feeling and guess" },
-            { id: "b", label: "A metric that measures response time" },
-            { id: "c", label: "A bigger server" },
+        concept: {
+          what: "**Metrics** are numbers counted over time — a log records one event; a metric **summarises thousands**.",
+          why: "Watching numbers move turns ‘it feels slow’ into evidence — **a spike is a quiet problem announcing itself**.",
+          where: [
+            "**Latency** — how long answers take",
+            "**Cost & token usage** — how much it reads, writes, spends",
+            "**Error rate** — how often it fails",
           ],
-          answer: "b",
-          explanation:
-            "A feeling can’t be fixed until it’s measured. A latency metric turns ‘feels slow’ into ‘1.8 seconds on average’.",
+          whenNot:
+            "Metrics won’t explain any single answer — ‘why did it say *that*?’ needs a **log**, not an average.",
         },
         prose: [
-          "Metrics are numbers you count over time. Where a log records one event, a metric summarises thousands — ‘how slow, on average, over the last day?’.",
-          "For an AI, four numbers matter most: latency (how long an answer takes), cost (how much it spends), error rate (how often it fails), and token usage (how much it reads and writes).",
-          "On their own the numbers are just numbers. The magic is watching them move. A sudden spike in error rate is a quiet problem announcing itself — exactly what you’d miss without the dashboard. Try the 24h window on the dashboard above and spot the spike.",
+          "Metrics are numbers you count over time. Where a log records one event, a metric **summarises thousands** — ‘how slow, on average, over the last day?’.",
+          "For an AI, four numbers matter most: **latency** (how long an answer takes), **cost** (how much it spends), **error rate** (how often it fails), and **token usage** (how much it reads and writes).",
+          "On their own the numbers are just numbers. The magic is **watching them move**. A sudden spike in error rate is a quiet problem announcing itself — exactly what you’d miss without the dashboard. Try the 24h window on the dashboard above and spot the spike.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Thousands of requests" },
+            { kind: "process", text: "Count over time", caption: "avg latency · error rate · tokens · cost" },
+            { kind: "output", text: "A line you can watch move" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does a metric do that a log doesn’t?",
+            prompt:
+              "Users keep telling your team the chatbot ‘feels slow lately’. You need to confirm it with evidence — not vibes — and see whether it’s getting worse week over week. What do you pull up?",
             choices: [
-              { id: "a", label: "Summarises many events into a number over time" },
-              { id: "b", label: "Records one event’s exact words" },
-              { id: "c", label: "Turns the AI off automatically" },
+              { id: "a", label: "The average-latency metric graphed over the last few weeks" },
+              { id: "b", label: "One user’s exact logged conversation from Tuesday" },
+              { id: "c", label: "The chatbot’s source code" },
             ],
             answer: "a",
             explanation:
-              "A metric aggregates (e.g. average latency). A log records a single event verbatim. They answer different questions.",
+              "A metric aggregates thousands of events into a number over time — exactly what ‘is it getting slower?’ needs. One log entry can’t show a trend.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which is NOT one of the four key AI metrics named?",
+            prompt:
+              "Your AI feature’s monthly bill jumped 40% but no one filed a complaint and every answer looks fine. Which metric would have caught this quietly climbing cost before the invoice did?",
             choices: [
-              { id: "a", label: "Latency" },
-              { id: "b", label: "Cost" },
-              { id: "c", label: "The CEO’s mood" },
-            ],
-            answer: "c",
-            explanation:
-              "Latency, cost, error rate, and token usage are the four. Mood isn’t measurable — and that’s the point of metrics.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why is a spike in error rate useful?",
-            choices: [
-              { id: "a", label: "It means the AI is bored" },
-              { id: "b", label: "It’s a quiet problem becoming visible" },
-              { id: "c", label: "It makes the AI faster" },
+              { id: "a", label: "Latency — slow requests always cost more" },
+              { id: "b", label: "Token usage tracked over the month" },
+              { id: "c", label: "The CEO’s mood index" },
             ],
             answer: "b",
             explanation:
-              "A spike is a silent failure showing up as a number you can see and act on — the whole reason to track metrics.",
+              "Token usage and cost are the money metrics. A steady climb in either is a quiet failure showing up as a number you can see and act on — before the invoice arrives.",
           },
         ],
-        application: {
-          title: "Pick your morning metric",
-          prompt:
-            "If you ran an AI feature for a week and could check only one metric each morning, which would you pick — and what change in it would make you worried? Why that one over the others?",
-        },
       },
       {
         slug: "traces-the-journey",
@@ -2059,70 +2065,60 @@ for claim, expected in cases:
         skillIds: ["distributed-tracing"],
         capability: "Read a trace and identify which step in a request is the bottleneck.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI answer takes a full second, but you don’t know why. What helps most?",
-          choices: [
-            { id: "a", label: "A trace showing the time taken by each step" },
-            { id: "b", label: "A bigger font size" },
-            { id: "c", label: "Restarting the server and hoping" },
+        concept: {
+          what: "A **trace** follows **one request end-to-end** — every step behind the scenes, each with its own timing bar.",
+          why: "It localises vague complaints: ‘the AI is slow’ becomes **‘THIS step is slow’** — usually the big model call.",
+          where: [
+            "Finding the **slow step** in a support-bot request",
+            "Seeing **where the money goes** (which calls spend tokens)",
+            "Pointing engineers at the **exact** hop to optimise",
           ],
-          answer: "a",
-          explanation:
-            "You can’t fix what you can’t see. A trace breaks one slow request into its steps so you can point at the culprit.",
+          whenNot:
+            "A single trace can’t tell you trends — ‘is latency rising across all requests?’ is a **metric** question; traces zoom into one journey.",
         },
         prose: [
-          "A trace follows one request on its full journey — from the moment a question arrives, through every step behind the scenes, to the final answer.",
-          "Each step gets its own little bar showing how long it took. Stacked together, they reveal the shape of the whole request: where the time goes and where the money goes.",
+          "A trace follows **one request on its full journey** — from the moment a question arrives, through every step behind the scenes, to the final answer.",
+          "Each step gets its own little bar showing how long it took. Stacked together, they reveal the shape of the whole request: **where the time goes and where the money goes**.",
           "The trick is that most steps are quick and one is slow. Without a trace, ‘the AI is slow’ is a vague complaint. With one, you can point at the exact step — usually the big model call — and say ‘there, that’s most of the time’. Try tapping the steps above.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "One user question" },
+            { kind: "process", text: "Steps: retrieve → LLM call → format" },
+            { kind: "output", text: "Timed bars: the slow step stands out" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does a trace show that a single metric can’t?",
+            prompt:
+              "Your support bot takes 9 seconds per reply and users are complaining. The average-latency metric confirms it’s slow, but not why. What do you open next to find the culprit step?",
             choices: [
-              { id: "a", label: "The step-by-step journey of one request" },
-              { id: "b", label: "The average latency over a whole day" },
-              { id: "c", label: "The AI’s brand of model" },
+              { id: "a", label: "A trace of one slow request, to see which step’s bar dominates" },
+              { id: "b", label: "The latency graph again, zoomed in" },
+              { id: "c", label: "The model vendor’s pricing page" },
             ],
             answer: "a",
             explanation:
-              "A metric gives an average across many requests. A trace zooms into one request and shows every step inside it.",
+              "A metric gives an average across many requests. A trace zooms into one request and shows every step inside it — that’s how ‘it’s slow’ becomes ‘the LLM call is slow’.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "In the example trace, which step was the bottleneck?",
+            prompt:
+              "In your trace, the bar for the big LLM call is roughly 80% of the request’s total time; retrieval and formatting are slivers. Your team proposes a week optimising the formatting code. What does the trace say?",
             choices: [
-              { id: "a", label: "The user question" },
-              { id: "b", label: "The LLM call" },
-              { id: "c", label: "The final answer" },
+              { id: "a", label: "Go ahead — formatting is easier to fix" },
+              { id: "b", label: "Effort is going to the wrong step — the LLM call dominates, so that’s where the time actually is" },
+              { id: "c", label: "The trace is broken because bars should be equal" },
             ],
             answer: "b",
             explanation:
-              "The LLM call’s bar was by far the longest — roughly 80% of the whole request. That’s the step to optimise.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Traces mostly help you turn ‘it’s slow’ into…",
-            choices: [
-              { id: "a", label: "‘it’s expensive’" },
-              { id: "b", label: "‘THIS step is slow’" },
-              { id: "c", label: "‘it’s broken’" },
-            ],
-            answer: "b",
-            explanation:
-              "A trace localises the slowness to a specific step, so effort goes where it actually matters.",
+              "A trace localises slowness to a specific step so effort goes where it matters. A week on a 5% step can’t move a 9-second reply; the 80% LLM call can.",
           },
         ],
-        application: {
-          title: "Trace a request you know",
-          prompt:
-            "Think of one app request you make daily (a search, a payment, a message). Sketch its journey in 3-4 steps — what would you check first if it suddenly became slow? That instinct is tracing.",
-        },
       },
       {
         slug: "is-the-answer-good",
@@ -2132,70 +2128,52 @@ for claim, expected in cases:
         skillIds: ["llm-evaluation"],
         capability: "Explain how a rubric and a reviewer turn a fuzzy ‘is it good?’ into checkable evaluation.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI gives a grammatically perfect answer. Is it ‘good’?",
-          choices: [
-            { id: "a", label: "Yes — it reads well" },
-            { id: "b", label: "You can’t tell without checking it against what’s true and useful" },
-            { id: "c", label: "No — AI answers are never good" },
+        concept: {
+          what: "**Evaluation** turns fuzzy ‘is it good?’ into a **rubric of sharp checks** — facts right? helpful? on-topic? safe? — applied by a reviewer.",
+          why: "An answer can read beautifully and still be wrong; a rubric makes quality **measurable instead of felt**.",
+          where: [
+            "A **human reviewer** scoring a sample of answers each week",
+            "An **AI judge** scoring thousands overnight",
+            "Most teams **blending both** on a schedule",
           ],
-          answer: "b",
-          explanation:
-            "A well-written answer can still be wrong or unhelpful. ‘Good’ needs checking, not just reading.",
+          whenNot:
+            "Evaluation scores **samples on a schedule** — it can’t certify every live answer, and a rubric is only as honest as its checks.",
         },
         prose: [
-          "“Is this answer good?” is the hardest question in AI. An answer can read beautifully and still be wrong, unhelpful, or off-topic.",
-          "The trick is to stop asking one fuzzy question and ask several sharp ones instead — a rubric. Does it get the facts right? Is it helpful? Is it on-topic? Is it safe?",
-          "Then someone applies the rubric. A human reviewer is careful but slow; a second AI acting as a judge is fast but not perfect. Most teams blend both, checking a sample of answers on a regular schedule.",
+          "“Is this answer good?” is the hardest question in AI. An answer can **read beautifully and still be wrong**, unhelpful, or off-topic.",
+          "The trick is to stop asking one fuzzy question and ask several sharp ones instead — a **rubric**. Does it get the facts right? Is it helpful? Is it on-topic? Is it safe?",
+          "Then someone applies the rubric. A **human reviewer** is careful but slow; a second AI acting as a **judge** is fast but not perfect. Most teams blend both, checking a sample of answers on a regular schedule.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why is ‘is it good?’ a hard question?",
+            prompt:
+              "Your chatbot’s latest answer is eloquent, on-brand, perfectly formatted — and cites a discount code that expired in 2023. Users are already trying it. Why didn’t ‘it reads well’ catch this?",
             choices: [
-              { id: "a", label: "It’s fuzzy — a well-written answer can still be wrong or unhelpful" },
-              { id: "b", label: "Nobody knows what ‘good’ means at all" },
-              { id: "c", label: "AI answers are always good" },
+              { id: "a", label: "Because reading well is not being right — surface polish hides factual problems, which is why evaluation uses a rubric of specific checks" },
+              { id: "b", label: "Because nobody on the team speaks the language" },
+              { id: "c", label: "Because expired codes are actually valid forever" },
             ],
             answer: "a",
             explanation:
-              "We can define ‘good’; the problem is that surface polish hides factual or practical problems.",
+              "‘Good’ must be broken into checkable parts — factual correctness first. An eloquent wrong answer is the classic evaluation trap.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "What does a rubric do?",
+            prompt:
+              "You must review 10,000 support answers per month. A human reviewer scores 500 with great care; an AI judge scores all 10,000 overnight but sometimes misgrades nuance. What do most teams actually do?",
             choices: [
-              { id: "a", label: "Breaks ‘good’ into specific checkable parts" },
-              { id: "b", label: "Makes the AI run faster" },
-              { id: "c", label: "Deletes bad answers automatically" },
+              { id: "a", label: "Use only the human — quality beats coverage" },
+              { id: "b", label: "Use only the AI judge — speed beats everything" },
+              { id: "c", label: "Blend both: AI judge at scale, human spot-checks on a sample" },
             ],
-            answer: "a",
+            answer: "c",
             explanation:
-              "A rubric turns one fuzzy question into several sharp ones you can actually score.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "What’s the trade-off between a human reviewer and an AI judge?",
-            choices: [
-              { id: "a", label: "Humans are careful but slow; AI judges are fast but not perfect" },
-              { id: "b", label: "Humans are always wrong" },
-              { id: "c", label: "AI judges are always right" },
-            ],
-            answer: "a",
-            explanation:
-              "Each has a weakness, which is why teams usually blend human spot-checks with AI judging at scale.",
+              "Humans are careful but slow; AI judges are fast but imperfect. Blending both gets coverage and a calibrated sample — each covers the other’s weakness.",
           },
         ],
-        application: {
-          title: "Design your spot-check",
-          prompt:
-            "Pick an AI answer you received this week. Write a two-line rubric you’d use to judge it (e.g. ‘every claim traceable to a source; no invented details’) — then apply it. Would it pass?",
-        },
       },
       {
         slug: "hallucination-makes-things-up",
@@ -2205,70 +2183,52 @@ for claim, expected in cases:
         skillIds: ["llm-hallucination", "llm-evaluation"],
         capability: "Explain why AI hallucinates and how logs and evaluation catch confident falsehoods.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI says “The capital of Australia is Sydney” with total confidence. What’s true?",
-          choices: [
-            { id: "a", label: "If it sounds confident, it must be right" },
-            { id: "b", label: "It could still be wrong — confidence isn’t proof" },
-            { id: "c", label: "AI never states facts" },
+        concept: {
+          what: "A **hallucination** is a wrong answer said with complete confidence — **it looks identical to a correct one**.",
+          why: "The AI **predicts plausible text, it doesn’t look up facts** — so sometimes the most plausible-sounding line is false, and only observability catches it.",
+          where: [
+            "A support bot inventing a **refund policy**",
+            "An assistant citing a **paper that doesn’t exist**",
+            "A legal summariser **misquoting** a clause",
           ],
-          answer: "b",
-          explanation:
-            "Hallucinations sound just like facts. Confidence is a property of the wording, not of the truth.",
+          whenNot:
+            "Not solved by making answers sound more careful — confidence **carries no accuracy signal**; you need **logs + evaluation**, not better tone.",
         },
         prose: [
-          "A hallucination is a wrong answer said with complete confidence. It looks identical to a correct one — there’s no warning in the wording.",
-          "This happens because the AI isn’t a database. It predicts which words tend to follow others, producing text that sounds plausible. Sometimes the most plausible-sounding line simply isn’t true.",
-          "Because a confident answer isn’t a checked answer, you catch hallucinations with observability: logs let you re-read what was said, and an evaluation rubric asks the dangerous question — ‘is this actually correct?’.",
+          "A hallucination is a **wrong answer said with complete confidence**. It looks identical to a correct one — there’s no warning in the wording.",
+          "This happens because the AI isn’t a database. It **predicts which words tend to follow others**, producing text that sounds plausible. Sometimes the most plausible-sounding line simply isn’t true.",
+          "Because a confident answer isn’t a checked answer, you catch hallucinations with observability: **logs** let you re-read what was said, and an **evaluation rubric** asks the dangerous question — ‘is this actually correct?’.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What is a hallucination, in this lesson’s words?",
+            prompt:
+              "Your medical-info chatbot tells a user to take 800 mg of a medicine every 2 hours — stated exactly as confidently as its correct answers. Why is this failure so dangerous compared to a crashed page?",
             choices: [
-              { id: "a", label: "A wrong answer said with confidence" },
-              { id: "b", label: "When the AI crashes" },
-              { id: "c", label: "A type of log file" },
+              { id: "a", label: "Because a confident falsehood looks identical to a correct answer — there’s no warning in the wording" },
+              { id: "b", label: "Because crashes are always safer than answers" },
+              { id: "c", label: "Because the chatbot knows it is lying" },
             ],
             answer: "a",
             explanation:
-              "It’s specifically a confident falsehood — not a crash and not a file. The confidence is what makes it dangerous.",
+              "A hallucination is a wrong answer said with complete confidence — no crash, no error tone. The confidence is exactly what makes it dangerous.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why does the AI produce confident wrong answers?",
+            prompt:
+              "A manager wants to stop hallucinations by adding ‘always be careful and accurate’ to the system prompt so answers sound more cautious. What actually catches confident falsehoods?",
             choices: [
-              { id: "a", label: "It predicts plausible-sounding words rather than looking up facts" },
-              { id: "b", label: "It’s programmed to lie" },
-              { id: "c", label: "It runs out of memory" },
-            ],
-            answer: "a",
-            explanation:
-              "There’s no intent — plausible-sounding text is just sometimes false. It’s the nature of prediction, not lying.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Which two observability tools catch hallucinations?",
-            choices: [
-              { id: "a", label: "Logs and evaluation" },
+              { id: "a", label: "Logs to re-read what was said, plus an evaluation rubric asking ‘is this actually correct?’" },
               { id: "b", label: "A bigger font and a faster server" },
-              { id: "c", label: "Turning the AI off" },
+              { id: "c", label: "Turning the AI off after every answer" },
             ],
             answer: "a",
             explanation:
-              "Logs let you re-check what was said; evaluation asks if it’s correct. Together they surface confident lies.",
+              "The model predicts plausible words — tone prompts can’t change that machinery. Observability surfaces confident lies: logs let you re-check what was said; evaluation asks if it was correct.",
           },
         ],
-        application: {
-          title: "Catch a confident lie",
-          prompt:
-            "Next time an AI gives you a factual claim, pick one detail and verify it in ten seconds. Confident-but-wrong is common enough that one spot-check a day builds the right reflex.",
-        },
       },
       {
         slug: "drift-slowly-going-bad",
@@ -2278,70 +2238,69 @@ for claim, expected in cases:
         skillIds: ["model-drift"],
         capability: "Explain model drift and why quality must be watched over time, not tested once.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: your AI tested perfectly a year ago. Can you trust it today?",
-          choices: [
-            { id: "a", label: "Yes — once tested, always good" },
-            { id: "b", label: "Not necessarily — it may have drifted as the world changed" },
-            { id: "c", label: "No — all AI breaks after a year" },
+        concept: {
+          what: "**Drift** is slow decay: the model is frozen at training, but the **world keeps moving** — quality slips a little at a time.",
+          why: "Nothing crashes and there’s **no single moment of failure** — only a **trend over time** reveals the slide before users feel it.",
+          where: [
+            "A news summariser after **new events** its training never saw",
+            "A shopping assistant as **new products and slang** arrive",
+            "A fraud model as **fraudsters change tactics**",
           ],
-          answer: "b",
-          explanation:
-            "A frozen model stays the same while the world moves. Past perfection doesn’t guarantee present quality.",
+          whenNot:
+            "Not the diagnosis when the model **never worked** — that’s a build problem. Drift is ‘was good, quietly became worse’.",
         },
         prose: [
-          "Drift is slow decay. A model is frozen when it’s trained, but the world keeps moving — new words, new events, new user behaviour arrive every week.",
-          "Nothing crashes, and there’s no single moment of failure to point at. Like milk slowly turning sour, quality just slips a little at a time until, months later, the answers are subtly worse.",
-          "A one-off test can’t see a slide like this. The only way to catch drift is to keep measuring quality over time and watch the trend — so you notice the decline before your users do.",
+          "Drift is **slow decay**. A model is frozen when it’s trained, but the world keeps moving — new words, new events, new user behaviour arrive every week.",
+          "Nothing crashes, and there’s no single moment of failure to point at. Like **milk slowly turning sour**, quality just slips a little at a time until, months later, the answers are subtly worse.",
+          "A one-off test can’t see a slide like this. The only way to catch drift is to **keep measuring quality over time and watch the trend** — so you notice the decline before your users do.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "One-off test", subtitle: "a snapshot" },
+          right: { title: "Quality over time", subtitle: "a trend" },
+          rows: [
+            {
+              label: "What it shows",
+              left: "How good the model was on launch day",
+              right: "The slope — good in March, subtly worse by June",
+            },
+            {
+              label: "When NOT to use",
+              left: "Alone — it can’t see a slow slide",
+              right: "To explain a sudden breakage — that’s an incident, not drift",
+            },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What is drift?",
+            prompt:
+              "Your travel-chatbot scored 92% quality in January and 74% by June. No code changed, no crashes, no complaints until May — users just started asking about destinations and slang that didn’t exist in training. What happened?",
             choices: [
-              { id: "a", label: "A slow decline in quality as the world changes around a frozen model" },
-              { id: "b", label: "A sudden crash" },
-              { id: "c", label: "A new type of AI" },
+              { id: "a", label: "Drift — the frozen model slowly lost fit as the world moved around it" },
+              { id: "b", label: "A crash — the model broke in May" },
+              { id: "c", label: "Nothing — quality scores always vary randomly" },
             ],
             answer: "a",
             explanation:
-              "Drift is gradual decay, not a crash. The model doesn’t change; its fit to the world does.",
+              "Drift is gradual decay, not a crash. The model didn’t change; its fit to the world did — new words, new destinations, new behaviour.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why does a one-off test miss drift?",
+            prompt:
+              "The team proposes re-running the January quality test once a year to certify the model, like a car inspection. Why won’t that catch drift?",
             choices: [
-              { id: "a", label: "Drift is gradual — only a trend over time reveals it" },
-              { id: "b", label: "Tests are always wrong" },
-              { id: "c", label: "Drift doesn’t affect quality" },
+              { id: "a", label: "Because the test itself will retire" },
+              { id: "b", label: "Because drift is gradual — a single snapshot can’t show a slope; you need quality measured repeatedly over time" },
+              { id: "c", label: "Because drift only happens to cars" },
             ],
-            answer: "a",
+            answer: "b",
             explanation:
-              "A single test is a snapshot. Drift only shows up as a slope when you compare snapshots across weeks.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The lesson compares drift to…",
-            choices: [
-              { id: "a", label: "Milk slowly turning sour" },
-              { id: "b", label: "A car crashing into a wall" },
-              { id: "c", label: "A vending machine" },
-            ],
-            answer: "a",
-            explanation:
-              "Both go bad gradually and silently — no single breakage, just a slow slide you only notice by checking over time.",
+              "A single test is a snapshot. Drift only shows up as a slope when you compare snapshots across weeks — measure quality continuously, not annually.",
           },
         ],
-        application: {
-          title: "What would drift look like for you?",
-          prompt:
-            "Imagine an AI that recommends what to buy. Over a year, what could change in the world or in shoppers’ behaviour that would slowly make its recommendations worse — even though nothing inside the AI itself broke?",
-        },
       },
       {
         slug: "alerts-knowing-when-to-act",
@@ -2351,70 +2310,52 @@ for claim, expected in cases:
         skillIds: ["alerting"],
         capability: "Explain the alert-threshold trade-off between false alarms and missed problems.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: your smoke alarm beeps every time you make toast. What tends to happen?",
-          choices: [
-            { id: "a", label: "You trust it more" },
-            { id: "b", label: "You start ignoring it — and might miss a real fire" },
-            { id: "c", label: "It gets louder" },
+        concept: {
+          what: "An **alert** is a rule with a **threshold** — ‘if the error rate crosses this number, wake me up’. A smoke alarm for your AI.",
+          why: "It converts a moving metric into a **timely decision** — but the threshold is a **trade-off** between false alarms and missed fires.",
+          where: [
+            "Paging an on-call engineer when **error rate spikes**",
+            "A budget alarm when **token spend** crosses a line",
+            "A quality alert when **eval scores dip** for days",
           ],
-          answer: "b",
-          explanation:
-            "Too many false alarms train you to ignore the alarm — so when a real fire starts, you don’t react. The same applies to AI alerts.",
+          whenNot:
+            "Alerts can’t tell you *why* — diagnosis needs **traces and logs**; and an over-firing alert is worse than none because **people stop trusting it**.",
         },
         prose: [
-          "An alert is a rule with a threshold: ‘if the error rate goes above this number, wake me up’. It’s a smoke alarm for your AI.",
-          "The hard part is where you set the threshold. Too low and it fires at every wobble — you stop trusting it, and when a real fire starts you ignore it. Too high and it never fires at all, and a real problem burns quietly.",
-          "There’s no perfect setting, only a trade-off. The art is tuning it so you catch the real problems without crying wolf. Try dragging the threshold above and watch the two counters change.",
+          "An alert is a **rule with a threshold**: ‘if the error rate goes above this number, wake me up’. It’s a smoke alarm for your AI.",
+          "The hard part is where you set the threshold. **Too low** and it fires at every wobble — you stop trusting it, and when a real fire starts you ignore it. **Too high** and it never fires at all, and a real problem burns quietly.",
+          "There’s no perfect setting, only a **trade-off**. The art is tuning it so you catch the real problems without crying wolf. Try dragging the threshold above and watch the two counters change.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What is an alert, in plain terms?",
+            prompt:
+              "An on-call engineer sets the error-rate alert so sensitively it fires several times a day on normal noise. Last night a real incident started at 2 am — and she slept through the alert. What actually failed?",
             choices: [
-              { id: "a", label: "A rule that wakes you up when a metric crosses a threshold" },
-              { id: "b", label: "A type of log file" },
-              { id: "c", label: "A new AI model" },
+              { id: "a", label: "The alert system was offline" },
+              { id: "b", label: "The threshold was too low — months of false alarms taught her to ignore the page, so the real one read as noise" },
+              { id: "c", label: "Real incidents can’t be alerted on" },
             ],
-            answer: "a",
+            answer: "b",
             explanation:
-              "An alert is a threshold-based rule that turns a number into a notification. It’s not a record and not a model.",
+              "A low threshold fires on normal noise; cry wolf often enough and people stop trusting the alert — exactly when it matters most.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Set the threshold too LOW and you get…",
+            prompt:
+              "A team sets their alert threshold extremely high ‘to keep the pager quiet’. For three weeks a genuine quality problem smoulders, noticed by no one. What did the too-high threshold cause?",
             choices: [
-              { id: "a", label: "Too many false alarms (you start ignoring it)" },
-              { id: "b", label: "No alerts at all" },
-              { id: "c", label: "Faster answers" },
+              { id: "a", label: "Missed real problems — the alert never fires, so the failure stays silent" },
+              { id: "b", label: "More false alarms, just later" },
+              { id: "c", label: "Faster answers across the board" },
             ],
             answer: "a",
             explanation:
-              "A low threshold fires on normal noise. Cry wolf often enough and people stop trusting the alert.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Set the threshold too HIGH and you get…",
-            choices: [
-              { id: "a", label: "Missed real problems" },
-              { id: "b", label: "More false alarms" },
-              { id: "c", label: "Lower costs" },
-            ],
-            answer: "a",
-            explanation:
-              "A high threshold rarely fires, so genuine problems slip past unnoticed. That’s the silent failure the alert was meant to catch.",
+              "A high threshold rarely fires, so genuine problems slip past unnoticed — the silent failure the alert existed to catch. Tuning is a trade-off, not a quest for quiet.",
           },
         ],
-        application: {
-          title: "Audit your own alerts",
-          prompt:
-            "Look at the notifications on your phone right now. Which ones would you mute (low signal), and which one do you actually need the moment it fires? That’s threshold tuning, on yourself.",
-        },
       },
       {
         slug: "dashboards-control-room",
@@ -2424,70 +2365,52 @@ for claim, expected in cases:
         skillIds: ["observability-dashboards"],
         capability: "Explain what makes a good dashboard and why glancability matters.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a dashboard shows 40 tiny numbers. Is that a good dashboard?",
-          choices: [
-            { id: "a", label: "Yes — more data is always better" },
-            { id: "b", label: "No — you can’t read it at a glance" },
-            { id: "c", label: "Only if the numbers are colourful" },
+        concept: {
+          what: "A **dashboard** is the one screen you glance at to know if a system is healthy — **one look says ‘fine’ or ‘something’s wrong’**.",
+          why: "Glancability is the whole job: the **few numbers that matter, big and clear** — less, but louder.",
+          where: [
+            "A **plane cockpit** — the original glanceable control room",
+            "A team’s **daily health check** before standup",
+            "An **on-call screen** watched during incidents",
           ],
-          answer: "b",
-          explanation:
-            "A dashboard you have to study isn’t doing its job. Glancability — readable in one look — is the whole point.",
+          whenNot:
+            "Not a place for every number — forty tiny readings is unreadable, and **unreadable dashboards get ignored**. Detail belongs in logs and traces.",
         },
         prose: [
-          "A dashboard is the one screen you glance at to know if a system is healthy — like the cockpit of a plane. You shouldn’t have to study it; one look should tell you ‘fine’ or ‘something’s wrong’.",
-          "The common mistake is to cram everything in. A dashboard with forty tiny readings is unreadable — a glance tells you nothing, so you eventually stop looking.",
-          "A good dashboard shows only the few numbers that matter, big and clear, with the bad ones obvious. Less, but louder. That’s what makes one glance enough.",
+          "A dashboard is the one screen you **glance at** to know if a system is healthy — like the cockpit of a plane. You shouldn’t have to study it; one look should tell you ‘fine’ or ‘something’s wrong’.",
+          "The common mistake is to **cram everything in**. A dashboard with forty tiny readings is unreadable — a glance tells you nothing, so you eventually stop looking.",
+          "A good dashboard shows only the **few numbers that matter**, big and clear, with the bad ones obvious. Less, but louder. That’s what makes one glance enough.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What’s the main job of a dashboard?",
+            prompt:
+              "A proud engineer builds a dashboard with forty tiny charts covering every metric the system emits. Two months later, nobody on the team opens it — including him. What killed it?",
             choices: [
-              { id: "a", label: "To tell you at a glance if the system is healthy" },
-              { id: "b", label: "To show every possible number" },
-              { id: "c", label: "To replace logs entirely" },
+              { id: "a", label: "It couldn’t be read at a glance, so people stopped looking — the failure is human, not technical" },
+              { id: "b", label: "It used too much computer memory" },
+              { id: "c", label: "Dashboards only work on planes" },
             ],
             answer: "a",
             explanation:
-              "Glancability is the job. Logs and traces hold the detail; the dashboard holds the at-a-glance summary.",
+              "Glancability is the job. Unreadable dashboards get ignored, defeating their purpose — fewer numbers, bigger and louder, survives daily use.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why is a dashboard with 40 tiny numbers a problem?",
+            prompt:
+              "A manager asks the team to remove the error-rate and cost panels from the customer-facing AI dashboard because ‘they sometimes look bad when executives visit’. What does removing them break?",
             choices: [
-              { id: "a", label: "You can’t read it at a glance, so you stop trusting it" },
-              { id: "b", label: "It uses too much computer memory" },
-              { id: "c", label: "It’s too colourful" },
+              { id: "a", label: "Nothing — happy metrics are the healthy ones" },
+              { id: "b", label: "The at-a-glance signal — hiding the bad numbers means a glance can no longer say ‘something’s wrong’" },
+              { id: "c", label: "Only the colour scheme" },
             ],
-            answer: "a",
+            answer: "b",
             explanation:
-              "The failure is human, not technical: unreadable dashboards get ignored, defeating their purpose.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A good dashboard shows…",
-            choices: [
-              { id: "a", label: "The few numbers that matter, big and clear" },
-              { id: "b", label: "Absolutely everything, just in case" },
-              { id: "c", label: "Only the happy metrics that look good" },
-            ],
-            answer: "a",
-            explanation:
-              "Less, but louder. Hiding bad metrics or showing everything both destroy the at-a-glance signal.",
+              "A good dashboard shows the few numbers that matter with the bad ones obvious. Cherry-picking the happy metrics destroys the one job a dashboard has.",
           },
         ],
-        application: {
-          title: "Design your three tiles",
-          prompt:
-            "Imagine you own an AI feature. Pick the three — and only three — readings that would tell you at a glance whether it’s healthy today. Why those three, and what would each bad reading make you do?",
-        },
       },
       {
         slug: "cost-and-speed",
@@ -2497,70 +2420,52 @@ for claim, expected in cases:
         skillIds: ["llm-cost-latency"],
         capability: "Explain why cost and latency are the two key business bills for any AI feature.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: your AI feature is popular but you’re losing money on it. Which ‘bill’ is most likely the culprit?",
-          choices: [
-            { id: "a", label: "Latency" },
-            { id: "b", label: "Cost (tokens)" },
-            { id: "c", label: "The CEO’s salary" },
-            ],
-          answer: "b",
-          explanation:
-            "If usage is high and margins are negative, token cost is the usual suspect — every call spends money.",
+        concept: {
+          what: "Every AI feature pays **two bills**: **cost** (the tokens it reads and writes) and **latency** (the time it takes to answer).",
+          why: "They’re business problems, not just technical ones — cost **eats margin**, latency **loses users** — and they usually **rise together**.",
+          where: [
+            "A **chatty support feature** quietly wiping out margin",
+            "A **slow shopping assistant** users abandon mid-question",
+            "A **bigger model upgrade** raising the token bill and wait time at once",
+          ],
+          whenNot:
+            "Not independent knobs — you can’t minimise both and maximise capability; the trade-off is the decision, and it needs **numbers on a dashboard** to make.",
         },
         prose: [
-          "Every AI feature pays two bills: cost — the tokens it reads and writes, like distance in a taxi — and latency — the time it takes to answer, like minutes on the road.",
-          "The two tend to travel together. A bigger, more capable answer usually costs more and takes longer; a smaller one is cheaper and faster but less capable.",
-          "Both are business problems, not just technical ones. Cost eats your profit margin — an unwatched, chatty feature can wipe it out. Latency loses users — people quietly abandon slow apps. Watching both is part of shipping AI responsibly.",
+          "Every AI feature pays two bills: **cost** — the tokens it reads and writes, like distance in a taxi — and **latency** — the time it takes to answer, like minutes on the road.",
+          "The two tend to **travel together**. A bigger, more capable answer usually costs more and takes longer; a smaller one is cheaper and faster but less capable.",
+          "Both are **business problems**, not just technical ones. Cost eats your profit margin — an unwatched, chatty feature can wipe it out. Latency loses users — people quietly abandon slow apps. Watching both is part of shipping AI responsibly.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What are the ‘two bills’ every AI feature pays?",
+            prompt:
+              "To improve answer quality, your team switches the support bot to a bigger model. Support tickets praise the richer answers — but the monthly token bill doubles and replies now take twice as long. What happened?",
             choices: [
-              { id: "a", label: "Cost (tokens) and latency (time)" },
-              { id: "b", label: "Rent and electricity" },
-              { id: "c", label: "Salary and coffee" },
+              { id: "a", label: "Cost and latency travel together — a bigger, more capable call costs more tokens AND more time" },
+              { id: "b", label: "The bigger model was broken" },
+              { id: "c", label: "Quality upgrades are always free" },
             ],
             answer: "a",
             explanation:
-              "Tokens and time are the two resources every AI call consumes and that observability tracks.",
+              "More tokens means more spend and more time — the two bills rise together. That trade-off is exactly what cost-and-latency metrics exist to quantify.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "When you make a call bigger and more capable, what usually happens to cost and latency?",
+            prompt:
+              "A founder argues latency is ‘just an engineering metric’ and only the token bill matters for the business. A product manager disagrees, pointing at last month’s 15% drop in completed chats. Who’s right, and why?",
             choices: [
-              { id: "a", label: "Both rise" },
-              { id: "b", label: "Both fall" },
-              { id: "c", label: "One rises and one falls" },
+              { id: "a", label: "The PM — slow apps lose users; latency is a retention problem dressed up as a technical one" },
+              { id: "b", label: "The founder — users never notice speed" },
+              { id: "c", label: "Both wrong — latency improves accuracy" },
             ],
             answer: "a",
             explanation:
-              "More tokens means more spend AND more time. They usually move together, which is why both need watching.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why does latency matter to a business?",
-            choices: [
-              { id: "a", label: "Slow apps lose users" },
-              { id: "b", label: "Latency reduces the electricity bill" },
-              { id: "c", label: "Latency improves answer accuracy" },
-            ],
-            answer: "a",
-            explanation:
-              "Real users abandon slow experiences. Latency is a retention problem dressed up as a technical one.",
+              "Real users abandon slow experiences. Cost eats margin and latency loses users — both bills hit the business, which is why observability tracks them together.",
           },
         ],
-        application: {
-          title: "Feel your latency budget",
-          prompt:
-            "Time one AI interaction you have daily, in seconds. Write down: at what duration would you stop using it? That number is the product’s latency budget — most users have one, most teams never ask.",
-        },
       },
       {
         slug: "observability-toolkit",
@@ -2570,70 +2475,52 @@ for claim, expected in cases:
         skillIds: ["observability-tools"],
         capability: "Name common observability tools and the job each one does, and explain how to start.",
         minutes: 5,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you want to watch your AI’s logs, metrics, and traces. What’s the practical first move?",
-          choices: [
-            { id: "a", label: "Build all the instruments yourself from scratch" },
-            { id: "b", label: "Bolt on an existing tool that collects them for you" },
-            { id: "c", label: "Give up and hope for the best" },
+        concept: {
+          what: "Observability is **bolted on, not built from scratch** — a tool collects the logs, metrics, and traces; you read them.",
+          why: "Mature tools let you spend time on **diagnosis, not construction** — like wearing a fitness tracker instead of building a heart-rate monitor.",
+          where: [
+            "**AI/LLM-focused tools** — tracing calls, evaluating answers",
+            "**General-purpose platforms** — metrics, logs, alerts for any software",
+            "Starting with **one tool that fits** and expanding later",
           ],
-          answer: "b",
-          explanation:
-            "Building instruments from scratch wastes time. A ready-made tool collects the same signals so you can focus on reading them.",
+          whenNot:
+            "Don’t install everything at once (overwhelming) or wait for a break (too late) — and a tool **collects** signals; it still can’t read them for you.",
         },
         prose: [
-          "You don’t build observability from scratch. Just like you’d wear a fitness tracker rather than build your own heart-rate monitor, you bolt on a tool that collects the logs, metrics, and traces for you.",
-          "There’s a healthy menu to choose from. Some tools focus on AI and LLMs — tracing calls and evaluating answers. Others are general-purpose, handling metrics, logs, and alerts for any software, AI included.",
-          "Don’t try to memorise the names. The point is simpler: whatever signal you need to watch, a tool already exists to collect it. Pick one that fits what you’re building and start there.",
+          "You don’t build observability from scratch. Just like you’d **wear a fitness tracker** rather than build your own heart-rate monitor, you bolt on a tool that collects the **logs, metrics, and traces** for you.",
+          "There’s a healthy menu to choose from. Some tools focus on **AI and LLMs** — tracing calls and evaluating answers. Others are **general-purpose**, handling metrics, logs, and alerts for any software, AI included.",
+          "Don’t try to memorise the names. The point is simpler: whatever signal you need to watch, **a tool already exists to collect it**. Pick one that fits what you’re building and start there.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What’s the practical way to get observability?",
+            prompt:
+              "A two-person startup is about to ship an AI feature. Engineer A proposes spending two months writing custom logging, metrics, and tracing code; Engineer B proposes bolting on an existing observability tool this week. What’s the practical choice — and the trade-off?",
             choices: [
-              { id: "a", label: "Bolt on an existing tool that collects the signals" },
-              { id: "b", label: "Build every instrument from scratch" },
-              { id: "c", label: "Avoid monitoring entirely" },
+              { id: "a", label: "Bolt on the tool — you spend your time diagnosing signals, not building instruments" },
+              { id: "b", label: "Build from scratch — custom instruments are always better" },
+              { id: "c", label: "Neither — small teams can’t have observability" },
             ],
             answer: "a",
             explanation:
-              "Mature tools let you focus on reading the signals instead of building the instruments — so you spend time on diagnosis, not construction.",
+              "Mature tools let you focus on reading the signals instead of building the instruments — diagnosis, not construction, is where your time pays off.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Some tools focus on AI/LLMs. What do they typically do?",
+            prompt:
+              "Your team must pick a first tool for a chatbot product. One option is an LLM-focused observability platform; the other is a general-purpose infrastructure monitor. The chatbot’s biggest risk is bad answers reaching users. Which fits better, and why?",
             choices: [
-              { id: "a", label: "Trace calls and evaluate answers" },
-              { id: "b", label: "Print documents" },
-              { id: "c", label: "Send marketing emails" },
+              { id: "a", label: "The LLM-focused tool — tracing requests and evaluating answers is exactly what it specialises in" },
+              { id: "b", label: "The general-purpose tool — it can evaluate answers better" },
+              { id: "c", label: "Install both plus two more, to be safe" },
             ],
             answer: "a",
             explanation:
-              "LLM-focused tools specialise in tracing requests and judging answer quality — the two things generic tools do less well.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "What’s the recommended way to start?",
-            choices: [
-              { id: "a", label: "Pick one tool that fits and start simple" },
-              { id: "b", label: "Install all of them at once" },
-              { id: "c", label: "Wait until something breaks" },
-            ],
-            answer: "a",
-            explanation:
-              "Start with one tool, learn what its signals mean, then expand. Installing everything at once is overwhelming; waiting until a break is too late.",
+              "LLM-focused tools specialise in tracing calls and judging answer quality — the two things generic tools do less well. Start with one that fits; expand later, don’t install everything at once.",
           },
         ],
-        application: {
-          title: "Pick your first tool",
-          prompt:
-            "Choose one AI tool you use weekly. Find out — in two minutes of searching — whether it keeps any history or logs you can inspect. Knowing where the record lives is step zero of observability.",
-        },
       },
       {
         slug: "day-in-the-life",
@@ -2643,71 +2530,63 @@ for claim, expected in cases:
         skillIds: ["ai-observability"],
         capability: "Describe the full observability loop — watch, alert, trace, log, fix — as one connected workflow.",
         minutes: 6,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an AI feature starts returning worse answers weeks after launch. What’s the right first move?",
-          choices: [
-            { id: "a", label: "Panic and rewrite everything" },
-            { id: "b", label: "Follow the signals — check the dashboard, read the alert, open a trace" },
-            { id: "c", label: "Ignore it and hope it recovers" },
+        concept: {
+          what: "Observability is **one continuous loop** — **watch → alert → trace → log → fix → repeat** — not a setup-and-forget step.",
+          why: "Each pass catches a quiet problem **before users complain**; every tool in the toolkit is just a **role in the loop**.",
+          where: [
+            "A dashboard reading **healthy for weeks**, then…",
+            "An **alert** firing when error rate crosses its threshold",
+            "A **trace + logs** pointing at the changed knowledge source",
           ],
-          answer: "b",
-          explanation:
-            "The signals tell you what’s wrong and where. Rewriting blindly wastes effort; ignoring it lets a quiet problem grow.",
+          whenNot:
+            "The loop ends only if you stop watching — a one-time setup can’t catch problems that **haven’t happened yet**.",
         },
         prose: [
-          "Here’s the whole course in one story. A team ships an AI feature. From day one, logs, metrics, and traces flow quietly into a dashboard that reads healthy.",
-          "Weeks later, an alert fires — the error rate has crept past its threshold. Nothing crashed; the dashboard caught a quiet problem before users complained.",
-          "The team opens a trace for a failing request and pinpoints the slow step. The logs reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
-          "That’s the loop: keep watching, let alerts catch quiet problems, trace and log to find the cause, fix, and repeat. Every tool in this course is just a role in that loop.",
+          "Here’s the whole course in one story. A team ships an AI feature. From day one, **logs, metrics, and traces flow quietly into a dashboard** that reads healthy.",
+          "Weeks later, **an alert fires** — the error rate has crept past its threshold. Nothing crashed; the dashboard caught a quiet problem before users complained.",
+          "The team opens a **trace** for a failing request and pinpoints the slow step. The **logs** reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
+          "That’s the loop: **watch → alert → trace → log → fix → repeat**. Every tool in this course is just a role in that loop.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Signals flow: logs · metrics · traces" },
+            { kind: "process", text: "Alert fires past threshold" },
+            { kind: "process", text: "Trace finds the step" },
+            { kind: "output", text: "Logs name the cause — fix" },
+          ],
+          loop: "Back to watching — the loop never ends",
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What kicks off the investigation in the story?",
+            prompt:
+              "For six weeks your team’s AI feature hums along: dashboards healthy, no complaints. Then one morning the error-rate alert fires — nothing crashed, nothing was deployed overnight. What turned this quiet problem into an investigation?",
             choices: [
-              { id: "a", label: "An alert fires when the error rate crosses the threshold" },
-              { id: "b", label: "The app crashes loudly" },
-              { id: "c", label: "A user emails the CEO" },
+              { id: "a", label: "The alert — a metric crossing its threshold — not a crash or a user email" },
+              { id: "b", label: "The app crashing loudly at 3 am" },
+              { id: "c", label: "A user emailing the CEO screenshots" },
             ],
             answer: "a",
             explanation:
-              "The alert — fed by a metric crossing a threshold — is what turns a quiet problem into an investigated one.",
+              "The alert — fed by a metric crossing a threshold — is what turns a quiet problem into an investigated one. That’s its role in the loop: catch what doesn’t crash.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which two signals help find the cause?",
+            prompt:
+              "Following the alert, the team must find the cause. Rank the loop’s next two moves: what finds the failing step, and what explains what that step actually did wrong?",
             choices: [
-              { id: "a", label: "A trace (to find the step) and logs (to see why)" },
-              { id: "b", label: "A bigger server and a louder alarm" },
-              { id: "c", label: "A new logo and a catchier slogan" },
+              { id: "a", label: "A trace finds the step; logs explain why it went wrong" },
+              { id: "b", label: "A bigger server finds the step; a louder alarm explains why" },
+              { id: "c", label: "A new logo finds the step; a slogan explains why" },
             ],
             answer: "a",
             explanation:
-              "The trace localises the failure to a step; the logs explain what that step actually did wrong. Together they point at the cause.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The lesson describes observability as…",
-            choices: [
-              { id: "a", label: "A loop: watch → alert → trace → log → fix" },
-              { id: "b", label: "A one-time setup you can forget about" },
-              { id: "c", label: "A single magic tool" },
-            ],
-            answer: "a",
-            explanation:
-              "It’s a continuous loop, not a setup-and-forget step. Each fix feeds back into watching — that’s what keeps an AI healthy.",
+              "The trace localises the failure to a step; the logs show what that step did — together they point at the cause, the fix lands, and the loop returns to watching.",
           },
         ],
-        application: {
-          title: "Design your own loop",
-          prompt:
-            "Pick an AI feature you use or can imagine (a chatbot, a recommender, a summariser). Walk through one full loop in 3–4 sentences: which single metric would you watch on the dashboard, what threshold would trigger an alert, and which trace step or log entry would you inspect first if the alert fired?",
-        },
       },
     ],
   },
@@ -2731,74 +2610,54 @@ for claim, expected in cases:
         skillIds: ["distributed-tracing", "otel-genai"],
         capability: "Read a trace of nested spans and reconstruct one user turn end-to-end.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: which step usually dominates an LLM request's wall-clock time?",
-          choices: [
-            { id: "a", label: "Retrieving documents" },
-            { id: "b", label: "The LLM generating tokens" },
-            { id: "c", label: "Sending the JSON response" },
-            { id: "d", label: "Parsing the user's prompt" },
+        concept: {
+          what: "A **trace** is one request broken into nested **spans** — one span per step (retrieval, LLM call, tool), each with its own timing and attributes.",
+          why: "It replaces guesswork with attribution: 'the assistant is slow' becomes '**this span** is slow', because a **correlation ID** stitches every child span to the request that caused it.",
+          where: [
+            "Reconstructing **one slow support-bot turn** across retrieval, model, and tool services",
+            "Proving a **tool call** — not the model — produced a bad answer",
+            "Attributing an 860ms model call vs a 110ms stalled tool in one view",
           ],
-          answer: "b",
-          explanation:
-            "Token-by-token generation is almost always the longest step. Retrieval and networking matter, but the model's decode loop owns most of the latency.",
+          whenNot:
+            "One trace can't show trends — 'is latency rising this week?' is a **metric** question; traces zoom into a **single request**.",
         },
         prose: [
-          "A trace is a single request broken into spans. Each span is one unit of work — a retrieval, an LLM call, a tool invocation — with a start, an end, and a set of attributes that describe what happened. Spans nest: a root span for the whole request parents child spans for each step, so you can reconstruct the entire turn.",
-          "The glue is a correlation ID carried on the root span and inherited by every child. That ID is what lets you go from a slow user turn to the exact retrieval, model call, and tool interaction that composed it — across services, without guessing.",
-          "Without a trace you have only averages: 'latency is high'. With one, you have a story: the retrieval was fine, the model took 860ms, and a tool call stalled for 110ms. Diagnosis replaces guesswork.",
+          "A **trace** is a single request broken into **spans**. Each span is one unit of work — a retrieval, an LLM call, a tool invocation — with a start, an end, and a set of attributes that describe what happened. Spans nest: a **root span** for the whole request parents child spans for each step, so you can reconstruct the entire turn.",
+          "The glue is a **correlation ID** carried on the root span and inherited by every child. That ID is what lets you go from a slow user turn to the exact retrieval, model call, and tool interaction that composed it — across services, without guessing.",
+          "Without a trace you have only **averages**: 'latency is high'. With one, you have a **story**: the retrieval was fine, the model took 860ms, and a tool call stalled for 110ms. Diagnosis replaces guesswork.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What links child spans back to the single user request they belong to?",
+            prompt:
+              "During a customer demo, your support assistant takes 14 seconds to answer one question. You want to know exactly which step inside that request ate the time. What do you open?",
             choices: [
-              { id: "a", label: "The model id" },
-              { id: "b", label: "A correlation ID on the root span" },
-              { id: "c", label: "The user's email address" },
-              { id: "d", label: "The response status code" },
+              { id: "a", label: "The trace of that one request, to see each span's timing and attributes" },
+              { id: "b", label: "The weekly average-latency metric, zoomed into demo day" },
+              { id: "c", label: "The model vendor's pricing page" },
+              { id: "d", label: "The front-end JavaScript console" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "The correlation ID propagates from root to children, tying every span of one turn together across services.",
+              "The average confirms slowness but can't attribute it. A trace breaks that single request into nested spans — retrieval, model call, tool — so the slow step is visible at a glance.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why is 'average latency is high' a weaker signal than a trace?",
+            prompt:
+              "Your e-commerce checkout copilot spans three services — retrieval, model, and a payments tool — and users report intermittent wrong totals. What mechanism reassembles each user's full journey across those services?",
             choices: [
-              { id: "a", label: "Averages are always wrong" },
-              { id: "b", label: "It hides which step (retrieval, model, tool) caused it" },
-              { id: "c", label: "Traces are cheaper to store than averages" },
-              { id: "d", label: "Averages can't be measured for LLMs" },
+              { id: "a", label: "Matching timestamps across services to the nearest second" },
+              { id: "b", label: "A correlation ID on the root span, inherited by every child span" },
+              { id: "c", label: "Attaching the customer's email to every service's logs" },
+              { id: "d", label: "The HTTP status code returned by each service" },
             ],
             answer: "b",
             explanation:
-              "An average tells you something is slow; a trace tells you what. You can't fix what you can't attribute.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A tool call that errors is most likely to be misdiagnosed as what, without tracing?",
-            choices: [
-              { id: "a", label: "A retrieval problem" },
-              { id: "b", label: "A model problem" },
-              { id: "c", label: "A network problem" },
-              { id: "d", label: "A billing problem" },
-            ],
-            answer: "b",
-            explanation:
-              "If the tool's failure isn't a span of its own, the model gets blamed for a bad answer it couldn't help producing.",
+              "The correlation ID is the glue that stitches spans from different services into one trace. Timestamps drift, emails are PII, and status codes say nothing about which request a call belonged to.",
           },
         ],
-        application: {
-          title: "Map the spans of a feature you know",
-          prompt:
-            "Pick an LLM feature you use or build. List the spans one user turn would contain (e.g. retrieval, model, tool), and name the one attribute per span you'd most want when debugging a slow answer.",
-        },
       },
       {
         slug: "instrument-right-context",
@@ -2808,74 +2667,66 @@ for claim, expected in cases:
         skillIds: ["llm-instrumentation", "telemetry-privacy"],
         capability: "Choose span attributes that aid debugging without leaking PII or adding noise.",
         minutes: 9,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: which field is dangerous to log on every span, in full?",
-          choices: [
-            { id: "a", label: "model id" },
-            { id: "b", label: "prompt version" },
-            { id: "c", label: "raw prompt text" },
-            { id: "d", label: "tool name" },
+        concept: {
+          what: "Instrument a **small set of high-value dimensions** — model, prompt version, retrieval version, tool name — the variables that **change between releases**.",
+          why: "Tagging spans with them turns ‘something regressed’ into **‘it regressed when prompt v17 shipped’** — release-level attribution instead of guesswork.",
+          where: [
+            "Bisecting a quality drop to **the exact prompt or retrieval version**",
+            "Comparing **model variants** across the same traffic",
+            "Attributing a cost spike to **one tool’s calls**",
           ],
-          answer: "c",
-          explanation:
-            "Raw prompts carry PII and secrets. Instrument the version tag instead, and sample or redact the raw text.",
+          whenNot:
+            "Not raw prompts, not PII, not anything **unique per request** — over-collection builds a breach surface, and high-cardinality attributes explode indexes without aiding any query.",
         },
         prose: [
-          "Good instrumentation is a small set of high-value dimensions: the model, the prompt version, the retrieval version, and any tool name. These are the variables that change between releases, so tagging every span with them turns 'something regressed' into 'it regressed when prompt v17 shipped'.",
-          "Two failure modes are equally common. The first is over-collection: logging raw prompts and user emails wholesale, which turns your telemetry store into a breach surface. The second is high-cardinality noise: a unique attribute per request (a raw timestamp, a full session id) that explodes index sizes without aiding any query.",
-          "The rule: capture the dimensions that explain a change, redact or sample everything that identifies a person, and leave out anything that's unique per request. A clean contract is small, private, and diagnostic.",
+          "Good instrumentation is a small set of **high-value dimensions**: the model, the prompt version, the retrieval version, and any tool name. These are the variables that **change between releases**, so tagging every span with them turns ‘something regressed’ into ‘it regressed when prompt v17 shipped’.",
+          "Two failure modes are equally common. The first is **over-collection**: logging raw prompts and user emails wholesale, which turns your telemetry store into a breach surface. The second is **high-cardinality noise**: a unique attribute per request (a raw timestamp, a full session id) that explodes index sizes without aiding any query.",
+          "The rule: capture the **dimensions that explain a change**, redact or sample everything that identifies a person, and leave out anything that's unique per request. A clean contract is **small, private, and diagnostic**.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Add this span attribute?",
+            branches: [
+              { label: "varies by release", node: { kind: "leaf", answer: "Tag it", caption: "model · prompt version · retrieval version · tool" } },
+              { label: "identifies a person", node: { kind: "leaf", answer: "Redact or hash", caption: "opaque tenant id, never raw PII" } },
+              { label: "unique per request", node: { kind: "leaf", answer: "Leave it out", caption: "high-cardinality noise" } },
+            ],
+          },
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why tag every span with a prompt version rather than the raw prompt?",
+            prompt:
+              "Quality scores on your support assistant dropped 12% sometime this month. Two prompts (v16, v17) and one retrieval index change shipped in that window. With every span tagged model + prompt_version + retrieval_version, what does the investigation look like?",
             choices: [
-              { id: "a", label: "Versions are shorter to store" },
-              { id: "b", label: "The version explains changes between releases; the raw text leaks PII" },
-              { id: "c", label: "Raw prompts can't be parsed" },
-              { id: "d", label: "Versions are required by OpenTelemetry" },
+              { id: "a", label: "Split the metric by prompt version and retrieval version — the guilty release stands out immediately" },
+              { id: "b", label: "Read every raw prompt from the month, one by one" },
+              { id: "c", label: "Guess, then roll back everything at once" },
+              { id: "d", label: "Wait for users to say which answers felt wrong" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "The version lets you bisect releases; the raw text adds privacy risk without extra debugging value.",
+              "Release-varying dimensions are exactly what turns ‘something regressed’ into ‘it regressed when prompt v17 shipped’. Raw prompt reading is what you do after attribution, not before.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "A user's email as a span attribute is a problem because it is:",
+            prompt:
+              "A new engineer proposes tagging every span with the user's email, the full raw prompt, and a nanosecond timestamp ‘so nothing is ever lost’. Security reviews it next week. Which two objections should they expect?",
             choices: [
-              { id: "a", label: "Too short" },
-              { id: "b", label: "PII and high-cardinality" },
-              { id: "c", label: "Not a string" },
-              { id: "d", label: "Always identical across requests" },
-            ],
-            answer: "b",
-            explanation:
-              "It identifies a person (PII) and is near-unique per user (high cardinality), bloating indexes and creating exposure. Use an opaque tenant id instead.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Which set is the cleanest span contract for debugging a regression?",
-            choices: [
-              { id: "a", label: "model, prompt version, retrieval version, tool name" },
-              { id: "b", label: "raw prompt, raw answer, user email, IP address" },
-              { id: "c", label: "timestamp-to-the-nanosecond, session uuid, request hash" },
-              { id: "d", label: "model only" },
+              { id: "a", label: "Emails are PII (breach surface) and nanosecond timestamps are high-cardinality noise that bloats indexes without aiding queries" },
+              { id: "b", label: "Emails are too short, and timestamps are too long" },
+              { id: "c", label: "Raw prompts can't be stored as strings" },
+              { id: "d", label: "None — collecting everything is always safer" },
             ],
             answer: "a",
             explanation:
-              "These four versioned dimensions explain a change, carry no PII, and stay low-cardinality.",
+              "Over-collection builds a breach surface (PII in the telemetry store) and unique-per-request attributes explode index sizes — the two failure modes a clean contract avoids.",
           },
         ],
-        application: {
-          title: "Audit a telemetry contract",
-          prompt:
-            "Imagine the five fields your team logs per request. For each, write whether it is useful (a versioned dimension), a privacy risk (PII/secrets), or noise (high-cardinality) — and what you'd change.",
-        },
       },
       {
         slug: "logs-without-leaking",
@@ -2885,25 +2736,34 @@ for claim, expected in cases:
         skillIds: ["telemetry-privacy"],
         capability: "Redact and minimise log content so debugging value survives without PII exposure.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a support user typed their card number into the chat. What should the log line store?",
-          choices: [
-            { id: "a", label: "The full card number, for debugging" },
-            { id: "b", label: "A redacted token like <REDACTED>, plus the model and prompt version" },
-            { id: "c", label: "Nothing at all" },
-            { id: "d", label: "Only the user's email" },
+        concept: {
+          what: "Logs are where **debugging value** and **privacy risk** collide: minimise first — do you need the field at all? — then log the least identifying form.",
+          why: "A **hashed user id** or a **token count** keeps the debugging signal while shrinking the breach surface: if the log table leaks, nothing about a person escapes.",
+          where: [
+            "Replacing a user's email with a **hashed id** in support-assistant logs",
+            "Logging **token counts** and a prompt version instead of raw prompts in a RAG pipeline",
+            "Sampling a fraction of answers so retention stays short and cheap",
           ],
-          answer: "b",
-          explanation:
-            "You keep the dimensions that explain behaviour (model, version) and drop the PII. Redaction preserves debuggability without exposure.",
+          whenNot:
+            "Encoding is not redaction — base64 or truncation still leaks; and a field that isn't needed for debugging or audit shouldn't be logged at all.",
         },
         prose: [
-          "Logs are where debugging value and privacy risk collide. The same line that helps you reconstruct a faulty turn can also contain a card number, an email, or a secret the model echoed back. The discipline is to separate the two: keep what explains behaviour, redact what identifies a person.",
-          "Minimisation comes before redaction. Ask whether a field needs to be logged at all; if it does, log the least identifying form — a hash of the user id, a token count instead of the raw prompt, a sampled answer rather than every one. Retention and consent then set how long even the redacted data lives.",
-          "The practical test is the 'breach' thought experiment: if this log table leaked tomorrow, what could someone learn about a user? Anything that fails that test gets cut, hashed, or sampled before it's written.",
+          "Logs are where **debugging value** and **privacy risk** collide. The same line that helps you reconstruct a faulty turn can also contain a card number, an email, or a secret the model echoed back. The discipline is to separate the two: keep what explains behaviour, **redact** what identifies a person.",
+          "**Minimisation** comes before redaction. Ask whether a field needs to be logged at all; if it does, log the least identifying form — a hash of the user id, a token count instead of the raw prompt, a sampled answer rather than every one. **Retention** and consent then set how long even the redacted data lives.",
+          "The practical test is the **'breach' thought experiment**: if this log table leaked tomorrow, what could someone learn about a user? Anything that fails that test gets cut, hashed, or sampled before it's written.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Log this field?",
+            branches: [
+              { label: "Not needed for debugging", node: { kind: "leaf", answer: "Don't log it", caption: "Minimisation first" } },
+              { label: "Needed, identifies a person", node: { kind: "leaf", answer: "Hash or sample", caption: "Opaque id, not PII" } },
+              { label: "Needed, not identifying", node: { kind: "leaf", answer: "Log it", caption: "Keep it low-cardinality" } },
+            ],
+          },
+        },
         exercise: {
           id: "ex1",
           title: "Classify a log line",
@@ -2935,51 +2795,34 @@ for line, expected in cases:
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What's the first question to ask before logging a field?",
+            prompt:
+              "Your support assistant logs every turn, and legal asks what would be exposed if the log table leaked tomorrow. Which logged field already fails that 'breach' test?",
             choices: [
-              { id: "a", label: "Is it a string?" },
-              { id: "b", label: "Does it need to be logged at all?" },
-              { id: "c", label: "Is it shorter than 80 characters?" },
-              { id: "d", label: "Does it contain JSON?" },
+              { id: "a", label: "user=jane.doe@acme.com" },
+              { id: "b", label: "model=gpt-4o prompt_version=v17" },
+              { id: "c", label: "tokens_in=1840 tokens_out=210" },
+              { id: "d", label: "tool=refund status=ok" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Minimisation first. If a field isn't needed for debugging or audit, don't log it; redaction is the fallback for what you must keep.",
+              "The email is PII — it identifies a person and is near-unique per request. Version tags and token counts explain behaviour without identifying anyone; the fix is a hashed or opaque id.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which is the safest replacement for logging a user's email?",
+            prompt:
+              "A health-tech RAG team wants raw prompt text in logs 'for debugging' and proposes base64-encoding it to 'anonymise' it. What is the correct call?",
             choices: [
-              { id: "a", label: "The full email, base64-encoded" },
-              { id: "b", label: "A hash of the user id, or an opaque tenant id" },
-              { id: "c", label: "The email with the domain removed" },
-              { id: "d", label: "The email, but only on weekends" },
+              { id: "a", label: "Base64 is fine — encoding counts as anonymisation" },
+              { id: "b", label: "Log raw prompts only in production, never in staging" },
+              { id: "c", label: "Log token counts and a prompt version id instead of the raw text" },
+              { id: "d", label: "Keep the prompts but shorten retention to one quarter" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "A hash or opaque id preserves cohort slicing without exposing an identity. Encoding or partial masking still leaks.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The 'breach' thought experiment asks:",
-            choices: [
-              { id: "a", label: "Will this log make the model smarter?" },
-              { id: "b", label: "If this table leaked, what could someone learn about a user?" },
-              { id: "c", label: "Is the log JSON-formatted?" },
-              { id: "d", label: "Will retention save storage cost?" },
-            ],
-            answer: "b",
-            explanation:
-              "Designing for the worst case (the data gets out) is what forces redaction, hashing, and short retention.",
+              "Encoding is reversible, so patient questions leak just the same. Minimisation replaces raw text with a version id and counts; retention tweaks don't undo exposure.",
           },
         ],
-        application: {
-          title: "Rewrite a leaky log line",
-          prompt:
-            "Take this line — {user, raw_prompt, answer} — and rewrite it as a safe one that still lets an engineer debug a bad answer. Say what you redacted, hashed, or sampled, and why.",
-        },
       },
       {
         slug: "latency-cost-broken-down",
@@ -2989,74 +2832,63 @@ for line, expected in cases:
         skillIds: ["llm-cost-latency"],
         capability: "Split latency into TTFT vs total, and cost into tokens by stage.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: users say the answer 'takes ages to start'. Which metric is that?",
-          choices: [
-            { id: "a", label: "Total latency" },
-            { id: "b", label: "Time-to-first-token (TTFT)" },
-            { id: "c", label: "Tokens per second" },
-            { id: "d", label: "Cost per request" },
-            ],
-          answer: "b",
-          explanation:
-            "The delay before the first token appears is TTFT — dominated by prompt processing (prefill), not generation.",
+        concept: {
+          what: "LLM latency has two faces — **time-to-first-token** (prefill + retrieval) and **total time** (adds decode) — and cost follows **tokens by stage**, not milliseconds.",
+          why: "Users feel TTFT as 'is it working?' and total time as 'is it done?' — **separate problems with separate fixes** — and the token breakdown shows whether **over-retrieval** or chatty outputs drive the bill.",
+          where: [
+            "Diagnosing a support bot that 'thinks forever' as a **TTFT** problem",
+            "Cutting **input-token** cost by trimming retrieved context in a RAG pipeline",
+            "Alerting on **p95/p99** where users actually abandon the assistant",
+          ],
+          whenNot:
+            "Never steer by the mean — an average hides the slow tail; and a short answer on a huge prompt can cost more than a long one.",
         },
         prose: [
-          "Latency for an LLM turn has two faces. Time-to-first-token is how long the user waits before anything appears — dominated by prompt processing (prefill) and any blocking retrieval. Total latency adds the generation (decode) phase on top. Users feel TTFT as 'is it working?' and total time as 'is it done?'; they're separate problems with separate fixes.",
-          "Cost follows the tokens, not the milliseconds. Input tokens (the prompt and retrieved context) are priced differently from output tokens (the answer), and a long prompt with a short answer can cost more than the reverse. Breaking cost down by stage shows whether your bill is driven by over-retrieval, verbose prompts, or chatty outputs.",
-          "Percentiles matter more than averages. A p50 of 980ms with a p99 of 3.4s means most users are fine and a few are abandoned; chasing the average hides the tail. Report p50, p95, and p99 separately, and alert on the percentile that maps to user pain.",
+          "Latency for an LLM turn has two faces. **Time-to-first-token** is how long the user waits before anything appears — dominated by prompt processing (prefill) and any blocking retrieval. **Total latency** adds the generation (decode) phase on top. Users feel TTFT as 'is it working?' and total time as 'is it done?'; they're separate problems with separate fixes.",
+          "Cost follows the **tokens**, not the milliseconds. **Input tokens** (the prompt and retrieved context) are priced differently from **output tokens** (the answer), and a long prompt with a short answer can cost more than the reverse. Breaking cost down by stage shows whether your bill is driven by over-retrieval, verbose prompts, or chatty outputs.",
+          "**Percentiles** matter more than averages. A p50 of 980ms with a p99 of 3.4s means most users are fine and a few are abandoned; chasing the average hides the tail. Report **p50, p95, and p99** separately, and alert on the percentile that maps to user pain.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "One LLM turn" },
+            { kind: "process", text: "Prefill + retrieval", caption: "Drives time-to-first-token" },
+            { kind: "process", text: "Decode answer tokens", caption: "Adds the rest of total time" },
+            { kind: "output", text: "TTFT, total, token cost", caption: "Report p50/p95/p99 separately" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "A user complains the assistant 'thinks forever before replying'. Which metric is misbehaving?",
+            prompt:
+              "After a prompt change, users of your support assistant complain it 'thinks forever before replying' — a long blank pause, then a normal-speed answer. Which measurement do you check first?",
             choices: [
-              { id: "a", label: "Total latency only" },
-              { id: "b", label: "Time-to-first-token" },
-              { id: "c", label: "Output tokens per second" },
-              { id: "d", label: "Cost per day" },
+              { id: "a", label: "Output tokens per second, since generation is the bottleneck" },
+              { id: "b", label: "The daily token bill" },
+              { id: "c", label: "Time-to-first-token — prefill and blocking retrieval dominate the blank pause" },
+              { id: "d", label: "The number of concurrent users on the site" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "A long pause before the first token is a TTFT problem — look at prefill and blocking retrieval, not decode speed.",
+              "A blank pause before anything appears is a TTFT symptom — prompt processing and blocking retrieval own it. Decode speed only matters after the first token lands.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why report p95 and p99 instead of just the average latency?",
+            prompt:
+              "Your RAG pipeline's monthly token bill doubled, but analytics show answers are the same length as last month. Where is the growth most likely coming from?",
             choices: [
-              { id: "a", label: "Averages are harder to compute" },
-              { id: "b", label: "The average hides the slow tail that real users hit" },
-              { id: "c", label: "p95 is always lower than the average" },
-              { id: "d", label: "LLMs don't have an average latency" },
+              { id: "a", label: "Output tokens — the model got chattier" },
+              { id: "b", label: "Input tokens — over-retrieval or a bloated prompt template inflating context" },
+              { id: "c", label: "The vendor quietly raised output-token prices" },
+              { id: "d", label: "Fewer requests, each billed at double rate" },
             ],
             answer: "b",
             explanation:
-              "Averages smooth out the worst experiences. Percentiles expose the tail where users actually abandon you.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Your token bill is rising but answers aren't getting longer. The likely culprit is:",
-            choices: [
-              { id: "a", label: "More output tokens" },
-              { id: "b", label: "More input tokens — over-retrieval or bloated prompts" },
-              { id: "c", label: "Lower model prices" },
-              { id: "d", label: "Fewer requests" },
-            ],
-            answer: "b",
-            explanation:
-              "Cost tracks tokens. If outputs are stable, the growth is in inputs — retrieved context or prompt templates inflating the prompt.",
+              "Cost tracks tokens by stage. With stable outputs, growth is on the input side — retrieved chunks and template bloat. Assuming 'longer answers cost more' misses that prompts often dominate the bill.",
           },
         ],
-        application: {
-          title: "Diagnose a latency complaint",
-          prompt:
-            "Users say your summariser is 'slow to start but fast once it begins'. Name the stage that's likely slow, the metric you'd check, and one change you'd try first.",
-        },
       },
       {
         slug: "ai-service-level-objective",
@@ -3066,74 +2898,54 @@ for line, expected in cases:
         skillIds: ["ai-slo", "llm-evaluation"],
         capability: "Turn a fuzzy quality goal into an SLI, a target, and an error budget.",
         minutes: 9,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: if your SLO target is 99%, what fraction of answers is allowed to be bad?",
-          choices: [
-            { id: "a", label: "99%" },
-            { id: "b", label: "1%" },
-            { id: "c", label: "0%" },
-            { id: "d", label: "50%" },
+        concept: {
+          what: "An **SLO** makes a wish measurable: pick an **SLI** (say, the share of answers passing evaluation), set a **target** (99% over 28 days), and the remainder is your **error budget**.",
+          why: "The budget is a **decision tool** — while you have budget left you can ship; when it's **burning fast**, you stop shipping and fix instead of arguing.",
+          where: [
+            "Turning 'helpful support bot' into '**eval pass rate ≥ 99%** over 28 days'",
+            "Freezing releases when a quality SLO's budget burns down after a bad deploy",
+            "Tuning the target between **user pain** (too loose) and **pager noise** (too tight)",
           ],
-          answer: "b",
-          explanation:
-            "The error budget is 100% minus the target — the bad outcomes you explicitly tolerate. A 99% target means a 1% budget.",
+          whenNot:
+            "No eval pipeline, no quality SLO — an SLI you can't measure can't have a target; latency-only SLOs are the honest fallback until eval exists.",
         },
         prose: [
-          "'Helpful and fast' isn't an objective; it's a wish. An SLO makes it measurable: pick a service-level indicator (say, the share of answers that pass evaluation), set a target (99% over 28 days), and derive the error budget — the 1% of bad outcomes you've decided to tolerate.",
-          "The error budget is the decision tool. While you have budget left, you can ship; when it's burning fast, you stop shipping and fix. A loose target (90%) tolerates too much user pain; a tight one (99.9%) burns the budget on noise and pages on-call constantly. The right target is empirical — set by what users actually do, then iterate.",
-          "Crucially, the SLI for an AI feature is usually a quality signal, not just latency. You measure not only 'did it respond fast' but 'did it answer well' — which means your SLO depends on the evaluation pipeline feeding it. No eval, no quality SLO.",
+          "'Helpful and fast' isn't an objective; it's a wish. An **SLO** makes it measurable: pick a **service-level indicator** (say, the share of answers that pass evaluation), set a target (99% over 28 days), and derive the **error budget** — the 1% of bad outcomes you've decided to tolerate.",
+          "The error budget is the **decision tool**. While you have budget left, you can ship; when it's burning fast, you stop shipping and fix. A **loose target** (90%) tolerates too much user pain; a **tight one** (99.9%) burns the budget on noise and pages on-call constantly. The right target is empirical — set by what users actually do, then iterate.",
+          "Crucially, the SLI for an AI feature is usually a **quality signal**, not just latency. You measure not only 'did it respond fast' but 'did it answer well' — which means your SLO depends on the **evaluation pipeline** feeding it. No eval, no quality SLO.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What is the error budget for a 99.5% SLO target?",
+            prompt:
+              "Your support assistant's SLO is 'answers passing eval ≥ 99% over 28 days'. The morning after a release, the 28-day pass rate has slid to 98.2% and the budget is burning fast. What does the SLO framework tell the team to do?",
             choices: [
-              { id: "a", label: "99.5%" },
-              { id: "b", label: "0.5%" },
-              { id: "c", label: "5%" },
-              { id: "d", label: "0%" },
+              { id: "a", label: "Raise the target to 99.5% so the number looks achievable again" },
+              { id: "b", label: "Switch the SLO to latency only, which is easier to hit" },
+              { id: "c", label: "Freeze releases and roll back or fix — real users are burning the budget" },
+              { id: "d", label: "Leave it — 98.2% is close enough to 99%" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "The budget is 100% − target = 0.5%. That's the bad-outcome allowance you've decided to live with.",
+              "The budget is the decision tool: fast burn means users are hitting bad outcomes now, so shipping stops until it's fixed. Raising or swapping the target hides the pain instead of addressing it.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "An AI quality SLO ('answers pass eval ≥ 99%') depends on what else existing first?",
+            prompt:
+              "A startup wants a quality SLO for its new doc-search assistant, but nothing scores whether answers are good — there is no evaluation pipeline. What is the honest move?",
             choices: [
-              { id: "a", label: "A faster database" },
-              { id: "b", label: "An evaluation pipeline producing the pass/fail signal" },
-              { id: "c", label: "A bigger model" },
-              { id: "d", label: "More front-end logging" },
+              { id: "a", label: "Set the quality SLO anyway and estimate the pass rate by skimming a few chats" },
+              { id: "b", label: "Set latency and cost SLOs now; add the quality SLO once an eval signal exists" },
+              { id: "c", label: "Declare 'quality = 100%' since the model is brand new" },
+              { id: "d", label: "Skip SLOs entirely until the product matures" },
             ],
             answer: "b",
             explanation:
-              "You can't target a quality SLI you don't measure. The eval pipeline is the prerequisite for a quality SLO.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Your budget is burning fast after a release. The disciplined response is to:",
-            choices: [
-              { id: "a", label: "Raise the target to 99.99%" },
-              { id: "b", label: "Stop shipping and roll back or fix" },
-              { id: "c", label: "Delete the alert" },
-              { id: "d", label: "Lower the target to 90%" },
-            ],
-            answer: "b",
-            explanation:
-              "Fast burn means users are hitting bad outcomes now. The budget exists to force this decision: freeze releases and remediate.",
+              "An SLI you can't measure can't have a target — the quality SLO depends on the eval pipeline feeding it. Latency SLOs are still real; abandoning SLOs altogether leaves nothing governed.",
           },
         ],
-        application: {
-          title: "Draft an SLO for a feature",
-          prompt:
-            "Pick an LLM feature. Write its SLI (the measurable signal), a target you'd defend, the resulting error budget, and the one condition under which you'd roll a release back.",
-        },
       },
       {
         slug: "quality-is-a-signal",
@@ -3143,74 +2955,64 @@ for line, expected in cases:
         skillIds: ["offline-evaluation", "online-evaluation"],
         capability: "Decide when to use offline vs online evaluation and unify the metric across both.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a prompt change passes your offline golden set but users still complain. What did offline miss?",
-          choices: [
-            { id: "a", label: "A faster model" },
-            { id: "b", label: "Novel prompts real users ask, which weren't in the golden set" },
-            { id: "c", label: "Lower cost" },
-            { id: "d", label: "A database migration" },
+        concept: {
+          what: "**Offline evaluation** scores a candidate on a fixed **golden set** before it ships; **online evaluation** samples and scores live traffic continuously — both under **one shared metric**.",
+          why: "Offline is your repeatable **deploy gate** for known failure modes; online is the only signal for **drift and unknown unknowns**. A shared metric makes their disagreement meaningful.",
+          where: [
+            "Gating a **prompt v17 release** on the golden set in CI",
+            "Sampling 1% of live **support traffic** to watch for slow decay",
+            "Catching a **stale golden set** when offline and online scores diverge",
           ],
-          answer: "b",
-          explanation:
-            "Offline tests only the cases you anticipated. New user behaviour shows up only in live traffic — which is why online eval exists.",
+          whenNot:
+            "Offline alone can't see new user behaviour, and online alone can't veto a release before users see it — the deploy/monitor split is the boundary.",
         },
         prose: [
-          "Offline evaluation runs your candidate change against a fixed, labelled golden set before it ships. It's repeatable, fast, and catches the regressions you can predict — the known failure modes your team has seen before. It's your deploy gate.",
-          "Online evaluation samples real production traffic and scores it continuously. It catches what offline can't: drift, surprising new prompts, and slow decay as the world changes. It's noisier and needs sampling and dedup to stay affordable, but it's the only signal for the unknown unknowns.",
-          "The two only work together if they share a metric. Define 'quality' one way (the same rubric, the same judge) and compute it on the golden set before deploy and on sampled live traffic after. Disagreement between the two is itself a signal — your golden set has drifted from reality.",
+          "**Offline evaluation** runs your candidate change against a fixed, labelled **golden set** before it ships. It's repeatable, fast, and catches the regressions you can predict — the known failure modes your team has seen before. It's your **deploy gate**.",
+          "**Online evaluation** samples real production traffic and scores it continuously. It catches what offline can't: **drift**, surprising new prompts, and slow decay as the world changes. It's noisier and needs sampling and dedup to stay affordable, but it's the only signal for the **unknown unknowns**.",
+          "The two only work together if they **share a metric**. Define 'quality' one way (the same rubric, the same judge) and compute it on the golden set before deploy and on sampled live traffic after. Disagreement between the two is itself a signal — your golden set has **drifted from reality**.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Offline eval", subtitle: "Fixed golden set, pre-ship" },
+          right: { title: "Online eval", subtitle: "Sampled live traffic, continuous" },
+          rows: [
+            { label: "Role", left: "Deploy gate in CI", right: "Drift watch in production" },
+            { label: "Catches", left: "Known failure modes", right: "New prompts, slow decay" },
+            { label: "Watch out for", left: "Set drifts from reality", right: "Noise and eval cost" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Which kind of problem can offline evaluation almost never catch on its own?",
+            prompt:
+              "Your prompt update scored 96% on the golden set, up from 94%, so you shipped it. Two weeks later, sampled live-traffic scores have slid from 91% to 79%. What is the most likely explanation?",
             choices: [
-              { id: "a", label: "A regression on a known failure mode" },
-              { id: "b", label: "A novel prompt class users start asking" },
-              { id: "c", label: "A drop in golden-set pass rate" },
-              { id: "d", label: "A broken prompt template" },
+              { id: "a", label: "Online scores are always lower than offline — nothing changed" },
+              { id: "b", label: "The golden set has drifted from reality: live traffic now contains prompt types the set doesn't cover" },
+              { id: "c", label: "Sampling randomness moved the number; resample and it will return to 91%" },
+              { id: "d", label: "The golden set got easier between releases" },
             ],
             answer: "b",
             explanation:
-              "Offline sees only the cases in the golden set. Genuinely new user behaviour has to be observed live.",
+              "A stable gap between offline and online is expected; a widening one is signal. Offline only tests the cases it contains, so genuinely new user behaviour drags the live score while offline stays rosy.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why unify the metric definition across offline and online?",
+            prompt:
+              "A teammate proposes dropping the golden set entirely and gating each release of your RAG search assistant on live production scores instead. What is the strongest objection?",
             choices: [
-              { id: "a", label: "It's required by law" },
-              { id: "b", label: "So the two are directly comparable and their disagreement is meaningful" },
-              { id: "c", label: "To save storage" },
-              { id: "d", label: "Because offline is always wrong" },
+              { id: "a", label: "Golden sets are required by OpenTelemetry, so removing one breaks tracing" },
+              { id: "b", label: "Live scores are always higher and would mask regressions" },
+              { id: "c", label: "You can't gate a release on traffic it hasn't served yet — offline eval is the pre-ship gate" },
+              { id: "d", label: "Online evaluation is free, so there is nothing to decide" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "One shared definition makes 'offline says 94%, online says 71%' a real signal (your set is stale) rather than a units mismatch.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Online evaluation must sample and dedup traffic mainly to:",
-            choices: [
-              { id: "a", label: "Avoid angering users" },
-              { id: "b", label: "Keep eval cost and noise affordable" },
-              { id: "c", label: "Improve model quality" },
-              { id: "d", label: "Speed up the model" },
-            ],
-            answer: "b",
-            explanation:
-              "Scoring every live turn is expensive and noisy. Sampling + dedup gives a representative, affordable signal.",
+              "Online eval measures what already shipped; it cannot veto a candidate before users see it. The deploy/monitor split is the point — offline gates, online watches.",
           },
         ],
-        application: {
-          title: "Design an eval split",
-          prompt:
-            "For a feature, describe your offline golden set (what it contains, how big) and your online sampling plan (what % you'd score, how you'd dedup). Name the one shared metric both would compute.",
-        },
       },
       {
         slug: "llm-as-a-judge",
@@ -3220,24 +3022,21 @@ for line, expected in cases:
         skillIds: ["llm-judge", "eval-bias"],
         capability: "Use an LLM judge and know when to calibrate it against humans.",
         minutes: 9,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a confident-but-wrong answer and a plain-but-correct one. What does an LLM judge tend to do?",
-          choices: [
-            { id: "a", label: "Always picks the correct one" },
-            { id: "b", label: "Mistakenly rewards the fluent, confident one" },
-            { id: "c", label: "Refuses to score" },
-            { id: "d", label: "Scores them identically on every axis" },
+        concept: {
+          what: "An **LLM judge** is one model grading another's outputs — **single scoring**, **pairwise comparison**, or listwise ranking — making large-scale evaluation affordable.",
+          why: "It scales evaluation **past what humans can hand-label**, which is what makes large offline and online eval pipelines economically possible at all.",
+          where: [
+            "Scoring thousands of sampled **support answers** every night",
+            "Running **pairwise comparison** of candidate vs incumbent prompt releases",
+            "Cheap **first-pass triage** of low-rated conversations for human review",
           ],
-          answer: "b",
-          explanation:
-            "Judges confuse fluency for correctness — a known bias. That's why they must be calibrated against human labels.",
+          whenNot:
+            "An uncalibrated judge is not ground truth — it carries **verbosity, self-preference, and position biases**, and without human calibration its scores are uninterpretable.",
         },
         prose: [
-          "An LLM judge uses one model to grade another's outputs — single scoring, pairwise comparison, or listwise ranking. It scales evaluation far past what humans can do by hand, which is what makes large offline and online eval pipelines affordable at all.",
-          "But a judge brings its own biases. It confuses verbosity for quality, prefers its own style (self-preference), and in pairwise comparisons is swayed by which answer came first (position bias). It can score fluency well while missing facts entirely — a polished lie beats a plain truth if you let it.",
-          "The discipline is calibration. Start from human labels, measure how often the judge agrees, and mitigate the big biases (swap answer order in pairs, control for length). Treat the judge's score as a cheap first pass to be spot-checked, not a ground truth. Where judge and human disagree systematically is exactly where your rubric needs work.",
+          "An **LLM judge** uses one model to grade another's outputs — **single scoring**, **pairwise comparison**, or listwise ranking. It scales evaluation far past what humans can do by hand, which is what makes large offline and online eval pipelines affordable at all.",
+          "But a judge brings its own **biases**. It confuses verbosity for quality, prefers its own style (**self-preference**), and in pairwise comparisons is swayed by which answer came first (**position bias**). It can score fluency well while missing facts entirely — a polished lie beats a plain truth if you let it.",
+          "The discipline is **calibration**. Start from human labels, measure how often the judge agrees, and mitigate the big biases (swap answer order in pairs, control for length). Treat the judge's score as a **cheap first pass** to be spot-checked, not a ground truth. Where judge and human disagree systematically is exactly where your rubric needs work.",
         ],
         exercise: {
           id: "ex2",
@@ -3270,51 +3069,34 @@ for correct, fluency, expected in cases:
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does 'position bias' mean for an LLM judge in a pairwise comparison?",
+            prompt:
+              "Your judge model reviews support answers in pairs and reliably picks the longer one, even when the shorter answer is more accurate. It also favours whichever answer is shown first. What are these biases, and what is the standard mitigation?",
             choices: [
-              { id: "a", label: "It prefers answers that mention positions" },
-              { id: "b", label: "Its pick is swayed by which answer is shown first" },
-              { id: "c", label: "It refuses to rank" },
-              { id: "d", label: "It scores only the first token" },
+              { id: "a", label: "Self-preference and drift — retrain the judge on fresh data" },
+              { id: "b", label: "Sampling error — score more pairs and the bias averages out" },
+              { id: "c", label: "Verbosity bias and position bias — control for length and swap answer order before averaging" },
+              { id: "d", label: "Position bias and hallucination — lower the judge's temperature" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "Judges lean toward whichever option they see first. Swapping order and averaging is the standard mitigation.",
+              "Preferring length is verbosity bias; favouring the first slot is position bias. Length control and order-swapping are the standard fixes — more volume never averages away a systematic bias.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "The cheapest, highest-leverage way to trust an LLM judge is to:",
+            prompt:
+              "At a legal-tech startup, the judge gives a polished but factually wrong contract summary 9/10 while human reviewers consistently rate it 2/10. What does the discipline of calibration say to do?",
             choices: [
-              { id: "a", label: "Use a bigger judge model and hope" },
-              { id: "b", label: "Calibrate it against human labels and measure agreement" },
-              { id: "c", label: "Never use a judge" },
-              { id: "d", label: "Run it only once" },
+              { id: "a", label: "Trust the judge — humans rate legal text too harshly" },
+              { id: "b", label: "Measure judge-human agreement on labelled samples, then fix the rubric where they systematically disagree" },
+              { id: "c", label: "Swap to a smaller judge model and hope it becomes stricter" },
+              { id: "d", label: "Drop the fluency dimension and score answer length only" },
             ],
             answer: "b",
             explanation:
-              "Human calibration tells you where the judge is reliable and where it's biased. Without it, scores are uninterpretable.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A judge gives a confidently-wrong answer a high score. The most likely root cause is:",
-            choices: [
-              { id: "a", label: "The answer was too short" },
-              { id: "b", label: "The judge confuses fluency with correctness" },
-              { id: "c", label: "The model was too cheap" },
-              { id: "d", label: "The prompt was in JSON" },
-            ],
-            answer: "b",
-            explanation:
-              "Judges reward confident, well-written text. Without a correctness check in the rubric, a lie reads as a good answer.",
+              "Systematic judge-human disagreement is exactly where the rubric needs work — here the judge confuses fluency with correctness. Calibration locates the failure; trusting or resizing the judge leaves the bias in place.",
           },
         ],
-        application: {
-          title: "Calibrate a judge",
-          prompt:
-            "You have 50 answers each scored by a human (1–5) and by your judge (1–5). Describe how you'd check agreement, name two biases you'd look for, and what you'd do if they disagree on the confidently-wrong answers.",
-        },
       },
       {
         slug: "observe-rag-not-just-model",
@@ -3324,74 +3106,75 @@ for correct, fluency, expected in cases:
         skillIds: ["rag-evaluation"],
         capability: "Measure RAG quality with faithfulness and context metrics, not just fluency.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a fluent answer that states a fact the retrieved docs never said. Which metric is low?",
-          choices: [
-            { id: "a", label: "Answer relevancy" },
-            { id: "b", label: "Faithfulness" },
-            { id: "c", label: "Context recall" },
-            { id: "d", label: "Latency" },
+        concept: {
+          what: "RAG fails in **two layers** — retrieval (wrong or buried chunks) and generation (ungrounded answers). **Faithfulness** and **context precision/recall** tell you which layer broke.",
+          why: "Fluency hides **retrieval rot**: a confident answer on bad context looks fine to answer-relevancy alone. Layer metrics point at the **right fix** instead of the model.",
+          where: [
+            "Diagnosing a support bot that answers fluently but **cites nothing in the retrieved docs**",
+            "Deciding whether to fix the **retriever ranker** or the generation prompt",
+            "Catching **buried or empty retrieval** before users report wrong answers",
           ],
-          answer: "b",
-          explanation:
-            "Faithfulness measures whether the answer is grounded in the retrieved context. An unsupported claim is an unfaithful (hallucinated) answer.",
+          whenNot:
+            "Answer relevancy alone can't do this — it measures the answer, not the grounding; a model can be relevant and wrong.",
         },
         prose: [
-          "RAG systems fail in two places, and only one is the model. The retrieval layer can return irrelevant chunks, bury the good one, or come back empty — and the model will still produce a fluent, confident answer on top of bad context. Fluency hides retrieval rot.",
-          "The metrics that expose this are retrieval-aware. Faithfulness asks whether every claim in the answer is supported by the retrieved context. Context precision asks whether the relevant chunks were ranked highly rather than buried. Context recall asks whether the needed information was retrieved at all. Answer relevancy, alone, is the one that can look fine while the others collapse.",
-          "When a RAG answer is bad, the instinct is to blame the model. The metrics tell you where: low context precision means fix the retriever ranking; low faithfulness with good context means fix the generation (or the prompt); empty retrieval is an index problem. Diagnose the layer before you touch the model.",
+          "RAG systems fail in two places, and only one is the model. The **retrieval layer** can return irrelevant chunks, bury the good one, or come back empty — and the model will still produce a fluent, confident answer on top of bad context. **Fluency** hides **retrieval rot**.",
+          "The metrics that expose this are retrieval-aware. **Faithfulness** asks whether every claim in the answer is supported by the retrieved context. **Context precision** asks whether the relevant chunks were ranked highly rather than buried. **Context recall** asks whether the needed information was retrieved at all. Answer relevancy, alone, is the one that can look fine while the others collapse.",
+          "When a RAG answer is bad, the instinct is to blame the model. The metrics tell you where: low context precision means fix the **retriever ranking**; low faithfulness with good context means fix the **generation** (or the prompt); empty retrieval is an **index problem**. Diagnose the layer before you touch the model.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Bad RAG answer — what broke?",
+            branches: [
+              { label: "Retrieval came back empty", node: { kind: "leaf", answer: "Index problem", caption: "Needed info never fetched" } },
+              {
+                label: "Chunks came back",
+                node: {
+                  kind: "decision",
+                  question: "Was the relevant chunk ranked high?",
+                  branches: [
+                    { label: "No — buried under junk", node: { kind: "leaf", answer: "Fix retriever ranking", caption: "Low context precision" } },
+                    { label: "Yes — answer still strays", node: { kind: "leaf", answer: "Fix generation or prompt", caption: "Low faithfulness, good context" } },
+                  ],
+                },
+              },
+            ],
+          },
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Low faithfulness but high context precision means the problem is in:",
+            prompt:
+              "Your support assistant started citing refund policies that don't exist. Faithfulness scores dropped hard this week, but context precision and recall are healthy — the right chunks are retrieved and ranked well. Where do you fix?",
             choices: [
-              { id: "a", label: "Retrieval ranking" },
-              { id: "b", label: "Generation — the model added unsupported claims despite good context" },
-              { id: "c", label: "The vector database index" },
-              { id: "d", label: "The front-end" },
+              { id: "a", label: "Retrieval ranking — push the irrelevant chunks further down" },
+              { id: "b", label: "The vector index — rebuild it from scratch" },
+              { id: "c", label: "Generation — the model adds unsupported claims despite good context; tighten the prompt or model config" },
+              { id: "d", label: "The front-end — strip unsupported sentences before display" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "Good context was retrieved and ranked well (high precision), yet the answer still strays from it (low faithfulness) — that's a generation/prompt problem.",
+              "Good context plus low faithfulness means the model strayed from its grounding — a generation/prompt problem. Blaming retrieval here wastes days on the layer the metrics just cleared.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Retrieval returned 4 chunks but only 1 was relevant, ranked third. Which metric is low?",
+            prompt:
+              "A hospital's doc-search bot returns confident, on-topic answers, and its dashboard shows healthy answer relevancy. Clinicians complain the answers don't match the handbook. Which signal was missing from the dashboard?",
             choices: [
-              { id: "a", label: "Context precision" },
-              { id: "b", label: "Answer relevancy" },
-              { id: "c", label: "Faithfulness" },
-              { id: "d", label: "Cost" },
+              { id: "a", label: "Faithfulness — whether each claim is supported by the retrieved context" },
+              { id: "b", label: "Answer relevancy, computed on a bigger sample" },
+              { id: "c", label: "Average response latency" },
+              { id: "d", label: "Token cost per query" },
             ],
             answer: "a",
             explanation:
-              "Context precision rewards ranking the relevant chunks highly. Burying the one good chunk under junk gives a low score.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why can answer relevancy alone look healthy while the RAG system is failing?",
-            choices: [
-              { id: "a", label: "It measures the model, not the retrieval" },
-              { id: "b", label: "It's always 100%" },
-              { id: "c", label: "It requires a GPU" },
-              { id: "d", label: "It only works offline" },
-            ],
-            answer: "a",
-            explanation:
-              "A model can produce a relevant-sounding answer from bad context. Relevancy doesn't test grounding — faithfulness and context metrics do.",
+              "Relevancy measures topic fit, not grounding — a model can be relevant and wrong. Only faithfulness and context metrics test whether claims trace to the retrieved text.",
           },
         ],
-        application: {
-          title: "Diagnose a RAG regression",
-          prompt:
-            "Your docs assistant's answers drift from the source docs. List the four RAG metrics you'd measure, and for each write the fix you'd reach for if it alone were low.",
-        },
       },
       {
         slug: "prompt-model-tool-regressions",
@@ -3401,74 +3184,54 @@ for correct, fluency, expected in cases:
         skillIds: ["eval-gates"],
         capability: "Bisect the changed variable instead of blaming the model by default.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: quality dropped after a release. The fastest correct diagnosis comes from:",
-          choices: [
-            { id: "a", label: "Retraining the model immediately" },
-            { id: "b", label: "Comparing versioned attributes to find what changed" },
-            { id: "c", label: "Increasing the temperature" },
-            { id: "d", label: "Disabling all tools" },
+        concept: {
+          what: "Only **versioned things can regress**. Tag spans with **prompt, model, retrieval, and tool versions**, and a quality drop becomes a **diff between releases**.",
+          why: "The model is usually the thing you **didn't change** — the culprit is a prompt tweak, ranker change, or tool update, and the version diff hands you the suspect.",
+          where: [
+            "Bisecting 'quality dropped Tuesday' down to **prompt v17** in a support assistant",
+            "**Canary releases** — 5% of traffic, watch the eval, promote only if it holds",
+            "**Eval gates in CI** — a candidate must beat or match the incumbent on the golden set",
           ],
-          answer: "b",
-          explanation:
-            "If you versioned prompt, model, retrieval, and tool, a diff tells you exactly what changed. Bisect, don't guess.",
+          whenNot:
+            "A variable that isn't version-tagged can't be bisected — regressions follow changes, and the unchanged model is rarely the culprit.",
         },
         prose: [
-          "Regressions feel like mysteries until you remember that only versioned things can regress. If you tag every span with prompt version, model, retrieval version, and tool version, then a drop in quality becomes a diff problem: what changed between the last healthy release and this one?",
-          "The instinct to blame the model first is almost always wrong, because the model is usually the thing you didn't change. Far more often the culprit is a prompt tweak, a retriever ranking change, a tool that now returns differently, or a quiet dependency update. A canary release makes this legible — ship to 5% of traffic, watch the eval, and only promote if it holds.",
-          "The discipline is to hold every other variable constant and change one. Eval gates in CI encode this: a candidate release must beat or match the incumbent on the golden set before it ships. When it doesn't, the diff between releases is your suspect list, already narrowed to a single variable.",
+          "Regressions feel like mysteries until you remember that only **versioned things can regress**. If you tag every span with prompt version, model, retrieval version, and tool version, then a drop in quality becomes a **diff problem**: what changed between the last healthy release and this one?",
+          "The instinct to blame the model first is almost always wrong, because the model is usually the thing you **didn't change**. Far more often the culprit is a prompt tweak, a retriever ranking change, a tool that now returns differently, or a quiet dependency update. A **canary release** makes this legible — ship to 5% of traffic, watch the eval, and only promote if it holds.",
+          "The discipline is to hold every other variable constant and **change one**. **Eval gates** in CI encode this: a candidate release must beat or match the incumbent on the golden set before it ships. When it doesn't, the diff between releases is your **suspect list**, already narrowed to a single variable.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What makes a regression 'legible' rather than mysterious?",
+            prompt:
+              "Monday morning, your support assistant's eval pass rate drops 6 points. The team's first instinct is 'the model got worse over the weekend.' You check span attributes: model unchanged, but prompt went v16 to v17 and retrieval r3 to r4 on Friday. What actually happened?",
             choices: [
-              { id: "a", label: "A bigger model" },
-              { id: "b", label: "Versioning prompt, model, retrieval, and tool on every span" },
-              { id: "c", label: "Removing all logs" },
-              { id: "d", label: "Higher temperature" },
+              { id: "a", label: "The model degraded spontaneously — open a vendor ticket" },
+              { id: "b", label: "The eval dashboard broke when the attributes changed" },
+              { id: "c", label: "Users started asking harder questions over the weekend" },
+              { id: "d", label: "One of the changed variables — prompt v17 or retrieval r4 — is the suspect; diff those releases" },
             ],
-            answer: "b",
+            answer: "d",
             explanation:
-              "Versioning turns 'it got worse' into a diff between releases — the changed variable is the suspect.",
+              "Regressions follow changes. The unchanged model is the least likely culprit; the versioned diff turns a mystery into a two-item suspect list.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "A canary release ships a change to 5% of traffic first in order to:",
+            prompt:
+              "Your e-commerce assistant team wants to ship a new retrieval ranker but got burned by the last silent regression. What release mechanism limits the blast radius while proving the change is safe?",
             choices: [
-              { id: "a", label: "Save money" },
-              { id: "b", label: "Limit blast radius and catch a regression before full rollout" },
-              { id: "c", label: "Annoy fewer users deliberately" },
-              { id: "d", label: "Test the front-end only" },
+              { id: "a", label: "Canary to 5% of traffic behind an eval gate; promote only if scores hold" },
+              { id: "b", label: "Ship to 100% on Friday and watch the dashboards over the weekend" },
+              { id: "c", label: "Roll out to internal employees only, since internal bugs don't count" },
+              { id: "d", label: "Disable the eval gates so the release can't be blocked" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Canaries expose regressions on a small slice of real traffic so you can roll back before a full-scale incident.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Quality dropped, but you didn't change the model. The most likely culprit is:",
-            choices: [
-              { id: "a", label: "The model forgot things" },
-              { id: "b", label: "A prompt, retrieval, or tool change — the variable you did change" },
-              { id: "c", label: "Solar flares" },
-              { id: "d", label: "The user's browser" },
-            ],
-            answer: "b",
-            explanation:
-              "Regressions follow changes. If the model is the same, look at what you did change: prompt, retriever, or tool.",
+              "A canary exposes a slice of real traffic to the change, and the eval gate blocks promotion if quality drops — small blast radius, fast rollback. Big-bang releases trade that safety for nothing.",
           },
         ],
-        application: {
-          title: "Bisect a bad release",
-          prompt:
-            "You shipped release v17 and quality dropped 18%. Write the ordered list of versioned variables you'd diff against v16, and the one you'd suspect first if the prompt template was edited in that release.",
-        },
       },
       {
         slug: "alerts-people-trust",
@@ -3478,74 +3241,64 @@ for correct, fluency, expected in cases:
         skillIds: ["alerting"],
         capability: "Choose burn-rate alerting over static thresholds and attach a runbook.",
         minutes: 8,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a static threshold pages 12 times overnight for zero real incidents. What happens over time?",
-          choices: [
-            { id: "a", label: "On-call starts trusting the alert more" },
-            { id: "b", label: "On-call mutes it — and misses the real one when it comes" },
-            { id: "c", label: "The system fixes itself" },
-            { id: "d", label: "Latency improves" },
+        concept: {
+          what: "A **burn-rate alert** pages on **sustained error-budget burn** across time windows — not momentary spikes — and every alert carries a **runbook**.",
+          why: "On-call only trusts alerts that fire on **real user impact**: static thresholds cry wolf on blips until engineers mute them and the real incident sails through.",
+          where: [
+            "Paging when a support bot's quality SLO **burns its budget** within minutes",
+            "Staying quiet through a 3am **low-traffic rate spike** that burns nothing",
+            "Attaching the **first three steps** to every page so diagnosis starts instantly",
           ],
-          answer: "b",
-          explanation:
-            "False alarms cause alert fatigue. People mute noisy alerts, then the real incident slides through. Trust is the asset.",
+          whenNot:
+            "Don't page on single bad requests or momentary spikes — and an alert without a runbook is noise with a siren.",
         },
         prose: [
-          "An alert is only useful if on-call trusts it. A static threshold — page whenever a metric crosses a line — cries wolf on every blip, especially under low traffic when a few bad requests spike the rate. After a dozen false pages, engineers mute it, and the real incident sails through.",
-          "Burn-rate alerting pages on sustained user impact, not momentary spikes. It watches how fast the error budget is burning across multiple time windows: a brief blip doesn't burn enough to page, but a steady degradation trips a long-window check within minutes of real impact. It trades a little detection latency for a lot of precision.",
-          "Every alert needs a runbook — the first three steps on-call takes when it fires. An alert without a runbook is noise with a siren; an alert with one is a decision already half-made. Route by severity, deduplicate, and make the path from page to diagnosis obvious.",
+          "An alert is only useful if on-call trusts it. A **static threshold** — page whenever a metric crosses a line — cries wolf on every blip, especially under low traffic when a few bad requests spike the rate. After a dozen false pages, engineers **mute** it, and the real incident sails through.",
+          "**Burn-rate alerting** pages on sustained user impact, not momentary spikes. It watches how fast the **error budget** is burning across multiple time windows: a brief blip doesn't burn enough to page, but a steady degradation trips a long-window check within minutes of real impact. It trades a little detection latency for a lot of precision.",
+          "Every alert needs a **runbook** — the **first three steps** on-call takes when it fires. An alert without a runbook is noise with a siren; an alert with one is a decision already half-made. Route by severity, deduplicate, and make the path from page to diagnosis obvious.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Static threshold", subtitle: "Page when a metric crosses a line" },
+          right: { title: "Burn-rate alert", subtitle: "Page on sustained budget burn" },
+          rows: [
+            { label: "3am traffic dip", left: "Fires on a few bad requests", right: "Stays quiet — nothing burned" },
+            { label: "Real degradation", left: "May already be muted by on-call", right: "Pages within minutes of impact" },
+            { label: "On-call trust", left: "Erodes after false pages", right: "Holds — pages mean impact" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why does a static threshold 'cry wolf' especially at night?",
+            prompt:
+              "Your error-rate alert fired at 3am because 4 of 20 overnight requests failed — traffic is always thin then. It has fired 11 times this month and 10 were false; the team keeps muting it. What is the root problem and the fix?",
             choices: [
-              { id: "a", label: "The model is sleepier" },
-              { id: "b", label: "Low traffic means a few bad requests spike the rate" },
-              { id: "c", label: "Alerts are louder at night" },
-              { id: "d", label: "Dashboards turn off" },
+              { id: "a", label: "On-call is too sensitive — rotate the paging shift more often" },
+              { id: "b", label: "The SLO target is too tight — lower it to 90% so the alert stops firing" },
+              { id: "c", label: "A static threshold on a volatile low-traffic rate — replace it with burn-rate alerting on the error budget" },
+              { id: "d", label: "Nothing — failures simply shouldn't happen at 3am" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "Rates are volatile at low volume. A handful of errors looks like a crisis at 3am traffic but is statistically nothing.",
+              "Rates are statistically volatile at low volume, so a line-crossing alert cries wolf. Burn-rate pages only on sustained budget burn — real impact — which is what restores trust. Loosening the target just hides pain.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "What does a burn-rate alert actually page on?",
+            prompt:
+              "You join a fintech chatbot team whose only alert is 'quality score < 90' with no documentation. When it fired at 2am, the on-call engineer spent 20 minutes just figuring out what the metric was. What is missing?",
             choices: [
-              { id: "a", label: "Any single bad request" },
-              { id: "b", label: "Sustained error-budget burn across time windows" },
-              { id: "c", label: "CPU usage" },
-              { id: "d", label: "The model's mood" },
+              { id: "a", label: "A louder pager so the alert can't be missed" },
+              { id: "b", label: "More alerts — one per model — so coverage feels complete" },
+              { id: "c", label: "A bigger model so quality never drops in the first place" },
+              { id: "d", label: "A runbook — the first three diagnostic steps attached to the alert" },
             ],
-            answer: "b",
+            answer: "d",
             explanation:
-              "Burn-rate pages when the budget is degrading fast enough over long enough to imply real user impact — not on a momentary blip.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "An alert without a runbook is best described as:",
-            choices: [
-              { id: "a", label: "A complete incident response" },
-              { id: "b", label: "Noise with a siren — no one knows the first step to take" },
-              { id: "c", label: "A dashboard" },
-              { id: "d", label: "An SLO" },
-            ],
-            answer: "b",
-            explanation:
-              "A runbook gives the first three diagnostic steps. Without it, on-call stares at a page with no idea where to start.",
+              "An alert without a runbook is noise with a siren: the page says 'something's wrong' but not 'do this next'. The first three steps turn a page into a decision already half-made.",
           },
         ],
-        application: {
-          title: "Turn a noisy alert into a trusted one",
-          prompt:
-            "You have a static threshold alert that pages too often. Describe how you'd replace it with a burn-rate alert, and write the three-step runbook you'd attach so on-call knows exactly what to do when it fires.",
-        },
       },
       {
         slug: "triage-an-incident",
@@ -3555,25 +3308,33 @@ for correct, fluency, expected in cases:
         skillIds: ["ai-incident-response"],
         capability: "Drill from alert to fix, testing one hypothesis at each step.",
         minutes: 9,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an alert fires. What's the first thing you establish?",
-          choices: [
-            { id: "a", label: "Who to blame" },
-            { id: "b", label: "What kind of incident it is and where the blast radius is" },
-              { id: "c", label: "The exact line of code" },
-            { id: "d", label: "The cost so far" },
+        concept: {
+          what: "Triage is a **drill-down**, not a leap: alert (**what's burning**) → dashboard (**where**) → cohort (**what's shared**) → trace (**the mechanism**) → fix.",
+          why: "Each step **narrows the blast radius and rules out causes**, so you act on evidence — one hypothesis per step — instead of blaming the model.",
+          where: [
+            "Finding every bad turn shares **tool = billing v2.2** in a support incident",
+            "Confirming a **retriever-timeout** mechanism by opening one representative trace",
+            "Closing incidents with a **regression test** so the same change can't rebreak production",
           ],
-          answer: "b",
-          explanation:
-            "First, characterise: is it latency or quality, and which users/regions/clients are hit? Blast radius narrows everything that follows.",
+          whenNot:
+            "An incident isn't closed when the metric recovers — it's closed when the regression test preventing recurrence is merged.",
         },
         prose: [
-          "Triage is a drill-down, not a leap. Start at the alert: what's burning — latency, quality, cost, safety? Then the dashboard: where is it burning — which region, client, cohort? Each step narrows the blast radius and rules out causes.",
-          "With the cohort identified, slice it for what's shared. If every bad turn carries the same tool version or the same prompt version, you've found your one changed variable. Open a representative trace to confirm the mechanism — a tool timing out, a retriever returning junk — and you have a hypothesis backed by evidence.",
-          "Act, then confirm. Roll back or patch the single variable, and watch the signal recover. The last step, often skipped, is writing the regression test so this exact failure can't ship again. An incident isn't closed when it's fixed; it's closed when it can't recur.",
+          "Triage is a **drill-down**, not a leap. Start at the alert: what's burning — latency, quality, cost, safety? Then the dashboard: where is it burning — which region, client, cohort? Each step narrows the **blast radius** and rules out causes.",
+          "With the cohort identified, slice it for what's shared. If every bad turn carries the same tool version or the same prompt version, you've found your **one changed variable**. Open a representative trace to confirm the mechanism — a tool timing out, a retriever returning junk — and you have a **hypothesis** backed by evidence.",
+          "Act, then confirm. Roll back or patch the single variable, and watch the signal recover. The last step, often skipped, is writing the **regression test** so this exact failure can't ship again. An incident isn't closed when it's fixed; it's closed when it **can't recur**.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Alert fires", caption: "What's burning?" },
+            { kind: "process", text: "Dashboard: slice by cohort", caption: "Where is it burning?" },
+            { kind: "process", text: "Cohort: find shared attribute", caption: "The one changed variable" },
+            { kind: "process", text: "Trace: confirm mechanism", caption: "One representative request" },
+            { kind: "output", text: "Fix + regression test", caption: "Closed when it can't recur" },
+          ],
+          loop: "If the signal doesn't recover, form the next hypothesis",
+        },
         exercise: {
           id: "ex3",
           title: "Find the changed variable",
@@ -3604,51 +3365,34 @@ for before, after, expected in cases:
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does the dashboard step of triage establish?",
+            prompt:
+              "A burn-rate alert fires on your support assistant's quality SLO. The dashboard shows the drop concentrated in EU mobile users asking refund questions. What has this step established, and what comes next?",
             choices: [
-              { id: "a", label: "The root cause" },
-              { id: "b", label: "The blast radius — where the impact is concentrated" },
-              { id: "c", label: "The fix" },
-              { id: "d", label: "The cost" },
+              { id: "a", label: "The root cause — immediately roll back the model" },
+              { id: "b", label: "The blast radius — next, slice that cohort for a shared attribute like prompt or tool version, then open a trace" },
+              { id: "c", label: "Nothing — dashboards are for executives, not incidents" },
+              { id: "d", label: "The fix — refunds should be handled by human agents" },
             ],
             answer: "b",
             explanation:
-              "Slicing by region/client/cohort shows where the incident lives, narrowing the search before you open a single trace.",
+              "The dashboard narrows where the incident lives — that's blast radius, not root cause. The next narrowing step is the cohort's shared attribute, and a trace confirms the mechanism before you act.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Slicing a cohort of bad turns reveals they all share tool = billing v2.2. This is:",
+            prompt:
+              "During a retro at a healthcare-bot company, the team notes that quality recovered 40 minutes after their rollback, so they closed the ticket. Two months later the same change shipped again and broke production identically. What was skipped?",
             choices: [
-              { id: "a", label: "Proof the model is broken" },
-              { id: "b", label: "A strong hypothesis — the one changed variable" },
-              { id: "c", label: "Unrelated noise" },
-              { id: "d", label: "A front-end bug" },
+              { id: "a", label: "Paging the executive team during the first incident" },
+              { id: "b", label: "Rolling back fast enough the first time" },
+              { id: "c", label: "Writing the regression test that would have failed the second release in CI" },
+              { id: "d", label: "Setting a latency SLO alongside the quality one" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "A shared attribute across every bad turn is the suspect. Confirm the mechanism with a trace, then act.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "When is an incident truly closed?",
-            choices: [
-              { id: "a", label: "When the metric recovers" },
-              { id: "b", label: "When the regression test that prevents recurrence is merged" },
-              { id: "c", label: "When on-call goes to sleep" },
-              { id: "d", label: "When the dashboard turns green" },
-            ],
-            answer: "b",
-            explanation:
-              "Recovery ends the outage; the regression test ends the incident class. Without it, the same change can reintroduce the failure.",
+              "Recovery ends the outage; the regression test ends the incident class. Without it, nothing stops the same change from reintroducing the failure — the incident was never truly closed.",
           },
         ],
-        application: {
-          title: "Runbook for one incident",
-          prompt:
-            "Write the five-step triage runbook for a quality-regression alert on your feature: what you'd check at each step (alert, dashboard, cohort, trace, fix), and the regression test you'd add at the end.",
-        },
       },
       {
         slug: "operator-dashboard",
@@ -3658,74 +3402,64 @@ for before, after, expected in cases:
         skillIds: ["observability-dashboards"],
         capability: "Separate the executive dashboard from the on-call diagnostic dashboard.",
         minutes: 7,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an exec and an on-call engineer look at the same dashboard. What goes wrong?",
-          choices: [
-            { id: "a", label: "Nothing — one dashboard serves both perfectly" },
-            { id: "b", label: "It either hides the detail on-call needs or overwhelms the exec" },
-            { id: "c", label: "The exec breaks it" },
-            { id: "d", label: "It only works on mobile" },
+        concept: {
+          what: "Two dashboards, two questions: the **exec view** answers '**are we healthy?**' with a few big calm numbers; the **on-call view** answers '**what's broken, where?**' with drill-downs.",
+          why: "One view can't serve both — **drill-downs overwhelm the exec glance**, and three big numbers are **useless at 3am**. Share the data, split the altitude.",
+          where: [
+            "A weekly exec view of **quality, cost, incidents** for leadership",
+            "An on-call view linking a **red p95 tile** to the traces behind it",
+            "**Quality-by-cohort** drill-downs during an incident",
           ],
-          answer: "b",
-          explanation:
-            "The two audiences ask different questions. One dashboard can't serve both well — build two, tuned to each question.",
+          whenNot:
+            "An exec view with drill-downs gets ignored; an on-call view of three numbers has nothing to debug — don't force one dashboard on both audiences.",
         },
         prose: [
-          "An executive dashboard answers one question — 'are we healthy?' — with a few big, calm numbers: quality, cost, incidents. It should be legible in a glance and hide the detail, because an exec reading it wants a status, not a diagnosis.",
-          "An on-call dashboard answers the opposite question — 'what's broken, where, since when?' It's drill-down-rich: latency by route, quality by cohort, error-budget burn, and a path from a red tile to the traces behind it. Density is the point; a calm on-call dashboard is one that has nothing to debug.",
-          "The mistake is forcing one view to serve both. An exec-facing dashboard with drill-downs gets ignored; an on-call dashboard with three big numbers is useless at 3am. Build both, share the underlying data, and let each audience see the system at its own altitude.",
+          "An **executive dashboard** answers one question — 'are we healthy?' — with a few **big, calm numbers**: quality, cost, incidents. It should be legible in a glance and hide the detail, because an exec reading it wants a status, not a diagnosis.",
+          "An **on-call dashboard** answers the opposite question — 'what's broken, where, since when?' It's **drill-down-rich**: latency by route, quality by cohort, error-budget burn, and a path from a red tile to the traces behind it. Density is the point; a calm on-call dashboard is one that has nothing to debug.",
+          "The mistake is forcing one view to serve both. An exec-facing dashboard with drill-downs gets ignored; an on-call dashboard with three big numbers is useless at 3am. Build both, **share the underlying data**, and let each audience see the system at its **own altitude**.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Executive view", subtitle: "Are we healthy?" },
+          right: { title: "On-call view", subtitle: "What's broken, where, since when?" },
+          rows: [
+            { label: "Shows", left: "Few big calm numbers", right: "Dense drill-down tiles" },
+            { label: "Read by", left: "Leadership, weekly", right: "On-call, at 3am" },
+            { label: "Path to traces", left: "None — status only", right: "Red tile → cohort → trace" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What question does an executive dashboard answer?",
+            prompt:
+              "Your VP asks for 'one dashboard everyone can use' for the support assistant — leadership wants status, on-call engineers want latency by route and cohort drill-downs. You build the combined view. What happens, predictably?",
             choices: [
-              { id: "a", label: "Which trace is slowest?" },
-              { id: "b", label: "Are we healthy, at a glance?" },
-              { id: "c", label: "Which cohort regressed?" },
-              { id: "d", label: "What's the p99 by route?" },
+              { id: "a", label: "Everyone is satisfied because it holds all the information" },
+              { id: "b", label: "Execs drown in detail and ignore it while on-call still can't debug fast — split it into two views over the same data" },
+              { id: "c", label: "On-call starts using it successfully for executive reporting" },
+              { id: "d", label: "Nothing — dashboards work identically for every audience" },
             ],
             answer: "b",
             explanation:
-              "Execs want status — a few big numbers that say healthy or not. Detail belongs elsewhere.",
+              "The two audiences read at different altitudes: detail wrecks the exec glance, and a compromise view is too thin for 3am debugging. Two views sharing the same underlying data serve each cleanly.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "An on-call dashboard should make it easy to:",
+            prompt:
+              "At 3am an on-call engineer sees the quality tile go red and needs to find the affected cohort and a sample trace in under a minute. What must the dashboard provide for that to be possible?",
             choices: [
-              { id: "a", label: "Hide bad news" },
-              { id: "b", label: "Drill from a red tile to the traces behind it" },
-              { id: "c", label: "Impress executives" },
-              { id: "d", label: "Show only averages" },
+              { id: "a", label: "A larger font so the number is readable without glasses" },
+              { id: "b", label: "Only 28-day averages, to keep the view calm" },
+              { id: "c", label: "A drill-down path: red tile → quality by cohort → the traces behind those turns" },
+              { id: "d", label: "An email form for contacting the VP" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "On-call debugs from the dashboard: a red tile must link to the cohort, then the trace. The path to diagnosis is the feature.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why not serve execs and on-call with a single combined dashboard?",
-            choices: [
-              { id: "a", label: "It's illegal" },
-              { id: "b", label: "It either hides on-call detail or overwhelms the exec" },
-              { id: "c", label: "Dashboards can't be shared" },
-              { id: "d", label: "It costs more" },
-            ],
-            answer: "b",
-            explanation:
-              "The audiences want different altitudes. One view compromises both; two views sharing the same data serve each cleanly.",
+              "On-call debugs from the dashboard — the path from red tile to cohort to traces is the feature. Averages and presentation polish don't locate the failing cohort.",
           },
         ],
-        application: {
-          title: "Two dashboards for your feature",
-          prompt:
-            "Sketch the exec dashboard (3 tiles) and the on-call dashboard (4 drill-downs) for your feature. Name the one tile they share, and the drill-down only on-call gets.",
-        },
       },
       {
         slug: "capstone-rescue-assistant",
@@ -3735,74 +3469,54 @@ for before, after, expected in cases:
         skillIds: ["ai-observability", "ai-incident-response"],
         capability: "Assemble signals, an SLO, and a runbook into a working diagnosis.",
         minutes: 10,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: support says the assistant 'seems worse'. Before writing any code, what do you need first?",
-          choices: [
-            { id: "a", label: "A bigger model" },
-            { id: "b", label: "A signal — a measurement that confirms 'worse' and points at where" },
-            { id: "c", label: "A marketing campaign" },
-            { id: "d", label: "More front-end animations" },
+        concept: {
+          what: "The capstone assembles the course: **instrument** (traces carrying prompt/model/retrieval/tool versions), **evaluate** (faithfulness, context precision, p95), and **govern** (one quality SLO, burn-rate alert, runbook).",
+          why: "It converts a hunch — 'the assistant got slow and unhelpful after v17' — into a **diff that names the root cause** instead of a meeting-long argument.",
+          where: [
+            "Rescuing a support assistant where **release v17 changed the retriever ranker**",
+            "Naming the causal chain **context precision → faithfulness** behind bad answers",
+            "Standing up the **SLO + alert + runbook** so the next incident starts half-solved",
           ],
-          answer: "b",
-          explanation:
-            "A hunch without a measurement is unfixable. The first job of observability is to turn 'seems worse' into a number with a source.",
+          whenNot:
+            "The recipe collapses without instrumentation — you can't diff releases you never versioned; measurement is the prerequisite for rescue.",
         },
         prose: [
-          "The capstone ties the course together. The support assistant is slow and unhelpful after a release, and no one can say why — a hunch with no evidence. The work of this lesson is to convert that hunch into a measured, diagnosable system that names a root cause.",
-          "The recipe is everything you've learned: instrument the request into traces carrying prompt, model, retrieval, and tool versions; define three signals (faithfulness, p95 latency, context precision); set one quality SLO with an error budget; attach one burn-rate alert with a runbook. With those in place, the incident stops being a mystery and becomes a diff: release v17 changed the retriever ranker, context precision dropped, faithfulness followed.",
-          "That's the whole skill: instrument for where, evaluate for what, and set an SLO with a runbook for when. A feature you can measure is a feature you can rescue; one you can't is a feature you can only argue about.",
+          "The capstone ties the course together. The support assistant is slow and unhelpful after a release, and no one can say why — a **hunch** with no evidence. The work of this lesson is to convert that hunch into a measured, diagnosable system that names a **root cause**.",
+          "The recipe is everything you've learned: instrument the request into traces carrying prompt, model, retrieval, and tool versions; define **three signals** (faithfulness, p95 latency, context precision); set **one quality SLO** with an error budget; attach one **burn-rate alert** with a runbook. With those in place, the incident stops being a mystery and becomes a diff: release v17 changed the retriever ranker, context precision dropped, faithfulness followed.",
+          "That's the whole skill: instrument for where, evaluate for what, and set an SLO with a runbook for when. A feature you can **measure** is a feature you can **rescue**; one you can't is a feature you can only argue about.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does instrumentation give you that a hunch cannot?",
+            prompt:
+              "Your support assistant turned slow and unhelpful after release v17, and the incident channel is 30 people arguing about causes. You apply the capstone recipe. Which finding turns the argument into a diagnosis?",
             choices: [
-              { id: "a", label: "A bigger model" },
-              { id: "b", label: "Where the problem is — attributed to a specific span and release" },
-              { id: "c", label: "Cheaper inference" },
-              { id: "d", label: "Happier users automatically" },
+              { id: "a", label: "The model vendor published a new model version the same week" },
+              { id: "b", label: "Traces show v17 changed the retriever ranker; context precision dropped and dragged faithfulness down — the model is blameless" },
+              { id: "c", label: "Users rated the assistant lower on the quarterly survey" },
+              { id: "d", label: "Cost per query rose slightly" },
             ],
             answer: "b",
             explanation:
-              "Traces with version attributes turn a vague complaint into an attributed, located problem — the prerequisite for fixing it.",
+              "Versioned traces make the incident a diff: one changed variable, one collapsed metric chain. Surveys and cost shifts are signals, but they don't attribute the failure to a release.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why pair a quality signal with an SLO rather than just an alert on latency?",
+            prompt:
+              "A growth team launches a shopping-copilot MVP with no tracing, no eval, and one latency alert. It starts giving confidently wrong answers and leadership wants it fixed this week. What has to come first?",
             choices: [
-              { id: "a", label: "Latency is free" },
-              { id: "b", label: "A feature can be fast and still wrong — quality needs its own target and budget" },
-              { id: "c", label: "SLOs are required by law" },
-              { id: "d", label: "Latency can't be measured" },
+              { id: "a", label: "Swap to a bigger model immediately" },
+              { id: "b", label: "Add more front-end logging of button clicks" },
+              { id: "c", label: "Wait for enough user complaints to form a pattern" },
+              { id: "d", label: "Instrument requests with version attributes and stand up a faithfulness signal — you can't fix what you can't attribute" },
             ],
-            answer: "b",
+            answer: "d",
             explanation:
-              "Latency alone misses the common AI failure: a fast, wrong answer. A quality SLO makes 'wrong' visible and budgeted.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "In the capstone, the root cause turned out to be:",
-            choices: [
-              { id: "a", label: "The model regressed on its own" },
-              { id: "b", label: "Release v17 changed the retriever ranker, dropping context precision" },
-              { id: "c", label: "Users got pickier" },
-              { id: "d", label: "A solar flare" },
-            ],
-            answer: "b",
-            explanation:
-              "The diff pointed at one changed variable — the ranker — which collapsed retrieval quality and dragged faithfulness with it. The model was blameless.",
+              "The capstone lesson: instrument for where, evaluate for what. Without versioned traces and a quality signal every fix is a guess — a model swap might even 'work' while masking the real retrieval problem.",
           },
         ],
-        application: {
-          title: "Rescue plan for a feature you own",
-          prompt:
-            "Write a one-page rescue plan for an LLM feature: the spans you'd instrument and their attributes, the three signals you'd watch, the one SLO with its target and budget, and the runbook for the alert that fires when the budget burns. End with the single most likely root cause you'd check first.",
-        },
       },
     ],
   },
@@ -3826,74 +3540,65 @@ for before, after, expected in cases:
         skillIds: ["telemetry-pipeline"],
         capability: "Design a telemetry pipeline as a chain of contracts: propagation, fidelity, redaction, retention, semantics.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: where should PII scrubbing happen in the pipeline?",
-          choices: [
-            { id: "a", label: "At query time, in the dashboard" },
-            { id: "b", label: "At the collector, before storage" },
-            { id: "c", label: "Nowhere — store everything" },
-            { id: "d", label: "In the model itself" },
+        concept: {
+          what:
+            "A telemetry system is a **chain of contracts** — app, SDK, collector, backend, query — where each stage owns one guarantee the next stage depends on.",
+          why: "Break a contract and the failure **migrates downstream**: dropped context fragments traces, unredacted spans become a **breach surface**, unbounded cardinality collapses query latency.",
+          where: [
+            "A multi-region rollout where the collector is the **PII scrubbing and routing boundary** before spans hit storage",
+            "A **versioned span schema** so dashboards and alerts degrade gracefully across attribute changes",
+            "Cloud-native pipelines where the collector tail-samples and enforces the **cardinality budget**",
           ],
-          answer: "b",
-          explanation:
-            "Redaction belongs at the collector boundary, before data hits storage. Once raw PII is persisted, every downstream component is a breach surface.",
+          whenNot:
+            "Over-engineered for a single-service prototype with **one owner and no regulated data** — contracts pay off once multiple teams and regions depend on the same telemetry.",
         },
         prose: [
-          "A telemetry system is not a bucket; it's a chain of contracts. The app emits spans with correct attributes; the SDK propagates context and honours the semantic conventions; the collector redacts, samples, and routes; the backend indexes within a cardinality budget; the query layer serves correct aggregations. Each stage owns one guarantee the next stage depends on.",
-          "Break a contract and the failure migrates. If the SDK drops the correlation ID, traces fragment across services. If the collector doesn't redact, the backend becomes a breach surface. If the backend allows unbounded cardinality, query latency collapses under index bloat. The contract is the design unit — and the debugging unit when something breaks.",
-          "Owning this chain means deciding what each stage guarantees and who owns it. Version the schema, document the attributes each stage must set, and treat the collector as the security and cost boundary — the last place you can cheaply transform telemetry before it becomes a liability in storage.",
+          "A telemetry system is not a bucket; it's a **chain of contracts**. The app emits spans with correct attributes; the SDK **propagates context** and honours the semantic conventions; the collector redacts, samples, and routes; the backend indexes within a **cardinality budget**; the query layer serves correct aggregations. Each stage owns one guarantee the next stage depends on.",
+          "Break a contract and the failure **migrates**. If the SDK drops the correlation ID, traces fragment across services. If the collector doesn't redact, the backend becomes a **breach surface**. If the backend allows unbounded cardinality, query latency collapses under **index bloat**. The contract is the design unit — and the debugging unit when something breaks.",
+          "Owning this chain means deciding what each stage guarantees and who owns it. **Version the schema**, document the attributes each stage must set, and treat the collector as the **security and cost boundary** — the last place you can cheaply transform telemetry before it becomes a liability in storage.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "App emits spans" },
+            { kind: "process", text: "SDK propagates context", caption: "correlation IDs + conventions" },
+            { kind: "process", text: "Collector transforms", caption: "redact, tail-sample, route" },
+            { kind: "process", text: "Backend indexes", caption: "within cardinality budget" },
+            { kind: "output", text: "Queries aggregate" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "The collector's defining job, distinct from the app and backend, is:",
+            prompt:
+              "Your fintech platform just discovered EU customer prompts landing in a US-region telemetry backend, and fixing it after the fact meant purging data out of every index. Where should the residency guarantee have lived?",
             choices: [
-              { id: "a", label: "Generating model answers" },
-              { id: "b", label: "Redaction, sampling, and routing — the transformation boundary" },
-              { id: "c", label: "Running the model" },
-              { id: "d", label: "Rendering the dashboard" },
+              { id: "a", label: "In the front-end, before spans ever leave the browser" },
+              { id: "b", label: "In the collector's routing layer — the last cheap transformation point before storage turns telemetry into a liability" },
+              { id: "c", label: "In the backend, via a nightly job that deletes non-compliant spans after indexing" },
+              { id: "d", label: "In a quarterly policy document each team signs" },
             ],
             answer: "b",
             explanation:
-              "The collector is where you cheaply transform telemetry (scrub PII, tail-sample, route by tenant) before it's indexed. After storage, those changes are expensive or impossible.",
+              "Post-hoc deletion is the expensive way to learn the contract: the collector is the security and cost boundary, the last stage that can route by residency before storage makes the data a regulated liability.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "What breaks if the SDK fails to propagate the correlation ID?",
+            prompt:
+              "A travel-booking assistant's traces suddenly fragment — one user turn now shows up as unrelated spans scattered across the retrieval, planner, and booking services after last week's SDK upgrade. Which contract broke?",
             choices: [
-              { id: "a", label: "Nothing" },
-              { id: "b", label: "Traces fragment — you can't reconstruct a request across services" },
-              { id: "c", label: "The model slows down" },
-              { id: "d", label: "Cost rises" },
+              { id: "a", label: "The SDK dropped context propagation, so correlation IDs no longer carry across service boundaries" },
+              { id: "b", label: "The backend indexed too many attributes and silently dropped the rest" },
+              { id: "c", label: "The collector tail-sampled away the middle of each trace" },
+              { id: "d", label: "The query layer rounded timestamps to the minute" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Context propagation is the SDK's core contract. Lose the ID and a single user turn scatters into unrelated spans across service boundaries.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why is schema versioning part of the contract, not an afterthought?",
-            choices: [
-              { id: "a", label: "It's required by OTel" },
-              { id: "b", label: "Consumers must tolerate attribute changes without silent breakage" },
-              { id: "c", label: "Schemas can't change" },
-              { id: "d", label: "It saves disk space" },
-            ],
-            answer: "b",
-            explanation:
-              "Attributes evolve. A versioned, documented schema lets dashboards and alerts degrade gracefully instead of silently reading the wrong field.",
+              "Trace fragmentation across services is the signature of failed propagation — the SDK's core contract. Each stage owns one guarantee, and diagnosing starts by asking which stage's guarantee broke.",
           },
         ],
-        application: {
-          title: "Write the contract",
-          prompt:
-            "For a multi-service AI feature, list each pipeline stage (app, SDK, collector, backend, query) and the one contract it owns. Name the failure mode if each contract is broken.",
-        },
       },
       {
         slug: "genai-semantic-conventions",
@@ -3903,74 +3608,65 @@ for before, after, expected in cases:
         skillIds: ["otel-genai", "telemetry-strategy"],
         capability: "Choose between and layer OTel GenAI and OpenInference without forking a private schema.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you need vendor portability but your tool speaks OpenInference. What's the sound move?",
-          choices: [
-            { id: "a", label: "Fork a private attribute schema for full control" },
-            { id: "b", label: "Emit both OTel GenAI and OpenInference, extend rather than fork" },
-            { id: "c", label: "Pick one vendor and hard-lock" },
-            { id: "d", label: "Avoid attributes entirely" },
+        concept: {
+          what:
+            "**OTel GenAI** (gen_ai.*) is the converging vendor-neutral standard; **OpenInference** is richer and more widely deployed — layer them, and **extend, don't fork**.",
+          why: "Hard-locking one convention buys vendor lock-in or lost richness; forking a **private schema** strands you with tooling nothing else can read and maintenance nobody else shares.",
+          where: [
+            "Dual-emitting during a multi-provider migration: OTel GenAI for **portability**, OpenInference for **retrieval and agent attributes**",
+            "Adding a proprietary reranker score under your own **prefix** while standard attributes stay intact",
+            "Dropping the extension layer once the standard converges and covers the attribute",
           ],
-          answer: "b",
-          explanation:
-            "Dual-emit to stay portable while OTel GenAI stabilises, and extend the standard rather than invent a private schema that no tool can read.",
+          whenNot:
+            "Skip dual-emitting when you're consciously **single-tool and single-vendor** and the standard already covers your attributes — the second convention is cost with no consumer.",
         },
         prose: [
-          "Two conventions describe the same LLM span. OpenTelemetry GenAI semantic conventions (gen_ai.*) are the converging, vendor-neutral standard, moving toward stability under the Cloud Native Computing Foundation. OpenInference, from the Arize/Phoenix community, is richer and more widely deployed today, with first-class retrieval and agent attributes.",
-          "They overlap heavily and differ in naming. The temptation is to pick one and hard-lock, or worse, invent a private schema for 'full control'. Both are mistakes: vendor lock-in today, or a schema no tooling can read. The sound move is to treat them as complementary layers — emit OTel GenAI for portability and OpenInference for tool richness — and to extend the standard rather than fork it.",
-          "'Extend, don't fork' is the discipline. When the standard lacks an attribute you need (a proprietary retrieval score, say), add it under your own prefix while keeping the standard attributes intact. Your schema then degrades gracefully in any tool, and you can drop the extension when the standard catches up.",
+          "Two conventions describe the same LLM span. **OpenTelemetry GenAI semantic conventions** (gen_ai.*) are the converging, vendor-neutral standard, moving toward stability under the Cloud Native Computing Foundation. **OpenInference**, from the Arize/Phoenix community, is richer and more widely deployed today, with first-class retrieval and agent attributes.",
+          "They overlap heavily and differ in naming. The temptation is to pick one and hard-lock, or worse, invent a **private schema** for 'full control'. Both are mistakes: vendor lock-in today, or a schema no tooling can read. The sound move is to treat them as **complementary layers** — emit OTel GenAI for portability and OpenInference for tool richness — and to extend the standard rather than fork it.",
+          "'**Extend, don't fork**' is the discipline. When the standard lacks an attribute you need (a proprietary retrieval score, say), add it under your own **prefix** while keeping the standard attributes intact. Your schema then degrades gracefully in any tool, and you can drop the extension when the standard catches up.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "OTel GenAI", subtitle: "vendor-neutral, converging standard" },
+          right: { title: "OpenInference", subtitle: "richer, more deployed today" },
+          rows: [
+            { label: "Best for", left: "Portability across tools", right: "Retrieval + agent coverage" },
+            { label: "Maturity bet", left: "Tracks the CNCF convergence", right: "Battle-tested in practice" },
+            { label: "Avoid", left: "Treating as final (still in flux)", right: "Hard-locking to one vendor's tools" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What's wrong with forking a private attribute schema for your LLM spans?",
+            prompt:
+              "A platform team at an insurance company proposes replacing all gen_ai.* attributes with an in-house schema 'so every dashboard is perfectly tailored'. The CTO asks what this costs down the road. What's the honest answer?",
             choices: [
-              { id: "a", label: "It's more work" },
-              { id: "b", label: "No standard tooling can read it, and you inherit maintenance forever" },
-              { id: "c", label: "It's illegal" },
-              { id: "d", label: "Schemas must be public" },
+              { id: "a", label: "Nothing — private schemas render faster than standard ones" },
+              { id: "b", label: "No standard tooling can read the spans, and the team inherits sole maintenance of a schema nobody else follows" },
+              { id: "c", label: "A small licence fee payable to the CNCF" },
+              { id: "d", label: "It forbids using OpenTelemetry anywhere else in the company" },
             ],
             answer: "b",
             explanation:
-              "A private schema locks you into custom tooling and makes you the maintainer of a standard no one else follows. Extend the standard instead.",
+              "Forking strands you: the fork is the mistake, not the tailoring. Standard attributes keep every OTel/OpenInference tool readable while a private prefix carries the tailoring — that's extend, don't fork.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why dual-emit OTel GenAI and OpenInference today?",
+            prompt:
+              "Your retail search team needs to record a proprietary 'reranker boost score' on retrieval spans, and the current OTel GenAI spec has no such attribute. A teammate proposes overwriting an existing gen_ai.* field to smuggle the score in. What's the right move?",
             choices: [
-              { id: "a", label: "It doubles your storage for no reason" },
-              { id: "b", label: "Portability via OTel GenAI, richness via OpenInference, while convergence is still in flight" },
-              { id: "c", label: "It's required by GDPR" },
-              { id: "d", label: "To confuse analysts" },
+              { id: "a", label: "Wait for the CNCF to define the attribute and ship without the score" },
+              { id: "b", label: "Add the score under your own prefix (e.g. acme.rerank.score) and keep the standard attributes intact" },
+              { id: "c", label: "Overwrite the standard field — downstream consumers will adapt" },
+              { id: "d", label: "Stop instrumenting retrieval spans until the spec updates" },
             ],
             answer: "b",
             explanation:
-              "The conventions haven't fully converged. Dual-emitting keeps you portable and tool-rich until they do, at which point you drop one.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "You need an attribute the standard doesn't define. The right move is to:",
-            choices: [
-              { id: "a", label: "Wait indefinitely" },
-              { id: "b", label: "Add it under your own prefix while keeping standard attributes intact" },
-              { id: "c", label: "Overload an existing standard attribute" },
-              { id: "d", label: "Stop instrumenting" },
-            ],
-            answer: "b",
-            explanation:
-              "Extension under a private prefix preserves standard compatibility. Overloading an existing attribute silently breaks every consumer of that attribute.",
+              "Overloading an existing attribute silently breaks every consumer of it. A private-prefix extension keeps the schema readable by standard tooling and drops out cleanly when the spec catches up.",
           },
         ],
-        application: {
-          title: "Map your attributes",
-          prompt:
-            "List the LLM attributes your team records. Mark which are OTel GenAI, which are OpenInference, and any private extensions. For each private one, write the prefix you'd use and the condition under which you'd retire it.",
-        },
       },
       {
         slug: "sampling-cardinality-cost",
@@ -3980,74 +3676,65 @@ for before, after, expected in cases:
         skillIds: ["telemetry-pipeline"],
         capability: "Choose sampling for fidelity and cap cardinality to keep telemetry affordable.",
         minutes: 10,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: head sampling drops 99% of traces at the source. What's the cost?",
-          choices: [
-            { id: "a", label: "It's too expensive" },
-            { id: "b", label: "It usually drops the rare erroring trace you needed" },
-            { id: "c", label: "It's illegal" },
-            { id: "d", label: "It slows the model" },
-            ],
-          answer: "b",
-          explanation:
-            "Head sampling decides before it knows which trace mattered. The one erroring trace you need is usually dropped — you pay storage but lose the evidence.",
+        concept: {
+          what:
+            "**Tail sampling** keeps the traces that matter (errors, slow turns, policy violations) by deciding at the collector; **cardinality caps** stop near-unique attribute values from bloating indexes.",
+          why: "Cost then scales with the **value you retain**, not the traffic you see — head sampling is cheap but blind, and per-request dimensions scale index size linearly with traffic.",
+          where: [
+            "Tail-sampling policy at a multi-region rollout's collector: keep every erroring or policy-violating trace, drop the boring ones",
+            "A **dimension budget** on dashboards: low-cardinality slices (model, region, tool), raw values sampled or hashed",
+            "**Exemplar debugging** in production — a handful of full interesting traces instead of 100% noise",
+          ],
+          whenNot:
+            "Skip tail-sampling infrastructure where traffic is low enough that **100% retention is affordable** (dev, staging, small internal tools) — the collector logic costs more than it saves.",
         },
         prose: [
-          "Sampling is a debugging-fidelity decision dressed up as a cost decision. Head sampling drops traces at the source and is cheap, but blind: it discards the rare erroring trace you'd most want to see. Tail sampling evaluates the full trace at the collector and keeps the ones that matter — errors, slow turns, policy violations — giving you exemplar debugging at a fraction of the storage.",
-          "Cardinality is the silent budget killer. Every unique attribute value creates an index entry; a per-request timestamp or full session id is near-unique, so indexing it scales linearly with traffic. The result is index bloat, collapsing query latency, and a bill that surprises no one who has lived through it. Cap your dimensionality budget deliberately: low-cardinality dimensions for slicing, raw values sampled or hashed.",
-          "The two combine into a strategy: tail-sample to keep the interesting traces, and constrain dimensions so the ones you keep stay queryable. Cost then scales with the value you retain, not the traffic you see — which is the only sane scaling law for telemetry.",
+          "Sampling is a **debugging-fidelity decision** dressed up as a cost decision. **Head sampling** drops traces at the source and is cheap, but blind: it discards the rare erroring trace you'd most want to see. **Tail sampling** evaluates the full trace at the collector and keeps the ones that matter — errors, slow turns, policy violations — giving you exemplar debugging at a fraction of the storage.",
+          "**Cardinality** is the silent budget killer. Every unique attribute value creates an index entry; a per-request timestamp or full session id is near-unique, so indexing it scales linearly with traffic. The result is **index bloat**, collapsing query latency, and a bill that surprises no one who has lived through it. Cap your dimensionality budget deliberately: low-cardinality dimensions for slicing, raw values sampled or hashed.",
+          "The two combine into a strategy: tail-sample to keep the interesting traces, and constrain dimensions so the ones you keep stay queryable. Cost then scales with the **value you retain**, not the traffic you see — which is the only sane scaling law for telemetry.",
         ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Head sampling", subtitle: "decides at the source" },
+          right: { title: "Tail sampling", subtitle: "decides at the collector" },
+          rows: [
+            { label: "Keeps errors?", left: "No — drops blindly", right: "Yes — sees the full trace" },
+            { label: "Cost shape", left: "Cheapest per span", right: "Scales with value kept" },
+            { label: "Use when", left: "Traces are interchangeable", right: "Rare failures matter" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why is head sampling described as 'blind'?",
+            prompt:
+              "After a 10x Black Friday spike, your e-commerce assistant's telemetry bill tripled — and, worse, the one trace that would explain a checkout-tool failure was dropped. The pipeline samples 5% at the SDK. What's the structural fix?",
             choices: [
-              { id: "a", label: "It runs without lights" },
-              { id: "b", label: "It drops traces before knowing which ones mattered" },
-              { id: "c", label: "It can't see the model" },
-              { id: "d", label: "It samples at night" },
+              { id: "a", label: "Raise head sampling to 100% and accept the bill as the price of spikes" },
+              { id: "b", label: "Move the decision to the collector: tail-sample so errors and slow turns are always kept while boring traces drop" },
+              { id: "c", label: "Disable tracing on the checkout tool so its spans stop costing money" },
+              { id: "d", label: "Shard the telemetry bill across regional teams" },
             ],
             answer: "b",
             explanation:
-              "Head sampling decides at emission time, so it can't preferentially keep the erroring or slow traces — those get dropped at the same rate as everything else.",
+              "Head sampling is blind — it dropped the exact trace you needed at the same rate as everything else. Tail sampling sees the full trace before deciding, so fidelity scales with value, not traffic.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which attribute is a cardinality hazard?",
+            prompt:
+              "A health-tech startup's dashboard queries degraded weeks after a junior engineer added span attributes for session uuid and a nanosecond request timestamp 'so every request is individually searchable'. Storage grew 40% with no traffic change. What happened?",
             choices: [
-              { id: "a", label: "model id (a few values)" },
-              { id: "b", label: "a full per-request timestamp or session uuid" },
-              { id: "c", label: "environment (dev/stage/prod)" },
-              { id: "d", label: "tool name (a handful)" },
+              { id: "a", label: "The backend index is corrupt — rebuild it from scratch" },
+              { id: "b", label: "Near-unique values exploded cardinality; hash or sample the raw values and keep low-cardinality dimensions for slicing" },
+              { id: "c", label: "Nanosecond timestamps are forbidden by OTel — remove them and queries recover automatically" },
+              { id: "d", label: "Query latency always degrades over time; add more widgets to spread the load" },
             ],
             answer: "b",
             explanation:
-              "Near-unique-per-request values explode index size. Keep dimensions low-cardinality; sample or hash the unique ones.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A sane telemetry cost scaling law is:",
-            choices: [
-              { id: "a", label: "Cost scales with total traffic" },
-              { id: "b", label: "Cost scales with the value you retain (tail-sampled, low-cardinality)" },
-              { id: "c", label: "Cost is always zero" },
-              { id: "d", label: "Cost scales with model size" },
-            ],
-            answer: "b",
-            explanation:
-              "Tail sampling + capped cardinality means you pay for interesting, queryable traces — not for every request that passes through.",
+              "The attributes aren't illegal, they're unbounded: every unique value creates an index entry, so index size scaled with traffic, not with analytical value. The fix is a dimensionality budget, not a rebuild.",
           },
         ],
-        application: {
-          title: "Design the sampling + cardinality budget",
-          prompt:
-            "For a high-traffic AI feature, write your tail-sampling policy (which traces you keep) and your dimensionality budget (which attributes are low-cardinality dimensions vs sampled/hashed). Estimate the storage difference versus head sampling at 100%.",
-        },
       },
       {
         slug: "ai-threat-model-owasp",
@@ -4057,74 +3744,55 @@ for before, after, expected in cases:
         skillIds: ["ai-security"],
         capability: "Map the OWASP LLM Top 10 to telemetry detection signals.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: prompt injection is best detected via telemetry as:",
-          choices: [
-            { id: "a", label: "Faster responses" },
-            { id: "b", label: "A divergence between the user's intent and the plan the model executed" },
-            { id: "c", label: "Lower cost" },
-            { id: "d", label: "Fewer tokens" },
+        concept: {
+          what:
+            "The **OWASP LLM Top 10** — injection, sensitive disclosure, supply chain, poisoning, improper output handling, excessive agency, prompt leakage, vector weaknesses, misinformation, unbounded consumption — where each risk maps to a **detectable telemetry signal**.",
+          why: "It turns security from a parallel discipline into **reads on the spans, rates, and args you already collect** — no second telemetry stack to build and govern.",
+          where: [
+            "Prompt injection surfacing as **intent-versus-action divergence** or unexpected tool calls",
+            "Excessive agency caught as a **tool call outside policy** on the tool span",
+            "Unbounded consumption flagged by **token-rate and agent loop-depth limits**",
           ],
-          answer: "b",
-          explanation:
-            "Injection rewrites the model's plan. Detecting intent-vs-action divergence, or unexpected tool calls, is the signal — not a new data source.",
+          whenNot:
+            "Detection assumes the signal was instrumented — if tool args or token counts never made it onto the spans, **no query can detect the risk** after the fact.",
         },
         prose: [
-          "The OWASP Top 10 for LLM Applications is the canonical threat list: prompt injection, sensitive information disclosure, supply chain, data and model poisoning, improper output handling, excessive agency, system prompt leakage, vector and embedding weaknesses, misinformation, and unbounded consumption. Each is a real failure mode with a documented attack pattern.",
-          "The reframe for observability is that each risk maps to a signal you can detect on telemetry you already collect. Prompt injection shows up as intent-versus-action divergence. Sensitive disclosure shows up in output scanners. Excessive agency shows up as a tool call outside policy. Unbounded consumption shows up as runaway token loops. Detection is a query on existing spans, rates, and args — not a new instrument.",
-          "This turns security from a separate discipline into a read on the same pipeline. You're not building a parallel security telemetry stack; you're adding the reads, thresholds, and alerts that surface the OWASP risks on the spans, tool calls, and outputs you already record.",
+          "The **OWASP Top 10 for LLM Applications** is the canonical threat list: prompt injection, sensitive information disclosure, supply chain, data and model poisoning, improper output handling, excessive agency, system prompt leakage, vector and embedding weaknesses, misinformation, and unbounded consumption. Each is a real failure mode with a documented attack pattern.",
+          "The reframe for observability is that each risk maps to a **signal you can detect** on telemetry you already collect. Prompt injection shows up as **intent-versus-action divergence**. Sensitive disclosure shows up in output scanners. Excessive agency shows up as a tool call outside policy. Unbounded consumption shows up as runaway token loops. Detection is a query on existing spans, rates, and args — not a new instrument.",
+          "This turns security from a separate discipline into a **read on the same pipeline**. You're not building a parallel security telemetry stack; you're adding the reads, thresholds, and alerts that surface the OWASP risks on the spans, tool calls, and outputs you already record.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does 'excessive agency' look like in telemetry?",
+            prompt:
+              "Security review at a bank flags 'excessive agency' as a risk for the new research agent and asks the observability team how they'd even know it happened in production. What's the correct mapping?",
             choices: [
-              { id: "a", label: "A faster response" },
-              { id: "b", label: "A tool call outside the task's scope or policy" },
-              { id: "c", label: "A shorter answer" },
-              { id: "d", label: "Lower latency" },
+              { id: "a", label: "Stand up a dedicated security SIEM and mirror every span into it" },
+              { id: "b", label: "Alert on tool spans whose arguments fall outside the task's allowed policy — a query on telemetry already recorded" },
+              { id: "c", label: "Wait for a customer to report an unauthorized action on their account" },
+              { id: "d", label: "Ask the model vendor to guarantee the agent never overreaches" },
             ],
             answer: "b",
             explanation:
-              "Excessive agency is the model taking an action it wasn't granted — visible as a tool span whose arguments fall outside the allowed policy.",
+              "Excessive agency means the model took an action it wasn't granted — visible as an out-of-policy tool span. The OWASP reframe is reads on existing telemetry, not a parallel security stack.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Unbounded consumption (LLM DoS) is best caught by:",
+            prompt:
+              "A telco support agent started burning its weekly token budget in hours after a prompt-template change: the loop shows it calling the same knowledge-base tool repeatedly with growing context. Which OWASP category and detection signal match?",
             choices: [
-              { id: "a", label: "Reading the user's email" },
-              { id: "b", label: "Token-rate and agent loop-depth limits" },
-              { id: "c", label: "A bigger dashboard" },
-              { id: "d", label: "Disabling logs" },
+              { id: "a", label: "Sensitive information disclosure — caught by output PII scanners" },
+              { id: "b", label: "Data and model poisoning — caught by retraining-data audits" },
+              { id: "c", label: "Unbounded consumption — caught by token-rate and agent loop-depth limits" },
+              { id: "d", label: "Misinformation — caught by factuality evals" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "Runaway loops and huge contexts consume tokens and time. Rate and loop-depth limits on the agent span catch them before they consume the budget.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The reframe this lesson offers is that AI security detection is:",
-            choices: [
-              { id: "a", label: "A new, separate telemetry stack" },
-              { id: "b", label: "A read on the spans, rates, and args you already collect" },
-              { id: "c", label: "Impossible" },
-              { id: "d", label: "Only the model vendor's job" },
-            ],
-            answer: "b",
-            explanation:
-              "Each OWASP risk maps to a query on existing telemetry. Detection adds reads and thresholds, not a parallel system.",
+              "Runaway loops consuming tokens and time is exactly unbounded consumption. The detectable fingerprint is on the agent span: loop depth climbing and token rate blowing past limits.",
           },
         ],
-        application: {
-          title: "Map your detection coverage",
-          prompt:
-            "Take the OWASP LLM Top 10. For each risk, write the telemetry signal that would detect it in your system — and mark which you currently alert on versus which you're blind to.",
-        },
       },
       {
         slug: "detecting-attacks-in-telemetry",
@@ -4134,74 +3802,68 @@ for before, after, expected in cases:
         skillIds: ["ai-security", "ai-red-teaming"],
         capability: "Detect injection, extraction, exfiltration, and unsafe tool use from ordinary telemetry.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: model-extraction attacks are best spotted as:",
-          choices: [
-            { id: "a", label: "A single weird request" },
-            { id: "b", label: "High-volume, near-identical queries probing the model from one identity" },
-            { id: "c", label: "Lower cost" },
-            { id: "d", label: "Faster latency" },
+        concept: {
+          what:
+            "Attacks leave **fingerprints on ordinary telemetry**: injection as intent-action divergence, exfiltration in output scanners, extraction and membership inference as **per-identity rate and similarity anomalies**, unsafe tool use as out-of-policy args.",
+          why: "Each attack class is a **new read on existing spans**, not a new data source — and validating tool args against an allowlist turns one whole class into a **hard reject** with an audit record.",
+          where: [
+            "Output-side DLP and secret scanners on the **completion span** catching exfiltrated secrets or PII",
+            "Per-identity query-rate and **embedding-similarity alerts** catching model-extraction probe storms",
+            "Tool-arg validation against a policy **allowlist** on the span, with rejects recorded for the audit trail",
           ],
-          answer: "b",
-          explanation:
-            "Extraction is a volume-and-similarity pattern: many near-duplicate probes against the decision surface. It's a rate anomaly per identity, not a single call.",
+          whenNot:
+            "Per-request rules can't catch **statistical attacks** — membership inference and extraction are cluster patterns across many probes, so single-call detection alone will never fire.",
         },
         prose: [
-          "Attacks leave fingerprints on ordinary telemetry. Prompt injection rewrites the model's plan, so it shows up as intent-versus-action divergence or unexpected tool calls. Data exfiltration shows up in output scanners flagging secrets or PII the model returned. Neither needs a new data source — they need new reads on the spans you already record.",
-          "Model extraction and membership inference are rate-and-pattern problems rather than single-call problems. Extraction looks like a high volume of near-identical queries probing the model's decision surface from one identity. Membership inference looks like a cluster of correlated, calibrated probes trying to determine whether a specific record was in training. Both are detectable as per-identity query-rate and embedding-similarity anomalies.",
-          "Unsafe tool use is the most directly preventable. A tool called with arguments outside policy — a delete instead of a read, a cross-tenant lookup — is visible on the tool span. Validating tool args against an allowlist at the span turns a class of agent-security failures into a hard reject, with the attempt itself recorded for the audit trail.",
+          "Attacks leave fingerprints on ordinary telemetry. **Prompt injection** rewrites the model's plan, so it shows up as intent-versus-action divergence or unexpected tool calls. **Data exfiltration** shows up in output scanners flagging secrets or PII the model returned. Neither needs a new data source — they need new reads on the spans you already record.",
+          "**Model extraction** and **membership inference** are rate-and-pattern problems rather than single-call problems. Extraction looks like a high volume of near-identical queries probing the model's decision surface from one identity. Membership inference looks like a cluster of correlated, calibrated probes trying to determine whether a specific record was in training. Both are detectable as **per-identity query-rate and embedding-similarity anomalies**.",
+          "**Unsafe tool use** is the most directly preventable. A tool called with arguments outside policy — a delete instead of a read, a cross-tenant lookup — is visible on the tool span. Validating tool args against an **allowlist** at the span turns a class of agent-security failures into a hard reject, with the attempt itself recorded for the **audit trail**.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "What does the telemetry pattern suggest?",
+            branches: [
+              { label: "Intent vs action diverge", node: { kind: "leaf", answer: "Prompt injection", caption: "unexpected tool calls confirm" } },
+              { label: "Secrets in output", node: { kind: "leaf", answer: "Exfiltration", caption: "output-side DLP scanners" } },
+              { label: "Near-identical probe storm", node: { kind: "leaf", answer: "Model extraction", caption: "per-identity rate anomaly" } },
+              { label: "Tool args outside policy", node: { kind: "leaf", answer: "Unsafe tool use", caption: "allowlist hard-rejects" } },
+            ],
+          },
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why is membership inference detected as a 'cluster', not a single call?",
+            prompt:
+              "An intern proposes a per-request firewall rule to block membership-inference attacks against your fine-tuned medical model, reasoning that 'each attack is one HTTP call'. Their mentor corrects them. On what grounds?",
             choices: [
-              { id: "a", label: "Single calls are invisible by law" },
-              { id: "b", label: "Inference requires many correlated, calibrated probes to infer membership statistically" },
-              { id: "c", label: "It only happens in clusters of machines" },
-              { id: "d", label: "One call never reaches the model" },
+              { id: "a", label: "Membership inference is a statistical pattern across many correlated probes — the fingerprint is the cluster, not any single call" },
+              { id: "b", label: "Membership inference only happens inside the training cluster, never at the API edge" },
+              { id: "c", label: "HTTP calls can't be inspected for legal reasons in healthcare" },
+              { id: "d", label: "The rule would work; the mentor is shielding the intern from extra work" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "Inferring whether a record was in training is a statistical pattern across many probes. The fingerprint is the cluster, not any individual request.",
+              "Inferring whether a record was in training takes many calibrated probes — a rate-and-pattern problem. Per-identity rate and embedding-similarity alerts catch the cluster; a single-call rule never will.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Data exfiltration via the model's output is caught by:",
+            prompt:
+              "An audit of your agent platform finds that last month a research agent, injected via a poisoned web page, called the file-delete tool with a path outside its task scope — and it succeeded silently. Which control would have made this a non-event?",
             choices: [
-              { id: "a", label: "A faster dashboard" },
-              { id: "b", label: "Output-side DLP and secret scanners on the completion span" },
-              { id: "c", label: "Disabling the model" },
-              { id: "d", label: "Lowering temperature" },
+              { id: "a", label: "A faster model with better instruction-following" },
+              { id: "b", label: "Validating tool args against a policy allowlist on the tool span — a hard reject plus an audit record of the attempt" },
+              { id: "c", label: "Storing full raw prompts so investigators could read the injection afterward" },
+              { id: "d", label: "Rate-limiting every user to five questions per day" },
             ],
             answer: "b",
             explanation:
-              "If the model returns secrets or PII, output scanners on the completion catch it. The signal lives in what the model emitted, not what it was asked.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The most directly preventable agent-security failure is:",
-            choices: [
-              { id: "a", label: "Membership inference" },
-              { id: "b", label: "Unsafe tool parameters — validate args against an allowlist on the tool span" },
-              { id: "c", label: "Model extraction" },
-              { id: "d", label: "Training data poisoning" },
-            ],
-            answer: "b",
-            explanation:
-              "Tool args are structured and policy-checkable. An allowlist on the tool span turns an out-of-policy call into a hard reject with an audit record.",
+              "Unsafe tool use is the most preventable class: tool args are structured and policy-checkable, so an allowlist at the span converts a silent breach into a rejected call with evidence. Forensics-after-the-fact isn't prevention.",
           },
         ],
-        application: {
-          title: "Design three detection queries",
-          prompt:
-            "Write the telemetry query that would detect (1) a prompt-injection attempt shifting the plan, (2) a model-extraction campaign from one identity, and (3) an out-of-policy tool call. For each, name the alert threshold.",
-        },
       },
       {
         slug: "guardrails-and-safety-signals",
@@ -4211,74 +3873,66 @@ for before, after, expected in cases:
         skillIds: ["ai-guardrails"],
         capability: "Apply guardrails and measure their attack-success rate honestly.",
         minutes: 10,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you add an input/output guardrail. What should you assume?",
-          choices: [
-            { id: "a", label: "All attacks are now blocked" },
-            { id: "b", label: "It catches most known patterns but a fraction of evasions still succeed" },
-            { id: "c", label: "It's unnecessary" },
-            { id: "d", label: "It has no cost" },
+        concept: {
+          what:
+            "**Guardrails** are input and output checks in the runtime path (NeMo Guardrails, Lakera Guard, Guardrails AI) that block known jailbreaks and policy violations — and they are **evadable, not walls**.",
+          why: "Published research shows high **attack-success rates (ASR)** against adaptive adversaries, so the mature posture is measuring and driving ASR down like a quality SLO rather than trusting a block rate.",
+          where: [
+            "Input checks before the model and **output checks** before the user, both in the request path",
+            "Continuous **red-team evals** feeding an ASR metric with alerting on regressions",
+            "Each new evasion treated as a **regression to fix** — exactly like a quality SLO breach",
           ],
-          answer: "b",
-          explanation:
-            "Guardrails (NeMo, Lakera, Guardrails AI) catch most known attack patterns, but published evasions still succeed a meaningful fraction of the time. Measure it; don't assume safety.",
+          whenNot:
+            "A guardrail is the wrong control for a **deterministic guarantee**: content that must never leak needs architectural controls (never storing it), because a 94% block rate still lets the adaptive 6% through.",
         },
         prose: [
-          "Guardrails are input and output checks in the runtime path — frameworks like NeMo Guardrails, Lakera Guard, and Guardrails AI. They catch known jailbreak patterns, harmful outputs, and policy violations before the request reaches the model or the response reaches the user. They raise the bar substantially over having no check at all.",
-          "The dangerous assumption is that a guardrail is a wall. Published research shows they're evadable: against adaptive adversaries, attack-success rates can be high. A guardrail that blocks 94% of known patterns still lets 6% through, and novel attacks aren't in the known set. Treating the guardrail as a guarantee is how you get breached.",
-          "The mature posture is to measure the attack-success rate (ASR) as a production metric and drive it down. Run continuous red-team evals against your guardrail, track ASR over time, and treat each new evasion as a regression to fix — exactly like a quality SLO. The guardrail is a control you invest in, not a checkbox you tick.",
+          "Guardrails are input and output checks in the **runtime path** — frameworks like NeMo Guardrails, Lakera Guard, and Guardrails AI. They catch known jailbreak patterns, harmful outputs, and policy violations before the request reaches the model or the response reaches the user. They raise the bar substantially over having no check at all.",
+          "The dangerous assumption is that a guardrail is a wall. Published research shows they're **evadable**: against adaptive adversaries, attack-success rates can be high. A guardrail that blocks 94% of known patterns still lets 6% through, and **novel attacks aren't in the known set**. Treating the guardrail as a guarantee is how you get breached.",
+          "The mature posture is to measure the **attack-success rate (ASR)** as a production metric and drive it down. Run continuous **red-team evals** against your guardrail, track ASR over time, and treat each new evasion as a regression to fix — exactly like a quality SLO. The guardrail is a control you invest in, not a checkbox you tick.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "User input arrives" },
+            { kind: "process", text: "Input guardrail checks", caption: "known jailbreak patterns" },
+            { kind: "process", text: "Model generates" },
+            { kind: "process", text: "Output scan", caption: "harm + policy + DLP" },
+            { kind: "output", text: "Response ships" },
+          ],
+          loop: "Red-team evals continuously re-measure ASR on this same path",
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does it mean to treat a guardrail's attack-success rate as a production metric?",
+            prompt:
+              "A vendor pitch says their guardrail 'blocks 94% of jailbreaks', and your CPO wants to approve the customer-facing launch on that number alone. What's the strongest objection from this lesson's framing?",
             choices: [
-              { id: "a", label: "Ignore it" },
-              { id: "b", label: "Measure ASR continuously with red-team evals and drive it down" },
-              { id: "c", label: "Hide it from the team" },
-              { id: "d", label: "Set it to 100%" },
+              { id: "a", label: "94% is below the industry-standard 99% threshold" },
+              { id: "b", label: "The catch rate was measured against known patterns — adaptive and novel attacks aren't in that set, so the residual risk must be measured, not assumed away" },
+              { id: "c", label: "Guardrails are illegal in customer-facing products" },
+              { id: "d", label: "The number proves the guardrail is a wall, so no further checks are needed" },
             ],
             answer: "b",
             explanation:
-              "ASR is a number you can track, regress, and improve. Continuous red-teaming feeds it the way a golden set feeds a quality SLO.",
+              "Guardrails are evadable, not walls. The 94% is conditioned on the known attack set; the correct posture is a measured, continuously red-teamed ASR — not a one-time block rate taken as a guarantee.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why is 'the guardrail blocks 94%' not a guarantee of safety?",
+            prompt:
+              "Your security team runs a monthly red-team eval against the banking assistant's guardrail. This month ASR jumped from 3% to 11% with no product change — a new evasion family is circulating. Following the SLO-style posture, what happens next?",
             choices: [
-              { id: "a", label: "94% is low" },
-              { id: "b", label: "6% still gets through, and novel attacks aren't in the known set the 94% was measured against" },
-              { id: "c", label: "Guardrails are illegal" },
-              { id: "d", label: "It's actually 100%" },
+              { id: "a", label: "Nothing — ASR is expected to fluctuate randomly between evals" },
+              { id: "b", label: "Treat it as a guardrail regression: alert, investigate the evasion, fix it, and verify ASR falls in the next eval cycle" },
+              { id: "c", label: "Remove the guardrail since adaptive attackers always get through" },
+              { id: "d", label: "Keep the result internal so competitors don't learn the evasion exists" },
             ],
             answer: "b",
             explanation:
-              "The catch rate is measured against known patterns. Adaptive and novel attacks exploit exactly what the guardrail hasn't seen, so the residual risk is real and must be measured.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Guardrails sit where, relative to the model?",
-            choices: [
-              { id: "a", label: "After the user only" },
-              { id: "b", label: "In the runtime path, on input and/or output" },
-              { id: "c", label: "Inside the training data" },
-              { id: "d", label: "On the dashboard only" },
-            ],
-            answer: "b",
-            explanation:
-              "Guardrails run in the request path — checking the input before the model and the output before the user — which is why their decisions are themselves observable signals.",
+              "ASR is a production metric like a quality SLO: a jump is a regression to root-cause and fix, not noise to ignore or a reason to abandon the control. Each new evasion is a defect in the guardrail, and the eval loop exists to catch exactly this.",
           },
         ],
-        application: {
-          title: "Stand up an ASR metric",
-          prompt:
-            "Describe how you'd measure your guardrail's attack-success rate in production: the red-team eval set, the cadence, the ASR number you'd report, and the threshold below which you'd block a release.",
-        },
       },
       {
         slug: "privacy-engineering-for-telemetry",
@@ -4288,74 +3942,65 @@ for before, after, expected in cases:
         skillIds: ["telemetry-privacy", "ai-audit-trail"],
         capability: "Observe an AI system handling sensitive prompts without becoming a breach surface.",
         minutes: 12,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: a regulated system can't store raw prompts. What do you log instead?",
-          choices: [
-            { id: "a", label: "Nothing — give up on observability" },
-            { id: "b", label: "Redacted/hashed dimensions (model, version, token counts) plus an immutable audit trail of access" },
-            { id: "c", label: "Store them in a spreadsheet" },
-            { id: "d", label: "Store them in plain text for convenience" },
+        concept: {
+          what:
+            "Observe without storing the payload: **redact PII at the collector** and keep the dimensions (model, prompt version, token counts, latency); where prompts must be kept, **residency, tenant isolation, role-tiered access, and an immutable audit trail** govern them.",
+          why: "The debugging value lives in the **dimensions, not the raw text** — so the telemetry store never becomes the **breach surface** the system was supposed to avoid.",
+          where: [
+            "EU financial and health prompts routed to **EU-region backends**, with residency enforced in the collector (GDPR, HIPAA, MiFID II)",
+            "**Tenant-partitioned storage** so one customer's prompts can never surface in another tenant's queries",
+            "Role tiers — support sees metadata, security sees content under approval — with every read in an **append-only audit trail**",
           ],
-          answer: "b",
-          explanation:
-            "You keep the dimensions that explain behaviour, redact or hash anything identifying, and record who accessed what via an immutable audit trail. Observability without exposure.",
+          whenNot:
+            "When the raw prompt carries **no residual debugging value** beyond its dimensions, storing it is pure liability — redaction-at-collector should have removed it.",
         },
         prose: [
-          "The central question of privacy engineering for AI telemetry: can you observe the system without storing the prompt at all? Often, yes. The debugging value lives in the dimensions — model, prompt version, retrieval version, token counts, latency — not in the raw text. Detecting and redacting PII at the collector, then keeping only those dimensions, preserves debuggability without persisting the sensitive payload.",
-          "Where prompts must be kept, residency and isolation govern them. Regional data residency routes EU financial or health prompts to EU-region backends and enforces it in the collector — GDPR, HIPAA, and MiFID II all push toward this. Tenant isolation partitions telemetry by customer at storage, so one tenant's prompts can never surface in another tenant's queries. These are architectural commitments, not settings.",
-          "Access control and the audit trail close the loop. Raw prompts, if kept, sit behind role tiers: support sees metadata, security sees content under approval, most roles see neither. Every read of sensitive telemetry lands in an immutable, append-only audit trail — the evidence layer that accountability and regulators require, and the record that reconstructs who saw what, when.",
+          "The central question of privacy engineering for AI telemetry: can you observe the system **without storing the prompt at all**? Often, yes. The debugging value lives in the dimensions — model, prompt version, retrieval version, token counts, latency — not in the raw text. Detecting and **redacting PII at the collector**, then keeping only those dimensions, preserves debuggability without persisting the sensitive payload.",
+          "Where prompts must be kept, **residency and isolation** govern them. Regional data residency routes EU financial or health prompts to EU-region backends and enforces it in the collector — GDPR, HIPAA, and MiFID II all push toward this. **Tenant isolation** partitions telemetry by customer at storage, so one tenant's prompts can never surface in another tenant's queries. These are architectural commitments, not settings.",
+          "**Access control and the audit trail** close the loop. Raw prompts, if kept, sit behind role tiers: support sees metadata, security sees content under approval, most roles see neither. Every read of sensitive telemetry lands in an **immutable, append-only audit trail** — the evidence layer that accountability and regulators require, and the record that reconstructs who saw what, when.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Sensitive prompt arrives" },
+            { kind: "process", text: "Collector detects PII", caption: "scrub or drop payload" },
+            { kind: "process", text: "Keep dimensions only", caption: "model, versions, tokens, latency" },
+            { kind: "process", text: "Route by residency", caption: "EU prompts to EU backends" },
+            { kind: "output", text: "Partitioned, audited store", caption: "tenant isolation + access tiers" },
+          ],
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Where is regional data residency best enforced?",
+            prompt:
+              "A debugging ticket insists the raw prompts of a healthcare triage assistant must be stored because 'you can't debug what you can't see'. The latency regression under investigation correlates perfectly with retrieval version and token counts. What's the privacy-engineering answer?",
             choices: [
-              { id: "a", label: "In the front-end" },
-              { id: "b", label: "In the collector routing layer" },
-              { id: "c", label: "In the dashboard" },
-              { id: "d", label: "Nowhere — rely on policy" },
+              { id: "a", label: "Store everything — debugging always outranks privacy in healthcare" },
+              { id: "b", label: "Redact at the collector and keep dimensions: retrieval version, token counts, latency hold the debug value, not the raw text" },
+              { id: "c", label: "Store the prompts but encrypt them with a key kept in the same database" },
+              { id: "d", label: "Ask each patient for consent to retain their triage transcript indefinitely" },
             ],
             answer: "b",
             explanation:
-              "Residency is an architectural routing decision at the collector. Enforcing it in code, not policy, is what keeps regulated data in its region.",
+              "The misconception is that debuggability requires the payload. It usually doesn't — the dimensions carry the causal signal, and dropping the raw text removes the breach surface entirely rather than trying to guard it.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "What does tenant isolation in telemetry storage guarantee?",
+            prompt:
+              "During a SOC 2 audit of your multi-tenant SaaS platform, the auditor asks how you prove no tenant's prompts can appear in another tenant's query results, and who accessed prompt content last quarter. Which two controls answer them?",
             choices: [
-              { id: "a", label: "Faster queries" },
-              { id: "b", label: "One tenant's prompts can't surface in another tenant's queries" },
-              { id: "c", label: "Lower cost" },
-              { id: "d", label: "Better model quality" },
+              { id: "a", label: "Faster queries and a longer retention window" },
+              { id: "b", label: "Tenant isolation at storage, plus the immutable append-only audit trail recording every sensitive read" },
+              { id: "c", label: "A written policy asking engineers to be careful with cross-tenant data" },
+              { id: "d", label: "Model vendor attestations that no data leaves their region" },
             ],
             answer: "b",
             explanation:
-              "Partitioning by tenant at storage prevents cross-tenant data leakage — a hard requirement for multi-tenant platforms handling sensitive prompts.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "An immutable audit trail of prompt access primarily serves:",
-            choices: [
-              { id: "a", label: "Faster dashboards" },
-              { id: "b", label: "Accountability and regulatory evidence of who saw what, when" },
-              { id: "c", label: "Model training" },
-              { id: "d", label: "Cost reduction" },
-            ],
-            answer: "b",
-            explanation:
-              "The append-only record is the evidence layer. It deters misuse, enables investigation, and is what an auditor samples to confirm control effectiveness.",
+              "Isolation is architectural — partitioning by tenant at storage, not a policy — and the audit trail is the evidence layer that reconstructs who saw what, when. Those two are exactly what an auditor samples.",
           },
         ],
-        application: {
-          title: "Design a privacy-preserving pipeline",
-          prompt:
-            "For a system handling regulated prompts, describe what your collector redacts vs retains, how residency and tenant isolation are enforced, and what the RBAC tiers + audit trail record for every read.",
-        },
       },
       {
         slug: "governance-frameworks",
@@ -4365,74 +4010,55 @@ for before, after, expected in cases:
         skillIds: ["ai-compliance", "eu-ai-act", "nist-ai-rmf"],
         capability: "Map observability signals to the EU AI Act, NIST AI RMF, ISO 42001, and SR 11-7.",
         minutes: 12,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an auditor asks 'prove this high-risk system is monitored.' Your evidence is:",
-          choices: [
-            { id: "a", label: "A verbal assurance" },
-            { id: "b", label: "Your traces, eval results, SLOs, and audit trail — the observability pipeline itself" },
-            { id: "c", label: "A marketing page" },
-            { id: "d", label: "The model's parameter count" },
+        concept: {
+          what:
+            "**EU AI Act, NIST AI RMF, ISO 42001, and SR 11-7** read differently but demand the same three proofs: **trace** decisions, **measure** behaviour, **control** changes.",
+          why: "Observability is the **evidence layer** for all three — traces and audit trail are traceability, evals/drift/SLOs are measurement, gates and rollback are control — so one governed pipeline satisfies four frameworks.",
+          where: [
+            "EU AI Act high-risk duties — traceability, human oversight, auditability — mapped to traces, quality SLOs, and the audit trail",
+            "NIST AI RMF: evals and drift signals as **Measure**; alerts and rollback as **Manage**; ownership as **Govern**",
+            "ISO 42001 certification and SR 11-7 model-risk validation riding the same **review cadence and change control**",
           ],
-          answer: "b",
-          explanation:
-            "Governance frameworks ask for traceability, measurement, and control. Your observability pipeline IS that evidence — traces prove traceability, evals prove measurement, gates prove control.",
+          whenNot:
+            "Governance fails as a **checklist appended at the end** — without signal ownership, review cadence, and rollback triggers, the evidence doesn't exist when the auditor or the incident arrives.",
         },
         prose: [
-          "Four frameworks dominate enterprise AI governance. The EU AI Act risk-classifies systems and imposes duties on high-risk ones — traceability, human oversight, auditability — and obligations on general-purpose model providers. NIST's AI Risk Management Framework structures the work as Govern, Map, Measure, and Manage across the lifecycle. ISO/IEC 42001 is the AI management-system standard an organisation can be certified against. SR 11-7 imports model risk management from banking: validation, monitoring, and change control.",
-          "They read differently but ask the same three things: can you trace a decision, can you measure the system's behaviour, and can you control changes to it. Observability is the evidence layer for all three. Traces and the audit trail are traceability. Evals, drift, and SLOs are measurement. Eval gates, versioned releases, and rollback are control. The frameworks don't demand new instrumentation; they demand that the instrumentation you have is governed, owned, and reviewable.",
-          "The mistake is treating governance as a compliance checklist appended at the end. It's a system-lifecycle posture: who owns each signal, what the review cadence is, what triggers a rollback, and where the evidence lives. Build that posture once, and the four frameworks become different lenses on the same operating system rather than four separate audits.",
+          "Four frameworks dominate enterprise AI governance. The **EU AI Act** risk-classifies systems and imposes duties on high-risk ones — traceability, human oversight, auditability — and obligations on general-purpose model providers. **NIST's AI Risk Management Framework** structures the work as Govern, Map, Measure, and Manage across the lifecycle. **ISO/IEC 42001** is the AI management-system standard an organisation can be certified against. **SR 11-7** imports model risk management from banking: validation, monitoring, and change control.",
+          "They read differently but ask the same three things: can you **trace** a decision, can you **measure** the system's behaviour, and can you **control** changes to it. Observability is the **evidence layer** for all three. Traces and the audit trail are traceability. Evals, drift, and SLOs are measurement. Eval gates, versioned releases, and rollback are control. The frameworks don't demand new instrumentation; they demand that the instrumentation you have is governed, owned, and reviewable.",
+          "The mistake is treating governance as a **compliance checklist** appended at the end. It's a system-lifecycle posture: who owns each signal, what the review cadence is, what triggers a rollback, and where the evidence lives. Build that posture once, and the four frameworks become different lenses on the same **operating system** rather than four separate audits.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What do the EU AI Act's high-risk duties (traceability, oversight, auditability) map to in your stack?",
+            prompt:
+              "Your legal team must answer an EU AI Act high-risk-classification inquiry for the credit-decisioning assistant: demonstrate traceability, human oversight, and auditability. Which existing observability assets respond before anything new is built?",
             choices: [
-              { id: "a", label: "Nothing — they're aspirational" },
-              { id: "b", label: "Traces + audit trail (traceability/auditability) and quality SLOs (oversight)" },
-              { id: "c", label: "A faster model" },
-              { id: "d", label: "More front-end logging" },
+              { id: "a", label: "None — the AI Act requires purpose-built regulatory reporting software" },
+              { id: "b", label: "Traces reconstruct each decision, quality SLOs feed human oversight, and the audit trail proves who accessed what and when" },
+              { id: "c", label: "The model vendor's marketing security whitepaper" },
+              { id: "d", label: "A one-time penetration test performed at launch" },
             ],
             answer: "b",
             explanation:
-              "Your observability pipeline already produces the evidence: traces reconstruct decisions, the audit trail records access, and SLOs feed human oversight.",
+              "The high-risk duties map onto evidence you already produce. The misconception is that compliance demands new instrumentation — it demands the instrumentation you have be governed, owned, and reviewable.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "In NIST AI RMF terms, your eval and drift signals belong to which function?",
+            prompt:
+              "A newly hired risk officer at your insurer wants quarterly NIST AI RMF 'Measure' reports plus separate hand-built ISO 42001 and SR 11-7 evidence packs. You'd rather build once. What do you show them?",
             choices: [
-              { id: "a", label: "Govern" },
-              { id: "b", label: "Measure" },
-              { id: "c", label: "Map" },
-              { id: "d", label: "Ignore" },
+              { id: "a", label: "That NIST, ISO, and SR 11-7 are mutually incompatible, so three reporting teams are unavoidable" },
+              { id: "b", label: "That governed traces, evals, SLOs, and change control are shared evidence — each framework is a lens on the same operating system, so reports are views over one pipeline" },
+              { id: "c", label: "That only the EU AI Act matters and the other frameworks can be ignored" },
+              { id: "d", label: "That evidence is best generated the week before each audit" },
             ],
             answer: "b",
             explanation:
-              "Measure is the function that assesses the system — exactly what eval, drift, and SLO signals do. Alerts and rollback are Manage; ownership is Govern.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Treating governance as a 'checklist at the end' fails because:",
-            choices: [
-              { id: "a", label: "Checklists are too short" },
-              { id: "b", label: "It's a lifecycle posture (ownership, cadence, rollback, evidence), not a one-time artefact" },
-              { id: "c", label: "Auditors dislike lists" },
-              { id: "d", label: "It's illegal to use checklists" },
-            ],
-            answer: "b",
-            explanation:
-              "Governance is how you operate continuously — who owns what, what's reviewed, when you roll back. A checklist can't substitute for an operating posture.",
+              "All four frameworks reduce to trace, measure, control. Reporting becomes views over one governed pipeline — the alternative is duplicate hand-built packs that drift apart and expire the moment an incident needs them.",
           },
         ],
-        application: {
-          title: "Map one framework to your pipeline",
-          prompt:
-            "Pick one framework (EU AI Act, NIST AI RMF, ISO 42001, or SR 11-7). For each of its core requirements, name the concrete part of your observability pipeline that serves as evidence, and the owner.",
-        },
       },
       {
         slug: "evaluation-systems-not-one-score",
@@ -4442,74 +4068,55 @@ for before, after, expected in cases:
         skillIds: ["llm-judge", "eval-bias"],
         capability: "Build a trustworthy evaluation system rather than trust a single tidy score.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: your eval score moved from 92 to 90. What's missing before you act on it?",
-          choices: [
-            { id: "a", label: "A bigger model" },
-            { id: "b", label: "A confidence interval — a 2-point move might be noise" },
-            { id: "c", label: "More logs" },
-            { id: "d", label: "A new vendor" },
+        concept: {
+          what:
+            "Trustworthy evaluation is a **system of six parts** — representative suite, repeatable rubric, **inter-rater agreement (Cohen's κ)**, calibrated judge, confidence intervals, distribution-shift watch — not a single tidy score.",
+          why: "Each part plugs a specific failure: stale suites pass everything, low κ makes scores **coin flips**, missing intervals chase noise, and a **stable mean can hide a bimodal regression**.",
+          where: [
+            "A release claimed to 'improve' by a point — checked against whether the **interval excludes the old value**",
+            "Distributions shown next to means so a **bimodal shift** (more 1s and 5s) surfaces before users feel it",
+            "κ and judge-vs-human agreement tracked over time so a degrading judge is caught",
           ],
-          answer: "b",
-          explanation:
-            "Without a confidence interval, a 2-point move is indistinguishable from sampling noise. Report intervals so you don't chase ghosts.",
+          whenNot:
+            "A one-number score is only enough for **coarse triage** — obviously broken vs obviously fine — never for release decisions, where noise and hidden distribution shifts decide ship/no-ship.",
         },
         prose: [
-          "A single tidy score is comforting and almost meaningless. Trustworthy evaluation is a system with six parts: a representative task suite that mirrors real usage, a repeatable rubric that gives the same answer twice, inter-rater agreement (Cohen's κ) that proves two raters concur, a calibrated judge measured against humans, confidence intervals that separate signal from noise, and distribution-shift watch that catches the mean holding while the shape changes.",
-          "Each part plugs a specific failure. A stale suite passes everything. A vague rubric adds noise that swamps real change. Low κ means the score is a coin flip. An uncalibrated judge inherits biases. Missing intervals make you chase noise. And a stable mean can hide a distribution growing bimodal — more 1s and 5s, fewer 3s — which is a real regression the average conceals.",
-          "The discipline is to ship the system, not the score. Report intervals alongside means, show distributions not just averages, and track κ and judge-agreement over time. When a release 'improves' the score by a point, the first question is whether the interval even excludes the previous value — and if the distribution shifted, which direction helped and which hurt.",
+          "A single tidy score is comforting and almost meaningless. Trustworthy evaluation is a system with six parts: a **representative task suite** that mirrors real usage, a **repeatable rubric** that gives the same answer twice, inter-rater agreement (**Cohen's κ**) that proves two raters concur, a **calibrated judge** measured against humans, **confidence intervals** that separate signal from noise, and distribution-shift watch that catches the mean holding while the shape changes.",
+          "Each part plugs a specific failure. A stale suite passes everything. A vague rubric adds noise that swamps real change. Low κ means the score is a **coin flip**. An uncalibrated judge inherits biases. Missing intervals make you chase noise. And a stable mean can hide a distribution growing **bimodal** — more 1s and 5s, fewer 3s — which is a real regression the average conceals.",
+          "The discipline is to **ship the system, not the score**. Report intervals alongside means, show distributions not just averages, and track κ and judge-agreement over time. When a release 'improves' the score by a point, the first question is whether the **interval even excludes** the previous value — and if the distribution shifted, which direction helped and which hurt.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Cohen's κ tells you:",
+            prompt:
+              "Your RAG assistant's weekly eval shows mean answer quality steady at 3.9 for a month — yet support complaints doubled and CSAT dropped. You pull the score distributions and find 1s and 5s growing while 3s shrink. What does the eval system say happened?",
             choices: [
-              { id: "a", label: "The model's parameter count" },
-              { id: "b", label: "Whether two raters agree enough that the score is meaningful" },
-              { id: "c", label: "The latency p99" },
-              { id: "d", label: "The cost per token" },
+              { id: "a", label: "Nothing — the mean is the metric, and it's stable by definition" },
+              { id: "b", label: "A real regression hidden by the average: the distribution is going bimodal, so the system is getting less consistent" },
+              { id: "c", label: "The judge became more generous, inflating the high scores" },
+              { id: "d", label: "Complaints are unrelated because the suite is representative by construction" },
             ],
             answer: "b",
             explanation:
-              "κ measures agreement beyond chance. Below ~0.6, rater disagreement is large enough that the score itself is unreliable.",
+              "Distribution-shift watch exists for exactly this case: more extreme scores at both ends while the mean holds means real degradation the average conceals. Trusting the mean alone is the failure the six-part system prevents.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "The mean quality score is stable, but the distribution is growing bimodal. This indicates:",
+            prompt:
+              "A prompt-engineering intern reports a triumphant +1.2 point eval win for their new system prompt and asks for an immediate full rollout. Before acting, you apply the system-of-evaluation view. Which check most directly tests whether the win is real?",
             choices: [
-              { id: "a", label: "Nothing — the mean is fine" },
-              { id: "b", label: "A real regression the average is hiding" },
-              { id: "c", label: "A faster model" },
-              { id: "d", label: "Lower cost" },
+              { id: "a", label: "Whether the confidence interval around the new score excludes the old one — a 1.2-point move inside the interval is sampling noise" },
+              { id: "b", label: "Whether the new prompt is longer than the old one" },
+              { id: "c", label: "Whether the dashboard renders the new score in green" },
+              { id: "d", label: "Whether the intern also ran the eval on a weekend" },
             ],
-            answer: "b",
+            answer: "a",
             explanation:
-              "More extreme scores at both ends while the mean holds means the system is getting less consistent — a regression you'd miss watching only the average.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "Why pair every eval score with a confidence interval?",
-            choices: [
-              { id: "a", label: "It's required by OTel" },
-              { id: "b", label: "So small moves can be told apart from sampling noise before anyone acts" },
-              { id: "c", label: "To make dashboards busier" },
-              { id: "d", label: "To increase cost" },
-            ],
-            answer: "b",
-            explanation:
-              "Intervals quantify uncertainty. A 2-point change inside the interval is noise; outside it, it's signal worth investigating.",
+              "Missing intervals make you chase noise: without knowing the uncertainty, a point-swing this size is indistinguishable from sampling variance. The suite, rubric, and judge matter, but the interval is the immediate real-vs-noise test before any rollout.",
           },
         ],
-        application: {
-          title: "Audit your eval system",
-          prompt:
-            "Score your evaluation against the six parts (suite, rubric, κ, judge calibration, intervals, distribution watch). For each gap, write the smallest change that would close it.",
-        },
       },
       {
         slug: "detecting-drift-regressions",
@@ -4519,74 +4126,55 @@ for before, after, expected in cases:
         skillIds: ["model-drift", "llm-drift"],
         capability: "Catch input, output, and retrieval drift in distributions before averages move.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: input drift (PSI) has crossed 0.20 but the mean quality is unchanged. What's true?",
-          choices: [
-            { id: "a", label: "There's no problem" },
-            { id: "b", label: "The input distribution shifted; a regression is likely coming even though the mean lags" },
-            { id: "c", label: "PSI is irrelevant" },
-            { id: "d", label: "The model improved" },
+        concept: {
+          what:
+            "Drift in generative systems is **distributional** — input (PSI), output, and retrieval distributions move before averages do — so the right primitive is a **change-point on the distribution**, not a threshold on the mean.",
+          why: "The mean is the **last signal to move**; distribution metrics are the leading indicator that lets you act before users have felt the drift for days.",
+          where: [
+            "**PSI on input embeddings** flagging a prompt-mix shift before quality averages drop",
+            "**Cohort-aware baselines** per region so segment-specific drift isn't diluted by the aggregate",
+            "Sequential change-point monitoring watching output shape over time against a baseline",
           ],
-          answer: "b",
-          explanation:
-            "Drift shows up in distributions before averages. A PSI over 0.20 means the inputs your system sees have materially changed — the mean just hasn't caught up yet.",
+          whenNot:
+            "Don't run per-cohort distribution monitors where **traffic is too sparse to estimate a distribution** — a handful of requests a day makes PSI noise, not signal.",
         },
         prose: [
-          "Drift in generative systems is distributional, and distributions move before averages do. Input drift — measured by metrics like the population stability index (PSI) — tells you the prompts your system sees have changed, even if average quality hasn't. Output drift tells you the shape of the answers is changing. Retrieval drift tells you the context being surfaced is moving. All three can cross a threshold while the mean score looks perfectly healthy.",
-          "This is why a change-point, not a threshold on the mean, is the right detection primitive. Sequential monitoring watches the distribution over time and flags the moment it shifts relative to a cohort-aware baseline. A global baseline hides region or cohort-specific drift; baselines per cohort catch a degradation that's real in one segment and invisible in the aggregate.",
-          "The practical implication: watch distributions, not just means, and set baselines per cohort. The mean is the last signal to move; by the time it drops, users have already felt the drift for days. Distribution metrics give you the leading indicator that lets you act before the mean confirms the problem.",
+          "Drift in generative systems is **distributional**, and distributions move before averages do. **Input drift** — measured by metrics like the population stability index (PSI) — tells you the prompts your system sees have changed, even if average quality hasn't. **Output drift** tells you the shape of the answers is changing. **Retrieval drift** tells you the context being surfaced is moving. All three can cross a threshold while the mean score looks perfectly healthy.",
+          "This is why a **change-point**, not a threshold on the mean, is the right detection primitive. Sequential monitoring watches the distribution over time and flags the moment it shifts relative to a **cohort-aware baseline**. A global baseline hides region or cohort-specific drift; baselines per cohort catch a degradation that's real in one segment and invisible in the aggregate.",
+          "The practical implication: watch distributions, not just means, and set baselines per cohort. The mean is the **last signal to move**; by the time it drops, users have already felt the drift for days. Distribution metrics give you the **leading indicator** that lets you act before the mean confirms the problem.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why watch PSI (input drift) rather than just the mean quality score?",
+            prompt:
+              "After a marketing campaign, your finance copilot's mean quality score is unchanged, but PSI on the input distribution jumped from 0.08 to 0.35: retail-trading novices are arriving where professionals used to. Ops asks why anyone should care while the mean is stable. What do you say?",
             choices: [
-              { id: "a", label: "PSI is cheaper to compute" },
-              { id: "b", label: "PSI moves first — inputs shift before quality averages drop" },
-              { id: "c", label: "Means are illegal" },
-              { id: "d", label: "PSI improves accuracy" },
+              { id: "a", label: "They shouldn't — the mean is the contract with the business" },
+              { id: "b", label: "PSI is the leading indicator: inputs have shifted, and quality averages drop only after users have already felt the propagated damage" },
+              { id: "c", label: "PSI jumps during campaigns are a known dashboard artifact and self-correct" },
+              { id: "d", label: "Pause the campaign until the mean moves" },
             ],
             answer: "b",
             explanation:
-              "The mean is a lagging indicator. PSI catches the input distribution changing before that change propagates into a measurable quality drop.",
+              "The misconception is that a stable mean means stability. The mean is the last signal to move; PSI catching the input shift first is the whole point of distributional drift detection.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "A global drift baseline can hide:",
+            prompt:
+              "A region-split rollout of your support agent shows the global quality mean flat for two weeks, yet the German segment's satisfaction is sliding while the US improves. Your single global drift baseline never fired. What was misconfigured?",
             choices: [
-              { id: "a", label: "Lower cost" },
-              { id: "b", label: "Drift concentrated in one region or cohort that's invisible in the aggregate" },
-              { id: "c", label: "Faster latency" },
-              { id: "d", label: "Better quality" },
+              { id: "a", label: "Nothing — a flat global mean proves every segment is fine" },
+              { id: "b", label: "Tail sampling — the German traces were dropped before reaching the monitor" },
+              { id: "c", label: "The baseline was global, so real segment drift diluted into the aggregate; cohort-aware baselines per region would have caught it" },
+              { id: "d", label: "The judge needs retraining on German inputs" },
             ],
-            answer: "b",
+            answer: "c",
             explanation:
-              "Aggregation dilutes local drift. Cohort-aware baselines catch a segment-specific regression that a global metric averages away.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A change-point detector is preferred over a static mean-threshold because it:",
-            choices: [
-              { id: "a", label: "Uses less memory" },
-              { id: "b", label: "Flags the moment a distribution shifts over time, not a fixed line crossed" },
-              { id: "c", label: "Is required by GDPR" },
-              { id: "d", label: "Improves accuracy" },
-            ],
-            answer: "b",
-            explanation:
-              "Change-point detection is temporal and distributional — it spots a shift relative to a baseline, which is what drift actually is, rather than waiting for a static average to cross a line.",
+              "Aggregation dilutes local drift: one region degrading while another improves nets out to a flat mean. Cohort-aware baselines catch the segment-specific regression that a global metric averages away.",
           },
         ],
-        application: {
-          title: "Set three drift baselines",
-          prompt:
-            "For your system, define the input (PSI), output, and retrieval drift metrics you'd watch, the cohort slices you'd baseline separately, and the change-point threshold that would trigger investigation.",
-        },
       },
       {
         slug: "causal-diagnosis-experimentation",
@@ -4596,74 +4184,55 @@ for before, after, expected in cases:
         skillIds: ["eval-gates"],
         capability: "Establish cause with feature flags, canaries, shadow traffic, and holdouts.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: quality dropped the same week a new model shipped. The naive call is to roll back the model. Why might that be wrong?",
-          choices: [
-            { id: "a", label: "Models can't regress" },
-            { id: "b", label: "Something else shipped the same week — correlation isn't cause" },
-            { id: "c", label: "Quality never drops" },
-            { id: "d", label: "Rollbacks are free" },
+        concept: {
+          what:
+            "**Correlation gives suspects; experiments give causes.** Feature flags, canaries, shadow traffic, and holdouts isolate the variable so a **flag-on vs flag-off comparison** attributes the regression.",
+          why: "Rolling back the most visible change often fixes nothing when a **second change shipped the same day** — controlled comparison acts on evidence, not the coincidence of a calendar.",
+          where: [
+            "**Feature-flagged releases** with an instant off-switch and comparable on/off cohorts",
+            "**Canary slices** bounding a regression's blast radius; **shadow traffic** surfacing failures before users see them",
+            "A **holdout** permanently on the old version as a standing clean baseline for the metric that matters",
           ],
-          answer: "b",
-          explanation:
-            "Two changes in one week give you a suspect, not a cause. Without a controlled comparison, you blame the wrong variable and fix nothing.",
+          whenNot:
+            "Experimentation is overkill when the causal chain is **directly visible in one trace** — if a single failing request shows the bug, flag infrastructure and cohort math cost more than the answer.",
         },
         prose: [
-          "Correlation gives suspects; experiments give causes. When a regression coincides with a release, the tempting move — roll back the most visible change — often fixes nothing, because the real cause was a second change shipped the same day. The disciplined alternative is to isolate the variable with a controlled experiment.",
-          "The toolkit is feature flags, canaries, shadow traffic, and holdouts. Feature-flag the candidate so you can turn it off instantly and so on/off cohorts are comparable. Canary to a small slice of traffic so a regression's blast radius is bounded. Shadow traffic runs the new path without serving it, surfacing failures before users see them. A holdout keeps a cohort permanently on the old version so you always have a clean comparison for the metric that matters.",
-          "The discipline is to compare flag-on versus flag-off on the same metric, with the same judge and the same interval, before you act. If the candidate loses on the controlled comparison, you've found the cause — roll it back. If it wins, ship it. Either way you acted on evidence, not on the coincidence of a calendar.",
+          "**Correlation gives suspects; experiments give causes.** When a regression coincides with a release, the tempting move — roll back the most visible change — often fixes nothing, because the real cause was a second change shipped the same day. The disciplined alternative is to **isolate the variable** with a controlled experiment.",
+          "The toolkit is **feature flags, canaries, shadow traffic, and holdouts**. Feature-flag the candidate so you can turn it off instantly and so on/off cohorts are comparable. **Canary** to a small slice of traffic so a regression's blast radius is bounded. **Shadow traffic** runs the new path without serving it, surfacing failures before users see them. A **holdout** keeps a cohort permanently on the old version so you always have a clean comparison for the metric that matters.",
+          "The discipline is to compare **flag-on versus flag-off** on the same metric, with the same judge and the same interval, before you act. If the candidate loses on the controlled comparison, you've found the cause — roll it back. If it wins, ship it. Either way you acted on evidence, not on the coincidence of a calendar.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "What does a feature flag give you that a direct deploy doesn't?",
+            prompt:
+              "Quality dropped 8% the same day your team shipped a new retrieval index AND another team silently swapped the embedding model. The incident channel wants to roll back 'the obvious one' — the index. Why is that premature?",
             choices: [
-              { id: "a", label: "Faster model" },
-              { id: "b", label: "An instant off-switch and a comparable on/off cohort" },
-              { id: "c", label: "Lower cost" },
-              { id: "d", label: "Better UI" },
+              { id: "a", label: "Indexes can never affect answer quality" },
+              { id: "b", label: "Two changes shipped together; without a controlled flag-on/flag-off comparison you can't attribute the regression — rolling back the visible change may fix nothing" },
+              { id: "c", label: "The embedding model belongs to another team, so it can't be the cause" },
+              { id: "d", label: "Quality drops are always seasonal around releases" },
             ],
             answer: "b",
             explanation:
-              "A flag lets you kill a bad change instantly and compare the cohort with the flag on against the cohort with it off — the basis for a causal read.",
+              "Coincidence of timing is correlation, not cause. With two suspects, only isolating the variable — flagging one change and comparing cohorts on the same metric and judge — tells you which change actually drove the 8%.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Shadow traffic is useful because it:",
+            prompt:
+              "Your checkout-copilot team is about to enable a new planner prompt for 100% of traffic straight to production. Describe the release-safety pattern that bounds the blast radius and preserves a clean long-term comparison.",
             choices: [
-              { id: "a", label: "Serves users faster" },
-              { id: "b", label: "Exercises the new path on real requests without showing users the result" },
-              { id: "c", label: "Removes the need for evals" },
-              { id: "d", label: "Reduces latency" },
+              { id: "a", label: "Ship 100% and watch the dashboards for a week" },
+              { id: "b", label: "Canary a small traffic slice behind a feature flag, shadow-run the new path if needed, and keep a permanent holdout on the old version as the standing baseline" },
+              { id: "c", label: "Deploy to production but ask users to report anything odd" },
+              { id: "d", label: "Run the new prompt only on internal demo accounts each quarter" },
             ],
             answer: "b",
             explanation:
-              "Shadow runs the candidate alongside production without serving its output, so failures surface in telemetry before any user is exposed.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A permanent holdout cohort exists so that you always have:",
-            choices: [
-              { id: "a", label: "Cheaper traffic" },
-              { id: "b", label: "A clean baseline to compare the current version against" },
-              { id: "c", label: "Fewer users" },
-              { id: "d", label: "Lower latency" },
-            ],
-            answer: "b",
-            explanation:
-              "A holdout stays on the old version, giving you a standing comparison group so the metric impact of a change is always measurable against a known baseline.",
+              "The flag gives the instant off-switch and comparable cohorts, the canary bounds exposure, shadow traffic surfaces failures before users see them, and the holdout keeps a clean baseline so the metric impact stays measurable — each tool does one job.",
           },
         ],
-        application: {
-          title: "Design the experiment",
-          prompt:
-            "A regression appeared with release v17. Describe the feature-flag + canary + holdout experiment you'd run to confirm or refute that v17 caused it, including the metric, the judge, and the decision threshold.",
-        },
       },
       {
         slug: "agent-tool-observability",
@@ -4673,74 +4242,66 @@ for before, after, expected in cases:
         skillIds: ["agent-tracing", "mcp-observability"],
         capability: "Observe the agent graph: tool calls, loops, budgets, state transitions, and MCP spans.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an agent's outputs have degraded but each LLM call looks fine. Where does the problem likely live?",
-          choices: [
-            { id: "a", label: "The model weights" },
-            { id: "b", label: "The agent graph — tool failures, loops, or budget exhaustion between calls" },
-            { id: "c", label: "The dashboard" },
-            { id: "d", label: "The front-end" },
+        concept: {
+          what:
+            "An agent is a **graph of calls, tools, and state** — reliability lives in the edges (tool success, retry depth, budget exhaustion, MCP spans, call-graph shape), not the LLM node.",
+          why: "Node-only LLM monitoring misses **climbing retry depth** (stuck agent), **budget exhaustion mid-task** (truncated outputs that look like model failures), and **novel cycles** (bugs before outages).",
+          where: [
+            "Per-tool success rates across an agent fleet, with **MCP spans attributed to the agent goal** that spawned them",
+            "**Loop/retry-depth and token-budget alerts** on the task span parenting its children",
+            "**Call-graph shape monitoring** flagging a new cycle as a leading bug signal",
           ],
-          answer: "b",
-          explanation:
-            "Per-call metrics miss the graph. A tool that 502s or a loop that retries until the budget dies looks fine call-by-call but breaks the task. Observe the graph.",
+          whenNot:
+            "Node-level LLM metrics suffice when there **is no graph** — a single-shot completion with no tools, loops, or budget has no edges to observe.",
         },
         prose: [
-          "An agent is not one LLM call; it's a graph of calls, tools, and state. Plain LLM observability watches the node — the model's latency and tokens — and misses the edges: which tool was called, whether it succeeded, how many times the agent retried, whether it hit a budget, and how the call-graph shape changed. Agent reliability lives in the graph, not the node.",
-          "The agent-specific signals are tool-call success per tool, loop and retry depth, budget exhaustion, state transitions, MCP spans across servers, and trace-graph anomalies. Climbing retry depth is the leading indicator of a stuck agent. Budget exhaustion mid-task produces truncated, low-quality outputs that look like model failures. A novel cycle in the call graph is often a bug before it's an outage.",
-          "Each tool call — including Model Context Protocol calls across servers — needs its own span, attributed to the agent goal that spawned it. Without that attribution you can't say which agent, using which tool, on which server, burned the budget or looped. The unit of diagnosis is the task span parenting its children, not the individual completion.",
+          "An agent is not one LLM call; it's a **graph of calls, tools, and state**. Plain LLM observability watches the node — the model's latency and tokens — and misses the edges: which tool was called, whether it succeeded, how many times the agent retried, whether it hit a budget, and how the call-graph shape changed. Agent reliability lives in the graph, not the node.",
+          "The agent-specific signals are tool-call success per tool, **loop and retry depth**, **budget exhaustion**, state transitions, **MCP spans** across servers, and trace-graph anomalies. Climbing retry depth is the leading indicator of a stuck agent. Budget exhaustion mid-task produces truncated, low-quality outputs that look like model failures. A **novel cycle** in the call graph is often a bug before it's an outage.",
+          "Each tool call — including Model Context Protocol calls across servers — needs its **own span**, attributed to the agent goal that spawned it. Without that **attribution** you can't say which agent, using which tool, on which server, burned the budget or looped. The unit of diagnosis is the **task span parenting its children**, not the individual completion.",
         ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Task span opens", caption: "attributed to agent goal" },
+            { kind: "process", text: "LLM call decides" },
+            { kind: "process", text: "Tool / MCP span", caption: "args, success, server" },
+            { kind: "process", text: "Loop + budget check", caption: "retry depth, token cap" },
+            { kind: "output", text: "Task completes, traced" },
+          ],
+          loop: "Each retry adds a child span — depth is the stuck-agent signal",
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Climbing retry depth is a leading indicator of:",
+            prompt:
+              "Your multi-agent research fleet's budget alerts keep firing, but the per-model dashboards (latency, tokens per completion) all look healthy, so leadership suspects a billing bug. What does node-only monitoring miss here?",
             choices: [
-              { id: "a", label: "A faster agent" },
-              { id: "b", label: "A stuck agent before it fully fails" },
-              { id: "c", label: "Lower cost" },
-              { id: "d", label: "Better answers" },
+              { id: "a", label: "Nothing — model dashboards are sufficient for agent workloads" },
+              { id: "b", label: "The graph: which agent + tool + server looped or burned the budget — retry depth and budget exhaustion live on task and tool spans, not the LLM node" },
+              { id: "c", label: "The invoices are probably correct and the dashboards lag by a month" },
+              { id: "d", label: "Budget alerts should be disabled for agent workloads" },
             ],
             answer: "b",
             explanation:
-              "Retries climbing means the agent isn't converging. Catch it early and you intervene before the task exhausts its budget or times out.",
+              "Agent reliability lives in the graph, not the node: a task looping between healthy-looking completions burns budget invisibly. Per-model metrics can't attribute the burn to an agent, tool, or server — task-parented spans can.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Why attribute each tool span to the agent task that spawned it?",
+            prompt:
+              "A routine release of your travel-booking agent introduced a new call-graph pattern — the agent now visits the same tool pair three times where it used to visit once — and today two tasks looped until timeout. What's the right reading of that novel cycle?",
             choices: [
-              { id: "a", label: "For billing only" },
-              { id: "b", label: "So you can diagnose which agent + tool + server caused a budget or loop problem" },
-              { id: "c", label: "It's required by law" },
-              { id: "d", label: "To slow the agent down" },
+              { id: "a", label: "It's an optimization — repetition improves answer accuracy" },
+              { id: "b", label: "A bug signal: a new cycle in the call graph usually precedes budget burn and hangs; flag it before it becomes an outage" },
+              { id: "c", label: "Normal variance, as long as each individual tool call succeeds" },
+              { id: "d", label: "Proof the MCP server needs a bigger machine" },
             ],
             answer: "b",
             explanation:
-              "Attribution links a tool failure or budget burn back to the responsible agent goal. Without it, you see a failed tool but can't say which task it broke.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "A novel cycle in the agent's call graph is best treated as:",
-            choices: [
-              { id: "a", label: "An optimisation" },
-              { id: "b", label: "A bug signal — often a problem before it becomes an outage" },
-              { id: "c", label: "Irrelevant" },
-              { id: "d", label: "A cost saving" },
-            ],
-            answer: "b",
-            explanation:
-              "Call-graph shape is a signal. A new cycle the agent didn't exhibit before usually means a logic change that will eventually waste budget or loop forever.",
+              "Call-graph shape is a signal in itself: a cycle the agent didn't exhibit before is a logic change that eventually wastes budget or loops forever. Waiting for individual spans to fail (they succeed) or for users to time out is how it becomes an outage first.",
           },
         ],
-        application: {
-          title: "Instrument the graph",
-          prompt:
-            "For a multi-agent system, list the spans you'd emit per task (task span, tool spans, MCP spans) and the graph-level metrics you'd alert on (retry depth, budget exhaustion, new cycles). Name the leading indicator you'd watch first.",
-        },
       },
       {
         slug: "reliability-objectives-error-budgets",
@@ -4750,74 +4311,67 @@ for before, after, expected in cases:
         skillIds: ["ai-slo"],
         capability: "Hold a portfolio of SLOs with a non-negotiable safety gate and resolve conflicts via budgets.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: you cut cost by routing to a cheaper model and quality drops. What does this reveal?",
-          choices: [
-            { id: "a", label: "SLOs are independent" },
-            { id: "b", label: "SLOs conflict — cost vs quality must be resolved explicitly" },
-            { id: "c", label: "Quality is free" },
-            { id: "d", label: "Cost can't be measured" },
+        concept: {
+          what:
+            "An AI feature holds a **portfolio of SLOs** — availability, latency, quality, cost, safety — whose conflicts are resolved by **error budgets**, with safety as a **gate** that blocks release regardless of remaining budget.",
+          why: "Optimising one objective silently degrades the others (cheaper model → quality drop); budgets make trade-offs explicit and the **release gate** resolves them with evidence before users see the regression.",
+          where: [
+            "A release gate requiring the candidate to **beat or match the incumbent** on quality (golden set), cost, and latency before shipping",
+            "Shipping paused when the quality **error budget burns**, resumed when it recovers",
+            "**Safety regressions blocking release** even with cost and quality budget to spare",
           ],
-          answer: "b",
-          explanation:
-            "SLOs trade off. Optimising cost moved quality. The conflicts must be resolved with explicit targets and gates, not vibes.",
+          whenNot:
+            "A full portfolio is dead weight for an **internal prototype with no users** — one signal plus a rollback habit beats five SLOs nobody enforces.",
         },
         prose: [
-          "An AI feature has several reliability objectives at once: availability, latency, quality, cost, and safety. They conflict. Routing to a cheaper model cuts cost but often drops quality and changes latency. Chasing quality raises cost. The naive stance — optimise one — silently degrades the others. A portfolio makes the trade-offs explicit.",
-          "Error budgets resolve the conflicts. Each objective gets a target and a budget; you ship while budgets allow and freeze when they burn. The exception is safety, which is a gate rather than a budget: a safety regression blocks a release regardless of how much cost or quality budget remains. Treating safety as negotiable is how systems get harmful outputs into production.",
-          "The release gate is where the portfolio becomes operational. A candidate must beat or match the incumbent on the measured objectives — quality on the golden set, cost within budget, latency within SLO — and pass the safety gate, before it ships. Conflicts are resolved at the gate with evidence, not in a meeting after the regression has already reached users.",
+          "An AI feature has several reliability objectives at once: availability, latency, quality, cost, and safety. **They conflict.** Routing to a cheaper model cuts cost but often drops quality and changes latency. Chasing quality raises cost. The naive stance — optimise one — silently degrades the others. A **portfolio** makes the trade-offs explicit.",
+          "**Error budgets** resolve the conflicts. Each objective gets a target and a budget; you ship while budgets allow and freeze when they burn. The exception is **safety, which is a gate rather than a budget**: a safety regression blocks a release regardless of how much cost or quality budget remains. Treating safety as negotiable is how systems get harmful outputs into production.",
+          "The **release gate** is where the portfolio becomes operational. A candidate must beat or match the incumbent on the measured objectives — quality on the **golden set**, cost within budget, latency within SLO — and pass the safety gate, before it ships. Conflicts are resolved at the gate with evidence, not in a meeting after the regression has already reached users.",
         ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Can the candidate release?",
+            branches: [
+              { label: "Safety regression found", node: { kind: "leaf", answer: "Block release", caption: "safety is a gate, not a budget" } },
+              { label: "Error budget burned", node: { kind: "leaf", answer: "Freeze ships", caption: "resume when budget recovers" } },
+              { label: "Beats or matches incumbent", node: { kind: "leaf", answer: "Ship it", caption: "quality, cost, latency evidenced" } },
+            ],
+          },
+        },
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "Why is safety a 'gate' rather than a 'budget'?",
+            prompt:
+              "The cost-optimization squad routes your support assistant to a cheaper model: cost SLO green, latency green, but the safety eval shows a harmful-output regression. They argue there's plenty of quality budget left to absorb it. What does the portfolio say?",
             choices: [
-              { id: "a", label: "Safety is easy" },
-              { id: "b", label: "Safety regressions block release outright — you don't spend an 'allowed amount of harm'" },
-              { id: "c", label: "Budgets are illegal" },
-              { id: "d", label: "Safety can't be measured" },
+              { id: "a", label: "Ship it — green cost and latency metrics override one red eval" },
+              { id: "b", label: "Block the release: safety is a gate, not a budget — there is no 'allowed amount of harm' to spend regardless of remaining budget" },
+              { id: "c", label: "Ship it, but lower the safety eval's weight next quarter" },
+              { id: "d", label: "Split traffic 50/50 and let users decide" },
             ],
             answer: "b",
             explanation:
-              "Latency or quality budgets tolerate some shortfall. Safety doesn't — a harmful-output regression must block the release, full stop.",
+              "Latency and quality budgets tolerate shortfall; safety doesn't. Treating the safety regression as spendable budget is exactly how harmful outputs reach production while every other dashboard stays green.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Routing to a cheaper model and watching quality drop demonstrates that:",
+            prompt:
+              "A new coding-assistant candidate beats the incumbent by 2 points on the golden-set quality eval but breaches the latency SLO and sits at the edge of the cost budget. The team wants to ship on the quality win. How does the release gate resolve this?",
             choices: [
-              { id: "a", label: "Cost and quality are unrelated" },
-              { id: "b", label: "SLOs conflict and must be resolved with explicit targets" },
-              { id: "c", label: "Quality is impossible" },
-              { id: "d", label: "Cheaper is always better" },
+              { id: "a", label: "Quality wins ship automatically — the other objectives are advisory" },
+              { id: "b", label: "The candidate must meet every measured objective and pass safety before shipping; trade-offs are decided at the gate with evidence, not on the single strongest metric" },
+              { id: "c", label: "Disable the latency SLO for coding assistants permanently" },
+              { id: "d", label: "Ship it and renegotiate the SLO breach after users feel the benefit" },
             ],
             answer: "b",
             explanation:
-              "The trade-off is the point: changing one objective moved another. A portfolio makes the relationship explicit so you choose the trade-off deliberately.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The release gate resolves SLO conflicts by:",
-            choices: [
-              { id: "a", label: "Ignoring them" },
-              { id: "b", label: "Requiring the candidate to meet every objective and the safety gate before shipping" },
-              { id: "c", label: "Picking the cheapest option" },
-              { id: "d", label: "Picking the highest quality" },
-            ],
-            answer: "b",
-            explanation:
-              "At the gate, the candidate must satisfy the portfolio (quality, cost, latency) and pass safety. Trade-offs are surfaced and decided with evidence before release.",
+              "The portfolio exists because objectives conflict: a strong single metric is exactly the case the gate is for. Shipping first and negotiating SLOs afterward resolves the conflict after users have already absorbed the regression.",
           },
         ],
-        application: {
-          title: "Define the SLO portfolio",
-          prompt:
-            "Write the SLO portfolio for your feature: the target and budget for availability, latency, quality, and cost, the safety gate that blocks release, and the rule for resolving a conflict between cost and quality.",
-        },
       },
       {
         slug: "incident-command-learning-loop",
@@ -4827,74 +4381,55 @@ for before, after, expected in cases:
         skillIds: ["ai-incident-response"],
         capability: "Run an AI incident end-to-end and close it with an automated regression test.",
         minutes: 11,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: an incident is mitigated and users are happy again. Is it closed?",
-          choices: [
-            { id: "a", label: "Yes — users are happy" },
-            { id: "b", label: "No — it's closed when the postmortem becomes an automated regression test" },
-            { id: "c", label: "Only on weekends" },
-            { id: "d", label: "Only if the CEO says so" },
+        concept: {
+          what:
+            "An AI incident runs a lifecycle — **detect** on a real signal, coordinate under an **incident commander**, **mitigate** before root-causing, communicate on a clock, hold a **blameless postmortem** — and closes only when the fix becomes an **automated regression test**.",
+          why: "Skipping the last step is what makes incidents **repeat**: without a CI regression test, the same change can reintroduce the same failure next quarter.",
+          where: [
+            "**Burn-rate alerts on quality** (not just latency) detecting degradation users already feel",
+            "Rolling back the changed variable first to stop user impact, then root-causing from a stable system",
+            "Postmortem actions encoded as **CI regression tests** that block reintroduction of the failure",
           ],
-          answer: "b",
-          explanation:
-            "Mitigation ends the outage. The incident class is closed only when a regression test prevents the same failure from shipping again.",
+          whenNot:
+            "The full command structure is overkill for a **low-severity, user-invisible blip** — a single-owner fix plus a test may be the whole response; commanders and comms cadences earn their cost at user impact.",
         },
         prose: [
-          "An AI incident has a lifecycle, and skipping the last step is what makes incidents repeat. Detect via a real signal — a burn-rate alert on quality, not just latency. Coordinate with a commander who owns the response and clear roles for comms, diagnosis, and fix. Mitigate by rolling back the changed variable first; live root-causing can wait, users can't.",
-          "Communicate honestly and on a clock: what we know, what we're doing, the next update. Silence during an outage breeds worse narratives than the outage itself. After mitigation, hold a blameless postmortem — blameless on people, rigorous on systems — that reconstructs what happened, what we believed and why it was wrong, and the systemic fix.",
-          "The learning loop closes when the postmortem's action becomes an automated regression test in CI. Without that step, the same change can reintroduce the same failure next quarter. An incident isn't closed when it's fixed; it's closed when the system has been changed so that specific failure can't recur.",
+          "An AI incident has a lifecycle, and **skipping the last step** is what makes incidents repeat. **Detect** via a real signal — a burn-rate alert on quality, not just latency. **Coordinate** with a commander who owns the response and clear roles for comms, diagnosis, and fix. **Mitigate** by rolling back the changed variable first; live root-causing can wait, users can't.",
+          "Communicate honestly and **on a clock**: what we know, what we're doing, the next update. Silence during an outage breeds worse narratives than the outage itself. After mitigation, hold a **blameless postmortem** — blameless on people, rigorous on systems — that reconstructs what happened, what we believed and why it was wrong, and the systemic fix.",
+          "The **learning loop** closes when the postmortem's action becomes an **automated regression test in CI**. Without that step, the same change can reintroduce the same failure next quarter. An incident isn't closed when it's fixed; it's closed when the system has been changed so that specific failure can't recur.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "During an active incident, the right first technical action is usually to:",
+            prompt:
+              "At 02:00 the quality burn-rate alert fires on your research assistant — answers degrading visibly for EU users after a retrieval-index swap. The on-call engineer wants to spend the next few hours root-causing live before touching anything. What's the correct first move?",
             choices: [
-              { id: "a", label: "Root-cause it live while users suffer" },
-              { id: "b", label: "Mitigate — roll back the changed variable to stop user impact" },
-              { id: "c", label: "Wait and see" },
-              { id: "d", label: "Email everyone" },
+              { id: "a", label: "Root-cause live while users suffer — mitigating destroys the evidence" },
+              { id: "b", label: "Mitigate first: roll back the changed variable to stop user impact, then investigate from a stable system" },
+              { id: "c", label: "Wait for the morning standup to assign an incident commander" },
+              { id: "d", label: "Silence the burn-rate alert so the pager stops firing" },
             ],
             answer: "b",
             explanation:
-              "Mitigation is for users; root-cause is for later. Roll back the suspect variable to stop the bleeding, then investigate from a stable system.",
+              "Mitigation is for users; root-cause is for later. Telemetry preserves the evidence after rollback, so nothing is lost — but hours of live debugging while EU users get degraded answers is the failure mode the lifecycle order prevents.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "A blameless postmortem is:",
+            prompt:
+              "Six months after a system-prompt leak incident, the same vulnerability reappears because a refactor reintroduced the old code path. The postmortem had a detailed writeup and a well-attended review meeting. What was never done?",
             choices: [
-              { id: "a", label: "Soft on accountability" },
-              { id: "b", label: "Blameless on people, rigorous on systems and processes" },
-              { id: "c", label: "Optional paperwork" },
-              { id: "d", label: "A way to name a culprit" },
+              { id: "a", label: "The postmortem wasn't long enough to cover edge cases" },
+              { id: "b", label: "The fix was never encoded as an automated regression test in CI, so nothing blocked the change from reintroducing the failure" },
+              { id: "c", label: "No one was blamed, so accountability lapsed" },
+              { id: "d", label: "The incident commander role wasn't made permanent" },
             ],
             answer: "b",
             explanation:
-              "Blameless doesn't mean consequence-free; it means the analysis fixes systems, not individuals, so people report honestly and the real causes surface.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "What turns a one-time incident into a prevented class?",
-            choices: [
-              { id: "a", label: "A longer postmortem" },
-              { id: "b", label: "An automated regression test in CI derived from the postmortem" },
-              { id: "c", label: "A new dashboard" },
-              { id: "d", label: "A meeting" },
-            ],
-            answer: "b",
-            explanation:
-              "A regression test encodes the failure into CI, so the same change can't ship again. That's the step that actually closes the incident class.",
+              "Writeups and meetings don't prevent recurrence — CI does. The learning loop closes only when the fix becomes a regression test that fails the build reintroducing the failure; otherwise the same change ships again next quarter.",
           },
         ],
-        application: {
-          title: "Close a past incident properly",
-          prompt:
-            "Take an incident your team handled. Write the blameless postmortem (what happened, what we believed, the systemic fix) and the specific automated regression test that would have prevented it. If that test doesn't exist yet, that's the open action.",
-        },
       },
       {
         slug: "capstone-design-review",
@@ -4904,74 +4439,55 @@ for before, after, expected in cases:
         skillIds: ["ai-observability"],
         capability: "Defend an end-to-end observability design across cost, privacy, debuggability, release safety, and security.",
         minutes: 14,
-        prediction: {
-          id: "predict",
-          kind: "mcq",
-          prompt: "Before the visual: the central tension of observing a regulated multi-agent system is:",
-          choices: [
-            { id: "a", label: "Cost vs nothing" },
-            { id: "b", label: "Observing quality/safety/cost thoroughly without exposing sensitive prompts" },
-            { id: "c", label: "Speed vs speed" },
-            { id: "d", label: "Models vs dashboards" },
+        concept: {
+          what:
+            "The capstone defends a multi-agent financial system across **privacy, cost, debuggability, release safety, and security** — redact at ingest, enforce residency, tail-sample and cap cardinality, trace the agent graph, gate releases, read the OWASP signals.",
+          why: "The naive design (raw prompts across regions, 100% sampling, model-only watches, ship-by-hope) is **both a breach surface and a debugging dead-end**; each hardened choice is a **contract owned by a specific layer**.",
+          where: [
+            "Multi-region rollout: EU residency in the collector, tenant isolation at storage, an **audit trail** on every sensitive read",
+            "Agent fleet: **task spans parenting tool/MCP spans**, budget and loop alerts, eval-gated releases with canaries",
+            "Guardrail **ASR measured continuously** and read as a production SLO alongside quality and cost",
           ],
-          answer: "b",
-          explanation:
-            "The whole course resolves one tension: see enough to operate the system reliably, while keeping the sensitive data that flows through it private and governed.",
+          whenNot:
+            "The full stack is only justified at **production scale with regulated data** — an internal prototype with no users or auditors shouldn't pay for residency routing, tenant partitioning, and eval gates.",
         },
         prose: [
-          "The capstone asks you to defend a complete design for the multi-agent financial system across every axis the course covered: privacy, cost, debuggability, release safety, and security. The naive design logs raw prompts across regions, samples at 100%, watches only the model, ships by hope, and detects no attacks. It's both a breach surface and a debugging dead-end.",
-          "The hardened design redacts at ingest, enforces EU residency, and isolates tenants; it tail-samples and caps cardinality; it traces the agent graph including MCP; it gates releases behind evals and canaries; and it reads the OWASP signals and measures its guardrail's attack-success rate. Each choice is a contract owned by a specific layer, and together they resolve the central tension — the system is observable and safe to operate.",
-          "That is the enterprise bar this course builds toward: prove you can trace every decision, measure quality and safety continuously, control every change through gates, and keep every sensitive payload private and audited. Observability, done at this level, is what turns a powerful AI system into a trustworthy one.",
+          "The capstone asks you to defend a complete design for the multi-agent financial system across every axis the course covered: **privacy, cost, debuggability, release safety, and security**. The naive design logs raw prompts across regions, samples at 100%, watches only the model, ships by hope, and detects no attacks. It's both a **breach surface** and a **debugging dead-end**.",
+          "The hardened design **redacts at ingest**, enforces EU residency, and isolates tenants; it **tail-samples and caps cardinality**; it traces the agent graph including MCP; it gates releases behind evals and canaries; and it reads the OWASP signals and measures its guardrail's **attack-success rate**. Each choice is a contract owned by a specific layer, and together they resolve the central tension — the system is observable and **safe to operate**.",
+          "That is the enterprise bar this course builds toward: prove you can **trace every decision**, measure quality and safety continuously, **control every change** through gates, and keep every sensitive payload private and audited. Observability, done at this level, is what turns a powerful AI system into a **trustworthy** one.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
-            prompt: "The naive design fails on privacy primarily because it:",
+            prompt:
+              "An architecture review board is comparing two designs for a multi-agent financial research platform. Design A logs raw prompts globally, keeps 100% of traces, watches per-model latency, and ships after manual QA. Design B redacts at the collector, tail-samples, traces the agent graph with MCP spans, and gates releases on evals. What's the strongest verdict?",
             choices: [
-              { id: "a", label: "Uses too few dashboards" },
-              { id: "b", label: "Logs raw prompts across regions, becoming a breach surface" },
-              { id: "c", label: "Is too cheap" },
-              { id: "d", label: "Samples too little" },
+              { id: "a", label: "Both are equivalent — B is just A with extra steps and cost" },
+              { id: "b", label: "A is both a breach surface and a debugging dead-end; B makes each layer own a contract — privacy at ingest, cost via sampling, debuggability via the graph, safety via gates" },
+              { id: "c", label: "A is compliant because QA signed off before each ship" },
+              { id: "d", label: "B fails because redaction makes debugging impossible by design" },
             ],
             answer: "b",
             explanation:
-              "Raw prompts persisted across regions without redaction or residency control make the telemetry store itself the liability the system was meant to avoid.",
+              "A's raw prompts across regions are the breach surface and its model-only view can't debug an agent graph — while redaction keeps the dimensions that carry debug value. B's strength is that each layer owns exactly one guarantee.",
           },
           {
             id: "q2",
             kind: "mcq",
-            prompt: "Which combination closes the gap between 'observable' and 'safe to operate'?",
+            prompt:
+              "You're hired to review a health-automation startup's 'observability v2' proposal: more dashboards, a bigger model, 100% trace retention, with privacy 'handled later'. The CEO asks what the enterprise bar actually requires. What do you tell them?",
             choices: [
-              { id: "a", label: "More dashboards" },
-              { id: "b", label: "Redaction + residency + tail sampling + agent-graph tracing + eval gates + OWASP signal reads" },
-              { id: "c", label: "A bigger model" },
-              { id: "d", label: "Faster queries" },
+              { id: "a", label: "Buy the dashboards first — visibility is the bar" },
+              { id: "b", label: "Trace every decision, measure quality and safety continuously, control changes through gates, and keep sensitive payloads private and audited — power without those is a liability" },
+              { id: "c", label: "The bar is the cheapest model that passes its unit tests" },
+              { id: "d", label: "Wait until regulators force the requirements, then retrofit" },
             ],
             answer: "b",
             explanation:
-              "Each axis the course covered must be addressed: privacy at ingest, cost via sampling/cardinality, debuggability via the graph, release safety via gates, security via detection reads.",
-          },
-          {
-            id: "q3",
-            kind: "mcq",
-            prompt: "The enterprise bar this capstone sets is:",
-            choices: [
-              { id: "a", label: "Lowest cost possible" },
-              { id: "b", label: "Trace, measure, control, and keep private+audited — observability that makes the system trustworthy" },
-              { id: "c", label: "Fastest model" },
-              { id: "d", label: "Most dashboards" },
-            ],
-            answer: "b",
-            explanation:
-              "Power without trust is a liability. The bar is an operating system that proves traceability, measurement, control, privacy, and auditability together.",
+              "Dashboards and retention are volume, not observability. The bar the capstone sets is traceable decisions, continuous measurement, gated change control, and private audited payloads — retrofitting privacy after storing health prompts 'later' never comes cheap.",
           },
         ],
-        application: {
-          title: "Defend your design",
-          prompt:
-            "Write a one-page design review for a regulated multi-agent AI system: the telemetry contract per stage, the privacy controls (redaction, residency, tenant isolation, RBAC, audit), the security signal reads (OWASP + guardrail ASR), the eval and SLO portfolio with the safety gate, and the release + incident process. End with the one axis you'd invest in first and why.",
-        },
       },
     ],
   },

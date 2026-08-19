@@ -132,33 +132,52 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
 
-11. **Use the `infographics-interactive_v4` skill when creating or editing courses.**
+11. **Use the `infographics-interactive_v5` skill when creating or editing courses.**
     Any new lesson, course page, or infographic **must** be built with
-    `infographics-interactive_v4`
-    (`.agents/skills/infographics-interactive_v4/SKILL.md`) — read it first.
+    `infographics-interactive_v5`
+    (`.agents/skills/infographics-interactive_v5/SKILL.md`) — read it first.
     It is the **latest** course-authoring skill — a superset of
-    `infographics-interactive` (v3.1, retained) and `infographics-animation`
-    (v2, retained). **v4 is evidence-based, audience-aware, active, and
-    story-fused:** it calibrates *how* you tell the story to the course's
-    `level` — **beginner** (layman: picture-led, analogies, full narrative, no
-    math), **intermediate** (enthusiast: lighter analogies, some code/formulas),
-    or **expert** (practitioner: formal, problem-first, minimal scaffolding) —
-    gives each level its **own named storytelling framework** (§1.1), adds an
-    **interactivity layer** (§6) so learners *do*, not just watch (Chi's ICAP;
-    aim for ≥1 *Constructive* beat per lesson), and requires **visual
-    interactive storytelling** (§1.3): one through-line picture, interaction on
-    a mapped beat (not a bolted-on widget), BEFORE→ACT→AFTER as a story turn.
-    Read the `level` from `content/courses.ts` before authoring — what helps a
-    beginner *harms* an expert (the expertise reversal effect). Always build
-    with the shared scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`,
-    `Operator`, `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
-    **Color discipline is mandatory:** one accent per scene, neutrals carry
-    the load, no rainbow palettes (cognitive overload), theme-safe tokens only
-    (`bg-surface-elevated` not `bg-white`; `text-canvas` not `text-white`;
-    `currentColor`/`var(--*)` in SVG, never literal hex). Lessons must read
-    in both dark and light themes. A lesson that "works" but explains via a
-    table instead of pictures, uses 4+ colors in one scene, or is an animated
-    glossary with an unrelated widget, is a bug.
+    `infographics-interactive_v4` (predict-first, retained),
+    `infographics-interactive` (v3.1, retained), and `infographics-animation`
+    (v2, retained). **v5 is explanation-first:** every lesson opens with a
+    **4-Step Concept Brief** on the lesson object (`concept`: What / Why /
+    Where 2–3 applications / When NOT to use — 1–2 sharp sentences each, key
+    terms in `**bold**`). **A lesson never opens with a quiz** — v5 has no
+    prediction cards and no application cards. Below the lesson's **story
+    infographic** (bespoke scenes, unchanged aesthetic), v5 adds an optional
+    **standardized system diagram** as plain data (`diagram`:
+    Input-Process-Output flowchart / side-by-side comparison grid / decision
+    tree) rendered by `components/LessonDiagram.tsx` from the shared
+    primitives in `components/infographic/flow.tsx` — the diagram
+    **formalizes the idea, it must never re-tell the story**. Every lesson
+    closes with **exactly 2 self-check MCQs, both real-life scenario
+    questions** (concrete actors/systems, never "What is X?" recall); the
+    second transfers the idea to a new situation. v5 inherits v4's
+    evidence-based, audience-aware, story-fused core: it calibrates *how*
+    you tell the story to the course's `level` — **beginner** (layman:
+    picture-led, analogies, full narrative, no math), **intermediate**
+    (enthusiast: lighter analogies, some code/formulas), or **expert**
+    (practitioner: formal, problem-first, minimal scaffolding) — gives each
+    level its **own named storytelling framework** (§1.1), adds an
+    **interactivity layer** (§6) so learners *do*, not just watch (Chi's
+    ICAP; aim for ≥1 *Constructive* beat per lesson), and requires **visual
+    interactive storytelling** (§1.3): one through-line picture, interaction
+    on a mapped beat (not a bolted-on widget), BEFORE→ACT→AFTER as a story
+    turn. Read the `level` from `content/courses.ts` before authoring — what
+    helps a beginner *harms* an expert (the expertise reversal effect).
+    Always build with the shared scene vocabulary (`CarShape`, `BikeShape`,
+    `PictureCard`, `Operator`, `Scene`) and inherited motion
+    (`Stagger`/`MotionChild`/`Reveal`). **Color discipline is mandatory:**
+    one accent per scene, neutrals carry the load, no rainbow palettes
+    (cognitive overload), theme-safe tokens only (`bg-surface-elevated` not
+    `bg-white`; `text-canvas` not `text-white`; `currentColor`/`var(--*)` in
+    SVG, never literal hex). Lessons must read in both dark and light themes.
+    A lesson that "works" but explains via a table instead of pictures, uses
+    4+ colors in one scene, or is an animated glossary with an unrelated
+    widget, is a bug. The completeness contract lives in
+    `content/courses.test.ts`: every lesson requires a well-formed `concept`
+    and **exactly 2 scenario MCQs** (prompts ≥ 40 chars); optional `diagram`
+    and `exercise` are validated when present.
 
 ## Where things live
 
@@ -186,7 +205,10 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
   2000 seeds × all difficulties. Run `npm test` before claiming a generator change works.
 - **Generated content uses typed `Block[]`** (text/code/table/note), never markdown
   strings. Inline mini-markdown (`**bold**`, `` `code` ``) is rendered by `formatInline`
-  (in `app/bytes/[slug]/page.tsx`) and `Inline` (in `components/BlockList.tsx`).
+  (in `app/bytes/[slug]/page.tsx`) and the shared `Inline` component
+  (`components/Inline.tsx`) — used by `BlockList` (drills), `LessonBody` (course
+  lesson prose), and `ConceptBrief` (the v5 lesson opener), so one highlight
+  syntax works everywhere.
 - **Tailwind v4** with `@theme` tokens in `app/globals.css`:
   `canvas, dot, ash, ink, ink-soft, ink-faint, brand, brand-deep, brand-wash,
   good, good-wash, bad, bad-wash, gold`. Custom `@utility card` and `animate-pop`.

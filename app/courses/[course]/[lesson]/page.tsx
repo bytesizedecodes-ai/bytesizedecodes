@@ -1,11 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ApplicationCase } from "@/components/ApplicationCase";
 import { Shell } from "@/components/Shell";
+import { ConceptBrief } from "@/components/ConceptBrief";
 import { CoursePager } from "@/components/CoursePager";
 import { JsonLd } from "@/components/JsonLd";
-import { PredictionCard } from "@/components/PredictionCard";
+import { LessonDiagram } from "@/components/LessonDiagram";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { getInfographicComponent } from "@/components/infographic";
 import {
@@ -165,15 +165,17 @@ export default async function LessonPage({
           </div>
         </header>
 
-        {lesson.prediction && (
+        {lesson.concept && (
           <div className="mt-6">
-            <PredictionCard question={lesson.prediction} />
+            <ConceptBrief brief={lesson.concept} />
           </div>
         )}
 
         <div className="mt-6">
           <Infographic />
         </div>
+
+        {lesson.diagram && <LessonDiagram diagram={lesson.diagram} />}
 
         <div className="mt-10 space-y-6">
           <LessonBody
@@ -187,12 +189,6 @@ export default async function LessonPage({
             capability={lesson.capability}
             nextLesson={nextLesson}
           />
-          {lesson.application && (
-            <ApplicationCase
-              title={lesson.application.title}
-              prompt={lesson.application.prompt}
-            />
-          )}
         </div>
 
         <CoursePager

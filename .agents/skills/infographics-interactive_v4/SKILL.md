@@ -1,6 +1,6 @@
 ---
 name: infographics-interactive_v4
-description: THE LATEST and default skill for ByteSizeDecodes infographic lessons and course pages. v4 — fuses level frameworks, picture continuity, and earned interaction into one visual story (not a bolted-on widget). Superset of infographics-interactive v3.1: evidence-based storytelling for beginner/intermediate/expert, scroll motion, ICAP interactivity, plus beat→interaction maps, visual narrative grammar, and Constructive evidence/decision patterns. Use whenever creating or editing lessons, course pages, interactive widgets, or visual explanations. Triggers on: build infographic, create lesson, add course, interactive widget, visual interactive storytelling, PIC/CER fused lesson, evidence matrix, decision gate, infographic storytelling. Read this file fully before generating lesson markup.
+description: SUPERSEDED by infographics-interactive_v5 (the current default) — retained for maintaining legacy predict-first lessons without an explanation-first rewrite. v4 — fuses level frameworks, picture continuity, and earned interaction into one visual story (not a bolted-on widget). Superset of infographics-interactive v3.1: evidence-based storytelling for beginner/intermediate/expert, scroll motion, ICAP interactivity, plus beat→interaction maps, visual narrative grammar, and Constructive evidence/decision patterns. v5 kept everything here and changed the lesson opening to a 4-Step Concept Brief plus an optional standardized system-diagram layer below the story infographic. Use only when explicitly maintaining v4 lessons.
 ---
 
 # infographics-interactive_v4
@@ -36,9 +36,11 @@ Every course has a `level`: **beginner** (layman), **intermediate**
 *how* you tell the story, not *what* the story is. Read the audience
 section first.
 
-**Default skill:** this is the repo’s current course-authoring default
-(`CLAUDE.md` rule 11). Prefer v3.1 only when explicitly maintaining legacy
-v3-authored lessons without a storytelling rewrite.
+**Superseded as the default** by `infographics-interactive_v5` (`CLAUDE.md`
+rule 11), which keeps everything here and changes the lesson opening to a
+4-Step Concept Brief plus an optional standardized system-diagram layer below
+the story infographic. Use v4 only when explicitly maintaining legacy
+predict-first lessons without an explanation-first rewrite.
 
 ---
 

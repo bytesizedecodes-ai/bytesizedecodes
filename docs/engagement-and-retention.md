@@ -75,7 +75,7 @@ modal or streak-milestone celebration.
 2. **Reminder content** (from the strategy): due count, est. time, the exact
    skill/step, one deep link. Never *"your streak is about to die."*
 3. **New-content trigger:** publish 2 visual concepts/week; reminders point at
-   prediction + practice, not only read.
+   active practice + self-checks, not only read.
 
 ### Action
 Mostly done — daily plan and time modes are solid. Gaps:
