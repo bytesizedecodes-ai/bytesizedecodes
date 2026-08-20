@@ -132,52 +132,80 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 10. **Strict TS with `noUncheckedIndexedAccess`.** Array access is `T | undefined`;
     hence the pervasive `!` assertions after `.find()`.
 
-11. **Use the `infographics-interactive_v5` skill when creating or editing courses.**
+11. **Use the `infographics-interactive_v6` skill when creating or editing courses.**
     Any new lesson, course page, or infographic **must** be built with
-    `infographics-interactive_v5`
-    (`.agents/skills/infographics-interactive_v5/SKILL.md`) — read it first.
+    `infographics-interactive_v6`
+    (`.agents/skills/infographics-interactive_v6/SKILL.md`) — read it first.
     It is the **latest** course-authoring skill — a superset of
+    `infographics-interactive_v5` (explanation-first, retained),
     `infographics-interactive_v4` (predict-first, retained),
     `infographics-interactive` (v3.1, retained), and `infographics-animation`
-    (v2, retained). **v5 is explanation-first:** every lesson opens with a
-    **4-Step Concept Brief** on the lesson object (`concept`: What / Why /
-    Where 2–3 applications / When NOT to use — 1–2 sharp sentences each, key
-    terms in `**bold**`). **A lesson never opens with a quiz** — v5 has no
-    prediction cards and no application cards. Below the lesson's **story
-    infographic** (bespoke scenes, unchanged aesthetic), v5 adds an optional
-    **standardized system diagram** as plain data (`diagram`:
-    Input-Process-Output flowchart / side-by-side comparison grid / decision
-    tree) rendered by `components/LessonDiagram.tsx` from the shared
-    primitives in `components/infographic/flow.tsx` — the diagram
-    **formalizes the idea, it must never re-tell the story**. Every lesson
-    closes with **exactly 2 self-check MCQs, both real-life scenario
-    questions** (concrete actors/systems, never "What is X?" recall); the
-    second transfers the idea to a new situation. v5 inherits v4's
-    evidence-based, audience-aware, story-fused core: it calibrates *how*
-    you tell the story to the course's `level` — **beginner** (layman:
-    picture-led, analogies, full narrative, no math), **intermediate**
-    (enthusiast: lighter analogies, some code/formulas), or **expert**
-    (practitioner: formal, problem-first, minimal scaffolding) — gives each
-    level its **own named storytelling framework** (§1.1), adds an
+    (v2, retained). **v6 is anchor-first and plain-English:** every lesson
+    opens with an **anchor-led Concept Brief** on the lesson object
+    (`concept`: `anchor` — a one-sentence everyday metaphor, something a
+    10-year-old touches, FIRST — then What / Why / Where 2–3 applications /
+    When NOT to use; 1–2 sharp sentences each, key terms in `**bold**`).
+    **A lesson never opens with a quiz** — no prediction cards, no
+    application cards. Below the lesson's **story infographic** (bespoke
+    scenes, unchanged aesthetic), a lesson may add a **standardized system
+    diagram** as plain data (`diagram`: Input-Process-Output flowchart /
+    side-by-side comparison grid / decision tree) rendered by
+    `components/LessonDiagram.tsx` from the shared primitives in
+    `components/infographic/flow.tsx` — the diagram **formalizes the idea, it
+    must never re-tell the story**. Every lesson closes with **exactly 2
+    self-check MCQs, both real-life scenario questions** (concrete
+    actors/systems, never "What is X?" recall); the second transfers the idea
+    to a new situation. **Continuous interactive playgrounds (v6):** when a
+    lesson earns a control and the concept has a tunable knob or toggleable
+    state, build it as a *continuous* playground — slider/toggle with the
+    consequence rendering live while dragging — from the shared primitives in
+    `components/infographic/controls.tsx` (`SliderControl`, `ToggleGroup`);
+    presets are chips, never the whole control. **Plain-English gate (v6):**
+    in beginner/intermediate courses, the first use of every listed jargon
+    term carries a same-sentence parenthetical translation
+    ("hyperparameters (the tuning dials set before training)") — enforced by
+    `content/jargon.test.ts` against the curated list in
+    `content/jargon-terms.ts`; expert courses are exempt. **Cheat-sheet
+    (v6):** every lesson auto-derives a shareable card (anchor + What + When
+    NOT + site URL) rendered after the MCQs by
+    `components/LessonCheatSheet.tsx`, downloadable as a PNG from
+    `/courses/{course}/{lesson}/cheat-sheet`, and doubles as the lesson's OG
+    image — derive, never author it. v6 inherits v4/v5's evidence-based,
+    audience-aware, story-fused core: it calibrates *how* you tell the story
+    to the course's `level` — **beginner** (layman: picture-led, analogies,
+    full narrative, no math), **intermediate** (enthusiast: lighter
+    analogies, some code/formulas), or **expert** (practitioner: formal,
+    problem-first, minimal scaffolding — the anchor stays but turns terse) —
+    gives each level its **own named storytelling framework** (§1.1), adds an
     **interactivity layer** (§6) so learners *do*, not just watch (Chi's
     ICAP; aim for ≥1 *Constructive* beat per lesson), and requires **visual
-    interactive storytelling** (§1.3): one through-line picture, interaction
-    on a mapped beat (not a bolted-on widget), BEFORE→ACT→AFTER as a story
-    turn. Read the `level` from `content/courses.ts` before authoring — what
-    helps a beginner *harms* an expert (the expertise reversal effect).
-    Always build with the shared scene vocabulary (`CarShape`, `BikeShape`,
-    `PictureCard`, `Operator`, `Scene`) and inherited motion
-    (`Stagger`/`MotionChild`/`Reveal`). **Color discipline is mandatory:**
-    one accent per scene, neutrals carry the load, no rainbow palettes
-    (cognitive overload), theme-safe tokens only (`bg-surface-elevated` not
-    `bg-white`; `text-canvas` not `text-white`; `currentColor`/`var(--*)` in
-    SVG, never literal hex). Lessons must read in both dark and light themes.
-    A lesson that "works" but explains via a table instead of pictures, uses
-    4+ colors in one scene, or is an animated glossary with an unrelated
-    widget, is a bug. The completeness contract lives in
-    `content/courses.test.ts`: every lesson requires a well-formed `concept`
-    and **exactly 2 scenario MCQs** (prompts ≥ 40 chars); optional `diagram`
-    and `exercise` are validated when present.
+    interactive storytelling** (§1.3): one through-line picture (the anchor
+    dramatized), interaction on a mapped beat (not a bolted-on widget),
+    BEFORE→ACT→AFTER as a story turn. Read the `level` from
+    `content/courses.ts` before authoring — what helps a beginner *harms* an
+    expert (the expertise reversal effect). Always build with the shared
+    scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`, `Operator`,
+    `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
+    **Color discipline is mandatory:** one accent per scene, neutrals carry
+    the load, no rainbow palettes (cognitive overload), theme-safe tokens
+    only (`bg-surface-elevated` not `bg-white`; `text-canvas` not
+    `text-white`; `currentColor`/`var(--*)` in SVG, never literal hex).
+    Lessons must read in both dark and light themes.
+   A lesson that "works" but explains via a table instead of pictures, uses
+   4+ colors in one scene, or is an animated glossary with an unrelated
+   widget, is a bug. The completeness contract lives in
+   `content/courses.test.ts`: every lesson requires a well-formed
+   anchor-led `concept` and **exactly 2 scenario MCQs** (prompts ≥ 40
+   chars); optional `diagram` and `exercise` are validated when present;
+   `content/jargon.test.ts` enforces the plain-English gate.
+
+    - **Layman-First Rule (now the v6 anchor, all levels):** every concept
+      brief MUST open with a physical real-world metaphor (e.g., *tuning a
+      guitar*, *sorting mail*, *tasting soup*) before showing diagrams or
+      math — playful for beginners, terse for experts. Never use raw AI
+      terms (*loss, weights, embeddings, hyperparameters*) in
+      beginner/intermediate lessons without their plain-English translation
+      in parentheses at first use.
 
 ## Where things live
 
@@ -217,6 +245,10 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
 - **`PersistedStateV1` is the export/import and legacy-local shape.** Update import
   handling deliberately when it changes.
 - **Don't add `any`.** Use `Doc<>` / `Id<>` patterns and branded types where they exist.
+- **Payment & external links:** store all public payment links (PayPal,
+  Razorpay, Lemon Squeezy) and lead form destinations in
+  `content/plans.ts` or `lib/site.ts` — never hardcoded directly in JSX
+  components.
 
 ## When you make a change
 

@@ -4,20 +4,17 @@ import { useState } from "react";
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
 import { Scene } from "./scenes";
 import { Stagger, MotionChild, Reveal } from "./motion";
+import { SliderControl } from "./controls";
 
 /**
  * Intermediate course — Lesson: "Learning by walking downhill" (gradient descent).
  *
- * Through-line: one loss valley, one hiker. The interaction (toggle-compare on
- * three step sizes) sits on the Observe beat: the learning-rate trade-off is a
- * thing you must FEEL — too small crawls, well-chosen glides, too large
- * explodes. Constrained presets (intermediate = task-framed, not a sandbox).
+ * Through-line: one loss valley, one hiker. The interaction (a continuous
+ * learning-rate playground, v6 §6) sits on the Observe beat: the learning-rate
+ * trade-off is a thing you must FEEL — too small crawls, well-chosen glides,
+ * too large explodes. The slider updates the trajectory on every frame of the
+ * drag; presets stay on top as quick-jump chips.
  */
-const STEP_SIZES = [
-  { label: "Too small · 0.05", lr: 0.05 },
-  { label: "Well-chosen · 0.4", lr: 0.4 },
-  { label: "Too large · 1.02", lr: 1.02 },
-] as const;
 
 // The valley: f(x) = (x − 6)². Pure math, deterministic trajectories.
 const MIN_X = 6;
@@ -69,10 +66,11 @@ export function GradientDescent() {
         </p>
       </Scene>
 
-      {/* Beat 3 — THE WIDGET: feel the learning rate */}
+      {/* Beat 3 — THE PLAYGROUND: feel the learning rate */}
       <Scene caption="③ The one dial that decides success: the learning rate">
         <p className="mb-3 text-center text-xs font-semibold text-ink sm:text-sm">
-          Click each step size and watch the descent — find the one that reaches the bottom.
+          Drag the step size and watch the descent change — find the value that reaches the bottom
+          without leaping past it.
         </p>
         <LearningRateExplorer />
       </Scene>
@@ -91,40 +89,40 @@ export function GradientDescent() {
   );
 }
 
-/** Toggle-compare widget: three preset step sizes, deterministic trajectories on the valley. */
+/** Continuous playground: drag the learning rate, the trajectory redraws live. */
 function LearningRateExplorer() {
-  const [selected, setSelected] = useState<number>(1); // default: well-chosen
-  const lr = STEP_SIZES[selected]!.lr;
+  const [lr, setLr] = useState(0.4); // default: well-chosen
   const pts = trajectory(lr);
   const last = pts[pts.length - 1]!;
 
   const verdict =
-    last.loss > 4
-      ? selected === 0
-        ? "Fifteen steps and it has barely left the ridge — it WILL get there, but training this slow costs epochs and money you don't need to spend."
-        : "Each step overshoots the minimum and lands FARTHER out than before — the loss is growing. This run diverged; the model is now worse than its starting guess."
-      : `Reached the valley floor in ${pts.length - 1} steps — smooth, monotone descent. This is the zone you want.`;
+    last.loss > 4 && lr >= 0.95
+      ? "Each step leaps PAST the valley floor and lands just as far out — the loss is growing. This run diverged; the model ends worse than its starting guess."
+      : last.loss > 4
+        ? "Steps this tiny barely move — it WILL get there eventually, but training this slow costs epochs and money you don't need to spend."
+        : lr > 0.5
+          ? `Converges with a bounce in ${pts.length - 1} steps — each step overshoots the floor but lands closer. It works, but the ride is rougher than it needs to be.`
+          : `Reached the valley floor in ${pts.length - 1} steps — smooth, steady descent. This is the zone you want.`;
 
   return (
     <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
-      <div className="mb-3 flex flex-wrap justify-center gap-2" role="group" aria-label="Learning rate presets">
-        {STEP_SIZES.map((preset, i) => (
-          <button
-            key={preset.label}
-            type="button"
-            onClick={() => setSelected(i)}
-            aria-pressed={selected === i}
-            className={`rounded-full border px-3.5 py-2 text-xs font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
-              selected === i
-                ? "border-brand bg-brand text-canvas"
-                : "border-ash bg-surface-elevated text-ink hover:border-brand"
-            }`}
-          >
-            {preset.label}
-          </button>
-        ))}
+      <SliderControl
+        label="Learning rate — the step size"
+        value={lr}
+        min={0.02}
+        max={1.2}
+        step={0.02}
+        onChange={setLr}
+        format={(v) => `η = ${v.toFixed(2)}`}
+        presets={[
+          { label: "Too small · 0.05", value: 0.05 },
+          { label: "Well-chosen · 0.40", value: 0.4 },
+          { label: "Too large · 1.10", value: 1.1 },
+        ]}
+      />
+      <div className="mt-3">
+        <ValleySvg points={pts} markerLabel={undefined} />
       </div>
-      <ValleySvg points={pts} markerLabel={undefined} />
       <p className="mt-2 text-center text-[11.5px] font-medium leading-relaxed text-ink-soft">
         {verdict}
       </p>
@@ -155,7 +153,19 @@ function ValleySvg({
       <text x={toX(MIN_X)} y={toY(0) - 4} textAnchor="middle" fontFamily="monospace" fontSize="5" fill="var(--color-good)">
         best
       </text>
-      {/* trajectory dots */}
+      {/* trajectory: dashed path + step dots */}
+      {points && points.length > 1 && (
+        <polyline
+          points={points
+            .map((p) => `${toX(p.x).toFixed(1)},${toY(p.y).toFixed(1)}`)
+            .join(" ")}
+          fill="none"
+          stroke="var(--color-brand-deep)"
+          strokeWidth="1"
+          strokeDasharray="2 1.5"
+          opacity="0.7"
+        />
+      )}
       {points?.map((p, i) => (
         <circle key={i} cx={toX(p.x)} cy={toY(p.y)} r="1.8" fill="var(--color-brand-deep)" opacity={0.85} />
       ))}

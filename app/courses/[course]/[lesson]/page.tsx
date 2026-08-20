@@ -5,6 +5,7 @@ import { Shell } from "@/components/Shell";
 import { ConceptBrief } from "@/components/ConceptBrief";
 import { CoursePager } from "@/components/CoursePager";
 import { JsonLd } from "@/components/JsonLd";
+import { LessonCheatSheet } from "@/components/LessonCheatSheet";
 import { LessonDiagram } from "@/components/LessonDiagram";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { getInfographicComponent } from "@/components/infographic";
@@ -202,6 +203,18 @@ export default async function LessonPage({
                   nextLesson={nextLesson}
                 />
               </div>
+
+              {lesson.concept && (
+                <LessonCheatSheet
+                  courseTitle={course.title}
+                  lessonTitle={lesson.title}
+                  anchor={lesson.concept.anchor}
+                  what={lesson.concept.what}
+                  whenNot={lesson.concept.whenNot}
+                  path={`/courses/${courseSlug}/${lessonSlug}`}
+                  url={absoluteUrl(`/courses/${courseSlug}/${lessonSlug}`)}
+                />
+              )}
 
               <CoursePager
                 courseSlug={courseSlug}

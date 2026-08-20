@@ -31,30 +31,39 @@ Both current courses are free. Pricing truth for freemium lives in
 ## Blocks
 
 Lessons use typed `Block[]` (`text` / `code` / `table` / `note`), not markdown
-files. Infographic / animated lessons follow the `infographics-interactive_v5`
+files. Infographic / animated lessons follow the `infographics-interactive_v6`
 skill. Inline mini-markdown (`**bold**`, `` `code` ``) is rendered by the
 shared `Inline` component (`components/Inline.tsx`) in byte/course UI.
 
-## Course lessons (v5 anatomy)
+## Course lessons (v6 anatomy)
 
 A `Lesson` in `content/courses.ts` renders on `/courses/[course]/[lesson]` in
-this order — **explanation-first, never quiz-first**:
+this order — **anchor-first, never quiz-first**:
 
 | # | Layer | Field | Notes |
 | --- | --- | --- | --- |
-| 1 | Concept brief | `concept` | The v5 opener: What / Why / Where (2–3 applications) / When NOT to use — 1–2 sentences each, key terms `**bold**`. Rendered by `components/ConceptBrief.tsx`. Required on every lesson (enforced in `courses.test.ts`). |
-| 2 | Story infographic | `slug` → component | Bespoke scenes registered in `components/infographic/index.tsx`; the heart of the course aesthetic. |
+| 1 | Concept brief | `concept` | The v6 opener: **`anchor`** (one-sentence everyday metaphor, something a 10-year-old touches — rendered FIRST), then What / Why / Where (2–3 applications) / When NOT to use — 1–2 sentences each, key terms `**bold**`. Rendered by `components/ConceptBrief.tsx`. Required on every lesson (enforced in `courses.test.ts`). |
+| 2 | Story infographic | `slug` → component | Bespoke scenes registered in `components/infographic/index.tsx`; the heart of the course aesthetic. The anchor metaphor is the through-line where possible. |
 | 3 | System diagram | `diagram` (optional) | Compact standardized reference **below** the infographic: `flow` (Input→Process→Output), `compare` (side-by-side grid), or `decision` (tree) — plain data rendered by `components/LessonDiagram.tsx` from `components/infographic/flow.tsx`. Bracket node patterns (`[ … ]`, `< … >`); must formalize, never re-narrate. |
 | 4 | Prose | `prose` | 2–4 paragraphs; supports `**bold**` / `` `code` `` via `Inline`. |
 | 5 | Exercise | `exercise` (optional) | Runnable Pyodide Python; gates completion. |
 | 6 | Self-check questions | `questions` | **Exactly 2 real-life scenario MCQs** (concrete actors/systems, never "What is X?" recall); the second transfers the idea to a new situation; all correct to complete. |
+| 7 | Cheat-sheet | derived | Shareable card (anchor + What + When NOT + site URL) rendered after the MCQs by `components/LessonCheatSheet.tsx` — Download PNG / Share on X / Share on LinkedIn / Copy link. The PNG lives at `/courses/{course}/{lesson}/cheat-sheet` (`lib/og.tsx` `renderCheatSheetImage`) and doubles as the lesson OG image. **Derived from `concept` — never separately authored.** |
 
-There are **no prediction cards and no application cards** in v5 — lessons
-open with the brief and close at the two scenario questions. The completeness
-contract (`content/courses.test.ts`): every lesson requires a well-formed
+There are **no prediction cards and no application cards** in v6 — lessons
+open with the anchor-led brief and close at the two scenario questions plus
+the derived cheat-sheet. The completeness contract
+(`content/courses.test.ts`): every lesson requires a well-formed anchor-led
 `concept`, `prose ≥ 2`, exactly 2 scenario questions (prompts ≥ 40 chars);
-optional `diagram` and `exercise` are validated when present. Author with the
-`infographics-interactive_v5` skill — see rule 11 in
+optional `diagram` and `exercise` are validated when present. The
+**plain-English gate** (`content/jargon.test.ts`, list in
+`content/jargon-terms.ts`) requires a same-sentence parenthetical gloss at
+the first use of each listed jargon term in beginner/intermediate lessons
+(expert courses exempt). Interactive lessons with a tunable knob or
+toggleable state build **continuous playgrounds** (slider/toggle, live
+consequence) from `components/infographic/controls.tsx`
+(`SliderControl`/`ToggleGroup`). Author with the
+`infographics-interactive_v6` skill — see rule 11 in
 [`../CLAUDE.md`](../CLAUDE.md).
 
 ## Questions

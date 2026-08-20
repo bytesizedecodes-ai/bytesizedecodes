@@ -2,9 +2,10 @@ import { Inline } from "@/components/Inline";
 import type { ConceptBrief as ConceptBriefData } from "@/content/courses";
 
 /**
- * The 4-step explanation that opens a lesson (v5 authoring contract):
- * What / Why / Where / When NOT. Sharp, scannable, explanation-first — the
- * learner meets the idea here before any quiz or interactive check.
+ * The anchor-led explanation that opens a lesson (v6 authoring contract):
+ * Anchor (everyday metaphor) / What / Why / Where / When NOT. Sharp,
+ * scannable, explanation-first — the learner meets the idea here, as
+ * something they already touch, before any quiz or interactive check.
  * Text supports **bold** and `code` via the shared Inline formatter.
  */
 function BriefRow({
@@ -13,7 +14,7 @@ function BriefRow({
   children,
 }: {
   label: string;
-  tone: "brand" | "gold";
+  tone: "brand" | "gold" | "anchor";
   children: React.ReactNode;
 }) {
   return (
@@ -22,12 +23,20 @@ function BriefRow({
         className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide sm:w-20 sm:text-center ${
           tone === "brand"
             ? "bg-brand-wash text-brand-deep"
-            : "bg-gold/20 text-ink-soft"
+            : tone === "gold"
+              ? "bg-gold/20 text-ink-soft"
+              : "bg-ink text-canvas"
         }`}
       >
         {label}
       </span>
-      <div className="min-w-0 text-[14px] leading-relaxed text-ink-soft sm:text-[15px]">
+      <div
+        className={`min-w-0 leading-relaxed sm:text-[15px] ${
+          tone === "anchor"
+            ? "text-[15px] font-medium text-ink italic"
+            : "text-[14px] text-ink-soft"
+        }`}
+      >
         {children}
       </div>
     </div>
@@ -41,6 +50,9 @@ export function ConceptBrief({ brief }: { brief: ConceptBriefData }) {
       className="rounded-2xl border border-ash bg-surface-elevated px-5 py-5 shadow-sm sm:px-6"
     >
       <div className="space-y-4">
+        <BriefRow label="Anchor" tone="anchor">
+          <Inline text={brief.anchor} />
+        </BriefRow>
         <BriefRow label="What" tone="brand">
           <Inline text={brief.what} />
         </BriefRow>

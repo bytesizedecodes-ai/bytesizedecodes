@@ -2,15 +2,16 @@ import { describe, expect, it } from "vitest";
 import { COURSES } from "./courses";
 
 /**
- * The lesson-completeness contract (v5, all courses): every lesson is a full
- * learning loop — brief → visual → prose → exactly 2 scenario checks.
- * Openers are explanation-first concept briefs (no prediction cards, no
- * application cards). If a lesson is added or edited below this bar, this
- * test fails. Waivers are not supported; if a lesson genuinely can't meet a
- * field, change the contract deliberately.
+ * The lesson-completeness contract (v6, all courses): every lesson is a full
+ * learning loop — anchor-led brief → visual → prose → exactly 2 scenario
+ * checks. Openers are explanation-first concept briefs whose first line is an
+ * everyday anchor metaphor (no prediction cards, no application cards). If a
+ * lesson is added or edited below this bar, this test fails. Waivers are not
+ * supported; if a lesson genuinely can't meet a field, change the contract
+ * deliberately.
  */
 describe("course lesson completeness", () => {
-  it("gives every lesson a well-formed 4-step concept brief", () => {
+  it("gives every lesson a well-formed anchor-led concept brief", () => {
     for (const course of COURSES) {
       for (const lesson of course.lessons) {
         const brief = lesson.concept;
@@ -19,6 +20,10 @@ describe("course lesson completeness", () => {
           `${course.slug}/${lesson.slug}: every lesson must open with a concept brief`,
         ).toBeDefined();
         if (!brief) continue;
+        expect(
+          brief.anchor?.length ?? 0,
+          `${course.slug}/${lesson.slug}: brief 'anchor' (the everyday metaphor, v6) missing`,
+        ).toBeGreaterThan(15);
         expect(
           brief.what.length,
           `${course.slug}/${lesson.slug}: brief 'what' missing`,
