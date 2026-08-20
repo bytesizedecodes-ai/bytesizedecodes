@@ -40,7 +40,19 @@ const courseUnits: LearningUnitSummary[] = COURSES.flatMap((course) =>
             ? (["engineer", "grad", "founder"] as const)
             : course.slug === "ai-observability-reliability"
               ? (["grad", "engineer", "founder"] as const)
-              : (["grad", "engineer", "founder", "beginner"] as const),
+              : course.slug === "harness-engineering-foundations"
+                ? (["beginner", "grad"] as const)
+                : course.slug === "harness-engineering-in-practice"
+                  ? (["grad", "engineer"] as const)
+                  : course.slug === "harness-engineering-at-scale"
+                    ? (["engineer", "founder"] as const)
+                    : course.slug === "rag-engineering-foundations"
+                      ? (["beginner", "grad"] as const)
+                      : course.slug === "rag-engineering-in-practice"
+                        ? (["grad", "engineer"] as const)
+                        : course.slug === "rag-engineering-at-scale"
+                          ? (["engineer", "founder"] as const)
+                          : (["grad", "engineer", "founder", "beginner"] as const),
   })),
 );
 

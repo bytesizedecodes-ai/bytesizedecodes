@@ -34,12 +34,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     },
-    ...course.lessons.map((lesson) => ({
-      url: `${SITE_URL}/courses/${course.slug}/${lesson.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
+    // Paid lesson bodies are soft-gated (sign-in) — keep them out of the
+    // index; the course listing above stays public and crawlable.
+    ...course.lessons
+      .filter(() => course.access !== "paid")
+      .map((lesson) => ({
+        url: `${SITE_URL}/courses/${course.slug}/${lesson.slug}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
   ]);
 
   const byteRoutes: MetadataRoute.Sitemap = BYTES.map((byte) => ({

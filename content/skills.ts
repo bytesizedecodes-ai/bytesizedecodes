@@ -284,6 +284,242 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "MCP observability",
     description: "Observe Model Context Protocol tool calls across multi-agent systems.",
   },
+  // Harness Engineering: Foundations course
+  {
+    id: "harness-basics",
+    label: "The AI harness",
+    description: "Separate the model from the scaffolding that turns it into a product.",
+  },
+  {
+    id: "prompt-fundamentals",
+    label: "Prompt fundamentals",
+    description: "Structure role, rules, examples, and format to steer the same model reliably.",
+  },
+  {
+    id: "context-window-basics",
+    label: "Context windows",
+    description: "Reason about what the model can see each turn — and what falls out.",
+  },
+  {
+    id: "tool-use-basics",
+    label: "Tool use",
+    description: "Explain how a model requests actions and a harness executes them safely.",
+  },
+  {
+    id: "agent-loops",
+    label: "Agent loops",
+    description: "Follow the think–act–observe cycle and know when to stop it.",
+  },
+  {
+    id: "agent-vs-pipeline",
+    label: "Agents vs pipelines",
+    description: "Choose between a fixed pipeline, a single call, and a full agent.",
+  },
+  // Harness Engineering: In Practice course
+  {
+    id: "context-engineering",
+    label: "Context engineering",
+    description: "Decide what fills a finite context window under a token budget.",
+  },
+  {
+    id: "tool-design",
+    label: "Tool design",
+    description: "Design tool schemas, descriptions, and error messages models choose well.",
+  },
+  {
+    id: "system-prompt-design",
+    label: "System prompt design",
+    description: "Structure prompts that keep behavior consistent as the harness grows.",
+  },
+  {
+    id: "agent-memory",
+    label: "Agent memory",
+    description: "Manage episodic and semantic memory, compaction, and state across turns.",
+  },
+  {
+    id: "structured-output",
+    label: "Structured output",
+    description: "Get machine-readable output with schemas, validation, and repair loops.",
+  },
+  {
+    id: "harness-guardrails",
+    label: "Harness guardrails",
+    description: "Catch hallucinated calls, runaway loops, and injected instructions in code.",
+  },
+  {
+    id: "harness-observability",
+    label: "Harness observability",
+    description: "Trace prompt versions, context assembly, tool calls, and retries.",
+  },
+  {
+    id: "harness-evals",
+    label: "Harness evals",
+    description: "Judge harness changes with task suites and pass rates, not demos.",
+  },
+  {
+    id: "cost-latency-engineering",
+    label: "Cost & latency engineering",
+    description: "Cut spend and delay with caching, model routing, and streaming.",
+  },
+  // Harness Engineering: At Scale course
+  {
+    id: "multi-agent-orchestration",
+    label: "Multi-agent orchestration",
+    description: "Split work across specialists — and know when one agent wins.",
+  },
+  {
+    id: "long-horizon-autonomy",
+    label: "Long-horizon autonomy",
+    description: "Run hour-long agent tasks with checkpoints, verification, and recovery.",
+  },
+  {
+    id: "eval-systems",
+    label: "Eval systems",
+    description: "Gate every harness change with CI suites, canaries, and significance.",
+  },
+  {
+    id: "harness-vs-finetuning",
+    label: "Harness vs fine-tuning",
+    description: "Decide what belongs in scaffolding and what belongs in the weights.",
+  },
+  {
+    id: "agent-security",
+    label: "Agent security",
+    description: "Design for injection, least privilege, and irreversible-action approval.",
+  },
+  {
+    id: "self-improving-harness",
+    label: "Self-improving harnesses",
+    description: "Turn production corrections into flywheels — without metric capture.",
+  },
+  {
+    id: "harness-reliability",
+    label: "Harness reliability",
+    description: "Make retries safe with idempotency, and degrade gracefully when models fail.",
+  },
+  {
+    id: "production-harness-anatomy",
+    label: "Production harness anatomy",
+    description: "Read real harness blueprints and run a design review of your own.",
+  },
+  // RAG Engineering: Foundations course
+  {
+    id: "rag-basics",
+    label: "RAG basics",
+    description: "Explain retrieval-augmented generation as an open-book setup for a model.",
+  },
+  {
+    id: "embeddings-basics",
+    label: "Embeddings",
+    description: "See embeddings as locations on a map where similar meanings sit close together.",
+  },
+  {
+    id: "similarity-search-basics",
+    label: "Similarity search",
+    description: "Find the nearest pages to a question and pick the top few.",
+  },
+  {
+    id: "rag-pipeline",
+    label: "The RAG pipeline",
+    description: "Trace a question through search, context, and a cited answer.",
+  },
+  {
+    id: "rag-failure-basics",
+    label: "RAG failures",
+    description: "Diagnose wrong-page, stale-page, and ignored-page failures in plain terms.",
+  },
+  {
+    id: "rag-vs-alternatives",
+    label: "RAG vs alternatives",
+    description: "Choose between pasting context, a database, and RAG for a task.",
+  },
+  // RAG Engineering: In Practice course
+  {
+    id: "chunking-strategy",
+    label: "Chunking strategy",
+    description: "Split documents so every chunk stays meaningful and retrievable on its own.",
+  },
+  {
+    id: "embedding-selection",
+    label: "Embedding selection",
+    description: "Pick an embedding model with your own data — and price the reindex.",
+  },
+  {
+    id: "hybrid-search",
+    label: "Hybrid search",
+    description: "Combine semantic and keyword retrieval so exact matches survive ranking.",
+  },
+  {
+    id: "reranking",
+    label: "Reranking",
+    description: "Recall wide with cheap search, then read closely with a reranker.",
+  },
+  {
+    id: "query-understanding",
+    label: "Query understanding",
+    description: "Rewrite, decompose, and expand questions before they hit the index.",
+  },
+  {
+    id: "grounded-citations",
+    label: "Grounded citations",
+    description: "Answer only from retrieved pages, cite claims, and refuse on gaps.",
+  },
+  {
+    id: "rag-metrics",
+    label: "RAG evaluation metrics",
+    description: "Score retrieval and generation separately — the four questions.",
+  },
+  {
+    id: "rag-observability",
+    label: "RAG observability",
+    description: "Trace queries, chunks, scores, and reranks to explain every answer.",
+  },
+  {
+    id: "rag-ingestion",
+    label: "RAG ingestion",
+    description: "Run parse → chunk → embed → index with metadata, sync, and deletes.",
+  },
+  // RAG Engineering: At Scale course
+  {
+    id: "advanced-retrieval",
+    label: "Advanced retrieval",
+    description: "Answer cross-document questions with hierarchy, context, and multi-hop.",
+  },
+  {
+    id: "agentic-rag",
+    label: "Agentic RAG",
+    description: "Let the model drive retrieval — with sufficiency checks and a budget.",
+  },
+  {
+    id: "graphrag",
+    label: "GraphRAG",
+    description: "Build knowledge graphs for relationship questions vectors can't answer.",
+  },
+  {
+    id: "permission-aware-retrieval",
+    label: "Permission-aware retrieval",
+    description: "Enforce ACLs and tenant isolation at query time, before context forms.",
+  },
+  {
+    id: "index-lifecycle",
+    label: "Index lifecycle",
+    description: "Keep a 40k-doc index fresh: sync, deletes, drift, dual-index migrations.",
+  },
+  {
+    id: "rag-vs-long-context",
+    label: "RAG vs long context",
+    description: "Decide between retrieval and million-token windows on cost and freshness.",
+  },
+  {
+    id: "production-rag-evals",
+    label: "Production RAG evals",
+    description: "Run online evals, drift dashboards, and CI gates on live traffic.",
+  },
+  {
+    id: "production-rag-anatomy",
+    label: "Production RAG anatomy",
+    description: "Read real RAG blueprints and run the architecture review.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {

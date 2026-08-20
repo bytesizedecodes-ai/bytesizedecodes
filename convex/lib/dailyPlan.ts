@@ -126,11 +126,85 @@ const ML_PRIMER_UNITS = [
   unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
 ];
 
+// Harness Engineering: Foundations (beginner) — what surrounds a model.
+const HARNESS_FOUNDATIONS_UNITS = [
+  unit("harness-engineering-foundations", "what-is-an-ai-harness", "What is an AI harness?", 5),
+  unit("harness-engineering-foundations", "raw-model-vs-product", "Why a raw model isn't a product", 4),
+  unit("harness-engineering-foundations", "what-is-a-prompt-really", "What is a prompt, really?", 5),
+  unit("harness-engineering-foundations", "what-is-a-context-window", "What is a context window?", 5),
+  unit("harness-engineering-foundations", "how-models-use-tools", "How do models use tools?", 5),
+  unit("harness-engineering-foundations", "the-agent-loop", "What is the agent loop?", 6),
+  unit("harness-engineering-foundations", "when-not-to-build-an-agent", "When NOT to build an agent", 6),
+];
+
+// Harness Engineering: In Practice (intermediate) — build Relay end to end.
+const HARNESS_PRACTICE_UNITS = [
+  unit("harness-engineering-in-practice", "context-engineering", "Context engineering: packing the window", 7),
+  unit("harness-engineering-in-practice", "designing-tools-models-use", "Designing tools models use well", 7),
+  unit("harness-engineering-in-practice", "system-prompts-that-hold", "System prompts that hold under pressure", 7),
+  unit("harness-engineering-in-practice", "agent-memory-and-state", "Memory and state across turns", 8),
+  unit("harness-engineering-in-practice", "structured-output", "Structured output without tears", 7),
+  unit("harness-engineering-in-practice", "guardrails-and-failure-modes", "Failure modes and guardrails", 8),
+  unit("harness-engineering-in-practice", "harness-observability", "You can't fix what you can't see", 7),
+  unit("harness-engineering-in-practice", "intro-to-harness-evals", "Does your harness work? Intro to evals", 8),
+  unit("harness-engineering-in-practice", "cost-and-latency-engineering", "Cost and latency engineering", 8),
+];
+
+// Harness Engineering: At Scale (expert) — operate Relay in production.
+const HARNESS_AT_SCALE_UNITS = [
+  unit("harness-engineering-at-scale", "multi-agent-orchestration", "Multi-agent orchestration", 9),
+  unit("harness-engineering-at-scale", "long-horizon-autonomy", "Long-horizon autonomy", 10),
+  unit("harness-engineering-at-scale", "evals-as-a-system", "Evals as a system", 9),
+  unit("harness-engineering-at-scale", "harness-vs-finetuning", "Harness vs fine-tuning", 10),
+  unit("harness-engineering-at-scale", "agent-security", "Agent security", 10),
+  unit("harness-engineering-at-scale", "self-improving-harnesses", "Self-improving harnesses", 9),
+  unit("harness-engineering-at-scale", "harness-reliability", "Harness reliability", 10),
+  unit("harness-engineering-at-scale", "anatomy-of-production-harnesses", "Anatomy of production harnesses", 11),
+];
+
+// RAG Engineering: Foundations (beginner) — the open-book machine.
+const RAG_FOUNDATIONS_UNITS = [
+  unit("rag-engineering-foundations", "what-is-rag", "What is RAG?", 4),
+  unit("rag-engineering-foundations", "why-not-paste-everything", "Why not just paste everything?", 5),
+  unit("rag-engineering-foundations", "what-are-embeddings", "What are embeddings?", 5),
+  unit("rag-engineering-foundations", "how-similarity-search-works", "How the search finds the right page", 4),
+  unit("rag-engineering-foundations", "the-rag-pipeline", "The RAG pipeline, end to end", 6),
+  unit("rag-engineering-foundations", "when-rag-gets-it-wrong", "When RAG gets it wrong", 5),
+  unit("rag-engineering-foundations", "when-not-to-use-rag", "When NOT to use RAG", 5),
+];
+
+// RAG Engineering: In Practice (intermediate) — build Atlas end to end.
+const RAG_PRACTICE_UNITS = [
+  unit("rag-engineering-in-practice", "chunking-strategy", "Chunking: where quality is decided", 7),
+  unit("rag-engineering-in-practice", "choosing-embeddings", "Choosing an embedding model", 7),
+  unit("rag-engineering-in-practice", "hybrid-search", "Hybrid search: keywords meet meaning", 7),
+  unit("rag-engineering-in-practice", "reranking", "Reranking: the second look", 7),
+  unit("rag-engineering-in-practice", "query-understanding", "Query understanding", 8),
+  unit("rag-engineering-in-practice", "citations-and-grounding", "Grounded answers with citations", 8),
+  unit("rag-engineering-in-practice", "rag-evaluation", "Evaluating RAG: the four questions", 8),
+  unit("rag-engineering-in-practice", "rag-observability", "RAG observability", 7),
+  unit("rag-engineering-in-practice", "ingestion-pipeline", "The ingestion pipeline", 8),
+];
+
+// RAG Engineering: At Scale (expert) — operate Atlas in production.
+const RAG_AT_SCALE_UNITS = [
+  unit("rag-engineering-at-scale", "advanced-retrieval", "Beyond top-k: advanced retrieval", 9),
+  unit("rag-engineering-at-scale", "agentic-rag", "Agentic RAG", 10),
+  unit("rag-engineering-at-scale", "graphrag", "GraphRAG and knowledge graphs", 10),
+  unit("rag-engineering-at-scale", "permission-aware-retrieval", "Permission-aware retrieval", 10),
+  unit("rag-engineering-at-scale", "index-lifecycle", "The index lifecycle", 10),
+  unit("rag-engineering-at-scale", "rag-vs-long-context", "RAG vs long context", 10),
+  unit("rag-engineering-at-scale", "production-rag-evals", "Evals and drift in production", 10),
+  unit("rag-engineering-at-scale", "anatomy-of-production-rag", "Anatomy of production RAG", 11),
+];
+
 export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
   beginner: [
     ...LAYMAN_UNITS,
     unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
     ...AI_OBSERVABILITY_UNITS,
+    ...HARNESS_FOUNDATIONS_UNITS,
+    ...RAG_FOUNDATIONS_UNITS,
   ],
   grad: [
     ...ML_PRIMER_UNITS,
@@ -139,6 +213,10 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     byte("tensors-and-shapes", "Tensors and shapes", 5),
     ...AI_OBSERVABILITY_UNITS,
     ...LLM_OBSERVABILITY_UNITS,
+    ...HARNESS_FOUNDATIONS_UNITS,
+    ...HARNESS_PRACTICE_UNITS,
+    ...RAG_FOUNDATIONS_UNITS,
+    ...RAG_PRACTICE_UNITS,
   ],
   engineer: [
     unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
@@ -147,12 +225,18 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     byte("tensors-and-shapes", "Tensors and shapes", 5),
     ...LLM_OBSERVABILITY_UNITS,
     ...RELIABILITY_UNITS,
+    ...HARNESS_PRACTICE_UNITS,
+    ...HARNESS_AT_SCALE_UNITS,
+    ...RAG_PRACTICE_UNITS,
+    ...RAG_AT_SCALE_UNITS,
   ],
   founder: [
     unit("machine-learning-for-layman", "humans-vs-machines", "Humans and machines", 3),
     unit("machine-learning-for-layman", "what-is-ml-layman", "What machine learning really is", 4),
     unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
     ...AI_OBSERVABILITY_UNITS,
+    ...HARNESS_AT_SCALE_UNITS,
+    ...RAG_AT_SCALE_UNITS,
   ],
 };
 

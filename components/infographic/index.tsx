@@ -64,6 +64,54 @@ import { AgentToolObservability } from "./AgentToolObservability";
 import { ReliabilityObjectivesErrorBudgets } from "./ReliabilityObjectivesErrorBudgets";
 import { IncidentCommandLearningLoop } from "./IncidentCommandLearningLoop";
 import { CapstoneDesignReview } from "./CapstoneDesignReview";
+import { WhatIsAnAgentHarness } from "./WhatIsAnAgentHarness";
+import { RawModelVsProduct } from "./RawModelVsProduct";
+import { PromptControlSurface } from "./PromptControlSurface";
+import { ContextWindow } from "./ContextWindow";
+import { ToolCalling } from "./ToolCalling";
+import { AgentLoop } from "./AgentLoop";
+import { WhenNotToAgent } from "./WhenNotToAgent";
+import { ContextEngineering } from "./ContextEngineering";
+import { ToolDesign } from "./ToolDesign";
+import { SystemPromptsThatHold } from "./SystemPromptsThatHold";
+import { AgentMemoryState } from "./AgentMemoryState";
+import { StructuredOutput } from "./StructuredOutput";
+import { GuardrailsAndFailureModes } from "./GuardrailsAndFailureModes";
+import { HarnessObservability } from "./HarnessObservability";
+import { HarnessEvals } from "./HarnessEvals";
+import { CostAndLatency } from "./CostAndLatency";
+import { MultiAgentOrchestration } from "./MultiAgentOrchestration";
+import { LongHorizonAutonomy } from "./LongHorizonAutonomy";
+import { EvalsAsASystem } from "./EvalsAsASystem";
+import { HarnessVsFinetuning } from "./HarnessVsFinetuning";
+import { AgentSecurity } from "./AgentSecurity";
+import { SelfImprovingHarnesses } from "./SelfImprovingHarnesses";
+import { HarnessReliability } from "./HarnessReliability";
+import { ProductionHarnessAnatomy } from "./ProductionHarnessAnatomy";
+import { WhatIsRag } from "./WhatIsRag";
+import { WhyNotPasteEverything } from "./WhyNotPasteEverything";
+import { WhatAreEmbeddings } from "./WhatAreEmbeddings";
+import { SimilaritySearch } from "./SimilaritySearch";
+import { RagPipeline } from "./RagPipeline";
+import { WhenRagGoesWrong } from "./WhenRagGoesWrong";
+import { WhenNotToRag } from "./WhenNotToRag";
+import { ChunkingStrategy } from "./ChunkingStrategy";
+import { ChoosingEmbeddings } from "./ChoosingEmbeddings";
+import { HybridSearch } from "./HybridSearch";
+import { Reranking } from "./Reranking";
+import { QueryUnderstanding } from "./QueryUnderstanding";
+import { CitationsAndGrounding } from "./CitationsAndGrounding";
+import { RagEvaluation } from "./RagEvaluation";
+import { RagObservability } from "./RagObservability";
+import { IngestionPipeline } from "./IngestionPipeline";
+import { AdvancedRetrieval } from "./AdvancedRetrieval";
+import { AgenticRag } from "./AgenticRag";
+import { GraphRag } from "./GraphRag";
+import { PermissionAwareRetrieval } from "./PermissionAwareRetrieval";
+import { IndexLifecycle } from "./IndexLifecycle";
+import { RagVsLongContext } from "./RagVsLongContext";
+import { ProductionRagEvals } from "./ProductionRagEvals";
+import { ProductionRagAnatomy } from "./ProductionRagAnatomy";
 
 /**
  * Maps an infographic slug to its React component.
@@ -143,6 +191,60 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "reliability-objectives-error-budgets": ReliabilityObjectivesErrorBudgets,
   "incident-command-learning-loop": IncidentCommandLearningLoop,
   "capstone-design-review": CapstoneDesignReview,
+  // Harness Engineering: Foundations course (beginner)
+  "what-is-an-ai-harness": WhatIsAnAgentHarness,
+  "raw-model-vs-product": RawModelVsProduct,
+  "what-is-a-prompt-really": PromptControlSurface,
+  "what-is-a-context-window": ContextWindow,
+  "how-models-use-tools": ToolCalling,
+  "the-agent-loop": AgentLoop,
+  "when-not-to-build-an-agent": WhenNotToAgent,
+  // Harness Engineering: In Practice course (intermediate)
+  "context-engineering": ContextEngineering,
+  "designing-tools-models-use": ToolDesign,
+  "system-prompts-that-hold": SystemPromptsThatHold,
+  "agent-memory-and-state": AgentMemoryState,
+  "structured-output": StructuredOutput,
+  "guardrails-and-failure-modes": GuardrailsAndFailureModes,
+  "harness-observability": HarnessObservability,
+  "intro-to-harness-evals": HarnessEvals,
+  "cost-and-latency-engineering": CostAndLatency,
+  // Harness Engineering: At Scale course (expert)
+  "multi-agent-orchestration": MultiAgentOrchestration,
+  "long-horizon-autonomy": LongHorizonAutonomy,
+  "evals-as-a-system": EvalsAsASystem,
+  "harness-vs-finetuning": HarnessVsFinetuning,
+  "agent-security": AgentSecurity,
+  "self-improving-harnesses": SelfImprovingHarnesses,
+  "harness-reliability": HarnessReliability,
+  "anatomy-of-production-harnesses": ProductionHarnessAnatomy,
+  // RAG Engineering: Foundations course (beginner)
+  "what-is-rag": WhatIsRag,
+  "why-not-paste-everything": WhyNotPasteEverything,
+  "what-are-embeddings": WhatAreEmbeddings,
+  "how-similarity-search-works": SimilaritySearch,
+  "the-rag-pipeline": RagPipeline,
+  "when-rag-gets-it-wrong": WhenRagGoesWrong,
+  "when-not-to-use-rag": WhenNotToRag,
+  // RAG Engineering: In Practice course (intermediate)
+  "chunking-strategy": ChunkingStrategy,
+  "choosing-embeddings": ChoosingEmbeddings,
+  "hybrid-search": HybridSearch,
+  "reranking": Reranking,
+  "query-understanding": QueryUnderstanding,
+  "citations-and-grounding": CitationsAndGrounding,
+  "rag-evaluation": RagEvaluation,
+  "rag-observability": RagObservability,
+  "ingestion-pipeline": IngestionPipeline,
+  // RAG Engineering: At Scale course (expert)
+  "advanced-retrieval": AdvancedRetrieval,
+  "agentic-rag": AgenticRag,
+  "graphrag": GraphRag,
+  "permission-aware-retrieval": PermissionAwareRetrieval,
+  "index-lifecycle": IndexLifecycle,
+  "rag-vs-long-context": RagVsLongContext,
+  "production-rag-evals": ProductionRagEvals,
+  "anatomy-of-production-rag": ProductionRagAnatomy,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

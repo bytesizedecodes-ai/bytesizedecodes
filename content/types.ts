@@ -70,7 +70,59 @@ export type SkillId =
   | "nist-ai-rmf"
   | "llm-drift"
   | "agent-tracing"
-  | "mcp-observability";
+  | "mcp-observability"
+  // Harness Engineering: Foundations course
+  | "harness-basics"
+  | "prompt-fundamentals"
+  | "context-window-basics"
+  | "tool-use-basics"
+  | "agent-loops"
+  | "agent-vs-pipeline"
+  // Harness Engineering: In Practice course
+  | "context-engineering"
+  | "tool-design"
+  | "system-prompt-design"
+  | "agent-memory"
+  | "structured-output"
+  | "harness-guardrails"
+  | "harness-observability"
+  | "harness-evals"
+  | "cost-latency-engineering"
+  // Harness Engineering: At Scale course
+  | "multi-agent-orchestration"
+  | "long-horizon-autonomy"
+  | "eval-systems"
+  | "harness-vs-finetuning"
+  | "agent-security"
+  | "self-improving-harness"
+  | "harness-reliability"
+  | "production-harness-anatomy"
+  // RAG Engineering: Foundations course
+  | "rag-basics"
+  | "embeddings-basics"
+  | "similarity-search-basics"
+  | "rag-pipeline"
+  | "rag-failure-basics"
+  | "rag-vs-alternatives"
+  // RAG Engineering: In Practice course
+  | "chunking-strategy"
+  | "embedding-selection"
+  | "hybrid-search"
+  | "reranking"
+  | "query-understanding"
+  | "grounded-citations"
+  | "rag-metrics"
+  | "rag-observability"
+  | "rag-ingestion"
+  // RAG Engineering: At Scale course
+  | "advanced-retrieval"
+  | "agentic-rag"
+  | "graphrag"
+  | "permission-aware-retrieval"
+  | "index-lifecycle"
+  | "rag-vs-long-context"
+  | "production-rag-evals"
+  | "production-rag-anatomy";
 
 export interface CodeExercise {
   id: string;

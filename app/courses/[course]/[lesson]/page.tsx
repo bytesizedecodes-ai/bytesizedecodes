@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { LessonDiagram } from "@/components/LessonDiagram";
 import { ReadingProgress } from "@/components/ReadingProgress";
 import { getInfographicComponent } from "@/components/infographic";
+import { PaidLessonGate } from "@/components/PaidLessonGate";
 import {
   allCourseSlugs,
   courseLessonKey,
@@ -34,10 +35,15 @@ export async function generateMetadata({
   const { course: courseSlug, lesson: lessonSlug } = await params;
   const found = getLesson(courseSlug, lessonSlug);
   if (!found) return {};
+  // Paid lesson bodies are soft-gated (sign-in) and not full-indexed — the
+  // course index stays public. See docs/monetization-and-subscription.md.
+  const robots =
+    found.course.access === "paid" ? { index: false, follow: true } : undefined;
   return {
     title: found.lesson.title,
     description: found.lesson.blurb,
     alternates: { canonical: `/courses/${courseSlug}/${lessonSlug}` },
+    ...(robots ? { robots } : {}),
   };
 }
 
@@ -171,32 +177,49 @@ export default async function LessonPage({
           </div>
         )}
 
-        <div className="mt-6">
-          <Infographic />
-        </div>
+        {(() => {
+          // The lesson core: infographic → diagram → prose/questions → pager.
+          // Paid courses gate this whole block behind free sign-in; the header
+          // and concept brief above stay public as the teaser.
+          const core = (
+            <>
+              <div className="mt-6">
+                <Infographic />
+              </div>
 
-        {lesson.diagram && <LessonDiagram diagram={lesson.diagram} />}
+              {lesson.diagram && <LessonDiagram diagram={lesson.diagram} />}
 
-        <div className="mt-10 space-y-6">
-          <LessonBody
-            progressKey={progressKey}
-            attemptPrefix={progressKey}
-            topic={lesson.topic}
-            prose={lesson.prose ?? []}
-            exercise={lesson.exercise}
-            questions={lesson.questions ?? []}
-            skillIds={lesson.skillIds}
-            capability={lesson.capability}
-            nextLesson={nextLesson}
-          />
-        </div>
+              <div className="mt-10 space-y-6">
+                <LessonBody
+                  progressKey={progressKey}
+                  attemptPrefix={progressKey}
+                  topic={lesson.topic}
+                  prose={lesson.prose ?? []}
+                  exercise={lesson.exercise}
+                  questions={lesson.questions ?? []}
+                  skillIds={lesson.skillIds}
+                  capability={lesson.capability}
+                  nextLesson={nextLesson}
+                />
+              </div>
 
-        <CoursePager
-          courseSlug={courseSlug}
-          courseTitle={course.title}
-          prev={prev}
-          next={next}
-        />
+              <CoursePager
+                courseSlug={courseSlug}
+                courseTitle={course.title}
+                prev={prev}
+                next={next}
+              />
+            </>
+          );
+          if (course.access === "paid") {
+            return (
+              <PaidLessonGate redirectTo={`/courses/${courseSlug}/${lessonSlug}`}>
+                {core}
+              </PaidLessonGate>
+            );
+          }
+          return core;
+        })()}
       </div>
     </Shell>
   );
