@@ -52,7 +52,9 @@ const courseUnits: LearningUnitSummary[] = COURSES.flatMap((course) =>
                         ? (["grad", "engineer"] as const)
                         : course.slug === "rag-engineering-at-scale"
                           ? (["engineer", "founder"] as const)
-                          : (["grad", "engineer", "founder", "beginner"] as const),
+                          : course.slug === "advanced-machine-learning"
+                            ? (["engineer", "founder"] as const)
+                            : (["grad", "engineer", "founder", "beginner"] as const),
   })),
 );
 

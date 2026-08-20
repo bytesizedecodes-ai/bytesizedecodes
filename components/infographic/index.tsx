@@ -3,11 +3,22 @@ import { WhatIsAI } from "./WhatIsAI";
 import { WhatIsML } from "./WhatIsML";
 import { WhatIsDeepLearning } from "./WhatIsDeepLearning";
 import { AIVsMLVsDL } from "./AIVsMLVsDL";
+import { LinearRegression } from "./LinearRegression";
+import { LogisticRegression } from "./LogisticRegression";
+import { LossFunctions } from "./LossFunctions";
+import { GradientDescent } from "./GradientDescent";
+import { NeuralNetworkBasics } from "./NeuralNetworkBasics";
+import { BackpropagationIntuition } from "./BackpropagationIntuition";
+import { BiasVarianceTradeoff } from "./BiasVarianceTradeoff";
+import { EnsembleMethods } from "./EnsembleMethods";
+import { EvaluationMetrics } from "./EvaluationMetrics";
+import { DataLeakageAndImbalance } from "./DataLeakageAndImbalance";
 import { HowHumansLearn } from "./HowHumansLearn";
 import { HumansVsMachines } from "./HumansVsMachines";
 import { WhatIsMLLayman } from "./WhatIsMLLayman";
 import { ThreeParadigms } from "./ThreeParadigms";
 import { SupervisedDeepDive } from "./SupervisedDeepDive";
+import { PredictingNumbers } from "./PredictingNumbers";
 import { UnsupervisedDeepDive } from "./UnsupervisedDeepDive";
 import { ReinforcementDeepDive } from "./ReinforcementDeepDive";
 import { FeaturesAndVectors } from "./FeaturesAndVectors";
@@ -112,6 +123,19 @@ import { IndexLifecycle } from "./IndexLifecycle";
 import { RagVsLongContext } from "./RagVsLongContext";
 import { ProductionRagEvals } from "./ProductionRagEvals";
 import { ProductionRagAnatomy } from "./ProductionRagAnatomy";
+import { NeuronsAndLayers } from "./NeuronsAndLayers";
+import { HowNetworksLearn } from "./HowNetworksLearn";
+import { RegularizingDeepNets } from "./RegularizingDeepNets";
+import { ConvolutionalNetworks } from "./ConvolutionalNetworks";
+import { SequencesToAttention } from "./SequencesToAttention";
+import { InsideTheTransformer } from "./InsideTheTransformer";
+import { LLMPipeline } from "./LLMPipeline";
+import { EfficientFineTuning } from "./EfficientFineTuning";
+import { AlignmentRlhf } from "./AlignmentRlhf";
+import { DiffusionModels } from "./DiffusionModels";
+import { MultimodalModels } from "./MultimodalModels";
+import { FrontierArchitectures } from "./FrontierArchitectures";
+import { ProductionMlCapstone } from "./ProductionMlCapstone";
 
 /**
  * Maps an infographic slug to its React component.
@@ -126,12 +150,23 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "what-is-machine-learning": WhatIsML,
   "what-is-deep-learning": WhatIsDeepLearning,
   "ai-vs-ml-vs-dl": AIVsMLVsDL,
+  "linear-regression": LinearRegression,
+  "logistic-regression": LogisticRegression,
+  "loss-functions": LossFunctions,
+  "gradient-descent": GradientDescent,
+  "neural-network-basics": NeuralNetworkBasics,
+  "backpropagation-intuition": BackpropagationIntuition,
+  "bias-variance-tradeoff": BiasVarianceTradeoff,
+  "ensemble-methods": EnsembleMethods,
+  "evaluation-metrics": EvaluationMetrics,
+  "data-leakage-and-imbalance": DataLeakageAndImbalance,
   // Machine Learning for Layman course
   "how-humans-learn": HowHumansLearn,
   "humans-vs-machines": HumansVsMachines,
   "what-is-ml-layman": WhatIsMLLayman,
   "three-ml-paradigms": ThreeParadigms,
   "supervised-learning-deep-dive": SupervisedDeepDive,
+  "predicting-numbers": PredictingNumbers,
   "unsupervised-learning-deep-dive": UnsupervisedDeepDive,
   "reinforcement-learning-deep-dive": ReinforcementDeepDive,
   "features-and-vectors": FeaturesAndVectors,
@@ -245,6 +280,20 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "rag-vs-long-context": RagVsLongContext,
   "production-rag-evals": ProductionRagEvals,
   "anatomy-of-production-rag": ProductionRagAnatomy,
+  // Advanced Machine Learning course (expert)
+  "neurons-and-layers": NeuronsAndLayers,
+  "how-networks-learn": HowNetworksLearn,
+  "regularizing-deep-nets": RegularizingDeepNets,
+  "convolutional-networks": ConvolutionalNetworks,
+  "sequences-to-attention": SequencesToAttention,
+  "inside-the-transformer": InsideTheTransformer,
+  "llm-training-pipeline": LLMPipeline,
+  "efficient-fine-tuning": EfficientFineTuning,
+  "alignment-rlhf": AlignmentRlhf,
+  "diffusion-models": DiffusionModels,
+  "multimodal-models": MultimodalModels,
+  "frontier-architectures": FrontierArchitectures,
+  "production-ml-capstone": ProductionMlCapstone,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

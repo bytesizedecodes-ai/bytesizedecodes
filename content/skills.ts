@@ -520,6 +520,118 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "Production RAG anatomy",
     description: "Read real RAG blueprints and run the architecture review.",
   },
+  // Machine Learning: intermediate bridge lessons
+  {
+    id: "regression-basics",
+    label: "Regression",
+    description: "Predict a number by reading it off the trend in past examples.",
+  },
+  {
+    id: "logistic-regression",
+    label: "Logistic regression",
+    description: "Turn a weighted sum of features into a probability of yes/no.",
+  },
+  {
+    id: "loss-functions",
+    label: "Loss functions",
+    description: "Score how wrong a prediction is so learning has a target.",
+  },
+  {
+    id: "neural-network-basics",
+    label: "Neural networks",
+    description: "Build models from layers of weighted neurons with activations.",
+  },
+  {
+    id: "backpropagation",
+    label: "Backpropagation",
+    description: "Trace error backward through layers to update every weight.",
+  },
+  {
+    id: "bias-variance",
+    label: "Bias–variance",
+    description: "Diagnose underfitting vs overfitting from train-vs-test error.",
+  },
+  {
+    id: "ensemble-methods",
+    label: "Ensembles",
+    description: "Combine many weak models into one strong committee.",
+  },
+  {
+    id: "cross-validation",
+    label: "Cross-validation",
+    description: "Estimate real-world performance by rotating the test fold.",
+  },
+  {
+    id: "data-leakage",
+    label: "Data leakage",
+    description: "Spot information from the future contaminating training data.",
+  },
+  // Advanced Machine Learning course (expert)
+  {
+    id: "deep-representations",
+    label: "Deep representations",
+    description: "Explain why stacked layers build features width alone can't.",
+  },
+  {
+    id: "optimizers",
+    label: "Optimizers",
+    description: "Choose SGD vs Adam and set learning rates that converge.",
+  },
+  {
+    id: "deep-regularization",
+    label: "Deep regularization",
+    description: "Fight overfitting with dropout, batch norm, early stopping, augmentation.",
+  },
+  {
+    id: "cnn-architectures",
+    label: "CNNs",
+    description: "Use convolutional filters, feature hierarchies, and transfer learning.",
+  },
+  {
+    id: "attention-mechanism",
+    label: "Attention",
+    description: "Let each token pull in the context that matters for it.",
+  },
+  {
+    id: "transformer-architecture",
+    label: "Transformers",
+    description: "Read the Q/K/V, multi-head, decoder-only stack behind GPT.",
+  },
+  {
+    id: "llm-training-pipeline",
+    label: "LLM training pipeline",
+    description: "Walk pretraining → SFT → RLHF and what each stage costs.",
+  },
+  {
+    id: "lora-fine-tuning",
+    label: "LoRA fine-tuning",
+    description: "Adapt a frozen base model with small rank adapters and quantization.",
+  },
+  {
+    id: "alignment-techniques",
+    label: "Alignment",
+    description: "Shape model behaviour with reward models, RLHF, and DPO.",
+  },
+  {
+    id: "diffusion-models",
+    label: "Diffusion models",
+    description: "Generate images (and now text) by learning to denoise.",
+  },
+  {
+    id: "multimodal-embeddings",
+    label: "Multimodal models",
+    description: "Map images and text into one shared embedding space.",
+  },
+  {
+    id: "efficient-architectures",
+    label: "Efficient architectures",
+    description: "Trade attention for MoE routing and state-space linear time.",
+  },
+  {
+    id: "production-ml-lifecycle",
+    label: "Production ML lifecycle",
+    description: "Run the train → eval → deploy → drift → retrain loop.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {

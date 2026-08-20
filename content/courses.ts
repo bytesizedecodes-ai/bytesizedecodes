@@ -170,14 +170,14 @@ export const COURSES: readonly Course[] = [
     slug: "machine-learning",
     title: "Machine Learning",
     subtitle:
-      "The quick primer: AI, ML, and deep learning — connected clearly, in under 20 minutes.",
+      "From AI-vs-ML map to real mechanics: regression, gradient descent, neural networks, metrics — visually.",
     description:
-      "A quick visual orientation for people short on time: four lessons, one runnable exercise, and the mental map that everything else hangs on. Finished in one sitting — then go deep with Machine Learning for Layman or AI Observability.",
+      "Start with the four-lesson map of AI, ML, and deep learning, then go one level deeper: fitting lines and curves, the loss that drives learning, gradient descent, neurons and backpropagation, honest evaluation, and the traps that fake success. Runnable exercises throughout — then Advanced Machine Learning takes you inside the models themselves.",
     level: "intermediate",
     domain: "Machine Learning",
     access: "free",
     prerequisites:
-      "None — this is the fastest entry point. If you want the deep, picture-led treatment instead, start with Machine Learning for Layman.",
+      "None for the first four lessons. Comfort with basic algebra helps for the mechanics lessons — no calculus beyond 'slope' is assumed.",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
@@ -501,6 +501,738 @@ for claim, expected in cases:
             answer: "a",
             explanation:
               "The deep ranker is DL (deepest circle). The fraud scorer learns from data but has no multi-layer network — ML, not DL. The route planner never learns — AI at most, not ML.",
+          },
+        ],
+      },
+      {
+        slug: "linear-regression",
+        title: "Fitting a line to the data",
+        blurb: "Linear regression: the answer is a number, the model is a learned line.",
+        topic: "ml-foundations",
+        skillIds: ["regression-basics", "loss-functions"],
+        capability: "Explain what a fitted line is, what its slope and intercept mean, and what minimizing error means.",
+        minutes: 6,
+        concept: {
+          what: "**Linear regression** predicts a number by learning the straight line that best fits past examples — its **slope** and **intercept** are the entire model.",
+          why: "It turns prediction into geometry: errors become visible gaps to the line, and 'learning' becomes 'slide and tilt until the total squared error can't shrink'.",
+          where: [
+            "**Price estimates** — cost per m² learned from past sales",
+            "**Demand forecasting** — sales from season, price, and ad spend",
+            "**Delivery ETAs** — minutes from distance and traffic",
+          ],
+          whenNot:
+            "Wrong tool when the relationship **isn't roughly linear** (learning curves, saturation effects) or when you need a **category** — that's classification, even if it feels numeric.",
+        },
+        prose: [
+          "Regression answers **how much** questions: how many minutes, how many rupees, how many degrees. The simplest regression model draws a straight line through your past examples and reads new answers off it.",
+          "'Best fit' has a precise meaning: for every example, measure the gap between what the line says and what actually happened — **square each gap** (so misses below and above the line count the same, and big misses hurt more), then add them all up. The best line is the one where that total can't be reduced by any small slide or tilt.",
+          "The payoff is interpretability. The slope of a price line literally means *'each extra m² adds this many rupees'* — which is why banks, insurers, and economists still reach for linear regression first, before anything fancier.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "Read a prediction off the line",
+          prompt:
+            "A fitted line is price = slope × size + intercept. The learned slope and intercept are wrong — fix them so every test case passes.",
+          starterCode: `def predict_price(size_m2: float) -> float:
+    """Price in lakh, from the fitted line."""
+    slope = 0.5      # <-- wrong
+    intercept = 3.0  # <-- wrong
+    return slope * size_m2 + intercept
+`,
+          testCode: `
+cases = [(60, 39.0), (82, 44.6), (100, 49.0)]
+ok = True
+message = "ok"
+for size, expected in cases:
+    got = predict_price(size)
+    if abs(got - expected) > 0.01:
+        ok = False
+        message = f"predict_price({size}) -> {got}, expected {expected}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A bike-share team fits a linear regression: rides = 40 + 12 × (degrees above 15°C). Tomorrow is 25°C. What does the model predict, and what does the 12 mean?",
+            choices: [
+              { id: "a", label: "160 rides; each extra degree above 15 adds about 12 rides" },
+              { id: "b", label: "340 rides; 12 is the prediction for tomorrow" },
+              { id: "c", label: "160 rides; 12 is the baseline when it's freezing" },
+              { id: "d", label: "52 rides; 12 is the number of bikes" },
+            ],
+            answer: "a",
+            explanation:
+              "40 + 12 × 10 = 160. The slope 12 is the per-degree effect — the line rises 12 rides for each additional degree. The intercept 40 is the baseline at exactly 15°C.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "An analyst fits study-hours vs exam-score with a straight line and reports 95% fit. A colleague objects: 'past 8 hours, scores plateau — nobody scores 140%.' What's the honest diagnosis?",
+            choices: [
+              { id: "a", label: "The linear model extrapolates into a region where the true relationship bends — a straight line is the wrong shape here" },
+              { id: "b", label: "95% fit is impossible, so the calculation is buggy" },
+              { id: "c", label: "Study hours are not a number, so regression can't apply" },
+              { id: "d", label: "The model is fine — real scores above 100% just need more data" },
+            ],
+            answer: "a",
+            explanation:
+              "A line is a strong assumption. Within the studied range it may fit well, but extrapolated past 8 hours it keeps rising into nonsense — the plateau (nonlinearity) is exactly the 'when NOT' boundary of linear regression.",
+          },
+        ],
+      },
+      {
+        slug: "logistic-regression",
+        title: "Yes/no as a probability",
+        blurb: "Logistic regression: a weighted score squashed into a confidence between 0 and 1.",
+        topic: "ml-foundations",
+        skillIds: ["logistic-regression", "classification-basics"],
+        capability: "Explain how a weighted sum becomes a probability, and why the decision cutoff is a business choice.",
+        minutes: 6,
+        concept: {
+          what: "**Logistic regression** scores the evidence for a class with a weighted sum, then squashes it through an **S-curve (sigmoid)** into a probability between 0 and 1.",
+          why: "Probabilities are honest: they can say *probably fine* and *almost certainly spam*, while a hard cutoff can't — and they make the cost of each mistake visible before you choose where to cut.",
+          where: [
+            "**Spam filters** scoring mail as P(spam)",
+            "**Credit risk** models scoring P(default)",
+            "**Churn models** scoring P(cancels this month)",
+          ],
+          whenNot:
+            "Wrong when the answer is a **quantity** (use linear regression) or when the decision threshold can't be chosen — a raw probability nobody acts on is a report, not a model.",
+        },
+        prose: [
+          "Despite the name, logistic regression is a **classifier**. It weighs each feature's evidence, adds it up into one score, then bends that score through an S-curve so any input — however extreme — lands between 0 and 1.",
+          "The S-curve shape is the point: far from the boundary the curve flattens near 0 or 1 (confident), near the boundary it passes through 0.5 (honestly unsure). The model learns one weight per feature, exactly like linear regression learns a slope.",
+          "The 0.5 line is a default, not a law. A fraud team may only act above 0.9 (expensive investigations); a screening tool may flag above 0.2 (missing a case is catastrophic). **The model provides belief; the cutoff prices the mistakes** — and that's a business decision the model can't make for you.",
+        ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Linear regression", subtitle: "answer is a number" },
+          right: { title: "Logistic regression", subtitle: "answer is a probability" },
+          rows: [
+            { label: "Where to use", left: "Predicting price, minutes, demand", right: "Spam, churn, fraud — yes/no with confidence" },
+            { label: "Output range", left: "any number (−∞ … +∞)", right: "0 … 1, read as a probability" },
+            { label: "When NOT to use", left: "when the answer is a category", right: "when the answer is a quantity" },
+          ],
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A hospital's sepsis-alert model outputs P(sepsis). Doctors currently act at 0.5. Leadership proposes moving the cutoff to 0.2 after two missed cases. What will definitely increase?",
+            choices: [
+              { id: "a", label: "Recall — fewer missed sepsis cases, at the price of more false alarms" },
+              { id: "b", label: "Precision — the alerts will be more accurate on average" },
+              { id: "c", label: "Both precision and recall always rise together" },
+              { id: "d", label: "Nothing — the cutoff doesn't change the model" },
+            ],
+            answer: "a",
+            explanation:
+              "Lowering the threshold catches more true cases (recall up) but sweeps in more patients who were fine (false positives up, precision down). The trade is priced by which mistake hurts more — in screening, missing sepsis is the costly one.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your churn model outputs P(cancels) = 0.62 for a customer. A stakeholder asks: 'So it's basically a coin flip?' What's the accurate response?",
+            choices: [
+              { id: "a", label: "No — 0.62 means the evidence puts this customer clearly on the churn side of the 0.5 boundary, though not overwhelmingly" },
+              { id: "b", label: "Yes — anything near 0.6 is random guessing" },
+              { id: "c", label: "No — 0.62 means a 62% chance the model itself is wrong" },
+              { id: "d", label: "Yes — probabilities only matter at exactly 0 or 1" },
+            ],
+            answer: "a",
+            explanation:
+              "The probability is about the customer, not the model. 0.62 is a moderate, actionable tilt toward churn — the S-curve's honest-unsure zone near the boundary. Confusion of P(event) with P(model correct) is the classic misreading.",
+          },
+        ],
+      },
+      {
+        slug: "loss-functions",
+        title: "How wrong is wrong?",
+        blurb: "Loss functions turn mistakes into one number that training can shrink.",
+        topic: "ml-mechanics",
+        skillIds: ["loss-functions"],
+        capability: "Distinguish squared error from cross-entropy and explain why confident-and-wrong is punished hardest.",
+        minutes: 6,
+        concept: {
+          what: "A **loss function** scores a prediction's wrongness as one number — **squared error** for numeric predictions, **cross-entropy** for probabilities.",
+          why: "'Sort of wrong' can't be optimized. A loss number gives gradient descent a direction: **training is loss going down**, and the loss's shape decides what 'better' even means.",
+          where: [
+            "**Delivery ETAs** trained on squared error — big misses punished super-linearly",
+            "**Spam classifiers** trained on cross-entropy — calibrated confidence",
+            "**Every model you will ever train** — the loss choice is a design decision",
+          ],
+          whenNot:
+            "Don't optimize loss you can't afford: if the business cost of errors is **asymmetric** (a missed fraud costs 1000× a false alarm), a plain loss quietly optimizes the wrong thing — reweight it.",
+        },
+        prose: [
+          "Every training loop needs one question answered continuously: *given this prediction and this truth, how bad was that?* The loss function answers with a number. Bigger number, bigger bad.",
+          "For numbers, **squared error** — the gap, squared. Squaring does two jobs: it makes under- and over-predictions count equally (negative gaps become positive), and it makes one terrible prediction hurt more than several small ones (off by 10 costs 25× off by 2).",
+          "For probabilities, **cross-entropy** — minus the log of the probability the model gave the truth. Logs make the punishment asymmetric: saying 0.99 on a wrong answer costs 4.6, saying 0.55 costs 0.6. The model learns not just to be right, but to **know how right** — that's what keeps probabilities calibrated.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "Score a batch of misses",
+          prompt:
+            "mean_squared_error should return the average of squared gaps between predictions and truth. One operator is wrong — fix it.",
+          starterCode: `def mean_squared_error(preds, truth):
+    """Average squared gap over a batch."""
+    total = 0.0
+    for p, t in zip(preds, truth):
+        total += (p - t) ** 0.5   # <-- wrong
+    return total / len(preds)
+`,
+          testCode: `
+cases = [
+    ([31.0, 25.0], [25.0, 25.0], 18.0),
+    ([1.0, 2.0, 3.0], [2.0, 2.0, 2.0], 0.6666666666666666),
+]
+ok = True
+message = "ok"
+for preds, truth, expected in cases:
+    got = mean_squared_error(preds, truth)
+    if abs(got - expected) > 1e-9:
+        ok = False
+        message = f"mse({preds}, {truth}) -> {got}, expected {expected}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Two ETA models each miss by 5 minutes on average. Model A misses every trip by exactly 5; Model B nails 90% of trips and blows 50 minutes on the rest. Under squared error, which is worse, and why does anyone care?",
+            choices: [
+              { id: "a", label: "B — squaring punishes the 50-minute blowups (2500 each) far more than many small fives (25 each)" },
+              { id: "b", label: "A — consistency is worth less than occasional brilliance" },
+              { id: "c", label: "Equal — the average miss is the same, so the loss is the same" },
+              { id: "d", label: "Neither — squared error ignores direction and size" },
+            ],
+            answer: "a",
+            explanation:
+              "Squared error is deliberately non-linear about size: many small misses are cheap, rare huge ones are expensive. If users forgive ±5 minutes but rage at 50, the loss and the business agree — choose it deliberately.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A weather app's model says P(rain) = 0.95; it doesn't rain. Under cross-entropy, how does this compare to saying P(rain) = 0.60 and being wrong?",
+            choices: [
+              { id: "a", label: "0.95-wrong costs about 5× more — cross-entropy punishes confidence in proportion to how wrong it was" },
+              { id: "b", label: "Identical cost — a miss is a miss" },
+              { id: "c", label: "0.60-wrong costs more — hedging is penalized" },
+              { id: "d", label: "Neither is scored — cross-entropy only applies to regression" },
+            ],
+            answer: "a",
+            explanation:
+              "Cross-entropy is −log(P given to truth): −log(0.05) ≈ 3.0 versus −log(0.40) ≈ 0.92. Confident-and-wrong is the maximum crime — which is exactly what teaches models to stay honestly unsure at the boundary.",
+          },
+        ],
+      },
+      {
+        slug: "gradient-descent",
+        title: "Learning by walking downhill",
+        blurb: "Gradient descent: feel the slope, step the other way, repeat — and the learning rate decides everything.",
+        topic: "optimisation",
+        skillIds: ["gradient-descent", "loss-functions"],
+        capability: "Explain the update rule, feel the learning-rate trade-off, and say why this loop powers every network.",
+        minutes: 7,
+        concept: {
+          what: "**Gradient descent** minimizes loss by repeating one step: move each parameter a little in the **opposite direction of the slope**, sized by the **learning rate**.",
+          why: "It's the only learning algorithm most models need — the same loop tunes a line's slope, a forest's splits, and a billion-weight transformer. Slope tells you the direction; the rate sets the stride.",
+          where: [
+            "**Every neural network** trained today — this exact loop, at scale",
+            "**Logistic/linear regression** on large datasets",
+            "**The learning-rate schedule** — the first knob any practitioner tunes",
+          ],
+          whenNot:
+            "It needs a **differentiable loss** and only finds a *local* minimum — flat landscapes (no slope), discrete choices (tree splits), or tiny clean datasets often have better specialized solvers.",
+        },
+        prose: [
+          "Picture the loss as a landscape: every possible setting of the model's parameters is a location, and its altitude is how wrong that setting is. Training is the walk downhill.",
+          "You never see the whole landscape — you only feel the slope under your feet (the **gradient**). So you step the opposite way, a distance set by the **learning rate**. Too small and the walk takes forever; too large and you leap clean over the valley and land higher than you started; well-chosen and each step lands a little lower until the ground flattens.",
+          "This is why the learning rate is the most consequential single number in deep learning. A bad rate doesn't make the model slightly worse — it makes training *fail*: frozen at one end, exploding at the other. When a network 'won't train', the rate is the first suspect, always.",
+        ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Current parameter values" },
+            { kind: "process", text: "Compute the loss slope (gradient)" },
+            { kind: "process", text: "Step opposite the slope × learning rate" },
+            { kind: "decision", text: "Loss still improving?" },
+            { kind: "output", text: "Converged: parameters at the valley floor" },
+          ],
+          loop: "still improving → take another step with the same weights",
+        },
+        exercise: {
+          id: "ex1",
+          title: "Take one step downhill",
+          prompt:
+            "For loss f(x) = (x − 6)², one gradient step is x ← x − rate × slope, where slope = 2 × (x − 6). The formula has two bugs — fix them so the steps land where they should.",
+          starterCode: `def step(x: float, rate: float) -> float:
+    """One gradient-descent step for f(x) = (x - 6)^2."""
+    slope = 2 * x          # <-- wrong
+    return x + rate * slope  # <-- wrong
+`,
+          testCode: `
+cases = [(0.0, 0.4, 4.8), (4.8, 0.4, 5.92), (0.0, 0.05, 0.6)]
+ok = True
+message = "ok"
+for x, rate, expected in cases:
+    got = step(x, rate)
+    if abs(got - expected) > 1e-9:
+        ok = False
+        message = f"step({x}, {rate}) -> {got}, expected {expected}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A team's training log shows loss 2.486 → 2.484 → 2.483 → 2.482 over four epochs. It IS falling, barely. Diagnosis and cheapest fix?",
+            choices: [
+              { id: "a", label: "Learning rate too small — the walk is crawling; raise the rate (or use a schedule) before touching the model" },
+              { id: "b", label: "Learning rate too large — lower it further" },
+              { id: "c", label: "The model has converged perfectly; ship it" },
+              { id: "d", label: "The loss function is wrong; switch to accuracy" },
+            ],
+            answer: "a",
+            explanation:
+              "Monotone-but-glacial descent is the signature of a tiny step size: each step removes a fixed small fraction of the remaining error. Raising the rate multiplies progress per step — try that before any expensive redesign.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Another team's loss goes 2.1 → 2.4 → 1.9 → 2.6 → 1.8, bouncing around, sometimes worse than where it started. What's happening, and what's the fix?",
+            choices: [
+              { id: "a", label: "Steps overshoot the minimum and land on the far wall — the rate is too large; shrink it" },
+              { id: "b", label: "Normal convergence — loss must get worse before it gets better" },
+              { id: "c", label: "The gradient is pointing uphill; flip its sign" },
+              { id: "d", label: "Too little data — collect more before tuning anything" },
+            ],
+            answer: "a",
+            explanation:
+              "Bouncing (and eventually diverging) is overstepping: each stride crosses the valley and climbs the other side, so loss oscillates or grows. Halving the learning rate is the standard first move — the widget in this lesson shows exactly this trajectory.",
+          },
+        ],
+      },
+      {
+        slug: "neural-network-basics",
+        title: "Inside a neuron",
+        blurb: "A neuron is a weighted sum plus a gate — stacked into layers that build features from features.",
+        topic: "deep-learning",
+        skillIds: ["neural-network-basics", "ai-ml-dl"],
+        capability: "Walk through a neuron's math and explain why activations are what make depth work.",
+        minutes: 7,
+        concept: {
+          what: "A **neuron** computes a **weighted sum of its inputs plus a bias, then squeezes it through a nonlinear activation** (a gate). Networks are layers of these feeding each other.",
+          why: "The gate is the whole trick: without nonlinearities, any stack of weighted sums mathematically collapses into **one** weighted sum — depth would add nothing. Gates let layers build **combos of combos**: curves, boundaries, concepts.",
+          where: [
+            "**Face recognition** — edges → shapes → faces, learned automatically",
+            "**Fraud scoring** — layered combinations of amount, velocity, device",
+            "**LLMs** — attention layers feeding gated neurons, at billion scale",
+          ],
+          whenNot:
+            "For small tabular datasets a network is usually **overkill** — a forest or logistic regression trains faster, needs less data, and explains itself. Depth earns its cost on raw, high-dimensional signal.",
+        },
+        prose: [
+          "Strip the mystique: one neuron is linear regression with a gate after it. Each input is multiplied by its **weight** (a dial that says how much this input matters), the results are summed with a **bias**, and the total is bent through an **activation function** — classically an S-curve, today often ReLU (keep positives, zero the rest).",
+          "The nonlinearity is not decoration. Compose straight lines and you get a straight line — so a 50-layer network of pure sums is secretly just one sum, no more expressive than regression. Compose *bent* lines and each layer can carve new structure: **bends of bends** can approximate any shape. That theorem — not scale — is why depth works.",
+          "What do layers actually learn? On images: early neurons fire for edges, deeper ones for textures, deeper still for object parts. Nobody assigns these roles — gradient descent turns the dials until each layer's output happens to help the next. **Features are learned, not designed** — the deep-learning promise in one sentence.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "An engineer removes all activation functions from a 20-layer network 'to simplify the math'. What capability is destroyed?",
+            choices: [
+              { id: "a", label: "Expressive power — 20 layers of pure weighted sums collapse into the equivalent of one linear layer" },
+              { id: "b", label: "None — activations are only for visualization" },
+              { id: "c", label: "Only speed — the model still learns curves, just slower" },
+              { id: "d", label: "The ability to have more than one input" },
+            ],
+            answer: "a",
+            explanation:
+              "A linear function of a linear function is linear. Without gates, depth is an illusion — the whole network computes one weighted sum, incapable of curved boundaries regardless of how many layers you pay for.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your team has 900 rows of customer data (20 columns) to predict upgrade-or-not. A new hire proposes a 30-layer network. Based on when neural networks are worth it, what's the better first move?",
+            choices: [
+              { id: "a", label: "Start with logistic regression or a small forest — small structured data rarely justifies depth; upgrade only if they plateau" },
+              { id: "b", label: "Approve the 30-layer network — more layers always fit small data better" },
+              { id: "c", label: "Refuse networks forever on this dataset — they never work on tables" },
+              { id: "d", label: "Use the network but with all activations removed, to keep it simple" },
+            ],
+            answer: "a",
+            explanation:
+              "Depth pays on raw, high-volume signal (pixels, audio, text) where features must be learned. On 900 tidy rows it mostly memorizes noise (variance!) while a simple model trains in seconds and explains itself. Start simple, escalate on evidence.",
+          },
+        ],
+      },
+      {
+        slug: "backpropagation-intuition",
+        title: "Blame, assigned backwards",
+        blurb: "Backpropagation: the guess flows forward, the error flows back, every dial gets its nudge.",
+        topic: "deep-learning",
+        skillIds: ["backpropagation", "neural-network-basics"],
+        capability: "Trace how a prediction's error is assigned back to individual weights and turned into updates.",
+        minutes: 7,
+        concept: {
+          what: "**Backpropagation** runs the network forward to get a prediction and its loss, then applies the **chain rule backward** so every weight receives its share of the blame — its **gradient**.",
+          why: "A network has millions of weights and one loss. Without an efficient blame-assignment scheme, tuning would be guesswork; with it, gradient descent gets an exact direction for **every dial at once**.",
+          where: [
+            "**Every deep-learning framework** — one `loss.backward()` call",
+            "**Transfer learning** — gradients flow into reused layers too",
+            "**The 'why is training slow/expensive' question** — this pass is the bulk of the compute",
+          ],
+          whenNot:
+            "Backprop needs a **differentiable** path from loss to weights — discrete steps, hard rules, and non-differentiable rewards need other tricks (that's where RL's gradient workarounds begin).",
+        },
+        prose: [
+          "A network commits to a guess; the loss puts a number on how wrong it was. The question that makes learning possible: *of all the thousands of dials inside, which ones caused it?* Backpropagation answers with bookkeeping.",
+          "It walks the error backward along the same paths the signal took forward. The output layer asks 'how much should I have differed?' Each connection passes a share of that error back, scaled by how much it amplified or dampened the signal — the chain rule, applied layer by layer until every weight holds its own gradient: *nudge me this much, this direction*.",
+          "One training step is then complete: forward (guess), loss (score), backward (blame), nudge (gradient descent). Repeat across thousands of batches and the nudges compound from noise into structure. When you read that training a frontier model took a month on ten thousand GPUs — this loop, and nothing fancier, is what ran.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "After a backward pass, one weight has gradient almost exactly 0 while another has a large gradient. What does that tell you about the coming update?",
+            choices: [
+              { id: "a", label: "The zero-gradient weight barely influenced this error and will barely move; the large-gradient weight gets the biggest nudge" },
+              { id: "b", label: "The zero-gradient weight is broken and should be deleted" },
+              { id: "c", label: "Both weights always move by the same amount — gradients only set direction" },
+              { id: "d", label: "The large-gradient weight is the most accurately trained one" },
+            ],
+            answer: "a",
+            explanation:
+              "The gradient is proportional contribution to the error. A near-zero gradient means this dial barely moved the signal that ended up wrong — the update leaves it almost untouched. Blame, exactly proportioned.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A teammate claims backpropagation is a second learning algorithm that runs after gradient descent finishes. What's the correction?",
+            choices: [
+              { id: "a", label: "They're two halves of one step — backprop computes each weight's gradient; gradient descent uses those gradients to update. Neither completes alone" },
+              { id: "b", label: "Correct — backprop re-trains the model after deployment" },
+              { id: "c", label: "Backprop replaces the loss function during testing" },
+              { id: "d", label: "Gradient descent computes gradients; backprop applies them" },
+            ],
+            answer: "a",
+            explanation:
+              "The division of labor: backprop = blame computation (the chain-rule pass producing gradients), gradient descent = the update rule (weights -= rate × gradient). Every training step does both — forward, loss, backward, nudge.",
+          },
+        ],
+      },
+      {
+        slug: "bias-variance-tradeoff",
+        title: "The Goldilocks diagnosis",
+        blurb: "Bias–variance: two error numbers tell you which way your model is broken — and which cure it needs.",
+        topic: "evaluation",
+        skillIds: ["bias-variance", "overfitting", "train-test-split"],
+        capability: "Diagnose underfitting vs overfitting from train/test errors and prescribe the right fix.",
+        minutes: 6,
+        concept: {
+          what: "**Bias–variance** is the diagnosis from two numbers: error on training data and error on held-out data. **High both = bias** (too simple); **low train + high test = variance** (memorized).",
+          why: "The two failures have **opposite cures** — more complexity for bias, less complexity or more data for variance. Misdiagnose and you'll make the disease worse while 'tuning'.",
+          where: [
+            "**Model selection** — depth of tree, size of network, degree of polynomial",
+            "**Model cards and reviews** — train/test gaps reported as evidence",
+            "**'Should we get more data?'** — the answer is variance-shaped, not always yes",
+          ],
+          whenNot:
+            "On tabular problems with strong ensembles the trade-off shifts — boosted trees walk the U-curve automatically; and with enough data both errors can fall together. Treat it as a diagnosis, not a law of suffering.",
+        },
+        prose: [
+          "You already met this disease in the Layman course as *memorizing vs. understanding*. The formal version needs no pictures — just two numbers. Score the model on the data it trained on, and on data it has never seen.",
+          "**High error on both** is bias: the model is too simple to capture the pattern even in the material it studied — underfitting. **Tiny training error with a wide gap to test error** is variance: it memorized quirks of the study material that don't exist in the wild — overfitting. The gap itself is the tell.",
+          "The cures are opposite. Bias wants capacity: more features, deeper trees, bigger networks. Variance wants restraint: more data, simpler models, regularization. This is why 'add more layers' and 'get more data' are answers to *different* diseases — and why diagnosing before prescribing is the actual skill.",
+        ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Underfitting", subtitle: "high bias" },
+          right: { title: "Overfitting", subtitle: "high variance" },
+          rows: [
+            { label: "Train error", left: "high — can't even fit what it studied", right: "very low — aced the study material" },
+            { label: "Test error", left: "high — and close behind train", right: "high — with a wide gap vs train" },
+            { label: "The cure", left: "add capacity: features, depth, size", right: "restrain: data, simplicity, regularization" },
+          ],
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A model reports 0.5% error on training data and 24% on the test set. Before anyone proposes a fix, what's the diagnosis?",
+            choices: [
+              { id: "a", label: "High variance — it memorized the training data; more capacity would make it worse" },
+              { id: "b", label: "High bias — the model is too simple for the task" },
+              { id: "c", label: "Healthy — training is supposed to be much easier" },
+              { id: "d", label: "Data leakage — the test set is contaminated" },
+            ],
+            answer: "a",
+            explanation:
+              "The near-zero train error with a huge test gap is the variance signature: rules fitted to noise that doesn't repeat. The cure is restraint or more data — adding capacity deepens the memorization.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Team A's model shows 30% train / 32% test error; Team B's shows 31% train / 60% test. Both leads ask for 'a bigger model'. Who will the upgrade actually help?",
+            choices: [
+              { id: "a", label: "Team A — high bias means capacity is the bottleneck; Team B's variance would explode with a bigger model" },
+              { id: "b", label: "Team B — a bigger model closes the train–test gap" },
+              { id: "c", label: "Both — bigger models fix all error" },
+              { id: "d", label: "Neither — error can only be fixed by more labels" },
+            ],
+            answer: "a",
+            explanation:
+              "Team A is uniformly underfit — more capacity gives the pattern room to be learned. Team B is already overfit; capacity is the disease, not the cure. Same request, opposite correctness — which is the entire point of diagnosing first.",
+          },
+        ],
+      },
+      {
+        slug: "ensemble-methods",
+        title: "Committees of weak models",
+        blurb: "Random forests and gradient boosting: many weak models, mistakes that cancel, one strong committee.",
+        topic: "ml-models",
+        skillIds: ["ensemble-methods", "decision-trees", "bias-variance"],
+        capability: "Explain bagging vs boosting, and choose the right ensemble (or none) for a problem.",
+        minutes: 7,
+        concept: {
+          what: "An **ensemble** combines many weak models into one committee — **bagging** (random forest) grows independent models on random data slices and averages; **boosting** grows models in sequence, each fixing its predecessors' mistakes.",
+          why: "Independent mistakes **cancel** when averaged, so many high-variance models can share one low-variance answer; and sequentially targeting residuals chisels bias away. This is why ensembles still win most tabular competitions.",
+          where: [
+            "**Fraud / credit scoring** — gradient-boosted trees on tabular features",
+            "**Kaggle and ML benchmarks** on structured data — the default winner",
+            "**Random forest as a robust baseline** — hard to overfit, few knobs",
+          ],
+          whenNot:
+            "On raw perception data (pixels, audio, text) trees can't learn features from scratch — neural networks take over. And ensembles cost **interpretability and latency**: 500 votes are harder to explain and slower than one model.",
+        },
+        prose: [
+          "One deep decision tree is a sharper memorizer: fit razor-thin rules to the exact rows it saw, noise included. Shake the data slightly and the rules rewrite themselves. But that weakness — *each tree is wrong somewhere different* — becomes the ensemble's fuel.",
+          "**Bagging** (bootstrap aggregating) exploits it directly: train each tree on a random slice of rows with a random subset of features, so each tree overfits to *different* noise. Average their votes and the noise terms cancel while the true signal — which they all see — survives. That's a **random forest**: variance, averaged away.",
+          "**Boosting** runs the opposite direction: trees are grown **in sequence**, each new small tree trained on the current committee's residual errors, then added in with a gentle weight. Bias, chiseled away chip by chip. Gradient boosting machines (XGBoost, LightGBM) remain the tool to beat on tabular business data — a humbling fact for deep-learning enthusiasts.",
+        ],
+        diagram: {
+          kind: "compare",
+          left: { title: "Bagging · random forest", subtitle: "parallel, independent" },
+          right: { title: "Boosting · gradient boosting", subtitle: "sequential, corrective" },
+          rows: [
+            { label: "Where to use", left: "high-variance models (deep trees); want robustness", right: "high-bias models (stumps); want maximum accuracy" },
+            { label: "How trees relate", left: "independent — random slices, averaged votes", right: "each tree trains on the previous ones' errors" },
+            { label: "When NOT to use", left: "when interpretability or latency matters most", right: "small noisy data — the sequence can memorize; needs careful tuning" },
+          ],
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Your random forest's individual trees each score 78% on held-out data, but their averaged prediction scores 91%. A stakeholder asks how 78s become a 91. What's the explanation?",
+            choices: [
+              { id: "a", label: "Each tree is wrong on different rows; where one is wrong, others tend to be right, so majority noise cancels while shared signal adds up" },
+              { id: "b", label: "The averaging code secretly retrains the trees on the test set" },
+              { id: "c", label: "Each tree improves to 91% once it learns it will be averaged" },
+              { id: "d", label: "78% was measured wrong; the trees were always at 91%" },
+            ],
+            answer: "a",
+            explanation:
+              "Independence is the magic: errors that don't correlate partially cancel in the vote, signal that everyone shares reinforces. This is exactly why bagging works — and why it needs the trees to be *different* (random slices and features).",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A team must predict equipment failure from 40 sensor readings (5,000 rows), and the on-call engineer must be able to explain any single alert to a plant operator. Gradient boosting hits 93% but is a forest of 300 trees. What's the sound recommendation?",
+            choices: [
+              { id: "a", label: "Try a single shallow tree (or logistic regression) first — if it lands near the boost's accuracy, its explainability wins the tie on the shop floor" },
+              { id: "b", label: "Ship the boosted model — accuracy is the only criterion in safety settings" },
+              { id: "c", label: "Ensembles are banned in industry; use a neural network" },
+              { id: "d", label: "Average the boosted model with a linear model to make it explainable" },
+            ],
+            answer: "a",
+            explanation:
+              "Explainability and latency are real requirements — the ensemble 'when NOT'. With tidy tabular data a simple model may land close enough that per-alert explanations are worth a point of accuracy. Measure the gap, then decide with eyes open.",
+          },
+        ],
+      },
+      {
+        slug: "evaluation-metrics",
+        title: "Grading honestly",
+        blurb: "Accuracy lies on lopsided data. The confusion matrix, precision, recall, and cross-validation don't.",
+        topic: "evaluation",
+        skillIds: ["classification-metrics", "cross-validation", "train-test-split"],
+        capability: "Build and read a confusion matrix, choose precision vs recall by mistake cost, and explain cross-validation.",
+        minutes: 7,
+        concept: {
+          what: "Grade a classifier from its **confusion matrix** — the 2×2 of true/false positives/negatives. **Precision** = of what we flagged, how much was real; **recall** = of what was real, how much we caught.",
+          why: "**Accuracy collapses on imbalance** — a 'never fraud' model scores 99% while doing nothing. Precision and_recall expose the two different ways to be good, and their trade-off is a business decision, not a math one.",
+          where: [
+            "**Fraud / churn / disease screening** — anything with a rare positive class",
+            "**Alert and moderation systems** — false alarms vs missed cases, priced",
+            "**Model comparison in reports** — one matrix beats ten percentages",
+          ],
+          whenNot:
+            "Don't chase a single 'best' metric: F1, balanced accuracy, or ROC-AUPRC each hide a different trade. Choose the metric **from the cost of each mistake** — or the grade will quietly optimize the wrong thing.",
+        },
+        prose: [
+          "Say 'always genuine' on payment traffic where 1% is fraud, and you're right 99 times in 100. Accuracy cannot distinguish that lazy oracle from a working model — the base rate does all the work. On any lopsided problem, accuracy is decoration.",
+          "The confusion matrix refuses to hide anything: of the **actual fraud**, how much did we catch (recall)? Of what we **flagged**, how much was real (precision)? Every classifier lives on this seesaw — tighten the cutoff and precision rises while recall falls; loosen it and the reverse. Which side to weight is decided by which mistake costs more: a false alarm that wastes an analyst hour, or a missed fraud that costs the customer.",
+          "One more honesty layer: a single train/test split is one exam, and exams have lucky days. **Cross-validation** rotates the test fold — train on 4 parts, test on 1, five times — so every row gets graded once on material it never saw, and the average score stops depending on which 20% you happened to pick.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "Compute precision and recall",
+          prompt:
+            "Given the four confusion-matrix counts, precision() has swapped its formula with recall(). Fix both so the tests pass.",
+          starterCode: `def precision(tp, fp, fn):
+    """Of everything flagged, the fraction that was real."""
+    return tp / (tp + fn)   # <-- wrong
+
+def recall(tp, fp, fn):
+    """Of everything real, the fraction that was caught."""
+    return tp / (tp + fp)   # <-- wrong
+`,
+          testCode: `
+ok = True
+message = "ok"
+if abs(precision(92, 138, 61) - 92 / 230) > 1e-9:
+    ok = False
+    message = f"precision -> {precision(92, 138, 61)}, expected {92 / 230}"
+if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
+    ok = False
+    message = f"recall -> {recall(92, 138, 61)}, expected {92 / 153}"
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A factory inspection model has precision 0.98 and recall 0.35. The quality lead says: 'Great — when it flags a defect, it's almost always real.' What is she missing?",
+            choices: [
+              { id: "a", label: "65% of actual defects pass uninspected — high precision with low recall means the flagged ones are real but most bad units sail through" },
+              { id: "b", label: "Nothing — precision is the only metric that matters for quality" },
+              { id: "c", label: "That precision 0.98 implies accuracy 0.98" },
+              { id: "d", label: "That the model needs more false alarms to be safe" },
+            ],
+            answer: "a",
+            explanation:
+              "The two metrics guard different doors. Precision guards against crying wolf (0.98 — excellent); recall guards against misses (0.35 — two-thirds of defects escape). Whether that's acceptable depends on the cost of a defective unit reaching a customer.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Two teams each report '90%' for their model. Team A used one 80/20 split; Team B used 5-fold cross-validation and averaged. Same number, different trust — why does the review favor Team B's?",
+            choices: [
+              { id: "a", label: "Five held-out exams on rotating folds average out a lucky or unlucky split; one fold can flatter or sandbag a model by several points" },
+              { id: "b", label: "Cross-validation trains on more data per fold, so its score is automatically higher" },
+              { id: "c", label: "Team A's score is wrong — a single split always overstates accuracy" },
+              { id: "d", label: "Averaging five numbers is just more precise arithmetic" },
+            ],
+            answer: "a",
+            explanation:
+              "A single held-out fold is a sample of size one — variance in *which* rows landed in it flows straight into the score. Rotating folds makes every row take one turn being tested, so the average reflects the model, not the partition luck.",
+          },
+        ],
+      },
+      {
+        slug: "data-leakage-and-imbalance",
+        title: "The two traps",
+        blurb: "Leakage and imbalance: the failures that look like success until the model meets reality.",
+        topic: "evaluation",
+        skillIds: ["data-leakage", "classification-metrics", "data-quality"],
+        capability: "Spot the three common leakage patterns, explain why they inflate scores, and choose fixes for imbalance.",
+        minutes: 7,
+        concept: {
+          what: "**Leakage** is information from the future (or from the test set) contaminating training — producing scores too good to be true. **Imbalance** is a rare positive class that makes plain accuracy meaningless.",
+          why: "These are the two most common causes of 'brilliant offline, useless online' models — and both are **invisible in the loss**: the model looks great right up until it meets data it can't cheat on.",
+          where: [
+            "**Any pipeline with fitted preprocessing** — scalers, encoders, imputers",
+            "**Any time-series problem** — tomorrow's rows leaking into yesterday's model",
+            "**Any rare-event domain** — fraud, defects, disease, churn",
+          ],
+          whenNot:
+            "Not every good score is leakage — a genuinely easy problem (linearly separable, stable distribution) can honestly score 0.99. The test is *whether information existed that wouldn't exist at prediction time*, not the score itself.",
+        },
+        prose: [
+          "The symptom pattern is unmistakable in hindsight: near-perfect offline metrics, then a live model barely better than rules. The cause is usually one of two quiet killers — and neither throws an error.",
+          "**Leakage** means the training process saw information it would not have at prediction time. The classics: fitting your scaler on all rows (test averages whisper into training); a feature like `days_to_close: 0` that only exists for already-resolved cases; the same patient or session appearing on both sides of the split. Each one lets the model peek at the answers — and the score soars.",
+          "**Imbalance** is quieter: with 7 positives in 1,000, 'always no' scores 99.3%, so accuracy can't feel the class you care about. The fix isn't magic sampling — it's grading honestly (recall, precision, AUPRC) and training with class weights so each rare positive actually pulls the model. Then the 60-second audit above, every time, before any score leaves your laptop.",
+        ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Your offline score is spectacular. Is it real?",
+            branches: [
+              {
+                label: "feature knows something only knowable AFTER the label",
+                node: { kind: "leaf", answer: "Leakage — remove or time-align the feature" },
+              },
+              {
+                label: "anything fitted on all data before the split",
+                node: { kind: "leaf", answer: "Leakage — refit on train only" },
+              },
+              {
+                label: "same entity in train AND test",
+                node: { kind: "leaf", answer: "Leakage — split by group" },
+              },
+              {
+                label: "rare positive class, graded by accuracy",
+                node: { kind: "leaf", answer: "Imbalance — regrade with recall/precision" },
+              },
+            ],
+          },
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A loan-default model trains on features including `months_since_last_default`. The label is 'defaults within 90 days of application'. Offline AUC: 0.96. On fresh applications it collapses. The feature's values are only filled in for customers who already had a default recorded after applying. What happened?",
+            choices: [
+              { id: "a", label: "Leakage — the feature encodes the future outcome; rows where it's filled are already marked, so the model reads the answer off a feature" },
+              { id: "b", label: "Imbalance — defaults are rare, so the AUC was meaningless" },
+              { id: "c", label: "Overfitting — a smaller model would generalize the same features" },
+              { id: "d", label: "Concept drift — the market changed between training and launch" },
+            ],
+            answer: "a",
+            explanation:
+              "The rule: at prediction time (application moment), that value doesn't exist yet. A feature only populated by post-outcome events is the label in disguise — textbook leakage, and the 0.96 was the model reading its own answer sheet.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A medical screening dataset has 0.4% positive cases. The team boosts accuracy from 99.1% to 99.4% with a new model and wants to ship. What must they show before anyone celebrates?",
+            choices: [
+              { id: "a", label: "Recall and precision on the positive class — 'always healthy' already scores 99.6%, so accuracy can't distinguish a working screener from a useless one" },
+              { id: "b", label: "Nothing — 0.3 points of accuracy on 0.4% positives is decisive" },
+              { id: "c", label: "Only that the training loss decreased smoothly" },
+              { id: "d", label: "A bigger test set — size alone fixes the imbalance problem" },
+            ],
+            answer: "a",
+            explanation:
+              "The lazy baseline scores 99.6% by saying no — both their models are *below* it on accuracy! The only metrics that can feel 4-in-1000 positives are recall/precision (or AUPRC). On rare-event problems, accuracy isn't just weak — it can rank a working model below doing nothing.",
           },
         ],
       },
@@ -830,6 +1562,79 @@ for claim, expected in cases:
             answer: "a",
             explanation:
               "Supervised needs labels attached to samples. Unmarked emails would be unsupervised territory — and no amount of extra unmarked data fixes that.",
+          },
+        ],
+      },
+      {
+        slug: "predicting-numbers",
+        title: "Predicting a number, not a category",
+        blurb: "Sometimes the answer isn't a bucket — it's a number on a scale.",
+        topic: "layman-paradigms",
+        skillIds: ["supervised-learning", "regression-basics"],
+        capability: "Tell classification (which one) apart from regression (how much) and read a trend-line prediction.",
+        minutes: 4,
+        concept: {
+          what: "Supervised learning answers two kinds of questions: **which one** (a category) and **how much** (a number). Predicting a number is called **regression**.",
+          why: "Half the useful predictions in life are numbers, not buckets — **travel time, prices, temperatures**. A model that can only sort into categories can't answer them.",
+          where: [
+            "**Delivery apps** showing “arrives in 24 min”",
+            "**Ride fares** estimated before you book",
+            "**Weather forecasts** predicting tomorrow's temperature",
+          ],
+          whenNot:
+            "Not regression when the answer is a **choice from fixed buckets** (spam or not, car or bike) — that's classification, even if the buckets look like numbers.",
+        },
+        prose: [
+          "Every classifier you've met so far answers **which one?** — car or bike, spam or genuine. But many questions aren't choices at all. “How long will the trip take?” “What will this cost?” The answer is a **number**, anywhere on a scale.",
+          "The trick is the same one the whole course uses: **past examples**. Draw every past trip as a dot — distance across, minutes up — and a pattern appears: farther trips took longer. One smooth line through the middle of the dots captures the trend.",
+          "To answer a new question, you don't guess — you **read the line**. A 10 km trip lands on the line at about 26 minutes. The model's whole job was learning where that line sits, from thousands of past trips.",
+          "That's the split inside supervised learning: **classification picks a bucket, regression reads a number off the trend**. Same skeleton — samples in, pattern out, prediction for a new case.",
+        ],
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "What kind of answer does the task need?",
+            branches: [
+              {
+                label: "a choice from fixed buckets",
+                node: { kind: "leaf", answer: "Classification" },
+              },
+              {
+                label: "a number on a scale",
+                node: { kind: "leaf", answer: "Regression" },
+              },
+            ],
+          },
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A food-delivery app wants to show “arrives in ~28 minutes” when a customer orders. It has years of past deliveries with the actual time each took. Is this classification or regression?",
+            choices: [
+              { id: "a", label: "Regression — minutes is a number on a scale, learned from past examples" },
+              { id: "b", label: "Classification — deliveries are sorted into buckets" },
+              { id: "c", label: "Neither — nobody can predict the future" },
+            ],
+            answer: "a",
+            explanation:
+              "The answer is a quantity (minutes), not a choice between buckets, and it's learned from labelled past deliveries — that's regression, the number-predicting half of supervised learning.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A movie app asks: will this viewer click this trailer — yes or no? A weather service asks: how many millimetres of rain tomorrow? Which pairing is correct?",
+            choices: [
+              { id: "a", label: "Trailer click = classification (yes/no bucket); rain amount = regression (a number)" },
+              { id: "b", label: "Trailer click = regression; rain amount = classification" },
+              { id: "c", label: "Both are classification, because apps make choices" },
+            ],
+            answer: "a",
+            explanation:
+              "Yes/no is a two-bucket choice — classification. Millimetres is a number on a scale — regression. Same skeleton, different kind of answer.",
           },
         ],
       },
@@ -1647,7 +2452,7 @@ for claim, expected in cases:
           where: [
             "**Spam filters** that read millions of marked emails",
             "**Keyboards** guessing your next word from your history",
-            "**Face unlock** recognising you in bad light",
+            "**ChatGPT** — next-word prediction learned from vast amounts of text",
           ],
           whenNot:
             "Not every clever feature is ML — a **fixed rule** (timer, calculator, sort-by-date) is ordinary programming. Ask what examples it learned from to tell them apart.",
@@ -1656,6 +2461,7 @@ for claim, expected in cases:
           "You’ve used **machine learning a dozen times today already**. Spam filters deciding what reaches your inbox. Keyboards guessing your next word. Face unlock recognising you in bad light.",
           "Each one is the same skeleton you now know: **samples in, a learned pattern out, predictions on new cases**. A spam filter read millions of marked emails; your keyboard watched which words follow yours.",
           "Once you see the skeleton, ‘AI magic’ turns into something you can question: **what were the examples? What is it predicting? What happens when it’s wrong?**",
+          "That includes the headline AI of today. **ChatGPT** learned from enormous amounts of text to do one thing: predict the next word. An image generator predicts what pixels usually come next. Generative AI isn’t a different species — it’s the **same samples-in, pattern-out skeleton**, working at a scale no phone feature matches.",
         ],
         questions: [
           {
@@ -9044,6 +9850,817 @@ for before, after, expected in cases:
       },
     ],
   },
+  {
+    slug: "advanced-machine-learning",
+    title: "Advanced Machine Learning",
+    subtitle:
+      "Deep learning to LLMs, visually: how modern models are built, trained, fine-tuned, and shipped.",
+    description:
+      "One case — Mango Labs, a four-person team turning a photo classifier into an LLM-powered crop advisory — carries you from neurons to production. Backprop and optimizers done properly, CNNs, attention and the transformer, the LLM training pipeline, LoRA fine-tuning, RLHF/DPO alignment, diffusion, multimodal embeddings, MoE/Mamba architectures, and the capstone: the full train→eval→deploy→drift→retrain loop. Expert-level, problem-first, with the costs and the counter-arguments.",
+    level: "expert",
+    domain: "Machine Learning",
+    access: "paid",
+    prerequisites:
+      "The expanded Machine Learning course (regression, loss, gradient descent, neurons, backprop intuition, metrics) or equivalent working knowledge.",
+    lessons: [
+      {
+        slug: "neurons-and-layers",
+        title: "Depth is a feature factory",
+        blurb: "Why stacked layers build feature interactions that no single layer can represent.",
+        topic: "deep-learning",
+        skillIds: ["deep-representations", "neural-network-basics"],
+        capability: "Reason about when depth buys representational power and when it buys only cost.",
+        minutes: 10,
+        concept: {
+          what: "Each layer **re-describes its input** in a new representation; stacking lets later layers learn **combinations of combinations** — interactions (spots × humidity) that no single weighted sum can express.",
+          why: "This is the entire case for depth: a deep network can make its **last hidden layer linearly separable** even when the raw data is tangled — it bends the space so a straight line works.",
+          where: [
+            "**Vision** — edges → textures → object parts, learned unprompted",
+            "**LLMs** — morphemes → syntax → meaning → task behavior, one stack",
+            "**Tabular deep models** — learned crosses replacing hand-built feature interactions",
+          ],
+          whenNot:
+            "Thin data with already-meaningful features: depth mostly adds **variance and cost**. With ~1k rows and known-good features, a forest or linear model is the honest baseline — depth must be earned.",
+        },
+        prose: [
+          "The expert framing: a neural network is a **composition of parametric functions**, and its capacity comes from that composition. Single-layer models are closed under addition and scaling but not under composition — you cannot build 'rust fires only when spots AND humidity co-occur' from a weighted sum, at any weight setting. Two layers build it trivially: threshold each, then threshold the pair.",
+          "The representation view is the diagnostic one. Kernel methods, PCA, and single hidden layers all fail the same way when classes are tangled non-linearly; a trained deep stack succeeds because **by the last hidden layer the classes have been untangled** — which is measurable (probe the layer, fit a linear classifier) and should be part of any deep-model review.",
+          "The counter-case deserves respect: on wide, shallow-signal tabular problems, gradient-boosted trees remain SOTA in 2026 benchmarks. Reach for depth when the signal is **compositional** (pixels, audio, tokens, dense interactions) and you have the data to feed it — and be ready to defend the choice with a probe or an ablation, not vibes.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A review finds a fraud team's 12-layer network performs no better than their logistic regression baseline — same features, same AUC. Training curves show both fit to the same ceiling. What's the most defensible diagnosis?",
+            choices: [
+              { id: "a", label: "The feature set is already linearly sufficient for the learnable signal — depth has nothing compositional to build; simplify to the interpretable model" },
+              { id: "b", label: "The network needs more layers to express the same function" },
+              { id: "c", label: "The optimizer failed — switching to SGD will unlock depth's advantage" },
+              { id: "d", label: "Fraud detection is impossible with neural networks" },
+            ],
+            answer: "a",
+            explanation:
+              "Equal ceilings with equal features says the bottleneck is the signal, not the hypothesis space: if depth could compose new useful features from these inputs, the curves would diverge. When depth buys nothing, ship the model you can explain to a regulator.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "You probe a trained vision model: a linear classifier on the last hidden layer separates classes at 99%, but on the first hidden layer only 61%. What does this pair of numbers tell you?",
+            choices: [
+              { id: "a", label: "The intermediate layers are doing real representational work — the tangled raw space has been progressively straightened by the stack" },
+              { id: "b", label: "The first layer is broken and should be reinitialized" },
+              { id: "c", label: "The model is overfitting because the last layer separates too well" },
+              { id: "d", label: "Linear probes are meaningless on hidden layers" },
+            ],
+            answer: "a",
+            explanation:
+              "The probe gap IS the feature factory's output meter. Early layers re-describing data into separable structure is the mechanism this lesson claims — and the probe is how you verify it on a real model instead of trusting the architecture diagram.",
+          },
+        ],
+      },
+      {
+        slug: "how-networks-learn",
+        title: "The optimizer decides",
+        blurb: "SGD, momentum, Adam, and schedules — where 'the model won't train' actually lives.",
+        topic: "optimisation",
+        skillIds: ["optimizers", "gradient-descent"],
+        capability: "Diagnose training pathologies from loss curves and prescribe optimizer/schedule fixes in order.",
+        minutes: 11,
+        concept: {
+          what: "Training = **mini-batch gradient descent**: sample a batch, backprop its loss, step every weight opposite its gradient, scaled by the **learning rate**. Momentum adds inertia; **Adam** gives each parameter an adaptive step size.",
+          why: "At scale, optimization failures look like modeling failures: NaN loss, glacial progress, and loss plateaus are almost always **rate, momentum, or schedule** problems — and they're cheap to fix relative to architecture rework.",
+          where: [
+            "**AdamW** — the default optimizer across most modern training",
+            "**Warmup + cosine decay** — the standard schedule for transformers",
+            "**Loss-curve triage** — the first artifact checked in any training review",
+          ],
+          whenNot:
+            "When the loss curve is healthy but held-out performance is poor, the optimizer is **not** the problem — that's a data/regularization/variance issue, and no schedule will save it.",
+        },
+        prose: [
+          "The mechanics in one breath: a mini-batch gives a **noisy estimate** of the true gradient; the update moves weights against it. Vanilla SGD's noise is a feature (it escapes sharp minima) and a bug (it rattles across ravines — long narrow valleys where the curvature differs wildly per direction).",
+          "Momentum averages recent gradients so the perpendicular rattle cancels and the along-valley progress accumulates — a ball with inertia. Adam goes further: per-parameter step sizes normalized by each weight's own gradient history (first and second moments), so flat directions speed up and spiky ones calm down. AdamW decouples weight decay from that adaptation, which is why it's the default.",
+          "Schedules finish the picture: **warmup** (early gradients are garbage — big steps on garbage diverge), a hold at peak, then **decay** so the final phase carves rather than knocks. The Mango log in the visual is the canonical triage: crawl → raise rate; NaN → lower rate and add warmup; healthy → stop tuning and check held-out. Optimizer and schedule before architecture, every time.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Loss goes NaN at step 300 every run, across three different architectures, with lr=0.1. A teammate proposes redesigning the model for a fourth time. What's the professionally correct response?",
+            choices: [
+              { id: "a", label: "Stop redesigning: identical NaN timing across architectures is the signature of an optimization blowup — drop the rate an order of magnitude and add warmup before touching the model again" },
+              { id: "b", label: "Agree — architecture is the likely cause of NaN" },
+              { id: "c", label: "NaN is normal in training and safe to ignore if the final loss is good" },
+              { id: "d", label: "Switch the loss function to accuracy so it can't overflow" },
+            ],
+            answer: "a",
+            explanation:
+              "Architecture-dependent failures diverge in timing and shape; clockwork NaN at the same step is dynamics, not design — exploding updates from a too-large rate, usually with no warmup. The cheapest experiment (lr 1e-2, warmup) resolves it in one run.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Two vision teams report: team A uses vanilla SGD+momentum with a patiently tuned schedule and matches team B's AdamW results by a fraction of a percent, at lower memory cost. What's the honest takeaway for choosing an optimizer?",
+            choices: [
+              { id: "a", label: "AdamW is the tuning-cheap default; tuned SGD+momentum can match or beat it in some regimes (vision, big batches) — the choice is a tuning-budget decision, not a capability one" },
+              { id: "b", label: "Adam-family optimizers are strictly superior everywhere" },
+              { id: "c", label: "SGD is obsolete and should never be used" },
+              { id: "d", label: "Optimizer choice has no measurable effect on final loss" },
+            ],
+            answer: "a",
+            explanation:
+              "The empirical reality: adaptive methods converge with less tuning; SGD with momentum reaches similar optima when you can afford the schedule search, especially in vision. Teams pick by tuning budget and memory, not by folklore — and log the choice with the run.",
+          },
+        ],
+      },
+      {
+        slug: "regularizing-deep-nets",
+        title: "Fighting memorization",
+        blurb: "Dropout, batch norm, early stopping, augmentation — variance medicine for deep nets.",
+        topic: "deep-learning",
+        skillIds: ["deep-regularization", "bias-variance"],
+        capability: "Match each regularizer to the failure surface it treats, and recognize when regularization is the wrong prescription.",
+        minutes: 10,
+        concept: {
+          what: "Deep nets with more parameters than examples **memorize by default**; regularizers fight back: **augmentation** (free data), **early stopping** (quit before memorization), **dropout** (random sub-nets, ensemble effect), **batch norm** (steadier activations, higher workable rates).",
+          why: "The train/validation gap is the prescription metric: every regularizer closes it by making training **deliberately harder** — and they compose, attacking different surfaces of the same variance problem.",
+          where: [
+            "**Vision** — augmentation pipelines are half the model",
+            "**Transformers** — dropout + weight decay + early stopping, standard",
+            "**Small-data fine-tuning** — freeze + augment, before any new parameters",
+          ],
+          whenNot:
+            "Regularizers are **variance** medicine. When train and validation errors are both high (bias), dropout makes it worse — it removes capacity from a model that needed more. Diagnose first; prescribe second.",
+        },
+        prose: [
+          "The deep-learning version of the bias–variance diagnosis you met in the intermediate course: parameters ≫ examples guarantees the *capacity* to memorize (Mango: 14k parameters per photo), so the question is never 'can it overfit?' but 'what stops it?'. The train/val gap is the measurement; the four tools are the levers.",
+          "Each lever attacks a different surface. Augmentation multiplies effective data (every photo becomes ten in-distribution variants — the only regularizer that helps *bias* too). Early stopping halts at the validation minimum, before the memorization phase. Dropout randomly silences neurons per step so no pathway can over-specialize — training an implicit ensemble of thousands of thinner networks that share weights. Batch norm normalizes layer inputs batch-to-batch, which steadies the optimization landscape (and lets larger learning rates survive) with a mild regularizing side effect.",
+          "The professional order: augmentation and early stopping first (cheap, always right), then dropout if the gap persists, then reconsider the whole setup — the strongest regularizer in deep learning is usually **transfer learning**, trading the from-scratch memorization problem for a much smaller one.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A team reports: train accuracy 58%, validation accuracy 55%, on a small dataset. Their lead directs everyone to 'add dropout 0.5 and stronger augmentation — it fixed overfitting last quarter.' What's wrong with the direction?",
+            choices: [
+              { id: "a", label: "The 3-point gap is small and both errors are high — this is a bias/underfit regime; removing capacity will lower both scores. They need better features, transfer learning, or more capacity" },
+              { id: "b", label: "Nothing — dropout is a universal improvement" },
+              { id: "c", label: "The gap proves overfitting; the plan is correct" },
+              { id: "d", label: "Validation accuracy should always equal train accuracy in healthy models" },
+            ],
+            answer: "a",
+            explanation:
+              "Regularization treats the train–val GAP. A 3-point gap with both scores mediocre is underfitting — dropout (capacity removal) and harder augmentation (harder training) push further from the signal. The last-quarter fix worked because that model showed the opposite signature.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Explain dropout to a skeptical engineer in one sentence they'd accept: what is the mechanism, not the ritual?",
+            choices: [
+              { id: "a", label: "Randomly silencing neurons each step prevents co-adaptation, so the final network behaves like an averaged ensemble of many smaller networks — and it's disabled at inference, which is why predictions are deterministic" },
+              { id: "b", label: "It permanently deletes bad neurons so the network gets smaller each epoch" },
+              { id: "c", label: "It adds noise to the labels so the model can't trust them" },
+              { id: "d", label: "It doubles the learning rate for surviving neurons to compensate" },
+            ],
+            answer: "a",
+            explanation:
+              "The two load-bearing facts: co-adaptation prevention (no neuron can rely on specific partners existing) and the train/inference asymmetry (dropped at train, all active with rescaling at inference). An engineer who hears both accepts the mechanism.",
+          },
+        ],
+      },
+      {
+        slug: "convolutional-networks",
+        title: "Filters, not weights",
+        blurb: "Convolutions, the feature hierarchy, and transfer learning — the default for vision.",
+        topic: "deep-learning",
+        skillIds: ["cnn-architectures", "deep-representations"],
+        capability: "Explain parameter sharing and translation invariance, and run the transfer-learning recipe on modest data.",
+        minutes: 11,
+        concept: {
+          what: "A **convolutional layer** slides one small set of learned filters across every position, producing feature maps; **stacked convolutions** build edges → textures → parts, with translation invarience from sharing.",
+          why: "Dense wiring on images explodes (150M weights, layer 1) and can't reuse the fact that **a spot is a spot wherever it sits**. Shared sliding filters cut the parameters by orders of magnitude and encode the invariance as structure.",
+          where: [
+            "**Agriculture / medical / industrial vision** — everywhere spots and defects matter",
+            "**Any task with <10k images** — transfer learning from ImageNet-scale backbones",
+            "**Detection and segmentation** — CNN (or ViT) backbones under every system",
+          ],
+          whenNot:
+            "On tabular or text-style data convolutions encode the wrong priors (no translation structure); and with abundant data, **ViT-class transformers compete** — the choice is a data-scale decision, with CNNs still dominant in the small-data regime.",
+        },
+        prose: [
+          "The design argument, made quantitative in the visual: a dense first layer on 224×224×3 input needs 150M weights — and learns the disease spot at position (10,10) as unrelated to the same spot at (200,180). Convolution fixes both defects at once: one 3×3 filter (9 numbers) tested at every position yields a feature map of *where that pattern fired*, encoding local structure and translation invariance by construction rather than by hope.",
+          "Stacking completes the hierarchy — the depth-is-a-feature-factory lesson, specialized to images: conv1 edges, conv2–3 textures and spots, conv4+ lesion patterns and parts, then a dense head reads the evidence. Pooling and strides compress positions, so deeper layers see wider context. This mirrors how nothing in the pipeline was hand-designed: the hierarchy is learned because it reduces loss.",
+          "The professional default is the recipe in the visual: **take a pretrained backbone, freeze it, train a new head, then optionally fine-tune the whole stack with a small learning rate.** Mango went 74% → 91% held-out this way — the strongest regularizer in vision is starting from a network that already knows how to see. Train from scratch only when you have ImageNet-scale data or a domain utterly unlike natural images (and even then, check the literature first).",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A team with 5,000 labeled industrial X-ray images plans to train a 50-layer CNN from random initialization because 'pretraining is for photos, not X-rays.' Their budget covers two GPU-months. What's the strongest professional counter?",
+            choices: [
+              { id: "a", label: "Pretrained early filters (edges, blotches, gradients) transfer even across domains — a frozen-then-fine-tuned ImageNet backbone is the cheap first experiment, and the literature on medical/industrial imaging backs it" },
+              { id: "b", label: "They're right — random initialization is standard for any non-photo domain" },
+              { id: "c", label: "Pretraining only helps if the classes are the same" },
+              { id: "d", label: "50 layers can't converge on 5,000 images under any initialization" },
+            ],
+            answer: "a",
+            explanation:
+              "Transfer works because low-level structure (edges, contrast, texture) is nearly universal across imaging domains — medical imaging results have shown this for a decade. The from-scratch run may eventually match it; the pretrained run matches it in days, which at two GPU-months of budget is the experiment that de-risks everything else.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your defect detector works on the left half of products but misses identical defects on the right half. The training set happens to show defects centered-left. Which architectural property was supposed to prevent this, and why did it fail anyway?",
+            choices: [
+              { id: "a", label: "Translation invariance from shared filters — but invariance learned-position quirks die only with data covering all positions: augment with random crops/translations so no position is privileged" },
+              { id: "b", label: "Dropout — it should be increased until the asymmetry disappears" },
+              { id: "c", label: "Batch norm — normalizing per side would fix it" },
+              { id: "d", label: "The dense head — replacing it with more conv layers guarantees position-freeness" },
+            ],
+            answer: "a",
+            explanation:
+              "Convolutions make the *filters* position-agnostic, but the statistics of what the network sees are still data-driven: a dataset with left-positioned defects teaches 'defects live left'. Position augmentation (crops, shifts) is the standard cure — the failure was a data-distribution bug expressing itself through an invariance the architecture only half-provides.",
+          },
+        ],
+      },
+      {
+        slug: "sequences-to-attention",
+        title: "The fading conveyor belt",
+        blurb: "Why RNN memory decays, and how attention's spotlight replaced it — at a price.",
+        topic: "transformers",
+        skillIds: ["attention-mechanism"],
+        capability: "Explain long-range dependency failure in RNNs and the attention mechanism that solved it.",
+        minutes: 10,
+        concept: {
+          what: "RNNs compress the past into **one fixed-size state updated at every step** — signal and gradients decay with distance. **Attention** replaces the conveyor with direct, learned, weighted connections between any two positions.",
+          why: "The constraint at word 20 must influence word 1's meaning downstream — a path of 19 sequential updates destroys it (gradient ≈ product of 19 factors < 1). Attention makes the path **one hop**, so distance stops mattering.",
+          where: [
+            "**Every LLM** — attention is the L in it",
+            "**Long documents** — contracts, charts, code, where RNNs collapsed",
+            "**The O(n²) cost ceiling** — the constraint driving Lesson 12's architectures",
+          ],
+          whenNot:
+            "Short streams, strict memory budgets, or streaming/edge inference — where a small RNN or state-space model still runs and an n² attention map cannot. Attention won the main sequence; it didn't repeal physics.",
+        },
+        prose: [
+          "The RNN mechanism is honest about its cost: one hidden state, overwritten every step — a summary of everything so far, compressed to fixed size no matter the length. Two failure modes follow. Informationally, the summary can't retain everything (retelling a story through 20 keepers); mathematically, the gradient signal from step 20 back to step 1 is a product of 19 Jacobians, each typically shrinking it — long-range learning signal decays exponentially.",
+          "Attention's move is structural: stop summarizing the past into one box, and let **every position query every other position directly**. A query–key match score becomes, via softmax, a spotlight distribution; the output is a weighted blend of value vectors. The word 'plan' pulls hard on 'nitrogen' and 'NOT' wherever they sit — distance is now one hop, and the gradient path is one hop too. This single change took language modeling from fragile to industrial.",
+          "Keep the price tag in view from day one: every token attending to every token is **O(n²)** in sequence length. That bill — not modeling power — is what limits context windows today, motivates KV-cache engineering, and drives the entire 2025–26 architecture frontier (Lesson 12). Understanding attention means understanding both halves: the mechanism and its invoice.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A legacy system summarizes hour-long machine-telemetry streams with an RNN: faults in the first minutes are systematically missed in reports about later anomalies. An engineer proposes 'more hidden units.' What's the correct diagnosis?",
+            choices: [
+              { id: "a", label: "Fixed-size-state decay — the early signal is overwritten no matter the width; the architectural fix is direct access to earlier states (attention or a state-space model designed for long recall)" },
+              { id: "b", label: "Correct proposal — width fixes retention" },
+              { id: "c", label: "The streams should be reversed so faults are last" },
+              { id: "d", label: "RNNs cannot process telemetry at all" },
+            ],
+            answer: "a",
+            explanation:
+              "Width dilutes but doesn't fix compression: still one state summarizing 60 minutes, still 59-step gradient paths. The failure is architectural (indirect access), so the fix is architectural (direct access). Attention solved exactly this class of problem — that's why it exists.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your team must run inference on-device with 8 MB of memory on 10-second audio windows, and separately, summarize 300-page contracts. Which assignment of architectures is defensible?",
+            choices: [
+              { id: "a", label: "Small RNN/SSM on-device (short streams, tight memory, streaming); attention-based model for the contracts (long-range structure matters, O(n²) affordable server-side in chunks)" },
+              { id: "b", label: "Full attention for both — it's the best mechanism for everything" },
+              { id: "c", label: "RNN for the contracts, transformer on-device" },
+              { id: "d", label: "Neither task is possible with today's models" },
+            ],
+            answer: "a",
+            explanation:
+              "Attention's cost is quadratic in length and its KV-cache is memory-hungry — wrong tool for 8 MB streaming — while 10-second windows don't need long-range reach. Contracts are the opposite: cross-page dependencies are the point. Matching mechanism to constraints (length, memory, latency) is the lesson's practical output.",
+          },
+        ],
+      },
+      {
+        slug: "inside-the-transformer",
+        title: "The anatomy of a Transformer",
+        blurb: "Q/K/V as a soft lookup, multi-head specialization, positions, and the GPT block.",
+        topic: "transformers",
+        skillIds: ["transformer-architecture", "attention-mechanism"],
+        capability: "Walk the full forward pass of a decoder-only transformer and name what each part contributes.",
+        minutes: 12,
+        concept: {
+          what: "Self-attention projects every token three ways — **Query** (what I seek), **Key** (what I advertise), **Value** (what I lend) — mixes values by softmax(query·key) match, and stacks with a per-token **MLP** inside residual-wrapped blocks.",
+          why: "This is the load-bearing architecture of the decade: GPT, BERT-era encoders, and most frontier models are variations on this one block. Reading any model card, paper, or scaling decision requires these internals.",
+          where: [
+            "**Every GPT-class model** — decoder-only stacks of this exact block",
+            "**Encoder models** (BERT-class) — bidirectional attention over the same Q/K/V core",
+            "**Cross-attention** — decoders borrowing from encoders (translation, image captioning)",
+          ],
+          whenNot:
+            "The stack has real limits — **quadratic context**, no persistent memory across sessions, positional information bolted on rather than native. If your problem is million-token exact recall, this architecture alone is the wrong tool (Lesson 12).",
+        },
+        prose: [
+          "The lookup frame makes the math readable: every token builds a query ('I'm *plan* — any treatment or nutrient context?'), a key (its own label on the shelf spine), and a value (the content it hands over on a match). Match scores are dot products; softmax turns them into a spotlight distribution; the output is the weighted blend of values. Three learned projections per token per head — nothing more exotic than matrix multiplies.",
+          "Multi-head is the same lookup run in parallel with different projections, and specialization emerges unprompted: heads tracking syntax, negation, entity bindings, position. The other half of the block is the **feed-forward MLP** — each token 'thinks alone' about what it just gathered, and most of the model's parameters live here, not in attention. Residual connections plus layer norm wrap both sub-layers, keeping a clean gradient path through stacks 100-deep.",
+          "Attention is order-blind (a permutation of tokens attends identically), so positions are **injected** — added signatures (sinusoidal or learned) that make 'spray then prune' distinguishable from its reverse. Stack N blocks, append a linear head to the vocabulary, softmax — and next-token prediction, the whole GPT objective, falls out. The block is simple; the consequences (scaling, in-context learning) are not — those are Lesson 7.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "One attention distribution by hand",
+          prompt:
+            "Given match scores between a query and four keys, softmax_attention should return the normalized spotlight weights. Two lines are wrong — fix them so the weights sum to 1.",
+          starterCode: `import math
+
+def softmax_attention(scores):
+    """Turn raw match scores into attention weights that sum to 1."""
+    exps = [math.exp(s) for s in scores]
+    total = sum(scores)          # <-- wrong
+    return [e / len(exps) for e in exps]   # <-- wrong
+`,
+          testCode: `
+weights = softmax_attention([2.0, 0.5, 0.1, -1.0])
+ok = True
+message = "ok"
+if abs(sum(weights) - 1.0) > 1e-9 or abs(weights[0] - 0.6420) > 0.01:
+    ok = False
+    message = f"weights {weights} don't softmax correctly"
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A new hire asks why a transformer needs both attention AND the per-token MLP — 'isn't attention doing the work?' What's the accurate division of labor?",
+            choices: [
+              { id: "a", label: "Attention moves information BETWEEN tokens; the MLP transforms each token's representation in private — and holds most of the parameters. Remove either and the block loses half its function" },
+              { id: "b", label: "The MLP is a legacy compatibility layer and can be dropped" },
+              { id: "c", label: "Attention does the math; the MLP only does the softmax" },
+              { id: "d", label: "They're redundant implementations of the same operation, kept for robustness" },
+            ],
+            answer: "a",
+            explanation:
+              "Communication vs computation: attention is the only path by which tokens exchange information, while the MLP — typically 2–4× the attention parameters — does per-position nonlinear processing of what was gathered. Ablating either degrades the model sharply; this split is the architecture's central design fact.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A team trains a small transformer WITHOUT positional information 'to make it order-agnostic' for molecule sequences. It fails badly. Meanwhile another team's model sees shuffled documents. What property explains both?",
+            choices: [
+              { id: "a", label: "Attention is permutation-equivariant by construction — token ORDER carries no signal to the model unless injected via positional encodings; molecule order was signal, document order was noise" },
+              { id: "b", label: "Positional encodings slow training, causing the failure" },
+              { id: "c", label: "Transformers cannot process sequences without RNN preprocessing" },
+              { id: "d", label: "The softmax saturated because sequences were too short" },
+            ],
+            answer: "a",
+            explanation:
+              "The same property cuts both ways: bare attention reads a token set, not a sequence. When order matters (molecules, grammar), it must be injected; when it doesn't (shuffled documents), the equivariance is a free robustness win. Knowing which regime you're in decides whether to add the encodings.",
+          },
+        ],
+      },
+      {
+        slug: "llm-training-pipeline",
+        title: "The factory that builds a model",
+        blurb: "Tokenization → pretraining → SFT → RLHF: what each stage buys, and what it costs.",
+        topic: "llm-training",
+        skillIds: ["llm-training-pipeline", "transformer-architecture"],
+        capability: "Map any LLM product decision to its pipeline stage, and reason from scaling laws.",
+        minutes: 12,
+        concept: {
+          what: "LLMs are built in stages: **tokenization** (subword pieces), **pretraining** (next-token prediction over trillions of tokens — >99% of compute), **SFT** (instruction responses), **RLHF/alignment** (preference tuning).",
+          why: "Each stage answers a different question — 'what is text', 'what usually comes next', 'how should an assistant behave', 'which answer do humans prefer' — and each is a **buy/rent/build** decision with orders-of-magnitude different costs.",
+          where: [
+            "**Open-weight bases** (Llama-class) — stage 1 done once, shared",
+            "**Every product LLM** — stages 2–3 per product, cheaply",
+            "**Scaling laws** — loss is predictable from compute/data/params before training" ,
+          ],
+          whenNot:
+            "Don't pretrain unless you have a genuinely novel domain corpus and capital to burn — renting stage 1 loses almost nothing. And scaling laws are interpolative guides, not guarantees at capability jumps (emergence debates apply).",
+        },
+        prose: [
+          "The economics are the lesson. Pretraining a frontier model costs $10M–$1B+ and buys knowledge and fluency; SFT costs days of GPU time on tens of thousands of curated pairs and buys behavior; RLHF adds a reward model plus preference optimization and buys taste. The pyramid means almost every product team starts at stage 2 on a shared base — Mango did.",
+          "Scaling laws turned training from alchemy into engineering: loss falls as a smooth power law in parameters, data, and compute — no cliffs, no magic thresholds — so 'what will 2× budget buy?' is answerable before the run. Chinchilla's contribution was balance: compute-optimal training wants roughly 20 tokens per parameter, which corrected an era of undertrained big models and reset how everyone sized runs.",
+          "The practical reading of any model card is now: which stage does this model stop at? A 'base' model stops after pretraining (completion, not assistance); an 'instruct' or 'chat' model carries SFT and alignment. The gap between those two artifacts — same pretraining, different stages — is exactly the gap your product's prompt engineering and fine-tuning will work within.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A foundation-model startup with $2M raised proposes pretraining a 7B-parameter model on 'general web + internal medical corpus' to differentiate. Applying the factory's economics, what's the right pushback?",
+            choices: [
+              { id: "a", label: "Pretraining buys knowledge the open bases already have; differentiation lives in stages 2–3 (SFT on their medical data, alignment for their users) at ~1% of the cost — and their corpus's unique value survives either way" },
+              { id: "b", label: "Correct plan — pretraining is the only stage that captures proprietary data" },
+              { id: "c", label: "7B is too small to pretrain; they should do 70B instead" },
+              { id: "d", label: "They should skip pretraining and SFT only if they also buy GPUs for inference" },
+            ],
+            answer: "a",
+            explanation:
+              "Knowledge injection from a corpus is what RAG and continued-pretraining-on-a-base do cheaply; from-scratch pretraining mostly re-purchases general competence. With $2M, stage-1 replication is the one purchase that can't differentiate — stages 2–3, plus retrieval over the corpus, is where the product actually lives.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Planning a run, a team cites Chinchilla and proposes 1.4T tokens for a 70B model. An advisor suggests 3T tokens instead, accepting ~2× training cost. Under what stated goal is the advisor's advice coherent?",
+            choices: [
+              { id: "a", label: "The model will be served billions of times after training — Chinchilla balances TRAINING compute only; inference-heavy deployments justify over-training (more tokens per parameter) because it buys lower loss at cheaper serving sizes" },
+              { id: "b", label: "Chinchilla was disproven; always train on as many tokens as possible" },
+              { id: "c", label: "It's coherent only if the dataset is smaller than 1.4T tokens" },
+              { id: "d", label: "Token count doesn't affect loss — only parameters do" },
+            ],
+            answer: "a",
+            explanation:
+              "Compute-optimal is objective-relative: Chinchilla minimizes loss per training-FLOP, but models are deployed, not just trained. The industry's post-Chinchilla practice — small models trained far past 20 tokens/param — exists precisely because serving costs dominate: the advisor is trading training budget for inference efficiency, and saying so is what makes the advice reviewable.",
+          },
+        ],
+      },
+      {
+        slug: "efficient-fine-tuning",
+        title: "Adapt without retraining",
+        blurb: "LoRA, quantization, distillation — and the prompt → RAG → fine-tune ladder that orders them.",
+        topic: "llm-training",
+        skillIds: ["lora-fine-tuning", "llm-training-pipeline"],
+        capability: "Run the LoRA/QLoRA recipe and defend the climb order: prompt before retrieve before fine-tune.",
+        minutes: 12,
+        concept: {
+          what: "**LoRA** freezes the base model and trains small rank-decomposed matrices per layer (~0.1–1% of parameters), merged at inference for zero added latency; **quantization** (4-bit) shrinks memory ~4×; **distillation** compresses capability into a smaller student.",
+          why: "Full fine-tuning costs 10⁹-parameter updates to change *style and behavior* — and 2025-era results show the change a fine-tune makes is **low-rank**: small adapters match full fine-tuning at modest ranks, even under RL-based training.",
+          where: [
+            "**Domain tone/format** — a LoRA makes a general model speak agronomy, medicine, legalese",
+            "**QLoRA** — 4-bit base + adapters: meaningful fine-tunes on single consumer GPUs",
+            "**Edge distillation** — teacher-student compression for on-device deployment",
+          ],
+          whenNot:
+            "Fine-tuning teaches **behavior, not facts**: a LoRA that never saw this week's prices won't know them. Knowledge problems belong to RAG one rung down the ladder — and both only after prompting has genuinely been exhausted.",
+        },
+        prose: [
+          "The parameter arithmetic explains the practice: updating 8B weights means optimizer state of ~64 GB across the training run — but the *delta* a behavior fine-tune produces is empirically low-rank, well-approximated by two thin matrices per weight matrix (rank 8–64). Train 8M parameters on one 24 GB card in two days, merge A·B back into W at the end, and serve with zero added latency. QLoRA stacks a 4-bit quantized base under the adapters, dropping the floor to a laptop-class GPU.",
+          "Distillation answers a different constraint: deployment. A student model trained on the teacher's output distribution (not just labels) inherits softened decision boundaries — 8B-quality behavior in a 1–2B body. Mango's offline on-device checker is the canonical use: no connectivity, 400 MB, distilled from the advisory stack.",
+          "The ladder is the discipline that makes all three tools safe: **prompt** (free, instant), **RAG** (knowledge, fresh, auditable), **fine-tune** (behavior, latency, format). Teams that invert it ship LoRAs for facts that go stale weekly and prompt-engineer what needed neither. Climb only when the rung below demonstrably fails — each rung up costs data, infrastructure, and retraining discipline.",
+        ],
+        exercise: {
+          id: "ex1",
+          title: "Price a LoRA",
+          prompt:
+            "For a weight matrix of out×in dimensions updated at rank r, LoRA trains an out×r matrix and an r×in matrix. lora_params has the two dimensions swapped in one place — fix it so the counts come out right.",
+          starterCode: `def lora_params(out_dim: int, in_dim: int, rank: int) -> int:
+    """Trainable params when adapting an out_dim x in_dim matrix at the given rank."""
+    return out_dim * rank + in_dim * in_dim   # <-- wrong second term
+`,
+          testCode: `
+cases = [(4096, 4096, 16, 131072), (1024, 1024, 8, 16384)]
+ok = True
+message = "ok"
+for out_dim, in_dim, rank, expected in cases:
+    got = lora_params(out_dim, in_dim, rank)
+    if got != expected:
+        ok = False
+        message = f"lora_params({out_dim}, {in_dim}, {rank}) -> {got}, expected {expected}"
+        break
+`,
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A support team fine-tuned a base model so it 'knows our refund policy.' It answers refunds flawlessly in testing — then cites last quarter's policy window amounts after a policy change. What's the diagnosis and the right tool?",
+            choices: [
+              { id: "a", label: "Fine-tuning taught behavior, not living facts — the policy date changed and the adapter still whispers the old numbers. Move the policy into retrieval (RAG) so facts refresh without training, keep the LoRA for tone and format" },
+              { id: "b", label: "The LoRA rank was too low — retrain at rank 64 and it will track policy changes" },
+              { id: "c", label: "Base models can't learn policies; they needed a bigger model" },
+              { id: "d", label: "Fine-tuning is still right; just retrain weekly on policy diffs" },
+            ],
+            answer: "a",
+            explanation:
+              "Weights are frozen snapshots of training-time text. Anything that changes faster than your retraining cadence — policies, prices, inventory — is a retrieval problem by definition. The weekly-retrain answer spends training money to chase what a database lookup gives for free, correctly versioned.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your on-device product must run offline at under 500 MB with latency under 200 ms. The 8B teacher is out of reach; a 1B student distilled from it fits the budget but drops 4 points on the hard slice. What's the professionally sound framing of that trade?",
+            choices: [
+              { id: "a", label: "Distillation traded capability for deployability — quantify the 4-point slice against the offline requirement; if the slice is rare or has a cloud fallback path, ship; if it's the core use case, the constraint itself is the problem" },
+              { id: "b", label: "The 4-point drop proves distillation failed; abandon the approach" },
+              { id: "c", label: "Quantize the teacher to 4-bit — that always recovers the gap at 500 MB" },
+              { id: "d", label: "Latency budgets are never worth accuracy losses" },
+            ],
+            answer: "a",
+            explanation:
+              "Distillation losses are slice-dependent, and the decision is business arithmetic, not ML taste: what fraction of traffic hits the weak slice, and what does the cloud fallback cost when connectivity returns? Shipping or killing the constraint — both are legitimate outcomes; hand-waving the 4 points is not.",
+          },
+        ],
+      },
+      {
+        slug: "alignment-rlhf",
+        title: "Teaching taste",
+        blurb: "Reward models, RLHF vs DPO — and the failure modes alignment cannot fix.",
+        topic: "llm-training",
+        skillIds: ["alignment-techniques", "llm-training-pipeline"],
+        capability: "Design a preference-data plan and choose RLHF vs DPO; anticipate reward hacking and sycophancy.",
+        minutes: 11,
+        concept: {
+          what: "Alignment tunes a pretrained model toward **human preferences**: collect pairwise answer choices, train a **reward model** on them, then optimize — with **RLHF** (PPO against the reward model) or **DPO** (a direct closed-form loss on pairs, no RL loop).",
+          why: "Pretraining optimizes 'plausible next token', which is orthogonal to 'appropriate for this user, here, now'. Preference data is where product judgment enters the model — the annotators' rubric IS the specification.",
+          where: [
+            "**Instruct/chat models** — every production assistant carries this stage",
+            "**Domain tone** — Mango's advisor hedging dosages and asking crop stage",
+            "**Safety behavior** — refusals calibrated to context rather than blanket",
+          ],
+          whenNot:
+            "Alignment shapes **behavior, not knowledge** — a tuned model still invents facts, now more persuasively. And it installs whatever the preferences encode: reward hacking, sycophancy, and annotator bias ship with it. Eval forever.",
+        },
+        prose: [
+          "The base/pretrained model optimizes text plausibility; products need appropriateness. The bridge is preference data: humans (or strong raters with a rubric) compare answer pairs, thousands of times. Those pairs train a reward model — a learned scorer of 'which response fits this product's taste' — and the specification is nothing more or less than what the rubric and annotators encoded. Write the rubric like a product doc; it is one.",
+          "RLHF closes the loop with reinforcement learning: the policy generates, the reward model scores, PPO nudges generation toward higher reward, with a KL penalty keeping the policy near the base model. It works and is finicky — four models in memory, unstable training, and a policy that will happily maximize the scorer rather than the intent (Goodhart). **DPO** skips the RL machinery entirely: a closed-form loss on the preference pairs that raises the preferred answer's log-odds over the rejected one. Simpler and stabler — the default for teams without an RL research group, with RLHF retained where heavy optimization matters.",
+          "Hold both failure modes in view. **Reward hacking**: verbosity and confident formatting inflate the scorer, so the model drifts verbose and overconfident. **Sycophancy**: annotators softly prefer agreement, so the model learns to validate a wrong user plan instead of correcting it. Neither is a bug you fix once — they're return currents of optimizing a proxy, managed by eval sets that specifically probe them.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "After preference tuning, your assistant's answers grow measurably longer and more confident — humans rated longer, assertive answers higher during data collection. Output quality checks show no factual improvement. What occurred, and what's the corrective?",
+            choices: [
+              { id: "a", label: "Classic reward hacking — the policy optimized the annotators' length/formatting bias, not helpfulness. Corrective: re-collect preferences with length and confidence controlled in the rubric, and add adversarial evals where the SHORT answer is the better one" },
+              { id: "b", label: "Normal behavior — longer answers are always more helpful" },
+              { id: "c", label: "The DPO loss diverged; switch to RLHF" },
+              { id: "d", label: "The reward model overfit; more RLHF steps will smooth it out" },
+            ],
+            answer: "a",
+            explanation:
+              "The policy maximized what the scorer actually measured — and the scorer measured annotator bias. Goodhart is structural, not incidental: the fix is in the data (rubric controls, paired-length comparisons) and the evals (probes where the preferred behavior is brevity), not in more optimization of the same signal.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "A four-person team must align a base model for their product and is choosing between RLHF and DPO. No RL specialist; one week of preference data collection budget; the behavior gap is tone and format, not reasoning depth. Which recommendation and rationale?",
+            choices: [
+              { id: "a", label: "DPO — it optimizes directly on preference pairs with one model and no RL infrastructure, and tone/format shifts are exactly where it matches RLHF's results for a fraction of the complexity" },
+              { id: "b", label: "RLHF — it's the classic method, so it must be first choice" },
+              { id: "c", label: "Neither — skip alignment and prompt-engineer only" },
+              { id: "d", label: "DPO, because it needs no preference data at all" },
+            ],
+            answer: "a",
+            explanation:
+              "DPO's whole value proposition is this team: closed-form preference optimization, stable, single-model, no PPO plumbing. RLHF earns its complexity when heavy optimization against a reward model is doing work a pair-loss can't — reasoning-heavy behavior, typically at frontier labs' scale. (And DPO absolutely needs preference data — option d is a trap.)",
+          },
+        ],
+      },
+      {
+        slug: "diffusion-models",
+        title: "Destroying noise, slowly",
+        blurb: "How diffusion generates images, why it displaced GANs, and the text frontier.",
+        topic: "generative-models",
+        skillIds: ["diffusion-models"],
+        capability: "Explain forward/reverse diffusion, the guidance dial, and diffusion's trade-offs as a generator.",
+        minutes: 11,
+        concept: {
+          what: "**Diffusion** trains a network to predict noise: forward process adds Gaussian noise over ~1,000 steps until static; **generation runs it in reverse** — from static, remove predicted noise step by step until an image condenses.",
+          why: "The training objective is boring supervised regression — no adversarial equilibrium to collapse — which is exactly why it displaced GANs: **stable training, full distribution coverage, one model per domain** instead of per-class.",
+          where: [
+            "**Image generation/editing** — every mainstream text-to-image product",
+            "**Audio and video synthesis** — the same recipe in other modalities",
+            "**Diffusion LLMs** — parallel whole-draft generation, the 2026 frontier bet",
+          ],
+          whenNot:
+            "The latency floor: 20–50 network calls per sample (vs 1 for a GAN) makes diffusion wrong for real-time single-sample needs, and exact reproduction of training items is not what it does. For deterministic transformations, classic rendering or an autoencoder still wins.",
+        },
+        prose: [
+          "The two directions are asymmetric in cost: the forward process (training) is just 'add measured noise repeatedly to real data' — no labels needed beyond the noise schedule itself. The network learns to predict the noise at any corruption level. Generation is the reverse run: start from static, ask the network what noise it sees, subtract a little, repeat — 20–50 sampling steps, each a full network call. Structure condenses gradually: silhouette before texture, texture before detail.",
+          "Why this beat GANs, which generate in a single pass: GAN training is a two-player equilibrium (generator vs discriminator) that collapses without warning and famously mode-drops — covering only its best outputs. Diffusion's per-step regression objective is stable by construction and covers the whole data distribution; conditioning the denoiser on text embeddings (from a CLIP-class encoder — Lesson 11) made one model paint anything describable. The price is that sampling latency floor, which the product tier of every image company engineering-blogs about.",
+          "**Classifier-free guidance** is the dial product teams actually tune: run denoising with and without the prompt, extrapolate away from the unconditional drift. At guidance ≈ 1 the model dreams loosely; ≈ 7 is prompt-faithful vividness (most products' default); ≈ 20 is overcooked literalism with warped hands. And the frontier lesson: diffusion LLMs apply the same reversal to text — denoise a whole draft in parallel sweeps instead of 1,000 sequential token choices — trading autoregressive latency for iterative refinement. Early, imperfect, and the most consequential architecture bet since attention.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A product team is choosing between a GAN and a diffusion model for generating 10,000 diverse product-photo backgrounds overnight (batch, not real-time). Diversity coverage is the top requirement. Which reasoning is correct?",
+            choices: [
+              { id: "a", label: "Diffusion — its per-step denoising objective covers the full distribution where GANs mode-collapse to a few outputs; the per-sample latency is irrelevant in an overnight batch job" },
+              { id: "b", label: "GAN — single-pass generation is always the deciding factor" },
+              { id: "c", label: "GAN — because GANs are more diverse than diffusion by design" },
+              { id: "d", label: "Neither — backgrounds must be photographed, not generated" },
+            ],
+            answer: "a",
+            explanation:
+              "Mode collapse is the GAN failure that diversity requirements trip over first, and diffusion's coverage advantage is structural. The GAN's one virtue — speed — only decides under interactive latency constraints, which an overnight batch explicitly doesn't have. Matching the cost structure to the requirement is the whole judgment.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your text-to-image pipeline ships at guidance 7. Marketing wants 'more wow' and an engineer suggests 20. In review, what's the professionally complete answer about what guidance does and what to do?",
+            choices: [
+              { id: "a", label: "Guidance extrapolates away from unconditional generation — more means harder prompt-following but past ~10–15 it overcooks: saturation, warped anatomy, literalism. A/B test the 8–12 band against the quality eval set; 20 should need extraordinary evidence" },
+              { id: "b", label: "Guidance is a quality dial: 20 is simply twice as good as 10" },
+              { id: "c", label: "Guidance only affects speed, not appearance" },
+              { id: "d", label: "Raise it to 20 — warped hands indicate the model is trying harder" },
+            ],
+            answer: "a",
+            explanation:
+              "The dial has a cliff: a modest amount buys prompt fidelity, past it the extrapolation amplifies artifacts as fast as vividness. The professional move is treating 'more wow' as an eval-set question — sweep 8–12, measure against a scoring rubric, and let the numbers pick. Vibes tuned the dial; evals should turn it.",
+          },
+        ],
+      },
+      {
+        slug: "multimodal-models",
+        title: "One space for two senses",
+        blurb: "CLIP's shared embedding space, zero-shot classification, and vision-language models.",
+        topic: "generative-models",
+        skillIds: ["multimodal-embeddings"],
+        capability: "Use contrastive training's shared space for zero-shot tasks, and know when it transfers and when it doesn't.",
+        minutes: 10,
+        concept: {
+          what: "**CLIP-style training** runs an image encoder and a text encoder over ~400M matched pairs, pulling matched photo–caption embeddings together and pushing mismatched apart — one **shared space** where similarity across modalities is meaningful.",
+          why: "The shared space makes prompts into classifiers: an image is labeled by whichever caption embedding lands nearest — **zero-shot**, no labeled examples, no training run. This is the machinery under image search, generation conditioning, and VLMs.",
+          where: [
+            "**Zero-shot triage** — Mango's three-sentence disease classifier",
+            "**Image search / retrieval** — text queries against image embeddings",
+            "**VLMs** — vision encoder + projection + LLM: models that see and read",
+          ],
+          whenNot:
+            "Shared space ≠ shared understanding: fine-grained expert distinctions (early rust vs nutrient burn) never appeared in contrastive pretraining — **zero-shot breadth doesn't transfer to expert depth**. There, a small specialist head with your labels still wins.",
+        },
+        prose: [
+          "Contrastive training is representation alignment as an objective: two encoders, one loss — matched pairs pulled together in embedding space, all mismatched pairs pushed apart. After 400M pairs, 'a photo of a mango leaf' sits near actual mango-leaf photos, structurally. No labels were collected; the pairing of internet photos with their captions did all the work.",
+          "The immediate payoff is that prompts became programs: write K captions, embed them once, embed the image, take the nearest — a classifier authored in minutes. Mango's deployed triage tool was three sentences. The caveat is distributional: this works for concepts the pretraining corpus covered — broad, nameable things — and silently degrades on expert distinctions no caption ever drew.",
+          "Vision-language models industrialize the same idea: a vision encoder produces embeddings, a small learned **projection** translates them into the LLM's token space, and the LLM reads image tokens like words. Everything you know about prompts, RAG, and fine-tuning from the LLM lessons applies unchanged — the image is now context. The division of labor holds: contrastive pretraining buys breadth; your labels still buy the last mile of depth.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A plant-pathology team uses CLIP zero-shot for 12 disease classes and gets 80% — great for week one. Agronomists need 95%+ on two visually near-identical early-stage diseases where zero-shot performs at chance. What's the architecturally sound next step?",
+            choices: [
+              { id: "a", label: "Keep CLIP's frozen image encoder as the feature extractor and train a small classification head on a few hundred labeled examples of the two confusable diseases — the shared space gives general features; your labels supply the expert boundary it never saw" },
+              { id: "b", label: "Write longer, more detailed zero-shot prompts describing the two diseases" },
+              { id: "c", label: "Switch to a different contrastive model and re-run zero-shot" },
+              { id: "d", label: "Accept 80% — zero-shot is the ceiling for any vision task" },
+            ],
+            answer: "a",
+            explanation:
+              "Prompt engineering cannot create a boundary the embedding space never encoded — near-identical images sit near-identically in CLIP's space. But its features are strong general vision features: a linear or small MLP head on top, with a few hundred expert labels, is the standard cheap path to expert accuracy. Breadth rented, depth built.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "An e-commerce team wants shoppers to search products by photo ('find me this jacket, but green'). Which capability from this lesson is the direct building block, and what does the system actually compare?",
+            choices: [
+              { id: "a", label: "The shared CLIP-style space: embed the query photo and every product image in it, retrieve nearest neighbors, and generate the color variant with a diffusion model conditioned on 'green jacket' — retrieval compares image-to-image embeddings across one space" },
+              { id: "b", label: "An LLM reading the photo's pixels directly — LLMs natively compare images by raw bytes" },
+              { id: "c", label: "A GAN that generates the green jacket from noise — no retrieval involved" },
+              { id: "d", label: "Zero-shot classification only: label the photo 'jacket' and search the text catalog" },
+            ],
+            answer: "a",
+            explanation:
+              "Photo search is the shared space's home use: cross-modal and same-modal nearest-neighbor in one embedding space, with generation models taking over for the 'but green' edit. The VLM and LLM options confuse language models' inability to compare raw pixels, and option d throws away exactly the visual similarity the shopper meant.",
+          },
+        ],
+      },
+      {
+        slug: "frontier-architectures",
+        title: "Breaking the quadratic bill",
+        blurb: "MoE sparse capacity, Mamba/SSM linear context, hybrids — reading model cards as cost decisions.",
+        topic: "frontier",
+        skillIds: ["efficient-architectures", "transformer-architecture"],
+        capability: "Read MoE and SSM/hybrid architecture choices as cost engineering, and bet on them accordingly.",
+        minutes: 11,
+        concept: {
+          what: "Two frontier attacks on transformer costs: **MoE** makes capacity sparse — a learned router activates 1–2 of ~100 expert MLPs per token (~5–10% of parameters) — while **state-space models (Mamba)** make context linear, compressing the past into a fixed-size selective state instead of replaying it as O(n²) attention pairs.",
+          why: "These are the levers behind 2025–26 frontier economics: DeepSeek-class models train affordably at hundreds of billions of parameters *because* most experts idle per token; million-token contexts become possible *because* SSM layers pay per token, not per pair.",
+          where: [
+            "**MoE frontier models** — most major open and closed releases since 2024",
+            "**Hybrids (Jamba-class)** — Mamba blocks + a few attention layers, near-linear cost",
+            "**Model cards** — '64 experts, 6 active' and 'hybrid SSM' lines are cost disclosures",
+          ],
+          whenNot:
+            "Ecosystem gravity is real: attention has FlashAttention kernels, KV-cache inference, tooling, and a decade of tricks — pure-SSM replacements keep losing to it in deployment. Ship hybrids where the cost math forces it; don't bet the roadmap on attention disappearing.",
+        },
+        prose: [
+          "Read both architectures as bill-attacks, because that's how they read in model cards. MoE leaves attention untouched and multiplies the MLP layers into many experts; a tiny learned router picks 1–2 per token per layer. Total capacity scales with all experts; *compute* scales with the active few — training and inference both. The cost: routing instability, load-balancing losses, and memory for every expert whether active or not — the bill moves from FLOPs to VRAM.",
+          "State-space models attack the context line of the invoice. Where attention re-attends to every past token (O(n²) pairs), an SSM maintains a fixed-size state updated per token (O(1) each, O(n) total) — RNN-shaped cost, but with a state update mathematically designed (HiPPO) to preserve long-range signal, and Mamba's *selectivity* making the compression content-aware: the model learns what to remember and what to drop. A 1M-token sequence becomes 1M cheap updates instead of 10¹² pairs.",
+          "The honest ending is the hybrid and the moat. Jamba-class stacks interleave Mamba blocks with a few attention layers — linear cost overall, exact recall where attention earns its slot — and that is what actually ships to production. Meanwhile attention's ecosystem (kernels, caches, tooling, a decade of tricks) keeps beating pure replacements on the bench. The professional posture: treat any new architecture as a cost-engineering proposal with evidence required, and read every model card's architecture line as a budget statement.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "A model card reads: 'total parameters 400B, active parameters 12B, 128 experts with top-2 routing.' An engineer concludes 'this is a 12B model.' What does the line actually tell you, and what does it get wrong in that reading?",
+            choices: [
+              { id: "a", label: "It's an MoE: capacity of 400B (all experts trained, all in memory) but per-token compute of ~12B (2 of 128 experts active). Calling it 'a 12B model' ignores that the other 388B parameters shape routing, load, and quality — and that serving must hold all 400B" },
+              { id: "b", label: "Correct — only active parameters count for anything" },
+              { id: "c", label: "The card is inconsistent: total and active must be equal" },
+              { id: "d", label: "Routing means each token uses a random 12B subset, so results aren't reproducible" },
+            ],
+            answer: "a",
+            explanation:
+              "The split IS the design: quality tracks total capacity (every expert is trained and available), FLOPs track the active slice — that's the entire economics of MoE. But memory and load-balancing follow the total, so deployment sizing can't read '12B' either. The card line is a cost disclosure with three numbers, not one.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Your team needs 500k-token contract analysis with exact clause recall, on a budget where quadratic attention 'would cost more than the contracts are worth.' Pure Mamba bids linear cost but drops exact recall on a benchmark; a hybrid passes recall at 3× pure-Mamba cost (still far under attention). Which choice and reasoning holds up in review?",
+            choices: [
+              { id: "a", label: "The hybrid — it keeps a few attention layers precisely for exact recall, pays 3× Mamba but still far under quadratic, and matches the requirement the benchmark actually tested. Cheap-and-failing is the expensive option" },
+              { id: "b", label: "Pure Mamba — lowest cost wins, and the recall benchmark is probably wrong" },
+              { id: "c", label: "Full attention — correctness requires quadratic cost everywhere" },
+              { id: "d", label: "Split every contract into 4k chunks with a standard transformer and merge summaries" },
+            ],
+            answer: "a",
+            explanation:
+              "The requirement is exact recall at length; the benchmark measured it; pure Mamba failed it — dismissing the measurement to keep the cheapest bid is how architectures get chosen backwards. The hybrid's design intent is exactly this regime. (Chunking, option d, silently loses cross-chunk dependencies — the contract's traps live across clauses.)",
+          },
+        ],
+      },
+      {
+        slug: "production-ml-capstone",
+        title: "Capstone: the anatomy of the loop",
+        blurb: "Train → eval gates → shadow → canary → drift → retrain: Mango's whole system on one page.",
+        topic: "production",
+        skillIds: ["production-ml-lifecycle", "model-drift", "eval-gates"],
+        capability: "Design the full production loop with gates and drift handling, and triage alarms as bug-before-drift-before-retrain.",
+        minutes: 14,
+        concept: {
+          what: "A production ML system is a **loop with gates**: train → offline eval in CI → shadow against the incumbent → canary to a traffic slice → monitor **data drift** (inputs moved) and **concept drift** (the input→label relationship moved) → feed retraining triggers back to data.",
+          why: "Every lesson in this course occupies one station of the loop — the capstone is assembling them under real constraints: the gates make quality claims falsifiable, and the monitoring→data arrow is the difference between a demo and a product.",
+          where: [
+            "**Any deployed model** — classifier or LLM, the loop shape is the same",
+            "**The drift pair** — data drift detectable without labels; concept drift needs delayed labels",
+            "**The triage order** — pipeline bug before drift before retraining" ,
+          ],
+          whenNot:
+            "Not every system earns the full ceremony: a batch model re-run weekly on stable data may need only eval gates and a data-drift watch. The loop scales with blast radius — match the gates to what failure costs, not to fashion.",
+        },
+        prose: [
+          "The stations, populated by everything you just learned: the training station is optimizers, regularization, and transfer learning; the eval gate is metrics, leakage audits, and slice coverage; shadow and canary are the deployment discipline; monitoring is drift in its two flavors; and the return arrow — retraining triggers feeding the data station — is what makes the diagram a circle instead of a conveyor into production.",
+          "The gates deserve their pedantry. **Offline eval in CI**: every candidate runs the held-out suite with per-slice floors (Mango: overall F1 ≥ 0.85, per-region ≥ 0.78) — a training score ships nothing. **Shadow**: the new model answers live traffic silently for weeks; you learn agreement with the incumbent before any farmer sees a change. **Canary**: 5% of traffic, hourly watches on agreement/latency/escape rate, auto-rollback on breach. Each gate answers a question the previous one couldn't.",
+          "And the capstone's counter-lesson, learned by every team the hard way: when accuracy drops in production, the triage order is **pipeline bug before drift before retraining**. Mango's first 'drift' alarm was a camera-app update stripping EXIF rotation — every southern photo arrived sideways; retraining on rotated photos would have shipped a worse model with perfect intentions. Drift is real (both flavors eventually visit every deployed model), but it's the diagnosis of last resort, earned by first excluding the boring explanations. The instrumented half of this loop — telemetry, evals, incident triage — is a discipline of its own, and it's where your NEXT_COURSE points: AI Observability.",
+        ],
+        diagram: {
+          kind: "flow",
+          steps: [
+            { kind: "input", text: "Data + delayed labels" },
+            { kind: "process", text: "Train: optimizer, regularization, transfer" },
+            { kind: "decision", text: "Eval gate: slices + leakage audit in CI" },
+            { kind: "process", text: "Shadow → canary → full rollout" },
+            { kind: "process", text: "Monitor: data drift + concept drift" },
+            { kind: "output", text: "Retrain trigger → back to data" },
+          ],
+          loop: "alarms triaged as bug → drift → retrain, then the loop closes",
+        },
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
+              "Six weeks post-launch, Mango's daily data-drift dashboard fires: photo brightness distributions shifted sharply in one region. No label lag data yet. A retrain is proposed for the weekend. What's the professionally correct sequence first?",
+            choices: [
+              { id: "a", label: "Triage the pipeline before the GPU: check for app/camera updates, upload changes, and processing bugs in that region's path — a brightness cliff is as consistent with a data- ingestion bug as with real drift, and retraining on corrupted inputs would ship the bug" },
+              { id: "b", label: "Retrain immediately — drift alarms are always actionable" },
+              { id: "c", label: "Wait for concept drift to confirm, doing nothing until labels arrive" },
+              { id: "d", label: "Roll back the model to the previous version — it handled this region fine" },
+            ],
+            answer: "a",
+            explanation:
+              "The alarm says inputs moved; it cannot say why. A same-week camera-app or upload change is the canonical false drift — cheap to check, catastrophic to train through. The triage order (bug → drift → retrain) exists precisely because retraining is the expensive action that bakes whatever it's fed into weights.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "You're hired to review a team's production ML system and find: models trained quarterly on a schedule, a shared accuracy dashboard, deployments by full rollout, and an incident last month where a silent label-pipeline change corrupted training data. Which two changes give the most risk reduction for the effort?",
+            choices: [
+              { id: "a", label: "(1) Promote evals to a CI gate with per-slice floors and a leakage/sanity audit — so bad candidates can't ship; (2) add shadow→canary deployment with auto-rollback — so the blast radius of any miss is 5%, not 100%" },
+              { id: "b", label: "Retrain monthly instead of quarterly, keeping everything else" },
+              { id: "c", label: "Adopt a larger model — capacity absorbs data problems" },
+              { id: "d", label: "Add more dashboard tiles for the same metrics at finer granularity" },
+            ],
+            answer: "a",
+            explanation:
+              "The incident was a data-quality change that sailed through because nothing gated it: no CI eval would have caught the corrupted run's slice collapse, and canary would have contained the miss. The loop's value is exactly these two tripwires — everything else in the anatomy is elaboration on them. More tiles watch the same un-gated failure mode; more retraining cycles multiply exposure to it.",
+          },
+        ],
+      },
+    ],
+  },
 ] as const;
 
 export function allCourseSlugs(): string[] {
@@ -9083,8 +10700,12 @@ export const NEXT_COURSE: Record<string, { slug: string; why: string } | undefin
     why: "You can read a model now — learn to keep watch when it runs in the real world.",
   },
   "machine-learning": {
-    slug: "machine-learning-for-layman",
-    why: "Consolidate the intuition: the picture-led deep dive on everything you just skimmed.",
+    slug: "advanced-machine-learning",
+    why: "You know the map and the mechanics — now go inside the models: transformers, fine-tuning, diffusion, and the production loop.",
+  },
+  "advanced-machine-learning": {
+    slug: "ai-observability-reliability",
+    why: "You can build and tune models — now learn to keep them honest, measured, and safe in production.",
   },
   "ai-observability": {
     slug: "llm-observability",

@@ -62,6 +62,14 @@ export function MLInYourPhone() {
               family="supervised"
             />
           </MotionChild>
+          <MotionChild>
+            <AppCard
+              icon={<ChatIcon />}
+              name="ChatGPT & AI images"
+              detail="writes and draws by predicting what usually comes next"
+              family="supervised"
+            />
+          </MotionChild>
         </Stagger>
       </Scene>
 
@@ -73,7 +81,8 @@ export function MLInYourPhone() {
             <span className="text-brand-deep">→</span> a prediction for you
           </div>
           <p className="mt-2 text-xs font-medium text-ink">
-            The spam filter, the recommender, and face unlock all follow this same loop.
+            The spam filter, the recommender, face unlock — and ChatGPT, which is just
+            next-word prediction at colossal scale — all follow this same loop.
           </p>
         </div>
       </Scene>
@@ -189,6 +198,15 @@ function KeyboardIcon() {
     <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="9" width="24" height="14" rx="2" />
       <path d="M9 13 H9.01 M14 13 H14.01 M19 13 H19.01 M24 13 H24.01 M9 18 H23" />
+    </svg>
+  );
+}
+
+function ChatIcon() {
+  return (
+    <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true" fill="none" stroke="var(--color-brand-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 7 Q4 7 4 9 L4 22 Q4 24 6 24 L18 24 L24 29 L24 24 Q26 24 26 22 L26 9 Q26 7 24 7 Z" />
+      <path d="M10 13 H20 M10 18 H16" />
     </svg>
   );
 }

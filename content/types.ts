@@ -22,6 +22,15 @@ export type SkillId =
   | "reinforcement-learning"
   | "feature-engineering"
   | "classification-basics"
+  | "regression-basics"
+  | "logistic-regression"
+  | "loss-functions"
+  | "neural-network-basics"
+  | "backpropagation"
+  | "bias-variance"
+  | "ensemble-methods"
+  | "cross-validation"
+  | "data-leakage"
   | "k-nearest-neighbors"
   | "centroid-classifier"
   | "decision-trees"
@@ -122,7 +131,21 @@ export type SkillId =
   | "index-lifecycle"
   | "rag-vs-long-context"
   | "production-rag-evals"
-  | "production-rag-anatomy";
+  | "production-rag-anatomy"
+  // Advanced Machine Learning course (expert)
+  | "deep-representations"
+  | "optimizers"
+  | "deep-regularization"
+  | "cnn-architectures"
+  | "attention-mechanism"
+  | "transformer-architecture"
+  | "llm-training-pipeline"
+  | "lora-fine-tuning"
+  | "alignment-techniques"
+  | "diffusion-models"
+  | "multimodal-embeddings"
+  | "efficient-architectures"
+  | "production-ml-lifecycle";
 
 export interface CodeExercise {
   id: string;

@@ -49,6 +49,7 @@ const LAYMAN_UNITS = [
   unit("machine-learning-for-layman", "what-is-ml-layman", "What machine learning really is", 4),
   unit("machine-learning-for-layman", "three-ml-paradigms", "The three families of ML", 4),
   unit("machine-learning-for-layman", "supervised-learning-deep-dive", "Inside supervised learning", 5),
+  unit("machine-learning-for-layman", "predicting-numbers", "Predicting a number, not a category", 4),
   unit("machine-learning-for-layman", "unsupervised-learning-deep-dive", "Inside unsupervised learning", 5),
   unit("machine-learning-for-layman", "reinforcement-learning-deep-dive", "Inside reinforcement learning", 5),
   unit("machine-learning-for-layman", "features-and-vectors", "Representing samples as features", 5),
@@ -124,6 +125,16 @@ const ML_PRIMER_UNITS = [
   unit("machine-learning", "what-is-machine-learning", "What is machine learning?", 5),
   unit("machine-learning", "what-is-deep-learning", "What is deep learning?", 5),
   unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
+  unit("machine-learning", "linear-regression", "Fitting a line to the data", 6),
+  unit("machine-learning", "logistic-regression", "Yes/no as a probability", 6),
+  unit("machine-learning", "loss-functions", "How wrong is wrong?", 6),
+  unit("machine-learning", "gradient-descent", "Learning by walking downhill", 7),
+  unit("machine-learning", "neural-network-basics", "Inside a neuron", 7),
+  unit("machine-learning", "backpropagation-intuition", "Blame, assigned backwards", 7),
+  unit("machine-learning", "bias-variance-tradeoff", "The Goldilocks diagnosis", 6),
+  unit("machine-learning", "ensemble-methods", "Committees of weak models", 7),
+  unit("machine-learning", "evaluation-metrics", "Grading honestly", 7),
+  unit("machine-learning", "data-leakage-and-imbalance", "The two traps", 7),
 ];
 
 // Harness Engineering: Foundations (beginner) — what surrounds a model.
@@ -198,6 +209,23 @@ const RAG_AT_SCALE_UNITS = [
   unit("rag-engineering-at-scale", "anatomy-of-production-rag", "Anatomy of production RAG", 11),
 ];
 
+// Advanced Machine Learning (expert) — the Mango Labs build, end to end.
+const ADVANCED_ML_UNITS = [
+  unit("advanced-machine-learning", "neurons-and-layers", "Depth is a feature factory", 10),
+  unit("advanced-machine-learning", "how-networks-learn", "The optimizer decides", 11),
+  unit("advanced-machine-learning", "regularizing-deep-nets", "Fighting memorization", 10),
+  unit("advanced-machine-learning", "convolutional-networks", "Filters, not weights", 11),
+  unit("advanced-machine-learning", "sequences-to-attention", "The fading conveyor belt", 10),
+  unit("advanced-machine-learning", "inside-the-transformer", "The anatomy of a Transformer", 12),
+  unit("advanced-machine-learning", "llm-training-pipeline", "The factory that builds a model", 12),
+  unit("advanced-machine-learning", "efficient-fine-tuning", "Adapt without retraining", 12),
+  unit("advanced-machine-learning", "alignment-rlhf", "Teaching taste", 11),
+  unit("advanced-machine-learning", "diffusion-models", "Destroying noise, slowly", 11),
+  unit("advanced-machine-learning", "multimodal-models", "One space for two senses", 10),
+  unit("advanced-machine-learning", "frontier-architectures", "Breaking the quadratic bill", 11),
+  unit("advanced-machine-learning", "production-ml-capstone", "Capstone: the anatomy of the loop", 14),
+];
+
 export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
   beginner: [
     ...LAYMAN_UNITS,
@@ -225,6 +253,7 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     byte("tensors-and-shapes", "Tensors and shapes", 5),
     ...LLM_OBSERVABILITY_UNITS,
     ...RELIABILITY_UNITS,
+    ...ADVANCED_ML_UNITS,
     ...HARNESS_PRACTICE_UNITS,
     ...HARNESS_AT_SCALE_UNITS,
     ...RAG_PRACTICE_UNITS,
