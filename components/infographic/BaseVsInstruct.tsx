@@ -1,0 +1,89 @@
+import { Infographic, InfographicHeader, Card } from "./primitives";
+import { MachineFigure, Scene, SpeechBubble } from "./scenes";
+import { Stagger, MotionChild } from "./motion";
+
+/**
+ * Fine-Tuning Foundations — Lesson 11: "Raw graduate vs assistant school".
+ * Through-line: one person, before and after assistant school. The raw twin
+ * continues text; the schooled twin answers. Your tune starts from schooled.
+ */
+export function BaseVsInstruct() {
+  return (
+    <Infographic>
+      <InfographicHeader
+        title="Raw graduate vs assistant school"
+        subtitle="Base models continue text — instruct models answer you"
+      />
+
+      {/* SCENE 1 — the raw graduate */}
+      <Scene caption="① Hand the RAW twin: “The capital of France is”">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
+          <MachineFigure label="base model" />
+          <SpeechBubble side="left">
+            “…Paris, a city on the Seine, founded in the 3rd century BC, whose…”
+          </SpeechBubble>
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink">
+          Flawless continuation — and it would keep going for pages. Continuing is the whole skill.
+        </p>
+      </Scene>
+
+      {/* SCENE 2 — questions confuse the raw twin */}
+      <Scene caption="② Ask it a question — you might get three more questions">
+        <div className="mx-auto max-w-lg rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
+          <p className="font-mono text-xs font-semibold text-ink">user: what&apos;s my order status?</p>
+          <p className="mt-2 font-mono text-xs text-ink-soft">
+            base: what&apos;s my refund status? what&apos;s my account number? where is the nearest…
+          </p>
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink">
+          Nothing is broken. A question looks like the start of a list of questions — to a completion machine.
+        </p>
+      </Scene>
+
+      {/* SCENE 3 — assistant school */}
+      <Scene caption="③ Assistant school: mountains of Q → helpful-A practice">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
+          <Stagger className="grid grid-cols-3 gap-2">
+            {["Q→A", "Q→A", "Q→A"].map((t) => (
+              <MotionChild key={t}>
+                <div className="rounded-lg border border-ash bg-surface-elevated px-2.5 py-2 text-center font-mono text-[11px] font-bold text-brand-deep shadow-sm">
+                  {t}
+                </div>
+              </MotionChild>
+            ))}
+          </Stagger>
+          <MachineFigure label="instruct / chat model" />
+          <SpeechBubble side="left">Here&apos;s your status — and what happens next.</SpeechBubble>
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink">
+          The same model after the makers&apos; own tuning: requests get answered, gaps get asked about, rudeness gets refused politely.
+        </p>
+      </Scene>
+
+      {/* SCENE 4 — your starting point */}
+      <Scene caption="④ Your tune starts from the schooled twin">
+        <div className="mx-auto flex max-w-lg items-center justify-center gap-3 sm:gap-6">
+          <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-center shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">start from base?</p>
+            <p className="mt-1 text-xs font-semibold text-ink">teach manners, format, refusals first…</p>
+            <p className="text-[10px] font-medium text-ink-soft">a syllabus nobody wants to write</p>
+          </div>
+          <div className="rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center shadow-sm">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">start from chat?</p>
+            <p className="mt-1 text-xs font-semibold text-ink">the job is known — teach your flavor only</p>
+            <p className="text-[10px] font-medium text-ink-soft">your small pack does the only remaining work</p>
+          </div>
+        </div>
+      </Scene>
+
+      <Card tone="brand" rotate={0}>
+        <p className="text-center text-sm font-bold leading-relaxed text-ink sm:text-base">
+          Base continues;{" "}
+          <span className="underline decoration-brand-deep decoration-2 underline-offset-2">chat answers</span> — always
+          start your tune from the schooled twin.
+        </p>
+      </Card>
+    </Infographic>
+  );
+}

@@ -214,6 +214,18 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
       beginner/intermediate lessons without their plain-English translation
       in parentheses at first use.
 
+12. **Course English is simple, India-friendly English.** Our learners
+    (India first) read English as a **second language** — write every
+    course, at **every level** (beginner/intermediate/expert), so a
+    school-English reader is comfortable: short sentences (~20 words where
+    possible), everyday words over literary ones, active voice, one idea
+    per sentence, no unexplained idioms or cultural metaphors that don't
+    travel. Prefer concrete numbers and examples over abstract phrasing;
+    ₹, Indian names, and Indian product contexts (Kirana Pay, Sahayak,
+    Varta, PaisaShield, Setu) are the house style. **Simple ≠ shallow:**
+    keep full technical precision (expert courses stay jargon-exempt) —
+    say precise things in plain words, never dumb the content down.
+
 ## Where things live
 
 | Area | Path | Notes |

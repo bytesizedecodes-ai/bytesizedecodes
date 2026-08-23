@@ -138,6 +138,79 @@ import { DiffusionModels } from "./DiffusionModels";
 import { MultimodalModels } from "./MultimodalModels";
 import { FrontierArchitectures } from "./FrontierArchitectures";
 import { ProductionMlCapstone } from "./ProductionMlCapstone";
+import { TuningNotBuilding } from "./TuningNotBuilding";
+import { TheModelReadEverything } from "./TheModelReadEverything";
+import { BehaviorNotFacts } from "./BehaviorNotFacts";
+import { AskingVsTraining } from "./AskingVsTraining";
+import { InsideTheWeights } from "./InsideTheWeights";
+import { OneGoodExample } from "./OneGoodExample";
+import { PracticeMakesPatterns } from "./PracticeMakesPatterns";
+import { ParrotingProblem } from "./ParrotingProblem";
+import { ForgettingTheBasics } from "./ForgettingTheBasics";
+import { WhenNotToFinetune } from "./WhenNotToFinetune";
+import { BaseVsInstruct } from "./BaseVsInstruct";
+import { ConversationScripts } from "./ConversationScripts";
+import { ClipOnLenses } from "./ClipOnLenses";
+import { DidItWork } from "./DidItWork";
+import { BorrowASupercomputer } from "./BorrowASupercomputer";
+import { TheFineTuningJourney } from "./TheFineTuningJourney";
+import { TheTransferLadder } from "./TheTransferLadder";
+import { PromptRagOrFinetune } from "./PromptRagOrFinetune";
+import { AnatomyOfAnExample } from "./AnatomyOfAnExample";
+import { CuratingTheDataset } from "./CuratingTheDataset";
+import { TrainOnAnswersOnly } from "./TrainOnAnswersOnly";
+import { TheMemoryArithmetic } from "./TheMemoryArithmetic";
+import { LoraFromFirstPrinciples } from "./LoraFromFirstPrinciples";
+import { Qlora } from "./Qlora";
+import { DialsThatMatter } from "./DialsThatMatter";
+import { CatchingMemorization } from "./CatchingMemorization";
+import { ASmallHonestEval } from "./ASmallHonestEval";
+import { TemplateSkew } from "./TemplateSkew";
+import { ShippingAnAdapter } from "./ShippingAnAdapter";
+import { SahayakCapstone } from "./SahayakCapstone";
+import { TheDecisionArchitecture } from "./TheDecisionArchitecture";
+import { TheDataEngine } from "./TheDataEngine";
+import { ObjectiveLandscape } from "./ObjectiveLandscape";
+import { PreferenceData } from "./PreferenceData";
+import { QloraScalingLimits } from "./QloraScalingLimits";
+import { TrainingStability } from "./TrainingStability";
+import { MultiStagePipelines } from "./MultiStagePipelines";
+import { EvaluationAtProduction } from "./EvaluationAtProduction";
+import { TheAlignmentTax } from "./TheAlignmentTax";
+import { MergeDistillServe } from "./MergeDistillServe";
+import { FailureForensics } from "./FailureForensics";
+import { FreeGpuCapstone } from "./FreeGpuCapstone";
+// AI Security: Foundations course (beginner)
+import { WhyAIGetsAttacked } from "./WhyAIGetsAttacked";
+import { OwaspLlmTopTen } from "./OwaspLlmTopTen";
+import { PromptInjection } from "./PromptInjection";
+import { Jailbreaks } from "./Jailbreaks";
+import { DataLeakage } from "./DataLeakage";
+import { GuardrailsBasics } from "./GuardrailsBasics";
+import { SupplyChainRisk } from "./SupplyChainRisk";
+import { OverpermissionedAgents } from "./OverpermissionedAgents";
+import { WhenSecurityKillsTheProduct } from "./WhenSecurityKillsTheProduct";
+import { SecurityCapstone } from "./SecurityCapstone";
+// AI Security: In Practice course (intermediate)
+import { ThreatModelAnApp } from "./ThreatModelAnApp";
+import { InputOutputFiltering } from "./InputOutputFiltering";
+import { SandboxesLeastPrivilege } from "./SandboxesLeastPrivilege";
+import { PiiRedaction } from "./PiiRedaction";
+import { SecuringRag } from "./SecuringRag";
+import { SecuringAgentsMcp } from "./SecuringAgentsMcp";
+import { RedTeamDrills } from "./RedTeamDrills";
+import { DefensiveEvals } from "./DefensiveEvals";
+import { IncidentDrills } from "./IncidentDrills";
+import { PaisashieldCapstone } from "./PaisashieldCapstone";
+// AI Security: At Scale course (expert)
+import { AdversarialRobustness } from "./AdversarialRobustness";
+import { MultiAgentTrust } from "./MultiAgentTrust";
+import { AiIncidentResponse } from "./AiIncidentResponse";
+import { SecureByDesignReviews } from "./SecureByDesignReviews";
+import { ComplianceGovernance } from "./ComplianceGovernance";
+import { ContinuousRedTeaming } from "./ContinuousRedTeaming";
+import { SecurityTradeoffReview } from "./SecurityTradeoffReview";
+import { SetuCapstone } from "./SetuCapstone";
 
 /**
  * Maps an infographic slug to its React component.
@@ -298,6 +371,82 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "multimodal-models": MultimodalModels,
   "frontier-architectures": FrontierArchitectures,
   "production-ml-capstone": ProductionMlCapstone,
+  // LLM Fine-Tuning: Foundations course (beginner)
+  "tuning-not-building": TuningNotBuilding,
+  "the-model-read-everything": TheModelReadEverything,
+  "behavior-not-facts": BehaviorNotFacts,
+  "asking-vs-training": AskingVsTraining,
+  "inside-the-weights": InsideTheWeights,
+  "one-good-example": OneGoodExample,
+  "practice-makes-patterns": PracticeMakesPatterns,
+  "parroting-problem": ParrotingProblem,
+  "forgetting-the-basics": ForgettingTheBasics,
+  "when-not-to-finetune": WhenNotToFinetune,
+  "base-vs-instruct": BaseVsInstruct,
+  "conversation-scripts": ConversationScripts,
+  "clip-on-lenses": ClipOnLenses,
+  "did-it-work": DidItWork,
+  "borrow-a-supercomputer": BorrowASupercomputer,
+  "the-fine-tuning-journey": TheFineTuningJourney,
+  // LLM Fine-Tuning: In Practice course (intermediate)
+  "the-transfer-ladder": TheTransferLadder,
+  "prompt-rag-or-finetune": PromptRagOrFinetune,
+  "anatomy-of-an-example": AnatomyOfAnExample,
+  "curating-the-dataset": CuratingTheDataset,
+  "train-on-answers-only": TrainOnAnswersOnly,
+  "the-memory-arithmetic": TheMemoryArithmetic,
+  "lora-from-first-principles": LoraFromFirstPrinciples,
+  "qlora": Qlora,
+  "dials-that-matter": DialsThatMatter,
+  "catching-memorization": CatchingMemorization,
+  "a-small-honest-eval": ASmallHonestEval,
+  "template-skew": TemplateSkew,
+  "shipping-an-adapter": ShippingAnAdapter,
+  "sahayak-capstone": SahayakCapstone,
+  // LLM Fine-Tuning: At Scale course (expert)
+  "the-decision-architecture": TheDecisionArchitecture,
+  "the-data-engine": TheDataEngine,
+  "objective-landscape": ObjectiveLandscape,
+  "preference-data": PreferenceData,
+  "qlora-scaling-limits": QloraScalingLimits,
+  "training-stability": TrainingStability,
+  "multi-stage-pipelines": MultiStagePipelines,
+  "evaluation-at-production": EvaluationAtProduction,
+  "the-alignment-tax": TheAlignmentTax,
+  "merge-distill-serve": MergeDistillServe,
+  "failure-forensics": FailureForensics,
+  "free-gpu-capstone": FreeGpuCapstone,
+  // AI Security: Foundations course (beginner)
+  "why-ai-gets-attacked": WhyAIGetsAttacked,
+  "the-owasp-llm-top-ten": OwaspLlmTopTen,
+  "prompt-injection": PromptInjection,
+  "jailbreaks": Jailbreaks,
+  "data-leakage": DataLeakage,
+  "guardrails-basics": GuardrailsBasics,
+  "supply-chain-risk": SupplyChainRisk,
+  "over-permissioned-agents": OverpermissionedAgents,
+  "when-security-kills-the-product": WhenSecurityKillsTheProduct,
+  "security-capstone": SecurityCapstone,
+  // AI Security: In Practice course (intermediate)
+  "threat-model-an-app": ThreatModelAnApp,
+  "input-output-filtering": InputOutputFiltering,
+  "sandboxes-and-least-privilege": SandboxesLeastPrivilege,
+  "pii-redaction": PiiRedaction,
+  "securing-rag": SecuringRag,
+  "securing-agents-and-mcp": SecuringAgentsMcp,
+  "red-team-drills": RedTeamDrills,
+  "defensive-evals": DefensiveEvals,
+  "incident-drills": IncidentDrills,
+  "paisashield-capstone": PaisashieldCapstone,
+  // AI Security: At Scale course (expert)
+  "adversarial-robustness": AdversarialRobustness,
+  "multi-agent-trust": MultiAgentTrust,
+  "ai-incident-response": AiIncidentResponse,
+  "secure-by-design-reviews": SecureByDesignReviews,
+  "compliance-and-governance": ComplianceGovernance,
+  "continuous-red-teaming": ContinuousRedTeaming,
+  "the-security-tradeoff-review": SecurityTradeoffReview,
+  "setu-capstone": SetuCapstone,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

@@ -632,6 +632,227 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "Production ML lifecycle",
     description: "Run the train → eval → deploy → drift → retrain loop.",
   },
+  // LLM Fine-Tuning courses
+  {
+    id: "finetune-intuition",
+    label: "Fine-tuning intuition",
+    description: "Explain what fine-tuning changes inside a model — and what it can't.",
+  },
+  {
+    id: "finetune-vs-prompting",
+    label: "Prompting vs fine-tuning",
+    description: "Choose between repeating instructions and training them in.",
+  },
+  {
+    id: "finetune-data-intuition",
+    label: "Training data intuition",
+    description: "See how examples, datasets, and formats shape what a model learns.",
+  },
+  {
+    id: "finetune-risks",
+    label: "Fine-tuning risks",
+    description: "Spot memorization and skill-loss before they ship in your model.",
+  },
+  {
+    id: "when-to-finetune",
+    label: "When to fine-tune",
+    description: "Separate behaviour problems from knowledge problems before training.",
+  },
+  {
+    id: "lora-intuition",
+    label: "LoRA intuition",
+    description: "Understand small clip-on adapters that change a model without rebuilding it.",
+  },
+  {
+    id: "finetune-eval-intuition",
+    label: "Eval intuition",
+    description: "Judge a fine-tune on new questions, not the ones it studied.",
+  },
+  {
+    id: "free-gpu-landscape",
+    label: "Free GPU options",
+    description: "Know what Colab and Kaggle give away — and their limits.",
+  },
+  {
+    id: "sft-pipeline",
+    label: "Supervised fine-tuning",
+    description: "Run the example → loss → update loop that teaches a model your task.",
+  },
+  {
+    id: "chat-templates",
+    label: "Chat templates",
+    description: "Format conversations so training and inference read exactly the same script.",
+  },
+  {
+    id: "finetune-data-curation",
+    label: "Dataset curation",
+    description: "Build small clean datasets that beat big messy ones.",
+  },
+  {
+    id: "finetune-memory-math",
+    label: "Training memory math",
+    description: "Compute the VRAM a fine-tune needs before you rent the GPU.",
+  },
+  {
+    id: "finetune-hyperparameters",
+    label: "Fine-tuning dials",
+    description: "Set learning rate, epochs, and batch for a stable fine-tune.",
+  },
+  {
+    id: "finetune-evaluation",
+    label: "Fine-tune evaluation",
+    description: "Design evals and gates that catch a bad fine-tune before users do.",
+  },
+  {
+    id: "adapter-serving",
+    label: "Adapter serving",
+    description: "Merge, export, and serve a fine-tuned model on modest hardware.",
+  },
+  {
+    id: "finetune-decision-architecture",
+    label: "The tuning decision",
+    description: "Route a problem across prompting, RAG, SFT, and continued pretraining.",
+  },
+  {
+    id: "finetune-data-engine",
+    label: "The data engine",
+    description: "Generate, license, and decontaminate training data at scale.",
+  },
+  {
+    id: "preference-tuning",
+    label: "Preference tuning",
+    description: "Choose and run DPO, ORPO, PPO, and GRPO on preference pairs.",
+  },
+  {
+    id: "training-stability",
+    label: "Training stability",
+    description: "Keep long fine-tunes healthy: schedules, packing, checkpointing.",
+  },
+  {
+    id: "model-merging-distillation",
+    label: "Merging & distillation",
+    description: "Compress and combine fine-tunes into cheaper serving models.",
+  },
+  {
+    id: "failure-forensics",
+    label: "Failure forensics",
+    description: "Triage a broken fine-tune from data bug to objective mismatch.",
+  },
+  {
+    id: "free-gpu-finetuning",
+    label: "Free-GPU fine-tuning",
+    description: "Run a full QLoRA fine-tune on Colab or Kaggle free tiers.",
+  },
+  {
+    id: "ai-attack-surface",
+    label: "AI attack surface",
+    description: "Map every door an AI feature opens — inputs, actions, data, outputs.",
+  },
+  {
+    id: "owasp-llm-top-ten",
+    label: "OWASP LLM Top Ten",
+    description: "Use the industry's ranked list of AI app risks to audit by damage.",
+  },
+  {
+    id: "prompt-injection",
+    label: "Prompt injection",
+    description: "Spot instructions smuggled inside data, and layer the defenses.",
+  },
+  {
+    id: "jailbreak-techniques",
+    label: "Jailbreak patterns",
+    description: "Recognise roleplay, urgency, code-speak, and step-by-step bends.",
+  },
+  {
+    id: "llm-data-leakage",
+    label: "Data leakage paths",
+    description: "Close the three leak paths: pasted prompts, training data, logs.",
+  },
+  {
+    id: "guardrail-basics",
+    label: "Guardrail basics",
+    description: "Treat input/output checks as fast pattern bouncers, not mind-readers.",
+  },
+  {
+    id: "model-supply-chain",
+    label: "Model supply chain",
+    description: "Vet model files like a caterer: named source, sealed box, taste-test.",
+  },
+  {
+    id: "agent-permissions",
+    label: "Agent least privilege",
+    description: "Give agents one small key per errand and a human at the vault.",
+  },
+  {
+    id: "security-ux-tradeoffs",
+    label: "Security friction budgets",
+    description: "Spend user patience at the vault, keep the fast lane free.",
+  },
+  {
+    id: "ai-threat-modeling",
+    label: "AI threat modelling",
+    description: "Run STRIDE-for-AI on one page: assets, adversaries, doors.",
+  },
+  {
+    id: "io-filtering",
+    label: "I/O filtering",
+    description: "Build detection layers at every boundary — in and out.",
+  },
+  {
+    id: "sandboxing-least-privilege",
+    label: "Sandboxing & least privilege",
+    description: "Bound the blast radius of tools, files, and API scopes.",
+  },
+  {
+    id: "pii-redaction",
+    label: "PII redaction",
+    description: "Scrub names, numbers, and keys before the model ever sees them.",
+  },
+  {
+    id: "rag-security",
+    label: "RAG security",
+    description: "Defend retrieval: poisoned corpora, injected pages, permission gaps.",
+  },
+  {
+    id: "agent-tool-security",
+    label: "Agent & tool security",
+    description: "Allow-lists, approval gates, and trust boundaries for tools and MCP.",
+  },
+  {
+    id: "ai-incident-drills",
+    label: "AI incident drills",
+    description: "Rehearse minute one: contain, preserve evidence, notify.",
+  },
+  {
+    id: "defensive-evals",
+    label: "Defensive evals",
+    description: "Turn attack suites into CI tests that catch security regressions.",
+  },
+  {
+    id: "adversarial-robustness",
+    label: "Adversarial robustness",
+    description: "Assess evasion, poisoning, and extraction risk at production scale.",
+  },
+  {
+    id: "multi-agent-trust",
+    label: "Multi-agent trust",
+    description: "Design permission architectures and delegation limits between agents.",
+  },
+  {
+    id: "security-architecture-review",
+    label: "Secure design reviews",
+    description: "Keep threat models alive inside the design review, not shelved.",
+  },
+  {
+    id: "continuous-red-teaming",
+    label: "Continuous red-teaming",
+    description: "Run programs, not one-offs: automation, bounties, fix-rate tracking.",
+  },
+  {
+    id: "security-risk-governance",
+    label: "Risk governance",
+    description: "Own risks in a register: evidence, price, acceptor, review date.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {

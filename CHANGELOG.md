@@ -3,6 +3,96 @@
 A precise log of code changes. Newest first. One entry per logical change; group
 related edits. See `CLAUDE.md` for the rules that govern edits here.
 
+## 2026-08-23 (AI Security trilogy — 3 new courses, 28 lessons, new Cybersecurity domain)
+
+### Added
+- New level-tiered course trilogy in `content/courses.ts` under the
+  previously-empty **Cybersecurity** domain (first courses there), following
+  the `-foundations | -in-practice | -at-scale` precedent, authored with the
+  level-specific v1 skills per `plans/coherent-v1/11-ai-security-track.md`:
+  1. **AI Security Foundations** (`ai-security-foundations`, beginner, free,
+     10 lessons × 4–5 min, 48 min) — Anchored Story-Mountain; everyday
+     anchors (new doors on a shop, the waiter obeying slipped notes, the
+     master-key intern, the too-careful airport); 3-choice scenario MCQs;
+     full jargon gate; no code; scope split vs `ai-observability-reliability`
+     (which keeps detect+govern via telemetry).
+  2. **AI Security in Practice** (`ai-security-in-practice`, intermediate,
+     **paid**, 10 lessons × 7–10 min incl. capstone, 74 min) — PIC +
+     First-Principles Ladders on the running case **PaisaShield** (fintech
+     chat assistant with refund power); 3 runnable Pyodide exercises
+     (injection scorer, PII redactor, allow-list gate evaluator — all
+     verified against their hidden tests); 4-choice MCQs with Q2 re-deriving
+     a rung.
+  3. **AI Security at Scale** (`ai-security-at-scale`, expert, **paid**,
+     8 lessons × 10–15 min incl. capstone, 87 min) — Problem-First Diagnostic
+     (CER) with mandatory Boundary beats on the production case **Setu**
+     (national citizen-services agent federation); adversarial robustness,
+     multi-agent identity propagation, AI incident command, design-review
+     delta gates, obligations→living-artifacts (EU AI Act / NIST AI RMF
+     classes), continuous red-teaming by fix-rate, risk register governance.
+- 28 new infographic components under `components/infographic/` (10 beginner,
+  10 intermediate, 8 expert), registered in `index.tsx` under
+  `// AI Security courses` comments.
+- 23 new SkillIds in `content/types.ts` + definitions in `content/skills.ts`
+  (9 foundations, 8 in-practice, 6 at-scale; reused existing
+  `ai-red-teaming`, `eval-gates`, `eu-ai-act`, `nist-ai-rmf`,
+  `ai-incident-response`).
+- `NEXT_COURSE`: security F→P→S chain; `harness-engineering-at-scale` →
+  `ai-security-foundations`; `ai-observability-reliability` now points to
+  `ai-security-at-scale` (was `undefined`).
+
+### Changed
+- `convex/lib/dailyPlan.ts`: `AI_SECURITY_FOUNDATIONS_UNITS` (beginner+grad),
+  `AI_SECURITY_PRACTICE_UNITS` (grad+engineer), `AI_SECURITY_AT_SCALE_UNITS`
+  (engineer+founder) added to `TRACK_UNITS`.
+- `content/catalog.ts`: trackPriority for the three security courses
+  ([beginner, grad] / [grad, engineer] / [engineer, founder]).
+
+## 2026-08-23 (LLM Fine-Tuning trilogy — 3 new courses, 42 lessons)
+
+### Added
+- New level-tiered course trilogy in `content/courses.ts`, following the
+  RAG/Harness naming precedent (`-foundations | -in-practice | -at-scale`),
+  authored with the level-specific v1 skills:
+  1. **LLM Fine-Tuning Foundations** (`fine-tuning-foundations`, beginner,
+     free, 16 lessons × ~5 min, 73 min total) — Anchored Story-Mountain;
+     everyday anchors (chef orientation, fridge notes, clip-on lenses);
+     3-choice scenario MCQs; full jargon gate; no code.
+  2. **LLM Fine-Tuning in Practice** (`fine-tuning-in-practice`,
+     intermediate, free, 14 lessons × 7–10 min incl. capstone, 101 min) —
+     Predict–Investigate–Case + First-Principles Ladders on the running case
+     **Sahayak** (WhatsApp pharmacy assistant); 5 runnable Pyodide exercises
+     (chat-template render, loss-mask build, memory ledger, LoRA stack count,
+     template diff); 2 continuous widgets (LR trace explorer, checkpoint
+     picker); 4-choice MCQs where Q2 re-derives a rung.
+  3. **LLM Fine-Tuning at Scale** (`fine-tuning-at-scale`, expert, **paid**,
+     12 lessons × 10–15 min incl. capstone, 128 min) — Problem-First
+     Diagnostic (CER) with mandatory Boundary beats on the production case
+     **Varta** (privacy-first regional banking assistant); full formulas,
+     failure modes, decision architecture; 2 exercises (preference margin
+     audit, T4 budget planner); triage-tree widget. Capstone
+     `free-gpu-capstone`: complete end-to-end QLoRA fine-tune of a small
+     ungated Qwen instruct model on free Colab/Kaggle T4s — data → template →
+     train → drawer-gated checkpoints → merge → GGUF → local Ollama serve.
+- 42 new infographic components under `components/infographic/` (16 beginner,
+  14 intermediate, 12 expert), all registered in `index.tsx` under
+  `// LLM Fine-Tuning courses` comments.
+- 22 new SkillIds in `content/types.ts` + definitions in `content/skills.ts`
+  (8 foundations, 7 in-practice, 7 at-scale).
+- Track plan doc `plans/coherent-v1/08-llm-fine-tuning-track.md`.
+
+### Changed
+- `convex/lib/dailyPlan.ts`: `FINE_TUNING_FOUNDATIONS_UNITS` (beginner+grad
+  tracks), `FINE_TUNING_PRACTICE_UNITS` (grad+engineer),
+  `FINE_TUNING_AT_SCALE_UNITS` (engineer+founder); minutes mirror the
+  registry (coverage test enforced).
+- `content/catalog.ts`: trackPriority for the three slugs (beginner+grad /
+  grad+engineer / engineer+founder).
+- `NEXT_COURSE`: foundations → in-practice → at-scale →
+  `harness-engineering-foundations`; plus `rag-engineering-at-scale` →
+  `fine-tuning-foundations`.
+- `docs/content-model.md`: course-count copy refreshed.
+
 ## 2026-07-26 (Machine Learning for Layman course)
 
 ### Added

@@ -24,7 +24,12 @@ Authored learning content lives in version-controlled TypeScript under
 - **`paid`:** Soft-gated (sign-in prompt today; Stripe later). Badge and CTA
   reflect paid intent without fake prices.
 
-Both current courses are free. Pricing truth for freemium lives in
+Most courses are free; the expert tier (`advanced-machine-learning`,
+`rag-engineering-at-scale`, `harness-engineering-at-scale`,
+`ai-observability-reliability`, `fine-tuning-at-scale`,
+`ai-security-at-scale`) plus the intermediate
+`ai-security-in-practice` is paid. Pricing truth
+for freemium lives in
 [`monetization-and-subscription.md`](./monetization-and-subscription.md) and
 [`content/plans.ts`](../content/plans.ts).
 

@@ -31,6 +31,11 @@ as future; treat them as strategy history unless exit criteria still apply.
 | [`04-interactive-learning-design.md`](./04-interactive-learning-design.md) | Active learning interaction patterns |
 | [`05-product-execution-roadmap.md`](./05-product-execution-roadmap.md) | Strategy overview, shared backend/metrics, decision gates |
 | [`06-ai-observability-intermediate-and-advanced.md`](./06-ai-observability-intermediate-and-advanced.md) | Proposed intermediate and expert AI observability curriculum |
+| [`07-machine-learning-track.md`](./07-machine-learning-track.md) | ML track redesign (layman refresh, intermediate expansion, Advanced ML) |
+| [`08-llm-fine-tuning-track.md`](./08-llm-fine-tuning-track.md) | LLM Fine-Tuning trilogy plan (`-foundations / -in-practice / -at-scale`) |
+| [`09-ai-engineering-track.md`](./09-ai-engineering-track.md) | AI Engineering track: 2026 research map, gap verdicts, new courses (Prompt & Context, Inference, AI Security) |
+| [`10-ai-inference-track.md`](./10-ai-inference-track.md) | AI Inference trilogy plan — the fourth AI Engineering pillar (serve) |
+| [`11-ai-security-track.md`](./11-ai-security-track.md) | AI Security trilogy plan — the Cybersecurity domain spine |
 | [`release-and-deploy.md`](./release-and-deploy.md) | `dev` → `main`, CI, Netlify, Convex production |
 
 ## Delivery phases

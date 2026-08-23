@@ -145,7 +145,58 @@ export type SkillId =
   | "diffusion-models"
   | "multimodal-embeddings"
   | "efficient-architectures"
-  | "production-ml-lifecycle";
+  | "production-ml-lifecycle"
+  // LLM Fine-Tuning: Foundations course (beginner)
+  | "finetune-intuition"
+  | "finetune-vs-prompting"
+  | "finetune-data-intuition"
+  | "finetune-risks"
+  | "when-to-finetune"
+  | "lora-intuition"
+  | "finetune-eval-intuition"
+  | "free-gpu-landscape"
+  // LLM Fine-Tuning: In Practice course (intermediate)
+  | "sft-pipeline"
+  | "chat-templates"
+  | "finetune-data-curation"
+  | "finetune-memory-math"
+  | "finetune-hyperparameters"
+  | "finetune-evaluation"
+  | "adapter-serving"
+  // LLM Fine-Tuning: At Scale course (expert)
+  | "finetune-decision-architecture"
+  | "finetune-data-engine"
+  | "preference-tuning"
+  | "training-stability"
+  | "model-merging-distillation"
+  | "failure-forensics"
+  | "free-gpu-finetuning"
+  // AI Security: Foundations course (beginner)
+  | "ai-attack-surface"
+  | "owasp-llm-top-ten"
+  | "prompt-injection"
+  | "jailbreak-techniques"
+  | "llm-data-leakage"
+  | "guardrail-basics"
+  | "model-supply-chain"
+  | "agent-permissions"
+  | "security-ux-tradeoffs"
+  // AI Security: In Practice course (intermediate)
+  | "ai-threat-modeling"
+  | "io-filtering"
+  | "sandboxing-least-privilege"
+  | "pii-redaction"
+  | "rag-security"
+  | "agent-tool-security"
+  | "ai-incident-drills"
+  | "defensive-evals"
+  // AI Security: At Scale course (expert)
+  | "adversarial-robustness"
+  | "multi-agent-trust"
+  | "ai-incident-response"
+  | "security-architecture-review"
+  | "continuous-red-teaming"
+  | "security-risk-governance";
 
 export interface CodeExercise {
   id: string;
