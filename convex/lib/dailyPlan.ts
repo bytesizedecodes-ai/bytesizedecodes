@@ -228,6 +228,100 @@ const ADVANCED_ML_UNITS = [
   unit("advanced-machine-learning", "production-ml-capstone", "Capstone: the anatomy of the loop", 14),
 ];
 
+// LLM Fine-Tuning: Foundations (beginner) — the plain-English sequence.
+const FINE_TUNING_FOUNDATIONS_UNITS = [
+  unit("fine-tuning-foundations", "tuning-not-building", "You teach the chef, not build them", 4),
+  unit("fine-tuning-foundations", "the-model-read-everything", "The model already read (almost) everything", 4),
+  unit("fine-tuning-foundations", "behavior-not-facts", "Behavior, not facts", 5),
+  unit("fine-tuning-foundations", "asking-vs-training", "Asking every time vs training once", 5),
+  unit("fine-tuning-foundations", "inside-the-weights", "Inside the model: a wall of sliders", 4),
+  unit("fine-tuning-foundations", "one-good-example", "One good example", 4),
+  unit("fine-tuning-foundations", "practice-makes-patterns", "Practice makes patterns", 5),
+  unit("fine-tuning-foundations", "parroting-problem", "The parroting problem", 5),
+  unit("fine-tuning-foundations", "forgetting-the-basics", "Forgetting the basics", 5),
+  unit("fine-tuning-foundations", "when-not-to-finetune", "When NOT to fine-tune", 5),
+  unit("fine-tuning-foundations", "base-vs-instruct", "Raw graduate vs assistant school", 4),
+  unit("fine-tuning-foundations", "conversation-scripts", "Conversations are scripts", 4),
+  unit("fine-tuning-foundations", "clip-on-lenses", "Clip-on lenses (LoRA, plainly)", 5),
+  unit("fine-tuning-foundations", "did-it-work", "Did it work?", 4),
+  unit("fine-tuning-foundations", "borrow-a-supercomputer", "Borrow a supercomputer for free", 5),
+  unit("fine-tuning-foundations", "the-fine-tuning-journey", "The whole journey on one trail", 5),
+];
+
+// LLM Fine-Tuning: In Practice (intermediate) — the Sahayak build.
+const FINE_TUNING_PRACTICE_UNITS = [
+  unit("fine-tuning-in-practice", "the-transfer-ladder", "Why 500 examples move a 3B model", 7),
+  unit("fine-tuning-in-practice", "prompt-rag-or-finetune", "The decision memo: prompt, RAG, or fine-tune", 7),
+  unit("fine-tuning-in-practice", "anatomy-of-an-example", "Anatomy of a training example", 7),
+  unit("fine-tuning-in-practice", "curating-the-dataset", "Curating the 800-pair pack", 7),
+  unit("fine-tuning-in-practice", "train-on-answers-only", "Train on the answers, not the questions", 7),
+  unit("fine-tuning-in-practice", "the-memory-arithmetic", "The memory arithmetic", 8),
+  unit("fine-tuning-in-practice", "lora-from-first-principles", "LoRA from first principles", 8),
+  unit("fine-tuning-in-practice", "qlora", "QLoRA: a 4-bit base under the adapter", 7),
+  unit("fine-tuning-in-practice", "dials-that-matter", "The dials that matter", 7),
+  unit("fine-tuning-in-practice", "catching-memorization", "Catching the parrot mid-training", 7),
+  unit("fine-tuning-in-practice", "a-small-honest-eval", "A small, honest eval", 7),
+  unit("fine-tuning-in-practice", "template-skew", "Template skew: the invisible bug", 7),
+  unit("fine-tuning-in-practice", "shipping-an-adapter", "Shipping the adapter", 7),
+  unit("fine-tuning-in-practice", "sahayak-capstone", "Capstone: the Sahayak decision log", 10),
+];
+
+// LLM Fine-Tuning: At Scale (expert) — the Varta design review sequence.
+const FINE_TUNING_AT_SCALE_UNITS = [
+  unit("fine-tuning-at-scale", "the-decision-architecture", "The tuning decision architecture", 11),
+  unit("fine-tuning-at-scale", "the-data-engine", "The data engine", 11),
+  unit("fine-tuning-at-scale", "objective-landscape", "The objective landscape", 11),
+  unit("fine-tuning-at-scale", "preference-data", "Preference data construction", 10),
+  unit("fine-tuning-at-scale", "qlora-scaling-limits", "QLoRA scaling limits", 11),
+  unit("fine-tuning-at-scale", "training-stability", "Training stability", 11),
+  unit("fine-tuning-at-scale", "multi-stage-pipelines", "Multi-stage pipelines", 10),
+  unit("fine-tuning-at-scale", "evaluation-at-production", "Evaluation at production level", 11),
+  unit("fine-tuning-at-scale", "the-alignment-tax", "The alignment tax", 10),
+  unit("fine-tuning-at-scale", "merge-distill-serve", "Merge, distill, serve", 11),
+  unit("fine-tuning-at-scale", "failure-forensics", "Failure forensics", 10),
+  unit("fine-tuning-at-scale", "free-gpu-capstone", "Capstone: a complete fine-tune, free", 15),
+];
+
+// AI Security: Foundations (beginner) — the four-rooms inspection walk.
+const AI_SECURITY_FOUNDATIONS_UNITS = [
+  unit("ai-security-foundations", "why-ai-gets-attacked", "Why AI gets attacked", 4),
+  unit("ai-security-foundations", "the-owasp-llm-top-ten", "The OWASP LLM Top Ten", 4),
+  unit("ai-security-foundations", "prompt-injection", "Prompt injection", 5),
+  unit("ai-security-foundations", "jailbreaks", "Jailbreaks", 5),
+  unit("ai-security-foundations", "data-leakage", "Data leakage", 5),
+  unit("ai-security-foundations", "guardrails-basics", "Guardrails, plainly", 5),
+  unit("ai-security-foundations", "supply-chain-risk", "The model supply chain", 5),
+  unit("ai-security-foundations", "over-permissioned-agents", "The over-permissioned agent", 5),
+  unit("ai-security-foundations", "when-security-kills-the-product", "When security kills the product", 5),
+  unit("ai-security-foundations", "security-capstone", "The inspection walk", 5),
+];
+
+// AI Security: In Practice (intermediate) — the PaisaShield defense build.
+const AI_SECURITY_PRACTICE_UNITS = [
+  unit("ai-security-in-practice", "threat-model-an-app", "Threat-model an app", 7),
+  unit("ai-security-in-practice", "input-output-filtering", "Input/output filtering", 7),
+  unit("ai-security-in-practice", "sandboxes-and-least-privilege", "Sandboxes & least privilege", 7),
+  unit("ai-security-in-practice", "pii-redaction", "PII redaction", 7),
+  unit("ai-security-in-practice", "securing-rag", "Securing RAG", 7),
+  unit("ai-security-in-practice", "securing-agents-and-mcp", "Securing agents & tool servers", 8),
+  unit("ai-security-in-practice", "red-team-drills", "Red-team drills", 7),
+  unit("ai-security-in-practice", "defensive-evals", "Defensive evals", 7),
+  unit("ai-security-in-practice", "incident-drills", "Incident drills", 7),
+  unit("ai-security-in-practice", "paisashield-capstone", "Capstone: the PaisaShield defense log", 10),
+];
+
+// AI Security: At Scale (expert) — the Setu architecture review sequence.
+const AI_SECURITY_AT_SCALE_UNITS = [
+  unit("ai-security-at-scale", "adversarial-robustness", "Adversarial robustness", 11),
+  unit("ai-security-at-scale", "multi-agent-trust", "Multi-agent trust", 11),
+  unit("ai-security-at-scale", "ai-incident-response", "AI incident response", 10),
+  unit("ai-security-at-scale", "secure-by-design-reviews", "Secure-by-design reviews", 10),
+  unit("ai-security-at-scale", "compliance-and-governance", "Compliance & governance", 10),
+  unit("ai-security-at-scale", "continuous-red-teaming", "Continuous red-teaming", 10),
+  unit("ai-security-at-scale", "the-security-tradeoff-review", "The security tradeoff review", 10),
+  unit("ai-security-at-scale", "setu-capstone", "Capstone: the Setu architecture review", 15),
+];
+
 export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
   beginner: [
     ...LAYMAN_UNITS,
@@ -235,6 +329,8 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     ...AI_OBSERVABILITY_UNITS,
     ...HARNESS_FOUNDATIONS_UNITS,
     ...RAG_FOUNDATIONS_UNITS,
+    ...FINE_TUNING_FOUNDATIONS_UNITS,
+    ...AI_SECURITY_FOUNDATIONS_UNITS,
   ],
   grad: [
     ...ML_PRIMER_UNITS,
@@ -246,7 +342,11 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     ...HARNESS_FOUNDATIONS_UNITS,
     ...HARNESS_PRACTICE_UNITS,
     ...RAG_FOUNDATIONS_UNITS,
+    ...FINE_TUNING_FOUNDATIONS_UNITS,
+    ...FINE_TUNING_PRACTICE_UNITS,
     ...RAG_PRACTICE_UNITS,
+    ...AI_SECURITY_FOUNDATIONS_UNITS,
+    ...AI_SECURITY_PRACTICE_UNITS,
   ],
   engineer: [
     unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
@@ -254,12 +354,16 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     byte("gradient-descent", "What gradient descent actually does", 5),
     byte("tensors-and-shapes", "Tensors and shapes", 5),
     ...LLM_OBSERVABILITY_UNITS,
+    ...FINE_TUNING_PRACTICE_UNITS,
+    ...FINE_TUNING_AT_SCALE_UNITS,
     ...RELIABILITY_UNITS,
     ...ADVANCED_ML_UNITS,
     ...HARNESS_PRACTICE_UNITS,
     ...HARNESS_AT_SCALE_UNITS,
     ...RAG_PRACTICE_UNITS,
     ...RAG_AT_SCALE_UNITS,
+    ...AI_SECURITY_PRACTICE_UNITS,
+    ...AI_SECURITY_AT_SCALE_UNITS,
   ],
   founder: [
     unit("machine-learning-for-layman", "humans-vs-machines", "Humans and machines", 3),
@@ -268,6 +372,8 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     ...AI_OBSERVABILITY_UNITS,
     ...HARNESS_AT_SCALE_UNITS,
     ...RAG_AT_SCALE_UNITS,
+    ...FINE_TUNING_AT_SCALE_UNITS,
+    ...AI_SECURITY_AT_SCALE_UNITS,
   ],
 };
 
