@@ -191,7 +191,7 @@ export const COURSES: readonly Course[] = [
         capability: "Distinguish adaptive AI systems from fixed-rule software.",
         minutes: 4,
         concept: {
-          anchor: "A calculator never changes; a puppy learns new tricks from experience — AI is the puppy.",
+          anchor: "A calculator never changes; a fraud filter rewrites itself from every marked transaction — that divide is the whole map.",
           what: "**AI** is the branch of computer science building machines that **reason, learn, perceive, and decide** — instead of only executing fixed instructions.",
           why: "It separates systems that **adapt from experience** (a spam filter improving with every marked email) from **fixed-rule software** (a calculator that never changes).",
           where: [
@@ -217,11 +217,14 @@ export const COURSES: readonly Course[] = [
               { id: "a", label: "The thermostat — schedules are a form of intelligence" },
               { id: "b", label: "The adaptive lighting — it changes behaviour from data about use" },
               { id: "c", label: "Both equally — anything automated counts as AI" },
-              { id: "d", label: "Neither — home apps can't contain AI" },
+              {
+                id: "d",
+                label: "Both — the thermostat's schedule was tuned once during setup, and tuning-once is the same as adapting",
+              },
             ],
             answer: "b",
             explanation:
-              "The lighting feature adapts its behaviour from accumulated data — the hallmark of AI. The thermostat executes a pre-written schedule: same input, same output, nothing learned, so the 'AI-powered' claim only half-holds.",
+              "The dividing line is adaptation *after* deployment: the lighting keeps changing behaviour from accumulated data; the thermostat executes a pre-written schedule, and tuning it once during setup is a design-time act, not learning. 'Anything automated' and 'tuned once = adapts' are the two misreads the audit exists to settle.",
           },
           {
             id: "q2",
@@ -263,7 +266,7 @@ export const COURSES: readonly Course[] = [
         prose: [
           "Machine Learning is a technique for building AI systems that **learn patterns from data themselves**, rather than relying on a programmer to hand-code every rule.",
           "The classic framing: instead of writing a program that says 'if an email contains these words, it's spam', you show the system **thousands of labelled examples** and let it discover the patterns. The more data it sees, the better it gets.",
-          "There are three broad families. **Supervised learning** trains on labelled examples (predict the label of new inputs). **Unsupervised learning** finds structure in unlabelled data (cluster similar items). **Reinforcement learning** learns by trial and error, rewarded for good decisions and penalised for bad ones.",
+          "You've worked with all three families for two years, so the course only fixes the labels: **supervised** (labelled examples), **unsupervised** (structure with no labels), **reinforcement** (reward-shaped sequences). Where ML still surprises working practitioners isn't the taxonomy — it's the edges: rules nobody can enumerate, distributions that drift, and the two traps waiting at the end of this course.",
         ],
         diagram: {
           kind: "decision",
@@ -461,7 +464,7 @@ for claim, expected in cases:
 `,
         },
         concept: {
-          anchor: "Think of nesting dolls: the biggest holds the next, which holds the smallest — each inside the one before.",
+          anchor: "AI is the goal, ML is the route that learns from data, DL is the vehicle with many-layered networks — concentric circles, not synonyms.",
           what: "**AI ⊃ ML ⊃ DL** — nested circles: AI is the goal, ML pursues it by learning from data, DL is ML with many-layered neural networks.",
           why: "Correct nesting prevents mislabeling — not all AI learns (**rule-based expert systems**), not all ML is deep (**random forests, logistic regression**).",
           where: [
@@ -498,7 +501,7 @@ for claim, expected in cases:
             id: "q2",
             kind: "mcq",
             prompt:
-              "Sort three real systems: (1) a video ranker using a deep neural network, (2) a logistic-regression fraud scorer trained on labelled data, (3) a fixed route planner with hand-coded shortest-path rules. Which ordering is DL / ML-not-DL / AI-not-ML?",
+              "Kirana Pay's compliance officer must file three systems in the right regulatory circle: (1) a video ranker using a deep neural network, (2) a logistic-regression fraud scorer trained on labelled data, (3) a fixed route planner with hand-coded shortest-path rules. Which filing is DL / ML-not-DL / AI-not-ML?",
             choices: [
               { id: "a", label: "1 → 2 → 3" },
               { id: "b", label: "3 → 2 → 1" },
@@ -507,7 +510,7 @@ for claim, expected in cases:
             ],
             answer: "a",
             explanation:
-              "The deep ranker is DL (deepest circle). The fraud scorer learns from data but has no multi-layer network — ML, not DL. The route planner never learns — AI at most, not ML.",
+              "The deep ranker is DL (deepest circle). The fraud scorer learns from data but has no multi-layer network — ML, not DL. The route planner never learns — AI at most, not ML. The filing matters because the circles carry different audit obligations: ML filings must show training data lineage, and DL filings add model-behaviour review.",
           },
         ],
       },
@@ -533,7 +536,7 @@ for claim, expected in cases:
         },
         prose: [
           "Regression answers **how much** questions: how many minutes, how many rupees, how many degrees. The simplest regression model draws a straight line through your past examples and reads new answers off it.",
-          "'Best fit' has a precise meaning: for every example, measure the gap between what the line says and what actually happened — **square each gap** (so misses below and above the line count the same, and big misses hurt more), then add them all up. The best line is the one where that total can't be reduced by any small slide or tilt.",
+          "'Best fit' has a precise meaning: for every example, measure the gap between what the line says and what actually happened — **square each gap** (so misses below and above the line count the same, and big misses hurt more), then add them all up. Written down, the objective is `min Σ(yᵢ − ŷᵢ)²` — least squares — and the best line is the one where that total can't be reduced by any small slide or tilt.",
           "The payoff is interpretability. The slope of a price line literally means *'each extra m² adds this many rupees'* — which is why banks, insurers, and economists still reach for linear regression first, before anything fancier.",
         ],
         exercise: {
@@ -601,7 +604,7 @@ for size, expected in cases:
         capability: "Explain how a weighted sum becomes a probability, and why the decision cutoff is a business choice.",
         minutes: 6,
         concept: {
-          anchor: "It's weighing evidence on a kitchen scale, then reading the dial as a confidence between no and yes.",
+          anchor: "Linear regression's S-curve: the evidence still adds up, but the sigmoid squashes the sum into a probability.",
           what: "**Logistic regression** scores the evidence for a class with a weighted sum, then squashes it through an **S-curve (sigmoid)** into a probability between 0 and 1.",
           why: "Probabilities are honest: they can say *probably fine* and *almost certainly spam*, while a hard cutoff can't — and they make the cost of each mistake visible before you choose where to cut.",
           where: [
@@ -861,6 +864,31 @@ for x, rate, expected in cases:
           "Why must the gate exist? Derive it. A weighted sum of a weighted sum is still a weighted sum — compose two linear maps and the algebra collapses them into one (multiply the matrices; you get a matrix). So a 50-layer network of pure sums is *exactly* one weighted layer in disguise: you pay for depth and receive none. The only escape is something nonlinear between the layers — bent functions compose into shapes no single straight boundary can draw, and **bends of bends** can approximate any curve. That is what the activation buys, and it is why depth works — not scale, geometry.",
           "What do layers actually learn? On images: early neurons fire for edges, deeper ones for textures, deeper still for object parts. Nobody assigns these roles — gradient descent turns the dials until each layer's output happens to help the next. **Features are learned, not designed** — the deep-learning promise in one sentence. And Kirana Pay's churn table — 900 merchants, 20 tidy columns — is exactly where this lesson's boundary bites: the month-one review declined a deep net there on evidence.",
         ],
+        exercise: {
+          id: "ex1",
+          title: "Prove the collapse",
+          prompt:
+            "Two linear layers with no activation should collapse into ONE equivalent matrix — this is why gates must exist. compose() applies the layers in the wrong order; fix it so composing equals doing them one after the other.",
+          starterCode: `def compose(W1, W2):
+    """Two stacked linear layers, no activation: return the ONE matrix that does the same job."""
+    return W1 @ W2          # <-- wrong order: W1 runs first, then W2
+`,
+          testCode: `
+def mv(M, v):
+    return [sum(m * u for m, u in zip(row, v)) for row in M]
+
+W1 = [[1.0, 2.0], [3.0, 4.0]]
+W2 = [[5.0, 6.0], [7.0, 8.0]]
+x = [1.0, -1.0]
+got = mv(compose(W1, W2), x)
+expected = mv(W2, mv(W1, x))   # apply W1, then W2
+ok = True
+message = "ok"
+if any(abs(g - e) > 1e-9 for g, e in zip(got, expected)):
+    ok = False
+    message = f"compose applied to x -> {got}, expected {expected}"
+`,
+        },
         questions: [
           {
             id: "q1",
@@ -919,6 +947,31 @@ for x, rate, expected in cases:
           "It walks the error backward along the same paths the signal took forward. The output layer asks 'how much should I have differed?' Each connection passes a share of that error back, scaled by how much it amplified or dampened the signal — the chain rule, applied layer by layer until every weight holds its own gradient: *nudge me this much, this direction*.",
           "One training step is then complete: forward (guess), loss (score), backward (blame), nudge (gradient descent). Repeat across thousands of batches and the nudges compound from noise into structure. When you read that training a frontier model took a month on ten thousand GPUs — this loop, and nothing fancier, is what ran.",
         ],
+        exercise: {
+          id: "ex1",
+          title: "Check a gradient by definition",
+          prompt:
+            "The definition never lies: a gradient is the limit of (loss(w+ε) − loss(w−ε)) / 2ε. For f(w) = (w·x − y)², analytic_grad is missing a factor — fix it until it matches the numerical check.",
+          starterCode: `def analytic_grad(w, x, y):
+    """Gradient of f(w) = (w * x - y) ** 2 with respect to w."""
+    return (w * x - y) * x          # <-- missing a factor of 2? or wrong shape? check against the definition
+`,
+          testCode: `
+def f(w):
+    return (w * x - y) ** 2
+
+eps = 1e-6
+ok = True
+message = "ok"
+for w, x, y in [(2.0, 3.0, 5.0), (-1.5, 0.5, 2.0), (0.0, 7.0, 1.0)]:
+    numerical = (f(w + eps) - f(w - eps)) / (2 * eps)
+    analytic = analytic_grad(w, x, y)
+    if abs(numerical - analytic) > 1e-4:
+        ok = False
+        message = f"analytic_grad({w}, {x}, {y}) -> {analytic}, definition says {numerical}"
+        break
+`,
+        },
         questions: [
           {
             id: "q1",
@@ -1108,6 +1161,28 @@ for x, rate, expected in cases:
           whenNot:
             "Don't chase a single 'best' metric: F1, balanced accuracy, or ROC-AUPRC each hide a different trade. Choose the metric **from the cost of each mistake** — or the grade will quietly optimize the wrong thing.",
         },
+        diagram: {
+          kind: "compare",
+          left: { title: "Tighten the cutoff", subtitle: "flag less, surer" },
+          right: { title: "Loosen the cutoff", subtitle: "flag more, wider" },
+          rows: [
+            {
+              label: "Precision",
+              left: "rises — what is flagged is more often real",
+              right: "falls — more false alarms ride along",
+            },
+            {
+              label: "Recall",
+              left: "falls — real cases slip past unscored",
+              right: "rises — more of the actual class is caught",
+            },
+            {
+              label: "Where to use",
+              left: "false alarms are the costly mistake — analyst hours per flag",
+              right: "misses are the costly mistake — fraud, disease, churn",
+            },
+          ],
+        },
         prose: [
           "Say 'always genuine' on payment traffic where 1% is fraud, and you're right 99 times in 100. Accuracy cannot distinguish that lazy oracle from a working model — the base rate does all the work. On any lopsided problem, accuracy is decoration.",
           "The confusion matrix refuses to hide anything: of the **actual fraud**, how much did we catch (recall)? Of what we **flagged**, how much was real (precision)? Every classifier lives on this seesaw — tighten the cutoff and precision rises while recall falls; loosen it and the reverse. Which side to weight is decided by which mistake costs more: a false alarm that wastes an analyst hour, or a missed fraud that costs the customer.",
@@ -1172,28 +1247,28 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
       },
       {
         slug: "data-leakage-and-imbalance",
-        title: "The two traps",
-        blurb: "Leakage and imbalance: the failures that look like success until the model meets reality.",
+        title: "Data leakage: too good to be true",
+        blurb: "The future leaks into training, the score soars, and reality arrives — spotting the three patterns.",
         topic: "evaluation",
-        skillIds: ["data-leakage", "classification-metrics", "data-quality"],
-        capability: "Spot the three common leakage patterns, explain why they inflate scores, and choose fixes for imbalance.",
+        skillIds: ["data-leakage", "data-quality"],
+        capability: "Spot the three common leakage patterns, explain why they inflate scores, and run the time-alignment fix.",
         minutes: 7,
         concept: {
           anchor: "Studying with the answer key taped inside your notebook aces the practice test and fails the real exam.",
-          what: "**Leakage** is information from the future (or from the test set) contaminating training — producing scores too good to be true. **Imbalance** is a rare positive class that makes plain accuracy meaningless.",
-          why: "These are the two most common causes of 'brilliant offline, useless online' models — and both are **invisible in the loss**: the model looks great right up until it meets data it can't cheat on.",
+          what: "**Leakage** is information from the future (or from the test set) contaminating training — scores too good to be true, right up until the model meets data it can't cheat on.",
+          why: "It's the most common cause of 'brilliant offline, useless online' models — and it's **invisible in the loss**: the training curve looks perfect because the model genuinely learned to read the answers.",
           where: [
             "**Any pipeline with fitted preprocessing** — scalers, encoders, imputers",
             "**Any time-series problem** — tomorrow's rows leaking into yesterday's model",
-            "**Any rare-event domain** — fraud, defects, disease, churn",
+            "**Any grouped entity** — patients, merchants, sessions split across both sides",
           ],
           whenNot:
             "Not every good score is leakage — a genuinely easy problem (linearly separable, stable distribution) can honestly score 0.99. The test is *whether information existed that wouldn't exist at prediction time*, not the score itself.",
         },
         prose: [
-          "The symptom pattern is unmistakable in hindsight: near-perfect offline metrics, then a live model barely better than rules. The cause is usually one of two quiet killers — and neither throws an error.",
+          "The symptom pattern is unmistakable in hindsight: near-perfect offline metrics, then a live model barely better than rules. The cause is a quiet killer — and it never throws an error.",
           "**Leakage** means the training process saw information it would not have at prediction time. The classics: fitting your scaler on all rows (test averages whisper into training); a feature like `days_to_close: 0` that only exists for already-resolved cases; the same patient or session appearing on both sides of the split. Each one lets the model peek at the answers — and the score soars.",
-          "**Imbalance** is quieter: with 7 positives in 1,000, 'always no' scores 99.3%, so accuracy can't feel the class you care about. The fix isn't magic sampling — it's grading honestly (recall, precision, AUPRC) and training with class weights so each rare positive actually pulls the model. Then the 60-second audit above, every time, before any score leaves your laptop.",
+          "The fix is always a data-flow fix, never a modelling one: remove or time-align the feature, refit preprocessing inside the training fold, split by group. Then the 60-second audit above, every time, before any score leaves your laptop — and when the class you care about is rare, accuracy itself becomes the trap. That's the next lesson.",
         ],
         diagram: {
           kind: "decision",
@@ -1212,10 +1287,6 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
               {
                 label: "same entity in train AND test",
                 node: { kind: "leaf", answer: "Leakage — split by group" },
-              },
-              {
-                label: "rare positive class, graded by accuracy",
-                node: { kind: "leaf", answer: "Imbalance — regrade with recall/precision" },
               },
             ],
           },
@@ -1240,6 +1311,78 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
             id: "q2",
             kind: "mcq",
             prompt:
+              "A team fits their scaler and one-hot encoder on the full dataset before the 80/20 split. Cross-validated AUC: 0.99. The same pipeline live: 0.71. Which leakage pattern is this, and what's the fix?",
+            choices: [
+              {
+                id: "a",
+                label: "Fitted-preprocessing leakage — test-set statistics whispered into training; refit everything inside the training fold (a Pipeline) so each split sees only its own data",
+              },
+              {
+                id: "b",
+                label: "Underfitting — the 0.71 means the model is too simple; deepen it",
+              },
+              {
+                id: "c",
+                label: "Concept drift between the validation and live windows — retrain weekly",
+              },
+              {
+                id: "d",
+                label: "Nothing is wrong — cross-validated scores are always optimistic",
+              },
+            ],
+            answer: "a",
+            explanation:
+              "The 0.28 gap is the fingerprint: fitting on all rows means every fold's 'test' data already influenced the scaler/encoder the model trained under — the model peeked, honestly, at scale. The fix is structural, not parametric: preprocessing inside the fold. Note how 'cross-validation said 0.99' made it *harder* to see, not easier.",
+          },
+        ],
+      },
+      {
+        slug: "class-imbalance",
+        title: "Class imbalance: when 99% is nothing",
+        blurb: "A rare positive class turns accuracy into decoration — grading honestly is the whole fix.",
+        topic: "evaluation",
+        skillIds: ["classification-metrics", "data-quality"],
+        capability: "Explain why accuracy fails on rare classes, and grade with recall, precision, AUPRC, and class weights.",
+        minutes: 6,
+        concept: {
+          anchor: "With 4 positives in 1,000, a coin glued to 'no' scores 99.6% — the base rate does all the work.",
+          what: "**Imbalance** makes plain accuracy meaningless: the **base rate** answers most rows, so a do-nothing model scores ~99%. Honest grading reads the rare cells directly — **recall, precision, AUPRC** — and trains with **class weights** so each positive actually pulls.",
+          why: "Accuracy weights every cell by frequency, so on a 1%-positive problem the negative cells dominate the sum — and a metric a null model can saturate tells you nothing about the class you care about.",
+          where: [
+            "**Fraud** — 0.5% of transactions; Kirana Pay's daily reality",
+            "**Disease screening** — 4 in 1,000 patients",
+            "**Churn and defect detection** — the rare event IS the product",
+          ],
+          whenNot:
+            "Don't reach for resampling magic first — oversampling the rare class until it dominates teaches the model a fake base rate. Grade honestly, weight the loss, and price the threshold; resample only with evidence.",
+        },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Sanity-check your metric on a rare class:",
+            branches: [
+              {
+                label: "could a never-positive model score ~99% on it?",
+                node: { kind: "leaf", answer: "Accuracy — decoration here", caption: "the base rate did it" },
+              },
+              {
+                label: "does it read the rare cells directly?",
+                node: { kind: "leaf", answer: "Recall · Precision · AUPRC", caption: "grade what you actually care about" },
+              },
+            ],
+          },
+        },
+        prose: [
+          "Start from how any metric is computed: counts from the 2×2 table, each cell weighted by how often it occurs. That single fact decides everything that follows.",
+          "On a 1%-positive problem, the negative cells occur ~99× as often as the positive ones, so any frequency-weighted sum is dominated by them — and a model that never predicts positive is scored 99%. Rung by rung: a metric the null model saturates cannot distinguish work from idleness; the fix is metrics that read the rare cells directly (recall: of actual positives, how many caught; precision: of flagged, how many real; AUPRC: the whole curve between them); and training needs class weights so the rare positives exert real pull on the loss.",
+          "Then the decision is pricing, not modelling: where the threshold sits is what a missed case costs versus a false alarm — the seesaw from the metrics lesson, now with stakes. Kirana Pay grades fraud as recall at a priced threshold and trains with class weights; that entire stack exists because the base rate is 0.5% and accuracy would have congratulated them for doing nothing.",
+        ],
+        questions: [
+          {
+            id: "q1",
+            kind: "mcq",
+            prompt:
               "A medical screening dataset has 0.4% positive cases. The team boosts accuracy from 99.1% to 99.4% with a new model and wants to ship. What must they show before anyone celebrates?",
             choices: [
               { id: "a", label: "Recall and precision on the positive class — 'always healthy' already scores 99.6%, so accuracy can't distinguish a working screener from a useless one" },
@@ -1250,6 +1393,33 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
             answer: "a",
             explanation:
               "The lazy baseline scores 99.6% by saying no — both their models are *below* it on accuracy! The only metrics that can feel 4-in-1000 positives are recall/precision (or AUPRC). On rare-event problems, accuracy isn't just weak — it can rank a working model below doing nothing.",
+          },
+          {
+            id: "q2",
+            kind: "mcq",
+            prompt:
+              "Kirana Pay's churn run: 2% of merchants churn each month. The model reports 97.6% accuracy; the never-churn baseline scores 98.0%. The team argues the model 'nearly matches the baseline, so it's learning'. What does the review actually demand?",
+            choices: [
+              {
+                id: "a",
+                label: "Grading on the churn class itself — recall, precision, AUPRC at a priced threshold; accuracy already ranks the model below doing nothing",
+              },
+              {
+                id: "b",
+                label: "More training data — accuracy will cross 98% eventually and then it's working",
+              },
+              {
+                id: "c",
+                label: "Oversample churners to 50% of the data and retrain until accuracy looks healthy",
+              },
+              {
+                id: "d",
+                label: "Ship it — matching the baseline proves the model learned the base rate",
+              },
+            ],
+            answer: "a",
+            explanation:
+              "'Nearly matches the null' is a failing grade wearing a passing one: on a 2% problem, accuracy is saturated by the base rate and can move while recall sits at zero. The demand is the rare cells — and option c would teach the model a fake 50% base rate, trading an honest metric problem for a dishonest data one.",
           },
         ],
       },
@@ -10357,6 +10527,39 @@ for before, after, expected in cases:
           whenNot:
             "On tabular or text-style data convolutions encode the wrong priors (no translation structure); and with abundant data, **ViT-class transformers compete** — the choice is a data-scale decision, with CNNs still dominant in the small-data regime.",
         },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "New vision task — how do you source the model?",
+            branches: [
+              {
+                label: "<10k images, natural-image-like domain",
+                node: {
+                  kind: "leaf",
+                  answer: "Frozen pretrained backbone + new head",
+                  caption: "then optional full fine-tune at a small rate",
+                },
+              },
+              {
+                label: "unusual imaging (X-ray, ultrasound, satellite)",
+                node: {
+                  kind: "leaf",
+                  answer: "Still transfer first",
+                  caption: "low-level filters cross domains — check the literature before scratch",
+                },
+              },
+              {
+                label: "ImageNet-scale data AND a genuinely alien domain",
+                node: {
+                  kind: "leaf",
+                  answer: "From-scratch is defensible",
+                  caption: "the rare case — prove the first two fail",
+                },
+              },
+            ],
+          },
+        },
         prose: [
           "The design argument, made quantitative in the visual: a dense first layer on 224×224×3 input needs 150M weights — and learns the disease spot at position (10,10) as unrelated to the same spot at (200,180). Convolution fixes both defects at once: one 3×3 filter (9 numbers) tested at every position yields a feature map of *where that pattern fired*, encoding local structure and translation invariance by construction rather than by hope.",
           "Stacking completes the hierarchy — the depth-is-a-feature-factory lesson, specialized to images: conv1 edges, conv2–3 textures and spots, conv4+ lesion patterns and parts, then a dense head reads the evidence. Pooling and strides compress positions, so deeper layers see wider context. This mirrors how nothing in the pipeline was hand-designed: the hierarchy is learned because it reduces loss.",
@@ -10714,9 +10917,42 @@ for out_dim, in_dim, rank, expected in cases:
           whenNot:
             "Alignment shapes **behavior, not knowledge** — a tuned model still invents facts, now more persuasively. And it installs whatever the preferences encode: reward hacking, sycophancy, and annotator bias ship with it. Eval forever.",
         },
+        diagram: {
+          kind: "decision",
+          root: {
+            kind: "decision",
+            question: "Choosing the alignment recipe:",
+            branches: [
+              {
+                label: "gap is tone/format; no RL team; tight timeline",
+                node: {
+                  kind: "leaf",
+                  answer: "DPO",
+                  caption: "closed-form pair loss — stable, one stage",
+                },
+              },
+              {
+                label: "heavy optimization needed (reasoning, hard safety)",
+                node: {
+                  kind: "leaf",
+                  answer: "RLHF",
+                  caption: "PPO's optimization headroom, at infra cost",
+                },
+              },
+              {
+                label: "the preference rubric isn't written yet",
+                node: {
+                  kind: "leaf",
+                  answer: "Neither — write the rubric first",
+                  caption: "the annotators' rubric IS the specification",
+                },
+              },
+            ],
+          },
+        },
         prose: [
           "The base/pretrained model optimizes text plausibility; products need appropriateness. The bridge is preference data: humans (or strong raters with a rubric) compare answer pairs, thousands of times. Those pairs train a reward model — a learned scorer of 'which response fits this product's taste' — and the specification is nothing more or less than what the rubric and annotators encoded. Write the rubric like a product doc; it is one.",
-          "RLHF closes the loop with reinforcement learning: the policy generates, the reward model scores, PPO nudges generation toward higher reward, with a KL penalty keeping the policy near the base model. It works and is finicky — four models in memory, unstable training, and a policy that will happily maximize the scorer rather than the intent (Goodhart). **DPO** skips the RL machinery entirely: a closed-form loss on the preference pairs that raises the preferred answer's log-odds over the rejected one. Simpler and stabler — the default for teams without an RL research group, with RLHF retained where heavy optimization matters.",
+          "RLHF closes the loop with reinforcement learning: the policy generates, the reward model scores, PPO nudges generation toward higher reward, with a KL penalty keeping the policy near the base model. It works and is finicky — four models in memory, unstable training, and a policy that will happily maximize the scorer rather than the intent (Goodhart). **DPO** skips the RL machinery entirely: a closed-form loss on the preference pairs that raises the preferred answer's log-odds over the rejected one — `−log σ(β·(log π(y_w|x)/π_ref(y_w|x) − log π(y_l|x)/π_ref(y_l|x)))`, one line over policy and reference log-probs, with no reward model in memory. Simpler and stabler — the default for teams without an RL research group, with RLHF retained where heavy optimization matters.",
           "Hold both failure modes in view. **Reward hacking**: verbosity and confident formatting inflate the scorer, so the model drifts verbose and overconfident. **Sycophancy**: annotators softly prefer agreement, so the model learns to validate a wrong user plan instead of correcting it. Neither is a bug you fix once — they're return currents of optimizing a proxy, managed by eval sets that specifically probe them.",
         ],
         questions: [
@@ -10775,7 +11011,7 @@ for out_dim, in_dim, rank, expected in cases:
         prose: [
           "The two directions are asymmetric in cost: the forward process (training) is just 'add measured noise repeatedly to real data' — no labels needed beyond the noise schedule itself. The network learns to predict the noise at any corruption level. Generation is the reverse run: start from static, ask the network what noise it sees, subtract a little, repeat — 20–50 sampling steps, each a full network call. Structure condenses gradually: silhouette before texture, texture before detail.",
           "Why this beat GANs, which generate in a single pass: GAN training is a two-player equilibrium (generator vs discriminator) that collapses without warning and famously mode-drops — covering only its best outputs. Diffusion's per-step regression objective is stable by construction and covers the whole data distribution; conditioning the denoiser on text embeddings (from a CLIP-class encoder — Lesson 11) made one model paint anything describable. The price is that sampling latency floor, which the product tier of every image company engineering-blogs about.",
-          "**Classifier-free guidance** is the dial product teams actually tune: run denoising with and without the prompt, extrapolate away from the unconditional drift. At guidance ≈ 1 the model dreams loosely; ≈ 7 is prompt-faithful vividness (most products' default); ≈ 20 is overcooked literalism with warped hands. And the frontier lesson: diffusion LLMs apply the same reversal to text — denoise a whole draft in parallel sweeps instead of 1,000 sequential token choices — trading autoregressive latency for iterative refinement. Early, imperfect, and the most consequential architecture bet since attention. (Mango's marketing renders — pest-damage mock-ups for the advisory app — run through exactly this lesson's defaults: guidance 7, overnight batch, diversity first.)",
+          "**Classifier-free guidance** is the dial product teams actually tune: run denoising with and without the prompt, extrapolate away from the unconditional drift — `ε* = ε_uncond + s·(ε_cond − ε_uncond)`, the guidance dial s literally the extrapolation strength. At guidance ≈ 1 the model dreams loosely; ≈ 7 is prompt-faithful vividness (most products' default); ≈ 20 is overcooked literalism with warped hands. And the frontier lesson: diffusion LLMs apply the same reversal to text — denoise a whole draft in parallel sweeps instead of 1,000 sequential token choices — trading autoregressive latency for iterative refinement. Early, imperfect, and the most consequential architecture bet since attention. (Mango's marketing renders — pest-damage mock-ups for the advisory app — run through exactly this lesson's defaults: guidance 7, overnight batch, diversity first.)",
         ],
         questions: [
           {
@@ -10831,7 +11067,7 @@ for out_dim, in_dim, rank, expected in cases:
             "Shared space ≠ shared understanding: fine-grained expert distinctions (early rust vs nutrient burn) never appeared in contrastive pretraining — **zero-shot breadth doesn't transfer to expert depth**. There, a small specialist head with your labels still wins.",
         },
         prose: [
-          "Contrastive training is representation alignment as an objective: two encoders, one loss — matched pairs pulled together in embedding space, all mismatched pairs pushed apart. After 400M pairs, 'a photo of a mango leaf' sits near actual mango-leaf photos, structurally. No labels were collected; the pairing of internet photos with their captions did all the work.",
+          "Contrastive training is representation alignment as an objective: two encoders, one loss — matched pairs pulled together in embedding space, all mismatched pairs pushed apart. Formally, InfoNCE over the in-batch similarity matrix: `−log( e^(sim(Iᵢ,Tᵢ)/τ) / Σⱼ e^(sim(Iᵢ,Tⱼ)/τ) )` — a temperature-scaled softmax where the matched caption must beat every mismatched one in the batch, with τ setting how hard the push is. After 400M pairs, 'a photo of a mango leaf' sits near actual mango-leaf photos, structurally. No labels were collected; the pairing of internet photos with their captions did all the work.",
           "The immediate payoff is that prompts became programs: write K captions, embed them once, embed the image, take the nearest — a classifier authored in minutes. Mango's deployed triage tool was three sentences. The caveat is distributional: this works for concepts the pretraining corpus covered — broad, nameable things — and silently degrades on expert distinctions no caption ever drew.",
           "Vision-language models industrialize the same idea: a vision encoder produces embeddings, a small learned **projection** translates them into the LLM's token space, and the LLM reads image tokens like words. Everything you know about prompts, RAG, and fine-tuning from the LLM lessons applies unchanged — the image is now context. The division of labor holds: contrastive pretraining buys breadth; your labels still buy the last mile of depth.",
         ],

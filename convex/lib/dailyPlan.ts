@@ -134,7 +134,8 @@ const ML_PRIMER_UNITS = [
   unit("machine-learning", "bias-variance-tradeoff", "The Goldilocks diagnosis", 6),
   unit("machine-learning", "ensemble-methods", "Committees of weak models", 7),
   unit("machine-learning", "evaluation-metrics", "Grading honestly", 7),
-  unit("machine-learning", "data-leakage-and-imbalance", "The two traps", 7),
+  unit("machine-learning", "data-leakage-and-imbalance", "Data leakage: too good to be true", 7),
+  unit("machine-learning", "class-imbalance", "Class imbalance: when 99% is nothing", 6),
   unit("machine-learning", "kirana-pay-capstone", "Capstone: Kirana Pay's month-one review", 10),
 ];
 

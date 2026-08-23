@@ -13,6 +13,7 @@ import { BiasVarianceTradeoff } from "./BiasVarianceTradeoff";
 import { EnsembleMethods } from "./EnsembleMethods";
 import { EvaluationMetrics } from "./EvaluationMetrics";
 import { DataLeakageAndImbalance } from "./DataLeakageAndImbalance";
+import { ClassImbalance } from "./ClassImbalance";
 import { KiranaPayCapstone } from "./KiranaPayCapstone";
 import { HowHumansLearn } from "./HowHumansLearn";
 import { HumansVsMachines } from "./HumansVsMachines";
@@ -161,6 +162,7 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "ensemble-methods": EnsembleMethods,
   "evaluation-metrics": EvaluationMetrics,
   "data-leakage-and-imbalance": DataLeakageAndImbalance,
+  "class-imbalance": ClassImbalance,
   "kirana-pay-capstone": KiranaPayCapstone,
   // Machine Learning for Layman course
   "how-humans-learn": HowHumansLearn,
