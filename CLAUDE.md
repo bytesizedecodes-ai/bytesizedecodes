@@ -136,7 +136,14 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     Any new lesson, course page, or infographic **must** be built with
     `infographics-interactive_v6`
     (`.agents/skills/infographics-interactive_v6/SKILL.md`) — read it first.
-    It is the **latest** course-authoring skill — a superset of
+    **Prefer the level-specific v1 splits** (same contract, pre-calibrated,
+    full copies with `references/` + `assets/`):
+    `infographics-interactive-beginner_v1` when the course `level` is
+    `"beginner"`, `infographics-interactive-intermediate_v1` for
+    `"intermediate"`, `infographics-interactive-expert_v1` for `"expert"` —
+    read the course's `level` in `content/courses.ts` and pick accordingly;
+    fall back to v6 for cross-level work.
+    v6 is the **latest** course-authoring skill — a superset of
     `infographics-interactive_v5` (explanation-first, retained),
     `infographics-interactive_v4` (predict-first, retained),
     `infographics-interactive` (v3.1, retained), and `infographics-animation`

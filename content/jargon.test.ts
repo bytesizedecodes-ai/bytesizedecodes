@@ -3,12 +3,15 @@ import { COURSES } from "./courses";
 import { JARGON_TERMS } from "./jargon-terms";
 
 /**
- * The plain-English gate (v6 skill §2.5): in beginner/intermediate courses,
- * the FIRST use of each listed jargon term in a lesson must carry a
- * same-sentence parenthetical gloss of ≥ 2 words —
+ * The plain-English gate (v6 skill §2.5, calibrated by the level-specific
+ * v1 skills): in BEGINNER courses — recent college graduates with zero
+ * professional AI/ML experience — the FIRST use of each listed jargon term
+ * in a lesson must carry a same-sentence parenthetical gloss of ≥ 2 words —
  * "tune the **hyperparameters** (the tuning dials set before training)".
- * Later uses in the same lesson are free (defined once). Expert courses are
- * exempt (P4 expertise reversal: full technical precision).
+ * Later uses in the same lesson are free (defined once). Intermediate
+ * (~2 years AI/ML experience) and expert (~5+ years) courses are exempt:
+ * the curated list is standard vocabulary at that experience level, and
+ * glossing it reads as condescension (P4 expertise reversal).
  */
 
 /** Split a scanned string into sentences (period/question/exclamation/clause breaks). */
@@ -40,10 +43,12 @@ function scannedStrings(lesson: (typeof COURSES)[number]["lessons"][number]): st
 }
 
 describe("plain-English gate (v6 jargon elimination)", () => {
-  it("glosses every listed term at first use in beginner/intermediate lessons", () => {
+  it("glosses every listed term at first use in beginner lessons", () => {
     const problems: string[] = [];
     for (const course of COURSES) {
-      if (course.level === "expert") continue; // exempt: full precision (P4)
+      // Beginner-only: college-graduate newcomers need the gloss; 2y+
+      // practitioners and experts already own the curated vocabulary (P4).
+      if (course.level !== "beginner") continue;
       for (const lesson of course.lessons) {
         const key = `${course.slug}/${lesson.slug}`;
         const texts = scannedStrings(lesson);

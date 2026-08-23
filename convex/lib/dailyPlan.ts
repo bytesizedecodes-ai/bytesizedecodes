@@ -135,6 +135,7 @@ const ML_PRIMER_UNITS = [
   unit("machine-learning", "ensemble-methods", "Committees of weak models", 7),
   unit("machine-learning", "evaluation-metrics", "Grading honestly", 7),
   unit("machine-learning", "data-leakage-and-imbalance", "The two traps", 7),
+  unit("machine-learning", "kirana-pay-capstone", "Capstone: Kirana Pay's month-one review", 10),
 ];
 
 // Harness Engineering: Foundations (beginner) — what surrounds a model.
