@@ -5721,9 +5721,9 @@ for before, after, expected in cases:
           ],
         },
         prose: [
-          "People say “the AI did it”, but almost no product hands you a raw model. What you actually use is a **harness**: a machine built *around* a model, the way a car is built around an engine. The engine is astonishing — and useless on a bench.",
-          "The harness adds the four things the model can never have on its own. **Instructions** tell it who to be. **Memory** feeds the conversation back in, every single turn. **Tools** let a thing that can only produce text cause real actions. **Rules** keep all of it inside safe limits.",
-          "This split is the mental map for the whole course. When something works — the assistant remembers your name, checks a fact, books a table — ask: *which part of the harness made that possible?* When something fails, the same question finds the culprit.",
+          "A chatbot greets you by name on the second message, checks your real order, books the table — and everyone says “the AI did it.” Here's the trap in that sentence: the model inside is a brilliant **engine bolted to a bench**. An engine, however astonishing, drives nobody. What you actually used was the whole **car** built around it — the **harness**.",
+          "The tempting reading is that the model is the product. Watch it fail: remembering a name across messages, checking a real order, booking a real table — none of those is something a text predictor can do alone. Engines don't drive; cars drive. The harness supplies exactly what the bench engine lacks: **instructions** tell the model who to be, **memory** feeds the conversation back in every single turn, **tools** let a thing that can only produce text cause real actions, and **rules** keep all of it inside safe limits.",
+          "Strip the metal away and one plain idea is left: nearly everything people call “the AI” in a product is the **car, not the engine** — harness engineering. Where the analogy breaks: a dashboard never changes an engine's power, but a harness changes what the model *does* — new instructions, new behavior, same engine. That split is the mental map for this whole course: when something works or fails, ask *which part of the car did that?*",
         ],
         questions: [
           {
@@ -5829,9 +5829,9 @@ for before, after, expected in cases:
           ],
         },
         prose: [
-          "A model in a playground looks like a product, but it's a component on a bench. Give it a chat and it starts every message from nothing: **no memory** of what came before. Ask it about today and it answers from **frozen training knowledge** — confidently, and wrongly. Ask it to *do* anything and it can only describe the doing.",
-          "The live product built on that same model behaves completely differently — and the difference is engineered. The harness **re-feeds the conversation** each turn, so nothing is forgotten. It **runs tools** for anything that must actually happen. It **retrieves fresh facts** and puts them in front of the model before it answers.",
-          "The practical lesson: whenever a demo impresses you, the interesting question isn't “which model?” but “**what's the harness doing?**” That question will locate every strength — and every failure — in the rest of this course.",
+          "Try a raw model in a bare playground and it looks broken. Every message starts from nothing: **no memory** of what came before. Ask about today and it answers from **frozen training knowledge** — confidently, and wrongly. Ask it to *do* anything and it can only describe the doing. A raw model is a **genius with amnesia, no hands, and yesterday's newspaper** — brilliant at one thing, missing three.",
+          "The live product built on that same model remembers, acts, and stays current — and the difference is engineered, turn by turn. The harness **re-feeds the conversation** so nothing is forgotten. It **runs tools** for anything that must actually happen. It **retrieves fresh facts** and puts them in front of the model before it answers.",
+          "Fade the genius away and one line remains: the raw model has fixed gaps, and the harness is the machinery that re-closes them on every single request. Where the analogy breaks: a person with amnesia could take notes and slowly improve — a model never does, so the harness must re-supply the same missing things forever. The playground didn't expose a broken engine; it unbolted the engine from its car and then wondered why it wouldn't drive.",
         ],
         questions: [
           {
@@ -5916,9 +5916,9 @@ for before, after, expected in cases:
           ],
         },
         prose: [
-          "To a user, a prompt is a wish (“help me with emails”). To a harness engineer, it's **settings**: the same model with different settings produces startlingly different work. A vague prompt gets a shrug; a structured one gets crisp drafts from the very same engine.",
-          "The four settings worth naming are **role**, **rules**, **examples**, and **format**. Role sets who the model is being. Rules set the boundaries it must hold. Examples show one or two finished answers — the single fastest way to make output consistent. Format fixes the shape: bullets, a table, strict JSON.",
-          "Two cautions keep this honest. First, a prompt is not a spell — it changes behavior, not knowledge; the model can't follow instructions about facts it doesn't have. Second, prompts are cheap to change and easy to over-trust, which is why the harness surrounds them with **tools and rules** rather than piling on more words.",
+          "You ask an assistant “help me with emails” and get a shrug. Your teammate's assistant — same model — drafts crisp, formatted replies. The difference isn't the engine; it's the **note you leave a new babysitter**: who they are (the role), the house rules, one example of a job well done, and the shape of the handover. A prompt is that note, written for a model.",
+          "Watch the reflex fail: when output turns inconsistent, hands reach for retraining — but the model wasn't missing knowledge, it was missing **settings**. The four settings: **role** sets who the model is being. **Rules** set the boundaries it must hold. **Examples** show one or two finished answers — the single fastest way to make output consistent. **Format** fixes the shape: bullets, a table, strict JSON.",
+          "Strip the note away and the plain idea is: a prompt is **settings, not a spell** — the cheapest behavior change in the whole harness, an afternoon's work. Where the analogy breaks: a babysitter remembers your house rules by next weekend; the model re-reads the note fresh on every turn, and can still break a rule under pressure. And no note teaches facts the model never learned — prompts move behavior, not knowledge. That's why the harness backs its serious rules with **tools and checks**, not more words.",
         ],
         questions: [
           {
@@ -6001,9 +6001,9 @@ for before, after, expected in cases:
           loop: "each new turn re-fills the window — old content falls out",
         },
         prose: [
-          "Picture the model at a desk. Everything it “knows” right now is what's **on the desk**: the system instructions, the conversation so far, any tool results pasted in. That desk is the **context window**, and it has fixed, finite space measured in **tokens**.",
-          "Here's the part that surprises people: the window doesn't grow with the chat. Each turn, the harness re-builds the desk from scratch — and when there isn't room, the **oldest things slide off**. Nothing is deleted from the database; it just isn't in front of the model anymore. On that turn, it effectively never happened.",
-          "This is why harness engineering spends so much time on what goes *in*: trimming old turns, **summarizing** long history into short notes, pinning critical facts like order numbers so they stay. The model can't manage its own desk — the window is its whole world, and the harness is its secretary.",
+          "Somewhere around message forty, a long support chat goes strange: the assistant asks for details the customer already sent. Nothing was deleted; nobody dozed off. Picture the model at a **desk**: everything it “knows” right now is what's on the desk — instructions, the conversation so far, tool results pasted in. That desk is the **context window**, and it has fixed, finite space.",
+          "Here's where intuition fails: you'd expect the desk to grow with the chat. It never does. Every turn, the harness rebuilds the desk from scratch — and when space runs out, the **oldest papers slide off**. The early message still sits in the chat log; it just isn't in front of the model on that turn, so for the model it effectively never happened. Hence the desk-keeping you'll meet all course: trimming old turns, **summarizing** long history into short notes, pinning critical facts so they can't slide.",
+          "Fade the desk to one line: the window is the model's whole world for that turn — whatever isn't on the desk does not exist. Where the analogy breaks: papers on a real desk stay put until someone clears them; this desk is **rebuilt every turn**, so “falling off” really means “never put back” — and the model can't go rifling through a drawer for what fell. The model can't manage its own desk. The harness is its secretary.",
         ],
         questions: [
           {
@@ -6091,9 +6091,9 @@ for before, after, expected in cases:
           loop: "repeat until the model has what it needs",
         },
         prose: [
-          "The moment that feels like magic — “the AI searched the web!” — is a handshake, and knowing its steps removes the magic entirely. The model never opens a browser. It **writes a request**: a tool name plus arguments, like `get_forecast(city=\"Lisbon\")`. That request is just text.",
-          "The **harness** picks it up. It checks that the tool exists and the arguments make sense, runs the real action, and pastes the result — `22°C, sunny` — back into the model's context. Only then does the model answer, now with facts it can literally see.",
-          "The split is the safety feature. Because the model only ever *asks*, the harness decides **which tools exist**, **validates every request**, and can refuse anything dubious. A model that wished for an action it couldn't name would be a bug; a harness that executes requests blindly would be a breach.",
+          "The moment that feels like magic — an assistant quotes a live fact it could never have been trained on — is a handshake, and knowing its steps dissolves the magic. The model never runs anything; it has no hands. Using a tool is **handing the waiter your scribbled order**: the model writes the note — a tool name plus arguments, like `get_forecast(city=\"Lisbon\")` — and the note is just text.",
+          "The **harness** carries it to the kitchen. It checks the tool exists and the arguments make sense, runs the real action, and pastes the result — `22°C, sunny` — back into the model's context. Only then does the model answer, now with facts it can literally see.",
+          "Strip the restaurant away and the idea is one line: the model emits structured requests; the harness executes them and feeds results back — that loop is all “tool use” ever is. Where the analogy breaks: a waiter who knows the menu would never order a dish the kitchen can't make — the model will confidently scribble a call to a tool it was never offered, or mangle an argument on the way. Because the model only ever *asks*, the harness is the checkpoint: it decides **which tools exist**, **validates every request**, and can refuse anything dubious.",
         ],
         questions: [
           {
@@ -6191,9 +6191,9 @@ for before, after, expected in cases:
           },
         },
         prose: [
-          "Everything in this course so far happens in **one turn**. The agent loop is what happens when a harness stops planning the turns in advance: **think** (what's my next step?), **act** (call a tool), **observe** (read what came back) — and around again. A coding agent lives here: read the file, edit, run the tests, see two failures, edit again.",
-          "The loop's power is that each step reacts to the last. Its danger is the same: some tasks never resolve — “find the *best* answer” can always justify one more search. That's why every production agent carries a **budget**: a maximum number of steps or cost. When it's spent, the harness stops the loop and returns the best answer so far.",
-          "The budget isn't a limitation bolted on afterwards; it's what makes the loop shippable. A loop that can always stop is a tool. A loop that can't is an outage with a countdown.",
+          "Everything in this course so far happens in **one turn**. Now take a task whose steps nobody can script — “find out why returns spiked” — and you're on a **treasure hunt**: take a step, read the clue, go again. The agent loop is the harness running that hunt: **think** (what's my next step?), **act** (call a tool), **observe** (read what came back) — and around again. A coding agent lives here: read the file, edit, run the tests, see two failures, edit again.",
+          "The hunt's power is that each step reacts to the last — its danger is identical. Some clues never say stop: “find the *best* answer” can always justify one more search, deeper into the hunt, bill climbing, no answer coming. A treasure hunt needs a **curfew**: a maximum number of steps or cost. When it blows, the harness stops the loop and returns the best answer so far. The budget isn't bolted on afterwards — it's what makes the loop shippable.",
+          "Fade the hunt to its skeleton: think → act → observe, repeat, stop on goal *or budget* — that's every agent ever shipped. Where the analogy breaks: a treasure hunt has a real map and a treasure a referee can verify; an agent's “goal reached” is the model's own say-so — the hunter can't be trusted to call the hunt done. That's why the whistle, not the hunter, gets the final word. A loop that can always stop is a tool. A loop that can't is an outage with a countdown.",
         ],
         questions: [
           {
@@ -6309,9 +6309,9 @@ for before, after, expected in cases:
           },
         },
         prose: [
-          "The most expensive bug in AI engineering isn't a broken agent — it's an **unnecessary** one. Nightly translation needs a pipeline: the same steps, every night, scripted once. A policy question needs a single call: hand the model the policy and the question. Neither needs a loop, and a loop would make both slower, pricier, and less predictable.",
-          "The agent question is simply: **can the path be written in advance?** “Investigate why returns spiked” cannot — the next step depends on what the last one found. That, and only that, is agent work.",
-          "So climb the ladder and stop at the first rung that works: **pipeline** → **single call** → **agent**. Saying “a pipeline will do” when a teammate proposed an autonomous agent isn't timidity — it's the senior skill this course exists to build.",
+          "The most expensive bug in AI engineering isn't a broken agent — it's an **unnecessary** one. Picking machinery is **picking transport**: for the daily commute, the scheduled **bus** (a **fixed pipeline** — the same known steps every time) beats the **taxi** (a **single model call** — one question, one answer) beats the **helicopter** (an **agent** — flexible, but loud, pricey, and able to go anywhere, including the wrong place). Paying for rotor flexibility on a bus-route task isn't ambition; it's the bug.",
+          "The whole test is one question: **can the path be written in advance?** Nightly photo resizing — same steps, every night, scripted once: bus. “What's your return policy?” — one question, one answer: taxi. “Investigate why returns spiked” — the next step depends on what the last one found: helicopter, genuinely.",
+          "Strip the vehicles away: climb **pipeline → single call → agent** and stop at the first rung that works. Where the analogy breaks: a helicopter is merely expensive; an agent is expensive *and* less predictable than the bus — its signature failure is wandering confidently off the route, not just the bill. So when a teammate proposes an autonomous agent for a task you can script, saying “a pipeline will do” isn't timidity — it's the senior judgment this course exists to build.",
         ],
         questions: [
           {
