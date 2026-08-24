@@ -8,7 +8,7 @@
  *
  * ── Path 1 (canonical): data-driven diagram below the infographic ──────────
  *
- * Add a `diagram` field to the lesson in content/courses.ts. The lesson page
+ * Add a `diagram` field to the lesson in content/courses/. The lesson page
  * renders it via components/LessonDiagram.tsx below the story infographic.
  * No component work at all.
  *

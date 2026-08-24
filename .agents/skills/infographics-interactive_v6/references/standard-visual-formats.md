@@ -40,7 +40,7 @@ Style rules:
 
 ## 3. Authoring shapes (data, not components)
 
-Diagrams are plain data on the lesson (`content/courses.ts` → `diagram`),
+Diagrams are plain data on the lesson (`content/courses/` → `diagram`),
 rendered by `components/LessonDiagram.tsx` onto
 `components/infographic/flow.tsx`. Never build a bespoke diagram component
 when a standard format fits.

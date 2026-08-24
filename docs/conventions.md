@@ -58,16 +58,18 @@ Branded `"YYYY-MM-DD"` in IST. Cast with `asDayKey()`, never blind `as DayKey`.
 
 ## Courses / infographics
 
-Use the `infographics-interactive_v5` skill for new or edited courses —
-**explanation-first**: every lesson opens with a 4-step concept brief
-(What / Why / Where / When NOT, key terms `**bold**`), never a quiz. The story
-infographic keeps the bespoke scene aesthetic; an optional standardized system
-diagram (flowchart / comparison grid / decision tree, as `diagram` data on the
-lesson) renders below it as a compact reference — it must not re-tell the
-story. Every lesson closes with **exactly 2 real-life scenario MCQs** — no
-prediction cards, no application cards. Audience-aware level, scene
-vocabulary, theme-safe tokens, one accent per scene. See rule 11 in
-[`../CLAUDE.md`](../CLAUDE.md) and [`content-model.md`](./content-model.md)
+Use the level-specific v1 skills for new or edited courses (rule 11 in
+[`../CLAUDE.md`](../CLAUDE.md) picks by the course's `level` in
+`content/courses/`) — **anchor-first**: every lesson opens with an
+anchor-led concept brief (Anchor / What / Why / Where / When NOT, key terms
+`**bold**`), never a quiz. The story infographic keeps the bespoke scene
+aesthetic; an optional standardized system diagram (flowchart / comparison
+grid / decision tree, as `diagram` data on the lesson) renders below it as a
+compact reference — it must not re-tell the story. Every lesson closes with
+**exactly 2 real-life scenario MCQs** — no prediction cards, no application
+cards. Audience-aware level, scene vocabulary, theme-safe tokens, one accent
+per scene. For batch work, dispatch the project subagents in
+`.agents/agents/` (rule 13). See [`content-model.md`](./content-model.md)
 for the lesson anatomy.
 
 ## Tests and finish line

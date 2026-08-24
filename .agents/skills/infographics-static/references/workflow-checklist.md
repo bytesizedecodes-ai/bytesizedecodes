@@ -32,10 +32,10 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "what-is-foo": WhatIsFoo,
 };
 ```
-The key (kebab-case slug) must match the `slug` you use in `content/courses.ts`.
+The key (kebab-case slug) must match the `slug` you use in `content/courses/`.
 
 ### 3. Add the lesson to the course
-File: `content/courses.ts`
+File: `content/courses/`
 
 Append to the right course's `lessons` array:
 ```ts
@@ -124,7 +124,7 @@ curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3000/courses/<course>/
 
 ## Common mistakes
 
-- **Slug mismatch** — the registry key, the `courses.ts` `slug`, and the
+- **Slug mismatch** — the registry key, the `content/courses/` `slug`, and the
   component file name must all agree (kebab-case slug, PascalCase component).
   A typo here = a 500 with "No infographic component registered".
 - **Forgetting to register** — creating the `.tsx` file isn't enough; it must be

@@ -84,7 +84,7 @@ who'll catch you if you round a number wrongly.
 | **Math/code** | Full formulas, real code, edge cases, failure modes. This is where the entropy formula and the cosine-similarity math live. |
 | **The aha** | Comes from *depth and surprise* (a non-obvious connection, a counter-intuitive result), not from withheld-then-revealed basics. |
 
-**The level is on the course object** (`content/courses.ts` → `level: "beginner"|"intermediate"|"expert"`).
+**The level is on the course object** (`content/courses/` → `level: "beginner"|"intermediate"|"expert"`).
 Read it before authoring. If you're unsure, ask.
 
 ### 1.1 The three storytelling frameworks (one named structure per level)
@@ -467,7 +467,7 @@ contract cannot explain why a widget exists, do not build the widget.
 
 ### Step 1 — Read the course level, calibrate, and pick the framework
 Read the course's `level` (beginner/intermediate/expert) in
-`content/courses.ts`. Set your analogy density, jargon level, narrative
+`content/courses/`. Set your analogy density, jargon level, narrative
 weight, and math/code allowance per §1. **Then pick the level's named
 storytelling framework from §1.1** (Beginner → Anchored Story-Mountain;
 Intermediate → Predict–Investigate–Case; Expert → Problem-First Diagnostic).

@@ -141,7 +141,7 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     `infographics-interactive-beginner_v1` when the course `level` is
     `"beginner"`, `infographics-interactive-intermediate_v1` for
     `"intermediate"`, `infographics-interactive-expert_v1` for `"expert"` —
-    read the course's `level` in `content/courses.ts` and pick accordingly;
+    read the course's `level` in `content/courses/` and pick accordingly;
     fall back to v6 for cross-level work.
     v6 is the **latest** course-authoring skill — a superset of
     `infographics-interactive_v5` (explanation-first, retained),
@@ -189,7 +189,7 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     interactive storytelling** (§1.3): one through-line picture (the anchor
     dramatized), interaction on a mapped beat (not a bolted-on widget),
     BEFORE→ACT→AFTER as a story turn. Read the `level` from
-    `content/courses.ts` before authoring — what helps a beginner *harms* an
+    `content/courses/` before authoring — what helps a beginner *harms* an
     expert (the expertise reversal effect). Always build with the shared
     scene vocabulary (`CarShape`, `BikeShape`, `PictureCard`, `Operator`,
     `Scene`) and inherited motion (`Stagger`/`MotionChild`/`Reveal`).
@@ -226,11 +226,54 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     keep full technical precision (expert courses stay jargon-exempt) —
     say precise things in plain words, never dumb the content down.
 
+13. **Project subagents live in `.agents/agents/` (one `.md` per agent:
+    `name`/`description`/`tools` frontmatter, body = system prompt).** They
+    are the enforcement layer for the project's **7 learning principles**:
+
+    | Principle | Meaning | Enforced by |
+    | --- | --- | --- |
+    | Simplification | Plain words, precision intact | Rule 12, `jargon.test.ts`, english-simplifier |
+    | Visual explanation | The visual carries the idea; prose captions it | Rule 11 P1, course-author, course-reviewer |
+    | High retainability | Anchor + story + one engineered "aha" | Rule 11 skills, SRS/review loop |
+    | Frequent application | Scenario MCQs, work-shaped exercises | `courses.test.ts`, exercise-test-runner |
+    | Actionable boundaries | `whenNot` is a testable rule, not a shrug | `courses.test.ts`, course-reviewer |
+    | Scannability & Chunking *(new)* | Lesson scans in seconds; ≤4 focal elements/scene, one idea per sentence | course-author, course-reviewer |
+    | Immediate Win / Feedback *(new)* | Every answer teaches via its misconception; a felt win in the first minutes | course-author, course-reviewer |
+
+    The roster:
+
+    | Agent | Dispatch when | Returns |
+    | --- | --- | --- |
+    | `course-author` | Writing/substantially rewriting lessons or courses | Lessons + scenes + registrations, test results |
+    | `course-verifier` | After any content batch, before commit | Pass/fail table + minimal fixes |
+    | `course-reviewer` | After verifier passes; craft audits | Priority-tagged findings vs the 7 principles |
+    | `english-simplifier` | Rule-12 rewrite, ONE course per dispatch | Edit stats, before/after sentence metrics |
+    | `exercise-test-runner` | After authoring exercises; solvability audits | Per-exercise pass/fail with assertions |
+    | `infographic-scaffolder` | Lesson plan exists; boilerplate scene needed | Component + registry entry + TODO map |
+
+    **Dispatch protocol** (ZCode loads no project agent files — launch them
+    through the Agent tool with a wrapper prompt):
+
+    ```
+    Agent tool → subagent_type: general-purpose →
+    prompt: "You are the <name> subagent for bytesizedecodes.
+    Read .agents/agents/<name>.md and follow it exactly. Task: <task>."
+    ```
+
+    Rules: **one course file per agent** (parallel background dispatch for
+    batches — the per-course split exists for this); pipeline is
+    author → verifier → reviewer; agents **never commit** — the main thread
+    reviews diffs and commits; small single-lesson edits stay in the main
+    thread. Agents verify with `tsc` + `vitest`, never `npm run build`, and
+    must never reformat course bodies (template-literal interiors are string
+    content).
+
 ## Where things live
 
 | Area | Path | Notes |
 | --- | --- | --- |
 | Agent docs | `docs/` | Overview, architecture, data layer, content, conventions |
+| Project subagents | `.agents/agents/` | 6 course-workflow agents; dispatch via rule 13 |
 | Product plans | `plans/` | Historical + Coherent V1 strategy and delivery phases |
 | App routes | `app/` | Server components by default; `"use client"` only where needed |
 | React data hooks | `lib/data/provider.tsx` | Active Convex-backed provider |

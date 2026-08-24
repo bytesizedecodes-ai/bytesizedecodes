@@ -215,9 +215,9 @@ import { SetuCapstone } from "./SetuCapstone";
 /**
  * Maps an infographic slug to its React component.
  *
- * Each entry must match the `slug` used in `content/courses.ts`. Adding a lesson
+ * Each entry must match the `slug` used in `content/courses/`. Adding a lesson
  * means: (1) create the component under `components/infographic/`, (2) add it
- * here, (3) add the registry entry in `content/courses.ts`.
+ * here, (3) add the registry entry in `content/courses/`.
  */
 export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   // Machine Learning course

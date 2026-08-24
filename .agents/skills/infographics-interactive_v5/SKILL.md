@@ -62,7 +62,7 @@ v5 lessons have **no prediction card and no application card**. There is no
 quiz before the idea, and no transfer prompt bolted after the checks — the
 real-world transfer lives *inside* the two closing questions (§0.1).
 
-The brief lives on the lesson object in `content/courses.ts` as plain data and
+The brief lives on the lesson object in `content/courses/` as plain data and
 renders through the shared `Inline` formatter (so `**bold**` and `` `code` ``
 work):
 
@@ -177,7 +177,7 @@ who'll catch you if you round a number wrongly.
 | **Math/code** | Full formulas, real code, edge cases, failure modes. This is where the entropy formula and the cosine-similarity math live. |
 | **The aha** | Comes from *depth and surprise* (a non-obvious connection, a counter-intuitive result), not from withheld-then-revealed basics. |
 
-**The level is on the course object** (`content/courses.ts` → `level: "beginner"|"intermediate"|"expert"`).
+**The level is on the course object** (`content/courses/` → `level: "beginner"|"intermediate"|"expert"`).
 Read it before authoring. If you're unsure, ask.
 
 ### 1.1 The three storytelling frameworks (one named structure per level)
@@ -477,7 +477,7 @@ renders as `[ Labelled samples ]`.
 
 ### How to author one
 
-The diagram is **plain data** on the lesson object (`content/courses.ts`), not
+The diagram is **plain data** on the lesson object (`content/courses/`), not
 a new component. The lesson page renders it automatically via
 `components/LessonDiagram.tsx`:
 
@@ -677,7 +677,7 @@ why a widget exists *on that beat*, do not build the widget.
 
 ### Step 1 — Read the course level, calibrate, and pick the framework
 Read the course's `level` (beginner/intermediate/expert) in
-`content/courses.ts`. Set your analogy density, jargon level, narrative
+`content/courses/`. Set your analogy density, jargon level, narrative
 weight, and math/code allowance per §1. **Then pick the level's named
 storytelling framework from §1.1** (Beginner → Anchored Story-Mountain;
 Intermediate → Predict–Investigate–Case; Expert → Problem-First Diagnostic).

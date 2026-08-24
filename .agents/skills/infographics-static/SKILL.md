@@ -115,7 +115,7 @@ Follow `references/workflow-checklist.md` exactly:
 1. Create `components/infographic/<PascalName>.tsx` from
    `assets/lesson-template.tsx`.
 2. Register in `components/infographic/index.tsx`.
-3. Add the lesson entry to `content/courses.ts` with prose/questions/exercise.
+3. Add the lesson entry to `content/courses/` with prose/questions/exercise.
 4. Verify: `npm run typecheck`, route resolves, (optional) PNG render.
 
 ## The layout gallery
@@ -130,7 +130,7 @@ a "best for" so you can match shape to content.
 
 ## Content rules (the "byte" payload)
 
-A lesson isn't just a picture. Each entry in `content/courses.ts` should have:
+A lesson isn't just a picture. Each entry in `content/courses/` should have:
 - **`prose`**: 2-4 short paragraphs (~100-200 words total). Plain strings, no
   markdown. One idea per paragraph. Faithful to source.
 - **`questions`**: 2-3 MCQs. Each wrong answer must teach something — the
@@ -157,7 +157,7 @@ A lesson isn't just a picture. Each entry in `content/courses.ts` should have:
   Before finishing a component, grep it for those four classes and fix every hit.
 - Don't use `Math.random()`, `Date.now()`, or `localStorage` inside an
   infographic component — they must be pure presentational React.
-- Don't duplicate an existing lesson. Check `content/courses.ts` and
+- Don't duplicate an existing lesson. Check `content/courses/` and
   `components/infographic/index.tsx` before building.
 - Don't paraphrase source numbers or drop qualifiers to fit a layout. Faithful
   first, pretty second.

@@ -11,7 +11,7 @@ import type { LessonDiagram } from "@/content/courses";
  * The standardized system diagram rendered BELOW a lesson's story infographic
  * (v5 contract). The infographic above tells the idea as a story; this is the
  * compact reference view — bracket node patterns, standardized formats, no
- * re-narration. Data lives on `lesson.diagram` in content/courses.ts.
+ * re-narration. Data lives on `lesson.diagram` in content/courses/.
  */
 
 const DIAGRAM_LABELS: Record<LessonDiagram["kind"], string> = {

@@ -231,3 +231,142 @@ export interface Byte {
   questions: ByteQuestion[];
   exercise?: CodeExercise;
 }
+
+/**
+ * Course content contract. Courses are authored as one module per course
+ * under content/courses/ and aggregated by content/courses/index.ts.
+ */
+/**
+ * The anchor-led concept brief that opens a lesson (v6 authoring contract):
+ * Anchor (everyday metaphor, FIRST) / What / Why / Where / When NOT — each
+ * 1–2 sharp sentences, key terms in **bold** (rendered through the shared
+ * Inline formatter). The anchor also feeds the shareable cheat-sheet card.
+ */
+export type ConceptBrief = {
+  /** Anchor: the one-sentence everyday metaphor — something a 10-year-old touches. Rendered FIRST. */
+  anchor: string;
+  /** What: the 10-second plain-English summary. */
+  what: string;
+  /** Why: the core benefit or problem it solves. */
+  why: string;
+  /** Where: 2–3 specific real-world applications. */
+  where: readonly string[];
+  /** When NOT to use: the practical boundary rule. */
+  whenNot: string;
+};
+
+/**
+ * The standardized system diagram rendered BELOW a lesson's story infographic
+ * (v5 contract). Plain data — the renderer maps it onto the shared flow
+ * primitives (`components/infographic/flow.tsx`). It is the compact reference
+ * view of the idea the infographic above told as a story: bracket node
+ * patterns, terse captions, no re-narration.
+ */
+export type DiagramNodeKind = "input" | "process" | "output" | "decision";
+
+export type DiagramTree =
+  | {
+      kind: "decision";
+      /** The question, rendered as < question >. */
+      question: string;
+      caption?: string;
+      branches: readonly { label: string; node: DiagramTree }[];
+    }
+  | {
+      kind: "leaf";
+      /** The outcome, rendered as [ answer ]. */
+      answer: string;
+      caption?: string;
+    };
+
+export type LessonDiagram =
+  | {
+      kind: "flow";
+      steps: readonly {
+        kind: DiagramNodeKind;
+        text: string;
+        caption?: string;
+      }[];
+      /** Loop-back annotation for cyclical processes. */
+      loop?: string;
+    }
+  | {
+      kind: "compare";
+      left: { title: string; subtitle?: string };
+      right: { title: string; subtitle?: string };
+      rows: readonly { label: string; left: string; right: string }[];
+    }
+  | {
+      kind: "decision";
+      root: DiagramTree;
+    };
+
+export type Lesson = {
+  /** Folder/component slug. Must match a key in components/infographic/index.tsx. */
+  slug: string;
+  title: string;
+  /** One-line summary shown on the course index and the lesson header. */
+  blurb: string;
+  /** Topic tag, for future filtering and mastery grouping. */
+  topic: string;
+  skillIds?: readonly SkillId[];
+  capability?: string;
+  /** Estimated minutes to read + attempt. Shown in the byte chip. */
+  minutes?: number;
+  /** Anchor-led explanation (Anchor/What/Why/Where/When NOT) shown before the infographic. */
+  concept?: ConceptBrief;
+  /** Standardized system diagram shown below the infographic (reference view). */
+  diagram?: LessonDiagram;
+  /** ~100-200 words of explanation, rendered as paragraphs under the infographic. */
+  prose?: string[];
+  /** Optional runnable Python exercise (Pyodide). */
+  exercise?: CodeExercise;
+  /** Exactly 2 real-life scenario MCQs (v5 contract). All correct to complete. */
+  questions?: ByteQuestion[];
+};
+
+/**
+ * Skill depth of a course, used for browse/filter on `/courses`.
+ *
+ * Note: this is a *skill-level* axis (how technical the material is), distinct
+ * from the `trackPriority` persona axis in `catalog.ts` (beginner/grad/
+ * engineer/founder, which drives `/learn`'s recommendation). The two are
+ * intentionally separate — do not conflate them.
+ */
+export type CourseLevel = "beginner" | "intermediate" | "expert";
+
+/**
+ * Top-level field a course belongs to. Drives the domain filter on `/courses`.
+ * Add a new value here when you introduce a new field of study.
+ */
+export type CourseDomain =
+  | "Machine Learning"
+  | "Cybersecurity"
+  | "Artificial Intelligence"
+  | "AI Observability"
+  | "AI Engineering";
+
+/**
+ * Monetization tier for browse/gate UX.
+ * - free: full SSR content, public SEO, readable without sign-in
+ * - paid: listing + soft login (payment later); do not full-index paid lesson bodies when added
+ */
+export type CourseAccess = "free" | "paid";
+
+export type Course = {
+  /** URL segment under `/courses/`. */
+  slug: string;
+  title: string;
+  subtitle: string;
+  /** Optional longer description for the course landing page. */
+  description?: string;
+  /** Skill depth — drives the level filter and badge on `/courses`. */
+  level: CourseLevel;
+  /** Field of study — drives the domain filter and grouping on `/courses`. */
+  domain: CourseDomain;
+  /** free | paid — free courses are public SEO; paid soft-gate until checkout exists */
+  access: CourseAccess;
+  /** Optional human-readable prerequisite line, shown on the course page. */
+  prerequisites?: string;
+  lessons: Lesson[];
+};

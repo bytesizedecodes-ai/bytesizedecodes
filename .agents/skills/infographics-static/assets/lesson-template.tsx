@@ -4,7 +4,7 @@
  *
  * After creating the component:
  *   1. Register in components/infographic/index.tsx
- *   2. Add the lesson entry in content/courses.ts
+ *   2. Add the lesson entry in content/courses/
  * See references/workflow-checklist.md.
  */
 

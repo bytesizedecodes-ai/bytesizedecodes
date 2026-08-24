@@ -9,7 +9,7 @@ Authored learning content lives in version-controlled TypeScript under
 | --- | --- |
 | `content/types.ts` | Shared content types (`Block`, questions, etc.) |
 | `content/bytes/` | Standalone short lessons |
-| `content/courses.ts` | Course definitions, lesson sequences, `access: "free" \| "paid"` |
+| `content/courses/` | Course definitions, lesson sequences, `access: "free" \| "paid"` |
 | `content/tracks.ts` | Goal-oriented learning tracks + time modes |
 | `content/skills.ts` | Stable skill IDs and capability copy |
 | `content/catalog.ts` | Unified Learn catalog surface |
@@ -42,7 +42,7 @@ shared `Inline` component (`components/Inline.tsx`) in byte/course UI.
 
 ## Course lessons (v6 anatomy)
 
-A `Lesson` in `content/courses.ts` renders on `/courses/[course]/[lesson]` in
+A `Lesson` in `content/courses/` renders on `/courses/[course]/[lesson]` in
 this order — **anchor-first, never quiz-first**:
 
 | # | Layer | Field | Notes |
