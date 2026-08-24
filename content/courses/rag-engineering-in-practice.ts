@@ -6,12 +6,12 @@ const course: Course = {
     subtitle:
       "Build the machine — chunking, hybrid search, reranking, grounding, evals, and the pipeline that feeds it.",
     description:
-      "The intermediate build: follow Atlas, a company knowledge assistant, from cut-mid-procedure chunks to a shipped pipeline. Nine lessons on chunking, embedding selection, hybrid search, reranking, query understanding, grounded citations, the four-question evaluation, observability, and the ingestion loop that keeps the index honest.",
+      "The intermediate build. Follow Atlas, a company knowledge assistant, from chunks cut mid-procedure to a shipped pipeline. Nine lessons cover chunking, embedding selection, hybrid search, reranking, query understanding, grounded citations, the four-question evaluation, observability, and the ingestion loop that keeps the index honest.",
     level: "intermediate",
     domain: "AI Engineering",
     access: "paid",
     prerequisites:
-      "RAG Engineering Foundations — the pipeline, embeddings, and the retrieval-vs-grounding split are assumed.",
+      "RAG Engineering Foundations — we assume you know the pipeline, embeddings, and the retrieval-vs-grounding split.",
     lessons: [
       {
         slug: "chunking-strategy",
@@ -21,19 +21,19 @@ const course: Course = {
         topic: "chunking",
         skillIds: ["chunking-strategy"],
         capability:
-          "Choose a chunking strategy that keeps every chunk self-contained, and know why it outweighs embedding-model choice.",
+          "Choose a chunking strategy that keeps every chunk self-contained, and explain why it matters more than the embedding-model choice.",
         minutes: 7,
         concept: {
           anchor: "Slicing a sandwich down the middle spills the filling — good cuts follow the bread's seams.",
-          what: "**Chunking** splits documents into the units retrieval will find. Structure-aware cuts — at headings, procedures, tables — keep each chunk **self-contained**; fixed-size cuts sever steps from warnings and slice tables mid-column.",
-          why: "The chunk is the unit of retrieval: a chunk that lost its context retrieves well and answers wrong. Field results repeat the same finding — **chunking strategy decides more than the embedding model** (the embedding being meaning coordinates for text).",
+          what: "**Chunking** splits documents into the units that retrieval will find. Structure-aware cuts — at headings, procedures, tables — keep each chunk **self-contained**. Fixed-size cuts separate steps from their warnings and slice tables mid-column.",
+          why: "The chunk is the unit of retrieval. A chunk that lost its context can still get retrieved — and then answer wrong. Field results repeat the same finding: **chunking strategy decides more than the embedding model** (the embedding being meaning coordinates for text).",
           where: [
-            "**Engineering runbooks** where a severed warning makes an answer dangerous",
+            "**Engineering runbooks** where a cut-off warning makes an answer dangerous",
             "**Policy docs** whose tables must survive as tables, not fragments",
             "**Parent-document retrieval**: match the small piece, serve the whole section",
           ],
           whenNot:
-            "Don't over-engineer chunking for **homogeneous prose** (articles, FAQs) — there, sensible fixed sizes with overlap are fine; the guillotine only bites on structured documents.",
+            "Don't over-engineer chunking for **homogeneous prose** (articles, FAQs) — sensible fixed sizes with overlap work fine there. The danger only appears with structured documents.",
         },
         diagram: {
           kind: "compare",
@@ -48,20 +48,20 @@ const course: Course = {
           ],
         },
         prose: [
-          "Atlas retrieved the right runbook for “restart the cache service safely” — and answered without the warning. The chunker had cut the procedure at step 4, sending the steps one way and the **do-not-skip-the-drain-step** warning another. Retrieval worked; the unit it retrieved was broken. Predict before reading on which stage you'd have blamed first — most teams reach for the model, and most teams are wrong. That's the chunking lesson in one incident: the model can only answer with what the chunk preserved.",
-          "The fix is to cut where the document already bends: **one procedure, one chunk**. Tables and code blocks stay whole regardless of size. Headings travel with their sections — a chunk titled “Restart procedure” embeds far more usefully than an orphaned steps list. When small pieces must stay small for precise matching, use the **parent-document move**: index the piece, but serve the surrounding section to the model.",
-          "And the finding that reframes budgets: teams A/B fancier embedding models for weeks while their fixed-size chunker quietly destroys procedures — and the chunking fix moves the score more. **Chunking decides more than the embedding model**; it's the cheapest quality lever in the pipeline, and it hides in plain sight because it runs once, at ingestion, where nobody watches.",
+          "Atlas retrieved the right runbook for “restart the cache service safely” — and answered without the warning. The chunker had cut the procedure at step 4, sending the steps one way and the **do-not-skip-the-drain-step** warning another. Retrieval worked; the unit it retrieved was broken. Before reading on, guess which stage you would blame first. Most teams reach for the model, and most teams are wrong. That's the chunking lesson in one incident: the model can only answer with what the chunk preserved.",
+          "The fix is to cut where the document already bends: **one procedure, one chunk**. Tables and code blocks stay whole regardless of size. Headings travel with their sections — a chunk titled “Restart procedure” embeds far more usefully than an orphaned steps list. When small pieces must stay small for precise matching, use the **parent-document move**. Index the piece, but serve the surrounding section to the model.",
+          "And the finding that reframes budgets: teams A/B test fancier embedding models for weeks while their fixed-size chunker quietly destroys procedures. The chunking fix moves the score more. **Chunking decides more than the embedding model**; it's the cheapest quality lever in the pipeline, and nobody notices it because it runs once, at ingestion, where nobody watches.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A team's RAG answers about a deployment procedure keep omitting its rollback step. The embedding model is the leaderboard leader; retrieval traces show the right doc retrieved. What do you examine first?",
+              "A team's RAG answers about a deployment procedure keep omitting its rollback step. The embedding model is the leaderboard leader, and retrieval traces show the right doc was retrieved. What do you examine first?",
             choices: [
               {
                 id: "a",
-                label: "The chunk boundaries — a fixed-size cut has likely severed the rollback step from the procedure chunk that gets retrieved",
+                label: "The chunk boundaries — a fixed-size cut has likely cut the rollback step away from the procedure chunk that gets retrieved",
               },
               {
                 id: "b",
@@ -74,17 +74,17 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Right doc, wrong answer is the chunking signature: the retrieval trace proves the document arrived, so the damage happened at the cut — the rollback step lives in a different chunk that never wins its own ranking. No model swap or reranker fixes content the chunker amputated.",
+              "Right doc, wrong answer is the chunking signature. The retrieval trace proves the document arrived, so the damage happened at the cut: the rollback step lives in a different chunk that never wins its own ranking. No model swap or reranker can fix content the chunker cut away.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your corpus is 4,000 short FAQ entries, each 2–3 sentences, single topic each. The team proposes a bespoke structure-aware chunker with section detection. What's the proportionate call?",
+              "Your corpus is 4,000 short FAQ entries, each 2–3 sentences on a single topic. The team proposes a custom structure-aware chunker with section detection. What is the sensible choice?",
             choices: [
               {
                 id: "a",
-                label: "Each FAQ entry is already the ideal chunk — ingest entries as-is; the bespoke chunker buys nothing on homogeneous, self-contained prose",
+                label: "Each FAQ entry is already the ideal chunk — ingest the entries as they are; the custom chunker adds nothing on homogeneous, self-contained prose",
               },
               {
                 id: "b",
@@ -97,7 +97,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Chunking exists to make units self-contained; entries that already are need no surgery — the when-NOT rule from the concept brief. The giant chunk is the opposite failure: one entry retrieved means the model sees four thousand, and the pile hides the answer.",
+              "Chunking exists to make units self-contained. Entries that are already self-contained need no surgery — that is the when-NOT rule from the concept brief. The giant chunk is the opposite failure: when one entry is retrieved, the model sees all four thousand, and the pile hides the answer.",
           },
         ],
       },
@@ -105,24 +105,24 @@ const course: Course = {
         slug: "choosing-embeddings",
         title: "Choosing an Embedding Model",
         blurb:
-          "Shortlist from leaderboards, decide on your own data, price the fit — and commit, because the reindex makes it permanent.",
+          "Shortlist from leaderboards, decide on your own data, check the cost fit — and commit, because the reindex makes the choice permanent.",
         topic: "embeddings",
         skillIds: ["embedding-selection", "embeddings-basics"],
         capability:
-          "Select an embedding model with a funnel: leaderboard shortlist, own-data eval, dimensions/cost — and plan the reindex it implies.",
+          "Select an embedding model through a funnel: leaderboard shortlist, own-data eval, dimensions and cost — and plan the reindex it requires.",
         minutes: 7,
         concept: {
           anchor:
             "Pick one map maker and stay with them — addresses from two different atlases don't describe the same streets.",
-          what: "Embedding selection is a **funnel**: shortlist from **public benchmarks**, decide on **your own golden set** (real questions with known-right pages, scored by top-k hit rate), then price **dimensions, latency, and cost** — and commit.",
-          why: "Leaderboards measure their data, not yours — Atlas's multilingual mix flipped the ranking. And the commitment is real: **embeddings from two models are addresses on different maps**, so changing models means re-embedding every chunk — a full reindex.",
+          what: "Embedding selection is a **funnel**: shortlist from **public benchmarks**, decide on **your own golden set** (real questions with known-right pages, scored by top-k hit rate), then check **dimensions, latency, and cost** — and commit.",
+          why: "Leaderboards measure their data, not yours — Atlas's multilingual mix flipped the ranking. The commitment is also real: **embeddings from two models are addresses on different maps**. Changing models means re-embedding every chunk — a full reindex.",
           where: [
-            "A **bilingual company** choosing a multilingual model over a mono-English leaderboard leader",
+            "A **bilingual company** choosing a multilingual model over an English-only leaderboard leader",
             "An **e-commerce corpus** where dimensions (index size × 4) changed the cost answer",
             "Any team planning a **dual-index migration**: build new in shadow, verify, switch",
           ],
           whenNot:
-            "Don't re-select the model for a quality dip before checking **chunking and staleness** — those cause most “embedding” complaints, and fixing them costs no reindex.",
+            "Don't re-select the model for a quality dip before checking **chunking and staleness**. Those two cause most “embedding” complaints, and fixing them costs no reindex.",
         },
         diagram: {
           kind: "decision",
@@ -153,9 +153,9 @@ const course: Course = {
           },
         },
         prose: [
-          "Atlas's corpus is half English, half German — and the embedding decision nearly went to the wrong model. The leaderboard leader was a mono-English specialist: brilliant on English benchmarks, quietly terrible at German nuance. The funnel caught it: fifty real bilingual questions with known-right pages, each candidate scored by **top-k hit rate** — `hits@k = questions whose right page lands in top-k ÷ all questions` — and a mid-size multilingual model won on the only data that matters, Atlas's own.",
-          "The third funnel stage is the one teams forget is a decision: **dimensions are a budget**. Doubling dimensions doubles (or worse) index size and search latency. Atlas's scorecard had the leaderboard leader at +1 point on English for 3× the index — the mid-size model took the slot. Price the fit before you fall in love with a score.",
-          "Then the commitment rule. An embedding is an address on a map the model drew — and **two models draw two different maps**. Chunk addresses from model A are noise to model B's index, so “trying” a new model means re-embedding everything. Do it as a **dual-index migration**: build the new index in shadow, score it on the golden set, switch when it wins — never by drifting (gradually sliding off course) halfway between two maps.",
+          "Atlas's corpus is half English, half German — and the embedding decision nearly went to the wrong model. The leaderboard leader was an English-only specialist: brilliant on English benchmarks, quietly terrible at German nuance. The funnel caught it. Fifty real bilingual questions with known-right pages were collected. Each candidate was scored by **top-k hit rate** — `hits@k = questions whose right page lands in top-k ÷ all questions`. A mid-size multilingual model won on the only data that matters: Atlas's own.",
+          "The third funnel stage is the decision teams forget: **dimensions are a budget**. Doubling dimensions doubles (or worse) index size and search latency. Atlas's scorecard showed the leaderboard leader at +1 point on English for 3× the index — so the mid-size model took the slot. Check the cost fit before you choose a model for its score alone.",
+          "Then the commitment rule. An embedding is an address on a map the model drew — and **two models draw two different maps**. Chunk addresses from model A are noise to model B's index, so “trying” a new model means re-embedding everything. Do it as a **dual-index migration**: build the new index in shadow, score it on the golden set, and switch when it wins. Never drift (gradually slide off course) halfway between two maps.",
         ],
         questions: [
           {
@@ -179,13 +179,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The reindex rule exists for exactly this failure: embeddings are only comparable within one model's map. Mixing maps in one index makes every cross-pair distance garbage — the collapse is structural, not a quality opinion about the new model. Re-embed everything (dual-index migration) or stay on the old map entirely.",
+              "The reindex rule exists for exactly this failure: embeddings are only comparable within one model's map. Mixing maps in one index makes every cross-pair distance meaningless. The collapse is structural, not a quality opinion about the new model. Re-embed everything (dual-index migration) or stay on the old map entirely.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Retrieval quality has slid for a month. The team proposes evaluating three new embedding models next sprint. What should happen first?",
+              "Retrieval quality has been slipping for a month. The team proposes evaluating three new embedding models next sprint. What should happen first?",
             choices: [
               {
                 id: "a",
@@ -202,7 +202,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "A quality slide with no model change is a pipeline change or a corpus change — new sources, edited docs, a chunker tweak. Swapping models (with its full reindex) without that diagnosis pays the highest cost in the system for a guess. The when-NOT rule: no re-selection before chunking and staleness are cleared.",
+              "A quality slide with no model change means a pipeline change or a corpus change — new sources, edited docs, a chunker tweak. Swapping models (with its full reindex) without that diagnosis pays the system's highest cost for a guess. The when-NOT rule: no re-selection before chunking and staleness are cleared.",
           },
         ],
       },
@@ -219,15 +219,15 @@ const course: Course = {
         concept: {
           anchor:
             "Ask the librarian and the parts clerk — one finds by topic, the other by part number, and together nothing hides.",
-          what: "**Hybrid search** runs two retrievers in parallel — **dense** (embeddings, matches meaning) and **keyword/BM25** (matches exact tokens) — then **fuses their rankings** into one shortlist where each contributes its best.",
-          why: "The two fail on opposite cases: paraphrases defeat keywords; error codes, part numbers, and names defeat meaning. Rank fusion (merging positions, not scores) lets the exact match and the concept page both survive to the context.",
+          what: "**Hybrid search** runs two retrievers in parallel — **dense** (embeddings, matches meaning) and **keyword/BM25** (matches exact tokens). It then **fuses their rankings** into one shortlist where each contributes its best results.",
+          why: "The two fail on opposite cases. Paraphrases defeat keywords. Error codes, part numbers, and names defeat meaning. Rank fusion (merging positions, not scores) lets the exact match and the concept page both survive into the context.",
           where: [
-            "An **engineering assistant** where queries are error codes — BM25's home turf",
-            "A **support bot** where users paraphrase policies in their own words — dense's home turf",
+            "An **engineering assistant** where queries are error codes — where BM25 is strongest",
+            "A **support bot** where users paraphrase policies in their own words — where dense retrieval is strongest",
             "Any production RAG: **hybrid + rerank is the baseline** almost no team regrets",
           ],
           whenNot:
-            "Don't fuse blindly when one retriever is systematically wrong for a domain — a corpus of pure prose with zero identifiers gets little from BM25, and weighting fusion is a real dial to tune.",
+            "Don't fuse blindly when one retriever is systematically wrong for a domain. A corpus of pure prose with zero identifiers gets little from BM25, and fusion weights are a real dial to tune.",
         },
         diagram: {
           kind: "flow",
@@ -239,20 +239,20 @@ const course: Course = {
           ],
         },
         prose: [
-          "The foundations course left a debt: “error E-4821” has no meaningful neighborhood, so semantic search returned sibling codes. Atlas paid that debt weekly — engineers query in identifiers, and dense retrieval kept answering in concepts. **BM25**, the classic keyword ranker, does the opposite: it doesn't know what a quorum is, but it will find every page containing E-4821 verbatim, in milliseconds, at negligible cost.",
-          "Hybrid search refuses to choose. Both retrievers run on every query; **rank fusion** merges their lists by position — the standard recipe is reciprocal-rank fusion, `score(d) = Σ 1/(60 + rankᵢ(d))`, each retriever contributing the reciprocal of its rank — so each contributes its best candidates, and neither's blind spot survives alone. The fused shortlist for E-4821 has the exact error page from keywords *and* the quorum-recovery runbook from meaning: the exact answer plus the context to act on it.",
-          "This is the research's most repeated production finding: **hybrid plus rerank is the modern baseline** — most enterprise assistants should ship with exactly this stack before reaching for anything exotic. The exotic patterns (agentic loops, graphs) are course three's business, and they all sit *on top of* a hybrid foundation, not instead of it.",
+          "The foundations course left a debt: “error E-4821” has no meaningful neighborhood, so semantic search returned sibling codes. Atlas paid that debt weekly — engineers query in identifiers, and dense retrieval kept answering in concepts. **BM25**, the classic keyword ranker, does the opposite. It doesn't know what a quorum is, but it finds every page containing E-4821 word-for-word, in milliseconds, at very low cost.",
+          "Hybrid search refuses to choose. Both retrievers run on every query, and **rank fusion** merges their lists by position. The standard recipe is reciprocal-rank fusion, `score(d) = Σ 1/(60 + rankᵢ(d))`, where each retriever contributes the reciprocal of its rank. So each retriever's best candidates survive, and neither one's blind spot decides alone. The fused shortlist for E-4821 has the exact error page from keywords *and* the quorum-recovery runbook from meaning: the exact answer plus the context to act on it.",
+          "This is the research's most repeated production finding: **hybrid plus rerank is the modern baseline**. Most enterprise assistants should ship with exactly this stack before reaching for anything exotic. The exotic patterns (agentic loops, graphs) are course three's business. They all sit *on top of* a hybrid foundation, not instead of it.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A parts-catalog assistant handles queries like 'spec sheet for BC-4410-X' and 'what's the gasket made of?'. Semantic-only search serves the second well and flubs the first. What's the standard fix?",
+              "A parts-catalog assistant handles queries like 'spec sheet for BC-4410-X' and 'what's the gasket made of?'. Semantic-only search serves the second well and fails the first. What's the standard fix?",
             choices: [
               {
                 id: "a",
-                label: "Hybrid search: keyword retrieval nails the part codes, dense retrieval handles the material questions, rank fusion merges both lists",
+                label: "Hybrid search: keyword retrieval finds the part codes exactly, dense retrieval handles the material questions, and rank fusion merges both lists",
               },
               {
                 id: "b",
@@ -265,13 +265,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Part codes have no meaning neighborhood — that's a structural property of identifiers, and it's precisely what BM25 exists for. Fusion is the standard production answer: both query types get the retriever that handles them, in one pipeline. Fine-tuning identity into meaning fights the grain (fine-tuning being extra practice on your own data); string-equality prompts push your failure onto users.",
+              "Part codes have no meaning neighborhood — that is a structural property of identifiers, and it is exactly what BM25 exists for. Fusion is the standard production answer: both query types get the retriever that handles them, in one pipeline. Fine-tuning cannot turn identifiers into concepts (fine-tuning being extra practice on your own data), and string-equality prompts push your failure onto users.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A team fuses dense and keyword lists by averaging the two systems' similarity scores per document. Results are erratic. What's the classic mistake?",
+              "A team fuses dense and keyword lists by averaging the two systems' similarity scores per document. Results are inconsistent. What's the classic mistake?",
             choices: [
               {
                 id: "a",
@@ -288,7 +288,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Dense similarity and BM25 scores are on entirely different scales with different distributions — averaging them lets whichever system happens to run “hot” dominate. Rank fusion compares positions: #1 is #1 in either currency. That's why reciprocal-rank-style fusion is the standard recipe.",
+              "Dense similarity and BM25 scores sit on entirely different scales with different distributions. Averaging them lets whichever system happens to output bigger numbers dominate. Rank fusion compares positions: #1 is #1 in both lists. That is why reciprocal-rank-style fusion is the standard recipe.",
           },
         ],
       },
@@ -305,15 +305,15 @@ const course: Course = {
         concept: {
           anchor:
             "Flip through fifty cards fast, then hand the shortlist to a slow, careful reader who picks the five that matter.",
-          what: "**Reranking** adds a second pass: the cheap first stage (**bi-encoder** — question and pages embedded separately, distances compared) recalls the top ~50; a **cross-encoder** reads question and page *together* and rescores, keeping the best ~5.",
+          what: "**Reranking** adds a second pass. The cheap first stage (**bi-encoder** — question and pages embedded separately, distances compared) recalls the top ~50. A **cross-encoder** reads question and page *together* and rescores, keeping the best ~5.",
           why: "The bi-encoder sees addresses, not content — the right page at rank 12 stays at rank 12. The cross-encoder actually reads, at ~40× the cost per page — so you run it **only on the shortlist**. Recall wide and cheap; read narrow and well.",
           where: [
-            "The runbook that **ranked 12th** — outside every sane k, rescued by a reranker",
+            "The runbook that **ranked 12th** — outside every reasonable k, rescued by a reranker",
             "Hybrid fused lists needing one **trusted final ordering**",
             "Any pipeline where **top-5 quality** is the product, not top-50 recall",
           ],
           whenNot:
-            "Don't rerank tiny corpora where the first-stage ranking is already excellent — the cross-encoder adds latency (the wait time for a response) and cost for gains inside the noise. Let the golden set decide if it pays.",
+            "Don't rerank tiny corpora where the first-stage ranking is already excellent. The cross-encoder adds latency (the wait time for a response) and cost for gains smaller than the noise. Let the golden set decide whether it pays.",
         },
         diagram: {
           kind: "flow",
@@ -325,9 +325,9 @@ const course: Course = {
           ],
         },
         prose: [
-          "Atlas's most-cited failure: the quorum-recovery runbook ranked **12th** in hybrid retrieval — a good rank for a near-miss list, a disaster for a top-5 context. Raising k to 15 pulls the runbook in buried under ten mediocre pages — the lost-in-the-middle trade from the foundations course. The reranker is the structural exit: keep k small, but let a **second, more careful reader** reorder the shortlist first.",
-          "The two readers differ in *how* they read. The **bi-encoder** embeds question and page separately and compares addresses — cheap enough for 12,000 pages in milliseconds, blind to everything but meaning-location. The **cross-encoder** feeds question and page through the model **together**, attention across both — it notices that the rank-12 runbook is precisely *about* this failure. That care costs roughly 40× per page, which is why it meets only the 50 survivors, never the corpus.",
-          "The economics are the design: `50 × €0.004 = €0.20` per query to rerank the shortlist — versus `12,000 × €0.004 = €48` if the cross-encoder ever met the whole corpus, which is why it never does. Cheap pass wide (50 of 12,000), expensive pass narrow (5 of 50). Production teams treat **hybrid recall + rerank** as the default stack — the research consensus, and Atlas's shipped configuration. The golden set from lesson 7 verifies it's earning its latency on *your* traffic, per the when-NOT rule.",
+          "Atlas's most-cited failure: the quorum-recovery runbook ranked **12th** in hybrid retrieval. That is a good rank for a near-miss list and a disaster for a top-5 context. Raising k to 15 pulls the runbook in, but buried under ten mediocre pages — the lost-in-the-middle trade from the foundations course. The reranker is the structural fix: keep k small, but let a **second, more careful reader** reorder the shortlist first.",
+          "The two readers differ in *how* they read. The **bi-encoder** embeds question and page separately and compares addresses — cheap enough for 12,000 pages in milliseconds, blind to everything except meaning-location. The **cross-encoder** feeds question and page through the model **together**, attention across both — it notices that the rank-12 runbook is precisely *about* this failure. That care costs roughly 40× per page, which is why it meets only the 50 survivors, never the corpus.",
+          "The economics are the design: `50 × €0.004 = €0.20` per query to rerank the shortlist — versus `12,000 × €0.004 = €48` if the cross-encoder ever met the whole corpus. That is why it never does. Cheap pass wide (50 of 12,000), expensive pass narrow (5 of 50). Production teams treat **hybrid recall + rerank** as the default stack — the research consensus, and Atlas's shipped configuration. The golden set from lesson 7 verifies the reranker is worth its wait on *your* traffic, per the when-NOT rule.",
         ],
         questions: [
           {
@@ -351,17 +351,17 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Raising k trades precision for recall and re-creates the buried-page failure; reranking keeps the context small while fixing the order. It never touches the corpus — the cross-encoder is too expensive to run wide, which is the entire division of labor.",
+              "Raising k trades precision for recall and re-creates the buried-page failure; reranking keeps the context small while fixing the order. Reranking never touches the corpus — the cross-encoder is too expensive to run wide, and that is the entire division of labor.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your corpus is 800 short FAQ entries and first-stage retrieval already puts the right entry in the top-3 for 96% of golden-set questions. The team proposes adding a cross-encoder reranker. What's the proportionate response?",
+              "Your corpus is 800 short FAQ entries and first-stage retrieval already puts the right entry in the top-3 for 96% of golden-set questions. The team proposes adding a cross-encoder reranker. What is the sensible response?",
             choices: [
               {
                 id: "a",
-                label: "Skip it — the reranker's gains are inside the noise on a task the first stage already solves, and it adds latency to every query",
+                label: "Skip it — the reranker's gains are smaller than the noise on a task the first stage already solves, and it adds latency to every query",
               },
               {
                 id: "b",
@@ -374,7 +374,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The baseline claim comes with the when-NOT rule: reranking pays where first-stage ranking has real errors to fix. At 96% top-3 on the golden set, there's almost nothing to rescue — the extra hop buys milliseconds of latency and a bill for gains the suite can't even detect.",
+              "The baseline claim comes with the when-NOT rule: reranking pays where first-stage ranking has real errors to fix. At 96% top-3 on the golden set, there is almost nothing to rescue. The extra hop adds milliseconds of latency and a bill for gains the suite cannot even detect.",
           },
         ],
       },
@@ -382,7 +382,7 @@ const course: Course = {
         slug: "query-understanding",
         title: "Query Understanding",
         blurb:
-          "Rewrite follow-ups into whole questions, split multi-part asks, expand jargon — before the index sees anything.",
+          "Rewrite follow-ups into whole questions, split multi-part questions, expand jargon — before the index sees anything.",
         topic: "queries",
         skillIds: ["query-understanding", "rag-pipeline"],
         capability:
@@ -390,15 +390,15 @@ const course: Course = {
         minutes: 8,
         concept: {
           anchor: "A good receptionist repeats your half-finished question in full before opening the filing cabinet.",
-          what: "**Query understanding** sits between the user and the index: **rewrite** follow-ups into self-contained questions using chat history, **decompose** multi-part asks into separate searches, and **expand** jargon with the terms the docs actually use.",
+          what: "**Query understanding** sits between the user and the index. **Rewrite** follow-ups into self-contained questions using chat history. **Decompose** multi-part questions into separate searches. **Expand** jargon with the terms the docs actually use.",
           why: "Search can only answer the question it receives — “and what about part-time?” embeds into nothing. Every downstream stage inherits whatever the query stage sends it.",
           where: [
             "A **chat assistant** whose second question is always missing its first half",
-            "A **support bot** fielding three-questions-in-one messages",
+            "A **support bot** receiving three-questions-in-one messages",
             "An **engineering assistant** where users' words for a failure differ from the runbook's",
           ],
           whenNot:
-            "Don't rewrite single, complete, well-formed questions — an extra model call per query is pure latency (the wait time for a response); route obvious queries straight to search.",
+            "Don't rewrite single, complete, well-formed questions — an extra model call per query is pure latency (the wait time for a response). Route obvious queries straight to search.",
         },
         diagram: {
           kind: "flow",
@@ -410,9 +410,9 @@ const course: Course = {
           ],
         },
         prose: [
-          "Atlas's support logs told a quiet story: conversations worked until the second question. “What's the parental leave policy?” retrieved beautifully. “And what about part-time?” — the question users actually ask next — embedded into a meaningless fragment and retrieved nothing. The index never saw a whole question, so no amount of retrieval tuning could help.",
-          "The three moves cover the real cases. **Rewrite** merges history: the fragment becomes “what is the parental leave policy for part-time employees?” — a question with a neighborhood. **Decompose** splits compound asks (“compare Berlin and Austin vacation policy and tell me who approves” becomes three searchable queries merged at answer time). **Expand** bridges vocabularies: the engineer's “quorum storm” also searches the runbook's words — *cache quorum lost, E-4821, split-brain*.",
-          "Note the placement: understanding runs **before** embedding (meaning coordinates for text), so it must be cheap and reliable — usually the small model, a tight prompt, and a hard rule to pass through complete questions untouched. It's the stage that makes lessons 3 and 4 honest: hybrid search and reranking are excellent at finding what a broken query never asked for.",
+          "Atlas's support logs showed a clear pattern: conversations worked until the second question. “What's the parental leave policy?” retrieved the right page easily. “And what about part-time?” — the question users actually ask next — embedded into a meaningless fragment and retrieved nothing. The index never saw a whole question, so no amount of retrieval tuning could help.",
+          "The three moves cover the real cases. **Rewrite** merges history: the fragment becomes “what is the parental leave policy for part-time employees?” — a question with a neighborhood. **Decompose** splits compound questions (“compare Berlin and Austin vacation policy and tell me who approves” becomes three searchable queries merged at answer time). **Expand** bridges vocabularies: the engineer's “quorum storm” also searches the runbook's words — *cache quorum lost, E-4821, split-brain*.",
+          "Note the placement: understanding runs **before** embedding (meaning coordinates for text), so it must be cheap and reliable. It is usually the small model, a tight prompt, and a hard rule to pass complete questions through untouched. It's the stage that makes lessons 3 and 4 honest: hybrid search and reranking are excellent at finding what a broken query never asked for.",
         ],
         questions: [
           {
@@ -436,7 +436,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The symptom signature is exact: fragments embed into nowhere, and no retriever can find what was never asked. Weeks of ranking tuning couldn't help because the failure is one stage upstream. Pushing restatement onto users redesigns the product around a missing five-line rewrite step.",
+              "The symptom signature is exact: fragments embed into nowhere, and no retriever can find what was never asked. Weeks of ranking tuning could not help because the failure is one stage upstream. Pushing restatement onto users redesigns the whole product around a missing five-line rewrite step.",
           },
           {
             id: "q2",
@@ -459,7 +459,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "This is a vocabulary gap, not a structure gap: the user's phrase and the runbook's phrase name one incident. Expansion injects the corpus's own tokens (word-sized pieces the model reads) — which also arms the keyword half of hybrid search with the exact identifier E-4821. Decomposition addresses compound questions; history-rewriting addresses fragments — neither applies here.",
+              "This is a vocabulary gap, not a structure gap: the user's phrase and the runbook's phrase name one incident. Expansion injects the corpus's own tokens (word-sized pieces the model reads) — which also gives the keyword half of hybrid search the exact identifier E-4821. Decomposition addresses compound questions, and history-rewriting addresses fragments — neither applies here.",
           },
         ],
       },
@@ -476,7 +476,7 @@ const course: Course = {
         concept: {
           anchor:
             "Answer only from the notes on your desk — point to the page you used, or admit the binder has nothing.",
-          what: "The **grounding contract** has three behaviors: the pages cover it → **answer and cite**; they cover half → **answer the covered part and mark the boundary**; they say nothing → **refuse honestly** (“not in the docs”) — never the confident gap-fill.",
+          what: "The **grounding contract** has three behaviors. The pages cover it → **answer and cite**. They cover half → **answer the covered part and mark the boundary**. They say nothing → **refuse honestly** (“not in the docs”) — never the confident gap-fill.",
           why: "Citations are what make an assistant auditable and trusted; refusals are what make it safe. And every logged refusal is a **mapped gap** — the exact document the knowledge base is missing.",
           where: [
             "A **policy assistant** whose every claim ends in `[doc, page]`",
@@ -484,7 +484,7 @@ const course: Course = {
             "A **knowledge-base team** mining refusal logs for what to write next",
           ],
           whenNot:
-            "Don't ground when the task is **creation, not retrieval** — writing a poem or summarizing a doc the user pasted doesn't need citations, and forcing them produces decorative fake ones.",
+            "Don't ground when the task is **creation, not retrieval** — writing a poem or summarizing a doc the user pasted doesn't need citations. Forcing them produces decorative fake ones.",
         },
         diagram: {
           kind: "decision",
@@ -515,9 +515,9 @@ const course: Course = {
           },
         },
         prose: [
-          "Atlas's trust problem wasn't wrong answers — it was **untraceable** ones. “Probably your team lead approves that — most companies do it that way” is fluent, plausible, and backed by nothing the company ever wrote. One such answer costs more trust than fifty cited ones earn. The grounding contract is the fix, and it's behavioral before it's technical: cite claims, mark boundaries, refuse gaps.",
-          "The refusal deserves its reframe: it's a feature with a business case. Users trust “that&apos;s not in the docs” far more than a guess that might unravel — and every refusal, logged with its question, is a **mapped gap**: the knowledge-base team's next writing assignment, prioritized by real demand. Atlas's refusal log became the ingestion roadmap within a month.",
-          "Enforcement is two-layered. The system prompt sets the rules — only the retrieved pages, cite each claim, refuse on gaps — but a rule isn&apos;t a contract until something checks it. Lesson 7&apos;s **faithfulness** metric scores answer-against-context on the golden set and on sampled production traffic, so a drifting (slowly changing course) prompt or model gets caught by the suite, not by the first unlucky user.",
+          "Atlas's trust problem wasn't wrong answers — it was **untraceable** ones. “Probably your team lead approves that — most companies do it that way” is fluent, plausible, and backed by nothing the company ever wrote. One such answer costs more trust than fifty cited answers earn. The grounding contract is the fix, and it is behavioral before it is technical: cite claims, mark boundaries, refuse gaps.",
+          "The refusal deserves its reframe: it's a feature with a business case. Users trust “that&apos;s not in the docs” far more than a guess that might turn out wrong. And every refusal, logged with its question, is a **mapped gap**: the knowledge-base team's next writing assignment, prioritized by real demand. Atlas's refusal log became the ingestion roadmap within a month.",
+          "Enforcement is two-layered. The system prompt sets the rules — only the retrieved pages, cite each claim, refuse on gaps — but a rule isn&apos;t a contract until something checks it. Lesson 7&apos;s **faithfulness** metric scores the answer against its context on the golden set and on sampled production traffic. So a drifting (slowly changing course) prompt or model gets caught by the suite, not by the first unlucky user.",
         ],
         questions: [
           {
@@ -541,7 +541,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The docs don't contain the answer, so no retrieval improvement manufactures it — the model bridged the gap with world knowledge, which is precisely what the contract forbids. The honest refusal is both safer for the user and more useful to the org: the logged gap tells the policy team exactly what to document.",
+              "The docs don't contain the answer, so no retrieval improvement can create it — the model bridged the gap with world knowledge, which is exactly what the contract forbids. The honest refusal is both safer for the user and more useful to the org: the logged gap tells the policy team exactly what to document.",
           },
           {
             id: "q2",
@@ -564,7 +564,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Every refusal is demand evidence with a receipt: a real question, timestamped, that the corpus couldn't serve. Ranked by frequency it's a content roadmap written by the users themselves. Disabling refusals converts the same failures into confident guesses — invisible and more damaging.",
+              "Every refusal is demand evidence with a receipt: a real question, timestamped, that the corpus couldn't serve. Ranked by frequency, the log is a content roadmap written by the users themselves. Disabling refusals converts the same failures into confident guesses — invisible and more damaging.",
           },
         ],
       },
@@ -581,15 +581,15 @@ const course: Course = {
         concept: {
           anchor:
             "A car dashboard shows fuel, speed, and temperature on separate needles — one blended dial hides which warning lit.",
-          what: "RAG evaluation asks **four questions on two sides**: retrieval — **context recall** (did the right pages arrive?) and **context precision** (was what arrived relevant and well-ranked?); generation — **faithfulness** (does the answer stick to its pages?) and **answer relevance** (does it address the question?).",
-          why: "The four fail independently and need different fixes — a grounded (tied to real source documents) refusal can hide a retrieval miss; a faithful answer can dodge the question. Averaged single scores hide which side broke; the four-question split points at the fix.",
+          what: "RAG evaluation asks **four questions on two sides**. Retrieval: **context recall** (did the right pages arrive?) and **context precision** (was what arrived relevant and well-ranked?). Generation: **faithfulness** (does the answer stick to its pages?) and **answer relevance** (does it address the question?).",
+          why: "The four fail independently and need different fixes — a grounded (tied to real source documents) refusal can hide a retrieval miss, and a faithful answer can dodge the question. Averaged single scores hide which side broke; the four-question split points at the fix.",
           where: [
             "A **golden set** of ~100 real questions with known-right pages, scored per stage",
             "**LLM-as-judge** scoring faithfulness and relevance on sampled production traffic",
             "Regression gates: any pipeline change must move none of the four backward",
           ],
           whenNot:
-            "Don't build the judge before the **golden set** exists — judging synthetic perfect-grammar questions measures nothing about your real traffic's messy phrasings.",
+            "Don't build the judge before the **golden set** exists — judging synthetic perfect-grammar questions measures nothing about the messy phrasings in your real traffic.",
         },
         diagram: {
           kind: "compare",
@@ -604,9 +604,9 @@ const course: Course = {
           ],
         },
         prose: [
-          "The foundations course's diagnostic — *was the right page in the window?* — grows up here into four metrics, and the widget above makes the point better than prose: the polite refusal that was actually a **context recall** failure; the confident contradiction that was **faithfulness**; the eloquent non-answer that only **answer relevance** catches. Four independent dials, each pointing at a different subsystem.",
-          "The instrument is a **golden set**: a hundred real questions with known-right pages, drawn from actual traffic and past failures. Retrieval metrics score mechanically — `context recall = questions whose pages arrived ÷ all questions`, `context precision = relevant chunks ÷ retrieved chunks` — and generation metrics use an **LLM judge** with a consistent rubric, knowing judges carry their own biases, so spot-check them against human labels monthly. Every pipeline change — chunker tweak, model swap, prompt edit — runs the set, and none of the four may regress.",
-          "The discipline that makes it a system: score the four **separately, forever**. The moment they collapse into one “quality score,” the diagnostic power is gone — a recall dip hides behind a faithfulness gain, and nobody knows which subsystem to walk toward. The four questions are the pipeline's dashboard; keep the needles split.",
+          "The foundations course's diagnostic — *was the right page in the window?* — becomes four metrics here, and the widget above makes the point better than prose. The polite refusal was actually a **context recall** failure. The confident contradiction was **faithfulness**. The eloquent non-answer is caught only by **answer relevance**. Four independent dials, each pointing at a different subsystem.",
+          "The instrument is a **golden set**: a hundred real questions with known-right pages, drawn from actual traffic and past failures. Retrieval metrics score mechanically — `context recall = questions whose pages arrived ÷ all questions`, `context precision = relevant chunks ÷ retrieved chunks`. Generation metrics use an **LLM judge** with a consistent rubric. Judges carry their own biases, so spot-check them against human labels monthly. Every pipeline change — chunker tweak, model swap, prompt edit — runs the set, and none of the four may regress.",
+          "The discipline that makes it a system: score the four **separately, forever**. The moment they collapse into one “quality score,” the diagnostic power is gone — a recall dip hides behind a faithfulness gain, and nobody knows which subsystem to fix. The four questions are the pipeline's dashboard; keep the needles split.",
         ],
         questions: [
           {
@@ -630,7 +630,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The traces are the receipt: context arrived right, so the retrieval metrics pass by construction. An answer contradicting the evidence in its own window is the faithfulness failure — caused typically by a prompt/model change, and fixed on the generation side, not the index.",
+              "The traces are the receipt: the context arrived correctly, so the retrieval metrics must pass. An answer contradicting the evidence in its own window is the faithfulness failure. It is typically caused by a prompt or model change, and fixed on the generation side, not the index.",
           },
           {
             id: "q2",
@@ -653,7 +653,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "A blended score can rise while faithfulness quietly fell — the +3 could be a +8 recall masked by a −5 grounding regression, and each needs a different response. The four questions exist precisely to keep the needles separate. (And while judges carry bias, the fix is calibration against human labels, not distrust.)",
+              "A blended score can rise while faithfulness quietly falls — the +3 could be a +8 recall gain masked by a −5 grounding regression, and each needs a different response. The four questions exist exactly to keep the needles separate. (And while judges carry bias, the fix is calibrating them against human labels, not distrusting them.)",
           },
         ],
       },
@@ -671,14 +671,14 @@ const course: Course = {
           anchor:
             "A cash-register receipt replays the whole purchase — item, price, time — so any dispute is a lookup, not a guess.",
           what: "**RAG observability** records a retrieval trace per request: the **query as sent** (post-rewrite), **retrieved chunks with scores**, **rerank movements**, **context shape** (count, tokens, sources), and per-stage latency.",
-          why: "RAG failures are silent variables — a chunker regression, a shrunken context, a query the rewriter mangled. The trace turns “why this answer?” from a seance into a lookup, and patterns across traces catch regressions before users do.",
+          why: "RAG failures are silent variables — a chunker regression, a shrunken context, a query the rewriter damaged. The trace turns “why this answer?” from guesswork into a lookup, and patterns across traces catch regressions before users do.",
           where: [
             "The **2am mystery** — odd citations traced to chunk sizes dropping 3× after a config change",
             "**Weak-spot mining**: clustering low-score retrievals to find missing docs",
             "The eval loop: sampled production traces feeding the golden set",
           ],
           whenNot:
-            "Don't log raw page content at scale by default — **structure, not text** (scores, sizes, versions) answers most questions without creating a privacy store; capture content only where policy allows.",
+            "Don't log raw page content at scale by default — **structure, not text** (scores, sizes, versions) answers most questions without creating a privacy store. Capture content only where policy allows.",
         },
         diagram: {
           kind: "flow",
@@ -690,9 +690,9 @@ const course: Course = {
           loop: "sampled traces feed the golden set — the suite grows from reality",
         },
         prose: [
-          "At 2am, Atlas began citing vacation pages for parental-leave questions. The model hadn&apos;t changed, the prompt hadn&apos;t changed, and the queries were identical. Predict your suspect before the reveal: model, prompt, or index? The trace had the answer in ten seconds: **chunk sizes across the index had dropped to a third** — a chunker config regression in Tuesday&apos;s re-ingest. Whole procedures were now fragments; their embeddings (meaning coordinates for text) matched worse; near-miss pages started winning. One config revert; the model was never touched.",
-          "That's the trace&apos;s job: it records the request&apos;s **whole biography** — the query as actually sent (post-rewrite, which catches query-understanding bugs), every retrieved chunk with its score, what the reranker moved, and the final context&apos;s shape. “Why this answer?” becomes reading five rows instead of guessing across five subsystems.",
-          "Aggregated, traces become preventive: average chunk size over time catches ingest regressions; score distributions flag index drift (the index slowly going stale); clusters of low-confidence retrievals map the corpus&apos;s weak spots — which connect straight back into the golden set and the refusal log. Record **structure, not content** as the default — scores, sizes, versions — and capture page text only where privacy policy allows it.",
+          "At 2am, Atlas began citing vacation pages for parental-leave questions. The model hadn&apos;t changed, the prompt hadn&apos;t changed, and the queries were identical. Predict your suspect before the reveal: model, prompt, or index? The trace had the answer in ten seconds: **chunk sizes across the index had dropped to a third** — a chunker config regression in Tuesday&apos;s re-ingest. Whole procedures were now fragments, their embeddings (meaning coordinates for text) matched worse, and near-miss pages started winning. One config revert; the model was never touched.",
+          "That is the trace&apos;s job: it records the request&apos;s **full story**. It logs the query as actually sent (post-rewrite, which catches query-understanding bugs), every retrieved chunk with its score, what the reranker moved, and the final context&apos;s shape. “Why this answer?” becomes reading five rows instead of guessing across five subsystems.",
+          "Aggregated, traces become preventive: average chunk size over time catches ingest regressions, and score distributions flag index drift (the index slowly going stale). Clusters of low-confidence retrievals map the corpus&apos;s weak spots, and they connect straight back into the golden set and the refusal log. Record **structure, not content** as the default — scores, sizes, versions — and capture page text only where privacy policy allows it.",
         ],
         questions: [
           {
@@ -716,13 +716,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Ingestion regressions hit structure first: chunk sizes, per-request token counts, source counts. A dashboard over context-shape spans shows the step-change the night of the deploy — latency stayed normal (fragments retrieve fast, just badly), and blaming users for a same-day correlation with your own re-index inverts the evidence.",
+              "Ingestion regressions hit structure first: chunk sizes, per-request token counts, source counts. A dashboard over context-shape spans shows the sudden change on the night of the deploy. Latency stayed normal (fragments retrieve fast, just badly), and blaming users for a same-day match with your own re-index gets the evidence backwards.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your RAG traces show a cluster of queries consistently retrieving chunks with scores far below the average — all about the new hardware line the docs barely cover. What is that cluster, productively?",
+              "Your RAG traces show a cluster of queries consistently retrieving chunks with scores far below the average — all about the new hardware line the docs barely cover. What is that cluster, in practical terms?",
             choices: [
               {
                 id: "a",
@@ -739,7 +739,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Persistently low scores on one topic is the index saying 'I have nothing good here' — the pattern behind every weak-spot. Excluding it hides the finding; re-embedding won't write the missing docs. The cluster is free prioritization: real demand the corpus fails to serve.",
+              "Persistently low scores on one topic mean the index is saying 'I have nothing good here' — the pattern behind every weak-spot. Excluding it hides the finding, and re-embedding won't write the missing docs. The cluster is free prioritization: real demand the corpus fails to serve.",
           },
         ],
       },
@@ -755,16 +755,16 @@ const course: Course = {
         minutes: 8,
         concept: {
           anchor:
-            "A library that shelves new editions but never strikes discarded books serves ghosts — the catalog must track the shelves.",
-          what: "The **ingestion pipeline** turns sources into an honest index: **parse** (tables and code preserved) → **chunk** (at the joints) → **embed** (one model) → **index with metadata** (source, doc_id, version, updated_at) — plus the **sync loop**: updated docs re-ingested by id, deleted docs&apos; chunks removed.",
-          why: "Every stale-page failure is an ingestion debt: the index drifted (slowly went stale) from its sources and confidently served the difference. Orphaned chunks — embeddings (meaning coordinates for text) outliving their deleted sources — institutionalize the failure.",
+            "A library that shelves new editions but never removes discarded books serves ghosts — the catalog must track the shelves.",
+          what: "The **ingestion pipeline** turns sources into an honest index. **Parse** (tables and code preserved) → **chunk** (at the joints) → **embed** (one model) → **index with metadata** (source, doc_id, version, updated_at). Plus the **sync loop**: updated docs re-ingested by id, deleted docs&apos; chunks removed.",
+          why: "Every stale-page failure is an ingestion debt: the index drifted (slowly went stale) from its sources and confidently served the difference. Orphaned chunks — embeddings (meaning coordinates for text) outliving their deleted sources — make the failure permanent.",
           where: [
             "A **daily sync** re-ingesting changed pages by doc_id, overwriting (never duplicating)",
             "**Delete propagation** — source removed, chunks gone the same cycle",
             "**Version stamps** making “which revision answered this?” answerable forever",
           ],
           whenNot:
-            "Don't build incremental sync for a **truly static corpus** — a one-time ingest of frozen documents needs the stages but not the loop; anything alive needs the loop.",
+            "Don't build incremental sync for a **truly static corpus** — a one-time ingest of frozen documents needs the stages but not the loop. Anything alive needs the loop.",
         },
         diagram: {
           kind: "flow",
@@ -776,9 +776,9 @@ const course: Course = {
           loop: "doc updated → re-ingest by doc_id · doc deleted → chunks removed",
         },
         prose: [
-          "The beginner course met the stale page as a mystery — the right page, last year's policy. Here it's an engineering debt with a named creditor: **ingestion**. The pipeline's stages are simple; the honesty lives in the metadata and the loop. Every chunk carries its **source, doc_id, version, and updated_at** — so “which revision of which document produced this answer?” is a lookup, and re-ingestion can replace old chunks instead of piling duplicates.",
-          "The loop is where systems quietly rot. A doc updated must mean its chunks **re-embedded and replaced by doc_id**; a doc deleted must mean its chunks **removed the same cycle** — or they live on as orphans, untraceable ghosts still winning rankings and citing pages that no longer exist. The research on index drift is unambiguous: without the loop, retrieval quality erodes silently, double digits inside a year, with zero code changes.",
-          "And that&apos;s Atlas, shipped: chunks cut at structure, hybrid search fused, reranker rescuing rank-12, queries rewritten whole, answers cited or refused, four metrics on a golden set, traces on every request — and an ingestion loop that keeps the index identical to its sources. The stack the research calls the production baseline, assembled with judgment. Course three takes it to scale: permissions, freshness at 40k documents, agentic retrieval, and the architecture review.",
+          "The beginner course met the stale page as a mystery — the right page, last year's policy. Here it is an engineering debt with a clear cause: **ingestion**. The pipeline's stages are simple; the honesty lives in the metadata and the loop. Every chunk carries its **source, doc_id, version, and updated_at**. So “which revision of which document produced this answer?” is a lookup, and re-ingestion can replace old chunks instead of piling up duplicates.",
+          "The loop is where systems slowly go stale. A doc updated must mean its chunks are **re-embedded and replaced by doc_id**; a doc deleted must mean its chunks are **removed the same cycle**. Otherwise they live on as orphans — untraceable ghosts still winning rankings and citing pages that no longer exist. The research on index drift is unambiguous: without the loop, retrieval quality erodes silently, double digits inside a year, with zero code changes.",
+          "And that&apos;s Atlas, shipped. Chunks cut at structure, hybrid search fused, reranker rescuing rank-12, queries rewritten whole, answers cited or refused, four metrics on a golden set, traces on every request — and an ingestion loop that keeps the index identical to its sources. This is the stack the research calls the production baseline, assembled with judgment. Course three takes it to scale: permissions, freshness at 40k documents, agentic retrieval, and the architecture review.",
         ],
         questions: [
           {
@@ -825,7 +825,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Traceability is decided at ingestion: chunks that carry (doc_id, version, updated_at) make every historical answer auditable — the metadata is the difference between a lookup and an archaeology project. Chat logs depend on the model volunteering what it was never asked to say, and overwriting *chunks* need not overwrite the *record* of which version served which answer.",
+              "Traceability is decided at ingestion. Chunks that carry (doc_id, version, updated_at) make every historical answer auditable — the metadata is the difference between a lookup and an archaeology project. Chat logs depend on the model volunteering what it was never asked to say, and overwriting *chunks* need not overwrite the *record* of which version served which answer.",
           },
         ],
       },

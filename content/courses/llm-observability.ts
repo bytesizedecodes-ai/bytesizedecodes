@@ -5,12 +5,12 @@ const course: Course = {
     title: "LLM Observability",
     subtitle: "Instrument, evaluate, and rescue one LLM/RAG feature in production.",
     description:
-      "An intermediate, hands-on course built on one running case: Relay, the customer-support assistant for an online electronics retailer, hits a production quality regression the week a new release ships — and you trace its requests, build its evaluations, set its SLOs, and diagnose the regression end-to-end. Every lesson adds one piece of evidence to Relay's incident. Some Python familiarity helps; there are a few short exercises.",
+      "An intermediate, hands-on course built on one running case. Relay is the customer-support assistant for an online electronics retailer. A new release ships, and Relay's answer quality drops in production that same week. You trace its requests, build its evaluations, set its SLOs, and diagnose the drop end-to-end. Every lesson adds one piece of evidence to Relay's incident. Some Python familiarity helps. There are a few short exercises.",
     level: "intermediate",
     domain: "AI Observability",
     access: "free",
     prerequisites:
-      "The AI Observability course (or equivalent hands-on experience) — you should already be comfortable with logs, metrics, traces, and evaluation basics.",
+      "The AI Observability course (or equivalent hands-on experience). You should already be comfortable with logs, metrics, traces, and evaluation basics.",
     lessons: [
       {
         slug: "request-to-trace",
@@ -22,20 +22,20 @@ const course: Course = {
         minutes: 8,
         concept: {
           anchor: "A trace is the itemized receipt for one request — every step listed with its own timing.",
-          what: "A **trace** is one request broken into nested **spans** — one span per step (retrieval, LLM call, tool), each with its own timing and attributes.",
-          why: "It replaces guesswork with attribution: 'the assistant is slow' becomes '**this span** is slow', because a **correlation ID** stitches every child span to the request that caused it.",
+          what: "A **trace** is one request broken into nested **spans** — one span per step (retrieval, LLM call, tool). Each span carries its own timing and attributes.",
+          why: "It replaces guesswork with attribution. 'The assistant is slow' becomes '**this span** is slow'. A **correlation ID** stitches every child span to the request that caused it.",
           where: [
             "Reconstructing **one slow support-bot turn** across retrieval, model, and tool services",
             "Proving a **tool call** — not the model — produced a bad answer",
             "Attributing an 860ms model call vs a 110ms stalled tool in one view",
           ],
           whenNot:
-            "One trace can't show trends — 'is latency (the wait time for a response) rising this week?' is a **metric** question; traces zoom into a **single request**.",
+            "One trace can't show trends. 'Is latency (the wait time for a response) rising this week?' is a **metric** question. Traces zoom into a **single request**.",
         },
         prose: [
-          "Meet the case that runs through this whole course: **Relay**, the customer-support assistant for an online electronics retailer. In a customer demo Relay takes 14 seconds to answer “where is my order?” — and the room starts guessing: the model? the retrieval? the order-status tool? Make your own prediction before you look; a wrong guess is diagnostic too.",
-          "What you open is the **trace** of that one request: the request broken into **spans**, one per unit of work — retrieval, LLM call, tool invocation — each with a start, an end, and attributes describing what happened. Spans nest under a **root span** for the whole turn, and a **correlation ID** on the root is inherited by every child, stitching Relay's steps together across services.",
-          "Derive the pay-off rung by rung: a request is steps scattered across services → blaming a step requires its timing → timing without a shared request identity can't be reassembled → the correlation ID is that identity, and the trace is its assembled story. Relay's first trace reads: retrieval fine, model 860ms, tool stalled 110ms — one span owns the wait. That's this lesson's evidence in Relay's case file; diagnosis replaces guesswork.",
+          "Meet the case that runs through this whole course. **Relay** is the customer-support assistant for an online electronics retailer. In a customer demo, Relay takes 14 seconds to answer “where is my order?” The room starts guessing: the model? the retrieval? the order-status tool? Make your own prediction before you look. A wrong guess is diagnostic too.",
+          "What you open is the **trace** of that one request. The request is broken into **spans**, one per unit of work: retrieval, LLM call, tool invocation. Each span has a start, an end, and attributes that describe what happened. Spans nest under a **root span** for the whole turn. A **correlation ID** on the root is inherited by every child. That ID stitches Relay's steps together across services.",
+          "Derive the pay-off rung by rung. A request is steps scattered across services → blaming a step requires its timing → timing without a shared request identity can't be reassembled → the correlation ID is that identity, and the trace is its assembled story. Relay's first trace reads: retrieval fine, model 860ms, tool stalled 110ms. One span owns the wait. That's this lesson's evidence in Relay's case file. Diagnosis replaces guesswork.",
         ],
         questions: [
           {
@@ -51,13 +51,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The average confirms slowness but can't attribute it. A trace breaks that single request into nested spans — retrieval, model call, tool — so the slow step is visible at a glance.",
+              "The average confirms slowness but can't attribute it. A trace breaks that single request into nested spans — retrieval, model call, tool — so the slow step is visible right away.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your e-commerce checkout copilot spans three services — retrieval, model, and a payments tool — and users report intermittent wrong totals. What mechanism reassembles each user's full journey across those services?",
+              "Your e-commerce checkout copilot spans three services: retrieval, model, and a payments tool. Users sometimes report wrong totals. What mechanism reassembles each user's full journey across those services?",
             choices: [
               { id: "a", label: "Matching timestamps across services to the nearest second" },
               { id: "b", label: "A correlation ID on the root span, inherited by every child span" },
@@ -66,7 +66,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The correlation ID is the glue that stitches spans from different services into one trace. Timestamps drift (slowly fall out of sync), emails are PII, and status codes say nothing about which request a call belonged to.",
+              "The correlation ID is the glue that stitches spans from different services into one trace. Timestamps drift (slowly fall out of sync), so matching them fails. Emails are PII. Status codes say nothing about which request a call belonged to.",
           },
         ],
       },
@@ -80,7 +80,7 @@ const course: Course = {
         minutes: 9,
         concept: {
           anchor: "Span attributes are labels on moving boxes — a few clear stickers beat writing everything on the side.",
-          what: "Instrument a **small set of high-value dimensions** — model, prompt version, retrieval version, tool name — the variables that **change between releases**.",
+          what: "Instrument a **small set of high-value dimensions**: model, prompt version, retrieval version, tool name. These are the variables that **change between releases**.",
           why: "Tagging spans with them turns ‘something regressed’ into **‘it regressed when prompt v17 shipped’** — release-level attribution instead of guesswork.",
           where: [
             "Bisecting a quality drop to **the exact prompt or retrieval version**",
@@ -88,12 +88,12 @@ const course: Course = {
             "Attributing a cost spike to **one tool’s calls**",
           ],
           whenNot:
-            "Not raw prompts, not PII, not anything **unique per request** — over-collection builds a breach surface, and high-cardinality attributes explode indexes without aiding any query.",
+            "Not raw prompts, not PII, not anything **unique per request**. Over-collection builds a breach surface. High-cardinality attributes blow up index sizes and help no query.",
         },
         prose: [
-          "A week into Relay's case file, quality scores drop 12% — and the natural first question is *which release did it?* Good instrumentation is what makes that question answerable: a small set of **high-value dimensions** — the model, the prompt version, the retrieval version, and any tool name. These are the variables that **change between releases**, so tagging every span with them turns ‘something regressed’ into ‘it regressed when prompt v17 shipped’ — which is exactly how Relay's drop gets bisected.",
-          "Two failure modes are equally common. The first is **over-collection**: logging raw prompts and user emails wholesale, which turns your telemetry store into a breach surface. The second is **high-cardinality noise**: a unique attribute per request (a raw timestamp, a full session id) that explodes index sizes without aiding any query.",
-          "The rule: capture the **dimensions that explain a change**, redact or sample everything that identifies a person, and leave out anything that's unique per request. A clean contract is **small, private, and diagnostic**.",
+          "A week into Relay’s case file, quality scores drop 12%. The natural first question is *which release did it?* Good instrumentation makes that question answerable. Tag a small set of **high-value dimensions**: the model, the prompt version, the retrieval version, and any tool name. These are the variables that **change between releases**. Tagging every span with them turns ‘something regressed’ into ‘it regressed when prompt v17 shipped’. That is exactly how Relay’s drop gets bisected.",
+          "Two failure modes are equally common. The first is **over-collection**: logging raw prompts and user emails wholesale. That turns your telemetry store into a breach surface. The second is **high-cardinality noise**: a unique attribute per request (a raw timestamp, a full session id). It blows up index sizes and helps no query.",
+          "The rule is simple. Capture the **dimensions that explain a change**. Redact or sample everything that identifies a person. Leave out anything that's unique per request. A clean contract is **small, private, and diagnostic**.",
         ],
         diagram: {
           kind: "decision",
@@ -121,7 +121,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Release-varying dimensions are exactly what turns ‘something regressed’ into ‘it regressed when prompt v17 shipped’. Raw prompt reading is what you do after attribution, not before.",
+              "Release-varying dimensions are what turn ‘something regressed’ into ‘it regressed when prompt v17 shipped’. Read raw prompts only after attribution, not before.",
           },
           {
             id: "q2",
@@ -136,7 +136,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Over-collection builds a breach surface (PII in the telemetry store) and unique-per-request attributes explode index sizes — the two failure modes a clean contract avoids.",
+              "Over-collection builds a breach surface (PII in the telemetry store). Unique-per-request attributes blow up index sizes. These are the two failure modes a clean contract avoids.",
           },
         ],
       },
@@ -150,19 +150,19 @@ const course: Course = {
         minutes: 8,
         concept: {
           anchor: "Log redaction is writing a postcard — assume anyone could read it, so keep it useful but strip the secrets.",
-          what: "Logs are where **debugging value** and **privacy risk** collide: minimise first — do you need the field at all? — then log the least identifying form.",
-          why: "A **hashed user id** or a **token count** (a tally of the word-sized pieces the model reads) keeps the debugging signal while shrinking the breach surface: if the log table leaks, nothing about a person escapes.",
+          what: "Logs are where **debugging value** and **privacy risk** collide. Minimise first: do you need the field at all? Then log the least identifying form.",
+          why: "A **hashed user id** or a **token count** (a tally of the word-sized pieces the model reads) keeps the debugging signal. It also shrinks the breach surface. If the log table leaks, nothing about a person escapes.",
           where: [
             "Replacing a user's email with a **hashed id** in support-assistant logs",
             "Logging **token counts** and a prompt version instead of raw prompts in a RAG pipeline",
             "Sampling a fraction of answers so retention stays short and cheap",
           ],
           whenNot:
-            "Encoding is not redaction — base64 or truncation still leaks; and a field that isn't needed for debugging or audit shouldn't be logged at all.",
+            "Encoding is not redaction. Base64 or truncation still leaks. And a field that isn't needed for debugging or audit shouldn't be logged at all.",
         },
         prose: [
-          "Relay logs every support turn, and legal asks the question this lesson answers: if the log table leaked tomorrow, what could someone learn about a customer? Logs are where **debugging value** and **privacy risk** collide — the same line that helps you reconstruct a faulty Relay turn can also contain a card number, an email, or a secret the model echoed back. The discipline is to separate the two: keep what explains behaviour, **redact** what identifies a person.",
-          "**Minimisation** comes before redaction. Ask whether a field needs to be logged at all; if it does, log the least identifying form — a hash of the user id, a token count instead of the raw prompt, a sampled answer rather than every one. **Retention** and consent then set how long even the redacted data lives.",
+          "Relay logs every support turn. Legal asks the question this lesson answers: if the log table leaked tomorrow, what could someone learn about a customer? Logs are where **debugging value** and **privacy risk** collide. The same line that helps you reconstruct a faulty Relay turn can also hold a card number, an email, or a secret the model echoed back. The discipline is to separate the two. Keep what explains behaviour. **Redact** what identifies a person.",
+          "**Minimisation** comes before redaction. Ask whether a field needs to be logged at all. If it does, log the least identifying form: a hash of the user id, a token count instead of the raw prompt, or a sampled answer rather than every one. **Retention** and consent then set how long even the redacted data lives.",
           "The practical test is the **'breach' thought experiment**: if this log table leaked tomorrow, what could someone learn about a user? Anything that fails that test gets cut, hashed, or sampled before it's written.",
         ],
         diagram: {
@@ -218,7 +218,7 @@ for line, expected in cases:
             ],
             answer: "a",
             explanation:
-              "The email is PII — it identifies a person and is near-unique per request. Version tags and token counts explain behaviour without identifying anyone; the fix is a hashed or opaque id.",
+              "The email is PII — it identifies a person and is near-unique per request. Version tags and token counts explain behaviour without identifying anyone. The fix is a hashed or opaque id.",
           },
           {
             id: "q2",
@@ -233,7 +233,7 @@ for line, expected in cases:
             ],
             answer: "c",
             explanation:
-              "Encoding is reversible, so patient questions leak just the same. Minimisation replaces raw text with a version id and counts; retention tweaks don't undo exposure.",
+              "Encoding is reversible, so patient questions leak just the same. Minimisation replaces raw text with a version id and counts. Retention tweaks don't undo exposure.",
           },
         ],
       },
@@ -247,20 +247,20 @@ for line, expected in cases:
         minutes: 8,
         concept: {
           anchor: "Splitting the wait is timing a pizza order — the pause before the first slice versus the whole pie.",
-          what: "LLM latency has two faces — **time-to-first-token** (prefill + retrieval) and **total time** (adds decode) — and cost follows **tokens by stage**, not milliseconds.",
-          why: "Users feel TTFT as 'is it working?' and total time as 'is it done?' — **separate problems with separate fixes** — and the token breakdown shows whether **over-retrieval** or chatty outputs drive the bill.",
+          what: "LLM latency has two faces: **time-to-first-token** (prefill + retrieval) and **total time** (adds decode). Cost follows **tokens by stage**, not milliseconds.",
+          why: "Users feel TTFT as 'is it working?' and total time as 'is it done?' These are **separate problems with separate fixes**. The token breakdown shows whether **over-retrieval** or chatty outputs drive the bill.",
           where: [
             "Diagnosing a support bot that 'thinks forever' as a **TTFT** problem",
             "Cutting **input-token** cost by trimming retrieved context in a RAG pipeline",
             "Alerting on **p95/p99** where users actually abandon the assistant",
           ],
           whenNot:
-            "Never steer by the mean — an average hides the slow tail; and a short answer on a huge prompt can cost more than a long one.",
+            "Never guide decisions by the average — an average hides the slow tail. And a short answer on a huge prompt can cost more than a long one.",
         },
         prose: [
-          "Relay's users complain it “thinks forever before replying” — a long blank pause, then a normal-speed answer. Latency for an LLM turn has two faces: **time-to-first-token** `TTFT ≈ queue + prefill + blocking retrieval` is how long the user waits before anything appears, and **total time** `total = TTFT + decode` adds generation on top. Users feel TTFT as 'is it working?' and total time as 'is it done?' — Relay's symptom is squarely a TTFT problem, which means prefill or blocking retrieval, not decode.",
-          "Cost follows the **tokens**, not the milliseconds. **Input tokens** (the prompt and retrieved context) are priced differently from **output tokens** (the answer), and the bill is arithmetic: `cost = tokens_in × price_in + tokens_out × price_out`. When a bill moves but answers don't, the growth is on the input side — over-retrieved context or a bloated prompt template — which is exactly how Relay's cost spike gets localized.",
-          "**Percentiles** beat averages, and you can derive why: turn latency varies with question length and load → the mean collapses that spread into one number → the users hurt most live in the slow tail → so report **p50, p95, and p99** separately. Relay's p50 of 980ms with a p99 of 3.4s means most users are fine and a few are quietly abandoned; chasing the average hides exactly them.",
+          "Relay's users complain it “thinks forever before replying” — a long blank pause, then a normal-speed answer. Latency for an LLM turn has two faces. **Time-to-first-token** `TTFT ≈ queue + prefill + blocking retrieval` is how long the user waits before anything appears. **Total time** `total = TTFT + decode` adds generation on top. Users feel TTFT as 'is it working?' and total time as 'is it done?' Relay's symptom is squarely a TTFT problem. That means prefill or blocking retrieval, not decode.",
+          "Cost follows the **tokens**, not the milliseconds. **Input tokens** (the prompt and retrieved context) are priced differently from **output tokens** (the answer). The bill is arithmetic: `cost = tokens_in × price_in + tokens_out × price_out`. When a bill moves but answers don't, the growth is on the input side: over-retrieved context or a bloated prompt template. That is exactly how Relay's cost spike gets localized.",
+          "**Percentiles** beat averages, and you can derive why. Turn latency varies with question length and load → the mean collapses that spread into one number → the users hurt most live in the slow tail → so report **p50, p95, and p99** separately. Relay's p50 of 980ms with a p99 of 3.4s means most users are fine and a few are quietly abandoned. Chasing the average hides exactly them.",
         ],
         diagram: {
           kind: "flow",
@@ -314,27 +314,27 @@ for line, expected in cases:
         minutes: 9,
         concept: {
           anchor: "An error budget is a monthly allowance for mistakes — spend it and you can ship; run out and you stop.",
-          what: "An **SLO** makes a wish measurable: pick an **SLI** (say, the share of answers passing evaluation), set a **target** (99% over 28 days), and the remainder is your **error budget**.",
-          why: "The budget is a **decision tool** — while you have budget left you can ship; when it's **burning fast**, you stop shipping and fix instead of arguing.",
+          what: "An **SLO** makes a wish measurable. Pick an **SLI** (say, the share of answers passing evaluation). Set a **target** (99% over 28 days). The remainder is your **error budget**.",
+          why: "The budget is a **decision tool**. While you have budget left, you can ship. When it's **burning fast**, you stop shipping and fix instead of arguing.",
           where: [
             "Turning 'helpful support bot' into '**eval pass rate ≥ 99%** over 28 days'",
             "Freezing releases when a quality SLO's budget burns down after a bad deploy",
             "Tuning the target between **user pain** (too loose) and **pager noise** (too tight)",
           ],
           whenNot:
-            "No eval pipeline, no quality SLO — an SLI you can't measure can't have a target; latency-only SLOs (targets on the wait time for a response) are the honest fallback until eval exists.",
+            "No eval pipeline, no quality SLO. An SLI you can't measure can't have a target. Latency-only SLOs (targets on the wait time for a response) are the honest fallback until eval exists.",
         },
         prose: [
-          "“Relay should be helpful and fast” isn't an objective; it's a wish. An **SLO** makes it measurable: pick a **service-level indicator** (Relay's: the share of answers passing evaluation), set a target (99% over 28 days), and derive the **error budget** — `budget = 1 − target` — the 1% of bad turns you've decided to tolerate, about 1 answer in 100, refreshed every 28 days.",
-          "Derive the budget's power rung by rung: some bad outcomes are unavoidable → tolerating them explicitly is a number, not a feeling → that number is **spendable** — while budget remains you can ship risky changes; when it's burning fast, you stop shipping and fix. A **loose target** (90%) tolerates too much user pain; a **tight one** (99.9%, budget = 0.1% ≈ 1 turn in 1,000) burns on noise and pages on-call constantly. The right target is empirical — set by what users actually do.",
-          "Crucially, the SLI for an AI feature is usually a **quality signal**, not just latency. You measure not only 'did it respond fast' but 'did it answer well' — which means your SLO depends on the **evaluation pipeline** feeding it. No eval, no quality SLO — and Relay's next lesson builds exactly that pipeline.",
+          "“Relay should be helpful and fast” isn't an objective. It's a wish. An **SLO** makes it measurable. Pick a **service-level indicator** (Relay's: the share of answers passing evaluation). Set a target of 99% over 28 days. Then derive the **error budget** — `budget = 1 − target` — the 1% of bad turns you've decided to tolerate. That is about 1 answer in 100, refreshed every 28 days.",
+          "Derive the budget's power rung by rung. Some bad outcomes are unavoidable → tolerating them explicitly is a number, not a feeling → that number is **spendable**. While budget remains, you can ship risky changes. When it's burning fast, you stop shipping and fix. A **loose target** (90%) tolerates too much user pain. A **tight one** (99.9%, budget = 0.1% ≈ 1 turn in 1,000) burns on noise and pages on-call constantly. The right target is empirical — set by what users actually do.",
+          "Crucially, the SLI for an AI feature is usually a **quality signal**, not just latency. You measure not only 'did it respond fast' but 'did it answer well'. That means your SLO depends on the **evaluation pipeline** feeding it. No eval, no quality SLO. Relay's next lesson builds exactly that pipeline.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your support assistant's SLO is 'answers passing eval ≥ 99% over 28 days'. The morning after a release, the 28-day pass rate has slid to 98.2% and the budget is burning fast. What does the SLO framework tell the team to do?",
+              "Your support assistant's SLO is 'answers passing eval ≥ 99% over 28 days'. The morning after a release, the 28-day pass rate has slid to 98.2%. The budget is burning fast. What does the SLO framework tell the team to do?",
             choices: [
               { id: "a", label: "Raise the target to 99.5% so the number looks achievable again" },
               { id: "b", label: "Switch the SLO to latency only, which is easier to hit" },
@@ -343,7 +343,7 @@ for line, expected in cases:
             ],
             answer: "c",
             explanation:
-              "The budget is the decision tool: fast burn means users are hitting bad outcomes now, so shipping stops until it's fixed. Raising or swapping the target hides the pain instead of addressing it.",
+              "The budget is the decision tool. Fast burn means users are hitting bad outcomes now, so shipping stops until it's fixed. Raising or swapping the target hides the pain instead of fixing it.",
           },
           {
             id: "q2",
@@ -358,7 +358,7 @@ for line, expected in cases:
             ],
             answer: "b",
             explanation:
-              "An SLI you can't measure can't have a target — the quality SLO depends on the eval pipeline feeding it. Latency SLOs are still real; abandoning SLOs altogether leaves nothing governed.",
+              "An SLI you can't measure can't have a target. The quality SLO depends on the eval pipeline feeding it. Latency SLOs are still real. Abandoning SLOs altogether leaves nothing governed.",
           },
         ],
       },
@@ -372,20 +372,20 @@ for line, expected in cases:
         minutes: 8,
         concept: {
           anchor: "Offline and online evals are the practice kitchen and the dinner service — one gates the recipe, one watches the diners.",
-          what: "**Offline evaluation** scores a candidate on a fixed **golden set** before it ships; **online evaluation** samples and scores live traffic continuously — both under **one shared metric**.",
-          why: "Offline is your repeatable **deploy gate** for known failure modes; online is the only signal for **drift (the model slowly going stale on new data) and unknown unknowns**. A shared metric makes their disagreement meaningful.",
+          what: "**Offline evaluation** scores a candidate on a fixed **golden set** before it ships. **Online evaluation** samples and scores live traffic continuously. Both run under **one shared metric**.",
+          why: "Offline is your repeatable **deploy gate** for known failure modes. Online is the only signal for **drift (the model slowly going stale on new data) and unknown unknowns**. A shared metric makes their disagreement meaningful.",
           where: [
             "Gating a **prompt v17 release** on the golden set in CI",
             "Sampling 1% of live **support traffic** to watch for slow decay",
             "Catching a **stale golden set** when offline and online scores diverge",
           ],
           whenNot:
-            "Offline alone can't see new user behaviour, and online alone can't veto a release before users see it — the deploy/monitor split is the boundary.",
+            "Offline alone can't see new user behaviour. Online alone can't veto a release before users see it. The deploy/monitor split is the boundary.",
         },
         prose: [
-          "Prompt v17 is ready to ship into Relay. Before it touches users, **offline evaluation** runs it against a fixed, labelled **golden set** — a few hundred curated Relay questions with expected behaviour. It's repeatable, fast, and catches the regressions you can predict — the known failure modes the team has seen before. It's your **deploy gate**: v17 scores 96% against v16's 94%, so it ships.",
-          "Two weeks later, Relay's **online evaluation** — a 1% sample of live traffic scored continuously — slides from 91% to 79%. Pause and predict before reading on: the golden set said v17 was *better*. Online eval catches what offline can't: **drift**, surprising new prompts, and slow decay as the world changes. It's noisier and needs sampling and dedup to stay affordable, but it's the only signal for the **unknown unknowns** — and something in Relay's world has moved.",
-          "The two only work together if they **share a metric**. Define 'quality' one way (the same rubric, the same judge) and compute it on the golden set before deploy and on sampled live traffic after. Disagreement between the two is itself a signal — your golden set has **drifted from reality**, and that is exactly what Relay's slide reveals.",
+          "Prompt v17 is ready to ship into Relay. Before it touches users, **offline evaluation** runs it against a fixed, labelled **golden set** — a few hundred curated Relay questions with expected behaviour. It's repeatable and fast. It catches the regressions you can predict: the known failure modes the team has seen before. It's your **deploy gate**. v17 scores 96% against v16's 94%, so it ships.",
+          "Two weeks later, Relay's **online evaluation** — a 1% sample of live traffic scored continuously — slides from 91% to 79%. Pause and predict before reading on: the golden set said v17 was *better*. Online eval catches what offline can't: **drift**, surprising new prompts, and slow decay as the world changes. It's noisier, and it needs sampling and dedup to stay affordable. But it's the only signal for the **unknown unknowns** — and something in Relay's world has moved.",
+          "The two only work together if they **share a metric**. Define 'quality' one way (the same rubric, the same judge) and compute it on the golden set before deploy and on sampled live traffic after. Disagreement between the two is itself a signal. Your golden set has **drifted from reality**, and that is exactly what Relay's slide reveals.",
         ],
         diagram: {
           kind: "compare",
@@ -411,7 +411,7 @@ for line, expected in cases:
             ],
             answer: "b",
             explanation:
-              "A stable gap between offline and online is expected; a widening one is signal. Offline only tests the cases it contains, so genuinely new user behaviour drags the live score while offline stays rosy.",
+              "A stable gap between offline and online is expected. A widening one is signal. Offline only tests the cases it contains. So genuinely new user behaviour drags the live score down while offline stays high.",
           },
           {
             id: "q2",
@@ -426,7 +426,7 @@ for line, expected in cases:
             ],
             answer: "c",
             explanation:
-              "Online eval measures what already shipped; it cannot veto a candidate before users see it. The deploy/monitor split is the point — offline gates, online watches.",
+              "Online eval measures what already shipped. It cannot veto a candidate before users see it. The deploy/monitor split is the point — offline gates, online watches.",
           },
         ],
       },
@@ -441,19 +441,19 @@ for line, expected in cases:
         concept: {
           anchor: "An LLM judge is a substitute teacher with strong opinions — useful at scale, but check their grading against the real teacher now and then.",
           what: "An **LLM judge** is one model grading another's outputs — **single scoring**, **pairwise comparison**, or listwise ranking — making large-scale evaluation affordable.",
-          why: "It scales evaluation **past what humans can hand-label**, which is what makes large offline and online eval pipelines economically possible at all.",
+          why: "It scales evaluation **past what humans can hand-label**. That is what makes large offline and online eval pipelines economically possible at all.",
           where: [
             "Scoring thousands of sampled **support answers** every night",
             "Running **pairwise comparison** of candidate vs incumbent prompt releases",
             "Cheap **first-pass triage** of low-rated conversations for human review",
           ],
           whenNot:
-            "An uncalibrated judge is not ground truth — it carries **verbosity, self-preference, and position biases**, and without human calibration its scores are uninterpretable.",
+            "An uncalibrated judge is not ground truth. It carries **verbosity, self-preference, and position biases**. Without human calibration, its scores are uninterpretable.",
         },
         prose: [
-          "Who scores Relay's thousands of sampled answers every night? Not humans, mostly. An **LLM judge** uses one model to grade another's outputs — **single scoring**, **pairwise comparison**, or listwise ranking. It scales evaluation far past what humans can hand-label, which is what makes Relay's offline and online eval pipelines affordable at all.",
-          "But a judge brings its own **biases**. It confuses verbosity for quality, prefers its own style (**self-preference**), and in pairwise comparisons is swayed by which answer came first (**position bias**). It can score fluency well while missing facts entirely — a polished lie beats a plain truth if you let it.",
-          "The discipline is **calibration**. Start from human labels, measure how often the judge agrees, and mitigate the big biases (swap answer order in pairs, control for length). Treat the judge's score as a **cheap first pass** to be spot-checked, not a ground truth. Where judge and human disagree systematically is exactly where your rubric needs work.",
+          "Who scores Relay's thousands of sampled answers every night? Not humans, mostly. An **LLM judge** uses one model to grade another's outputs: **single scoring**, **pairwise comparison**, or listwise ranking. It scales evaluation far past what humans can hand-label. That is what makes Relay's offline and online eval pipelines affordable at all.",
+          "But a judge brings its own **biases**. It confuses verbosity for quality, prefers its own style (**self-preference**), and in pairwise comparisons is swayed by which answer came first (**position bias**). It can score fluency well while missing facts entirely. A polished lie beats a plain truth if you let it.",
+          "The discipline is **calibration**. Start from human labels. Measure how often the judge agrees. Mitigate the big biases (swap answer order in pairs, control for length). Treat the judge's score as a **cheap first pass** to be spot-checked, not a ground truth. Where judge and human disagree systematically is exactly where your rubric needs work.",
         ],
         exercise: {
           id: "ex2",
@@ -496,7 +496,7 @@ for correct, fluency, expected in cases:
             ],
             answer: "c",
             explanation:
-              "Preferring length is verbosity bias; favouring the first slot is position bias. Length control and order-swapping are the standard fixes — more volume never averages away a systematic bias.",
+              "Preferring length is verbosity bias. Favouring the first slot is position bias. Length control and order-swapping are the standard fixes. More volume never averages away a systematic bias.",
           },
           {
             id: "q2",
@@ -511,7 +511,7 @@ for correct, fluency, expected in cases:
             ],
             answer: "b",
             explanation:
-              "Systematic judge-human disagreement is exactly where the rubric needs work — here the judge confuses fluency with correctness. Calibration locates the failure; trusting or resizing the judge leaves the bias in place.",
+              "Systematic judge-human disagreement is exactly where the rubric needs work. Here the judge confuses fluency with correctness. Calibration locates the failure. Trusting or resizing the judge leaves the bias in place.",
           },
         ],
       },
@@ -533,12 +533,12 @@ for correct, fluency, expected in cases:
             "Catching **buried or empty retrieval** before users report wrong answers",
           ],
           whenNot:
-            "Answer relevancy alone can't do this — it measures the answer, not the grounding (tying answers to real source documents); a model can be relevant and wrong.",
+            "Answer relevancy alone can't do this. It measures the answer, not the grounding (tying answers to real source documents). A model can be relevant and wrong.",
         },
         prose: [
-          "Relay answers from retrieved policy pages, and this week it starts citing refund rules that don't exist — fluently. RAG systems fail in two places, and only one is the model: the **retrieval layer** can return irrelevant chunks, bury the good one, or come back empty — and the model will still produce a fluent, confident answer on top of bad context. **Fluency** hides **retrieval rot**.",
+          "Relay answers from retrieved policy pages. This week it starts citing refund rules that don't exist — fluently. RAG systems fail in two places, and only one is the model. The **retrieval layer** can return irrelevant chunks, bury the good one, or come back empty. The model will still produce a fluent, confident answer on top of bad context. **Fluency** hides **retrieval rot**.",
           "The metrics that expose this are retrieval-aware. **Faithfulness** asks whether every claim in the answer is supported by the retrieved context. **Context precision** asks whether the relevant chunks were ranked highly rather than buried. **Context recall** asks whether the needed information was retrieved at all. Answer relevancy, alone, is the one that can look fine while the others collapse.",
-          "When a RAG answer is bad, the instinct is to blame the model. The metrics tell you where: low context precision means fix the **retriever ranking**; low faithfulness with good context means fix the **generation** (or the prompt); empty retrieval is an **index problem**. Diagnose the layer before you touch the model — Relay's case-file entry reads: faithfulness dropped hard while precision and recall held, so good pages were in the window and unsupported claims still came out. Generation, not retrieval.",
+          "When a RAG answer is bad, the instinct is to blame the model. The metrics tell you where. Low context precision means fix the **retriever ranking**. Low faithfulness with good context means fix the **generation** (or the prompt). Empty retrieval is an **index problem**. Diagnose the layer before you touch the model. Relay's case-file entry reads: faithfulness dropped hard while precision and recall held. Good pages were in the window, and unsupported claims still came out. Generation, not retrieval.",
         ],
         diagram: {
           kind: "decision",
@@ -605,18 +605,18 @@ for correct, fluency, expected in cases:
         concept: {
           anchor: "Regression hunting is a line-up of what changed — tag every part with a version number and the suspect steps forward.",
           what: "Only **versioned things can regress**. Tag spans with **prompt, model, retrieval, and tool versions**, and a quality drop becomes a **diff between releases**.",
-          why: "The model is usually the thing you **didn't change** — the culprit is a prompt tweak, ranker change, or tool update, and the version diff hands you the suspect.",
+          why: "The model is usually the thing you **didn't change**. The culprit is a prompt tweak, ranker change, or tool update. The version diff hands you the suspect.",
           where: [
             "Bisecting 'quality dropped Tuesday' down to **prompt v17** in a support assistant",
             "**Canary releases** — 5% of traffic, watch the eval, promote only if it holds",
             "**Eval gates in CI** — a candidate must beat or match the incumbent on the golden set",
           ],
           whenNot:
-            "A variable that isn't version-tagged can't be bisected — regressions follow changes, and the unchanged model is rarely the culprit.",
+            "A variable that isn't version-tagged can't be bisected. Regressions follow changes, and the unchanged model is rarely the culprit.",
         },
         prose: [
-          "Monday morning, Relay's eval pass rate drops 6 points, and the channel fills with “the model got worse over the weekend.” Derive the discipline rung by rung: behaviour only changes when an input to it changes → regressions follow **changes** → only **versioned things can regress** → tag every span with prompt version, model, retrieval version, and tool version, and a quality drop becomes a **diff problem**: what changed between Relay's last healthy release and this one?",
-          "Relay's span attributes answer the Monday question in minutes: model unchanged, but prompt went v16 → v17 and retrieval r3 → r4 on Friday. The instinct to blame the model first is almost always wrong, because the model is usually the thing you **didn't change** — the culprit is a prompt tweak, a retriever ranking change, a tool that now returns differently, or a quiet dependency update. A **canary release** makes this legible before the fact: ship to 5% of traffic, watch the eval, promote only if it holds.",
+          "Monday morning, Relay's eval pass rate drops 6 points. The channel fills with “the model got worse over the weekend.” Derive the discipline rung by rung. Behaviour only changes when an input to it changes → regressions follow **changes** → only **versioned things can regress** → tag every span with prompt version, model, retrieval version, and tool version. Now a quality drop becomes a **diff problem**: what changed between Relay's last healthy release and this one?",
+          "Relay's span attributes answer the Monday question in minutes. The model is unchanged, but prompt went v16 → v17 and retrieval r3 → r4 on Friday. The instinct to blame the model first is almost always wrong. The model is usually the thing you **didn't change**. The culprit is a prompt tweak, a retriever ranking change, a tool that now returns differently, or a quiet dependency update. A **canary release** makes this visible before the fact: ship to 5% of traffic, watch the eval, promote only if it holds.",
           "The discipline is to hold every other variable constant and **change one**. **Eval gates** in CI encode this: a candidate release must beat or match the incumbent on the golden set before it ships. When it doesn't, the diff between releases is your **suspect list**, already narrowed to a single variable.",
         ],
         questions: [
@@ -639,7 +639,7 @@ for correct, fluency, expected in cases:
             id: "q2",
             kind: "mcq",
             prompt:
-              "A different team's assistant regresses overnight, and their span check finds nothing changed — model, prompt, and retrieval versions all identical, and the eval runs on a fixed golden set. Re-derive the ladder: if regressions follow changes, what actually happened?",
+              "A different team's assistant regresses overnight, and their span check finds nothing changed — model, prompt, and retrieval versions all identical. The eval runs on a fixed golden set. Re-derive the ladder: if regressions follow changes, what actually happened?",
             choices: [
               { id: "a", label: "An unversioned input changed — an upstream dependency, a config flag, or a data source that isn't tagged; the hunt is for the untracked variable" },
               { id: "b", label: "Nothing changed and nothing needs to — models occasionally degrade on their own" },
@@ -648,7 +648,7 @@ for correct, fluency, expected in cases:
             ],
             answer: "a",
             explanation:
-              "The ladder forces the conclusion: behaviour changed → some input changed → if no tagged input changed, the change lives in an untagged one — a dependency, a flag, a data refresh. (The fixed golden set rules out traffic-mix shifts.) That's also the argument for versioning more of the pipeline, not for blaming the model.",
+              "The ladder forces the conclusion. Behaviour changed → some input changed → if no tagged input changed, the change lives in an untagged one — a dependency, a flag, a data refresh. (The fixed golden set rules out traffic-mix shifts.) That's also the argument for versioning more of the pipeline, not for blaming the model.",
           },
         ],
       },
@@ -662,8 +662,8 @@ for correct, fluency, expected in cases:
         minutes: 8,
         concept: {
           anchor: "A burn-rate alert is a smoke detector that ignores burnt toast — it only sounds when the fire is real.",
-          what: "A **burn-rate alert** pages on **sustained error-budget burn** across time windows — not momentary spikes — and every alert carries a **runbook**.",
-          why: "On-call only trusts alerts that fire on **real user impact**: static thresholds cry wolf on blips until engineers mute them and the real incident sails through.",
+          what: "A **burn-rate alert** pages on **sustained error-budget burn** across time windows, not momentary spikes. Every alert carries a **runbook**.",
+          why: "On-call only trusts alerts that fire on **real user impact**. Static thresholds page on every blip until engineers mute them. Then the real incident slips past unseen.",
           where: [
             "Paging when a support bot's quality SLO **burns its budget** within minutes",
             "Staying quiet through a 3am **low-traffic rate spike** that burns nothing",
@@ -673,9 +673,9 @@ for correct, fluency, expected in cases:
             "Don't page on single bad requests or momentary spikes — and an alert without a runbook is noise with a siren.",
         },
         prose: [
-          "Relay's on-call has muted the error-rate alert. It fired at 3am when 4 of 20 overnight requests failed — thin traffic, a rate spike, nothing real — and after eleven pages, ten of them false, nobody trusts it. That's the failure mode of a **static threshold**: page whenever a metric crosses a line, and it cries wolf on every blip, especially under low traffic when a few bad requests spike the rate. After a dozen false pages, engineers **mute** it, and the real incident sails through.",
-          "**Burn-rate alerting** pages on sustained user impact, not momentary spikes. The arithmetic: `burn rate = error share ÷ budget share` — with Relay's 99% target the budget is 1%, so a steady 4% error rate burns at 4× and exhausts a 28-day budget in about 7 days. Short and long windows watch that rate together: a 3am blip on thin traffic doesn't burn enough to page, but a steady degradation trips the long-window check within minutes of real impact. It trades a little detection latency for a lot of precision — and Relay's on-call un-mutes the channel.",
-          "Every alert needs a **runbook** — the **first three steps** on-call takes when it fires. An alert without a runbook is noise with a siren; an alert with one is a decision already half-made. Route by severity, deduplicate, and make the path from page to diagnosis obvious.",
+          "Relay's on-call has muted the error-rate alert. It fired at 3am when 4 of 20 overnight requests failed — thin traffic, a rate spike, nothing real. After eleven pages, ten of them false, nobody trusts it. That's the failure mode of a **static threshold**: page whenever a metric crosses a line. It fires on every blip, especially under low traffic, when a few bad requests spike the rate. After a dozen false pages, engineers **mute** it. Then the real incident slips through.",
+          "**Burn-rate alerting** pages on sustained user impact, not momentary spikes. The arithmetic: `burn rate = error share ÷ budget share`. With Relay's 99% target, the budget is 1%. A steady 4% error rate burns at 4× and exhausts a 28-day budget in about 7 days. Short and long windows watch that rate together. A 3am blip on thin traffic doesn't burn enough to page. A steady degradation trips the long-window check within minutes of real impact. It trades a little detection latency for a lot of precision — and Relay's on-call un-mutes the channel.",
+          "Every alert needs a **runbook** — the **first three steps** on-call takes when it fires. An alert without a runbook is noise with a siren. An alert with one is a decision already half-made. Route by severity, deduplicate, and make the path from page to diagnosis obvious.",
         ],
         diagram: {
           kind: "compare",
@@ -692,7 +692,7 @@ for correct, fluency, expected in cases:
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your error-rate alert fired at 3am because 4 of 20 overnight requests failed — traffic is always thin then. It has fired 11 times this month and 10 were false; the team keeps muting it. What is the root problem and the fix?",
+              "Your error-rate alert fired at 3am because 4 of 20 overnight requests failed — traffic is always thin then. It has fired 11 times this month and 10 were false. The team keeps muting it. What is the root problem and the fix?",
             choices: [
               { id: "a", label: "On-call is too sensitive — rotate the paging shift more often" },
               { id: "b", label: "The SLO target is too tight — lower it to 90% so the alert stops firing" },
@@ -701,7 +701,7 @@ for correct, fluency, expected in cases:
             ],
             answer: "c",
             explanation:
-              "Rates are statistically volatile at low volume, so a line-crossing alert cries wolf. Burn-rate pages only on sustained budget burn — real impact — which is what restores trust. Loosening the target just hides pain.",
+              "Rates are statistically volatile at low volume, so a line-crossing alert fires on noise. Burn-rate pages only on sustained budget burn — real impact — and that is what restores trust. Loosening the target just hides the pain.",
           },
           {
             id: "q2",
@@ -716,7 +716,7 @@ for correct, fluency, expected in cases:
             ],
             answer: "d",
             explanation:
-              "An alert without a runbook is noise with a siren: the page says 'something's wrong' but not 'do this next'. The first three steps turn a page into a decision already half-made.",
+              "An alert without a runbook is noise with a siren. The page says 'something's wrong' but not 'do this next'. The first three steps turn a page into a decision already half-made.",
           },
         ],
       },
@@ -731,18 +731,18 @@ for correct, fluency, expected in cases:
         concept: {
           anchor: "Incident triage is finding a leak in the house — start at the wet ceiling, then narrow to the burst pipe, then fix it.",
           what: "Triage is a **drill-down**, not a leap: alert (**what's burning**) → dashboard (**where**) → cohort (**what's shared**) → trace (**the mechanism**) → fix.",
-          why: "Each step **narrows the blast radius and rules out causes**, so you act on evidence — one hypothesis per step — instead of blaming the model.",
+          why: "Each step **narrows the blast radius and rules out causes**. You act on evidence — one hypothesis per step — instead of blaming the model.",
           where: [
             "Finding every bad turn shares **tool = billing v2.2** in a support incident",
             "Confirming a **retriever-timeout** mechanism by opening one representative trace",
             "Closing incidents with a **regression test** so the same change can't rebreak production",
           ],
           whenNot:
-            "An incident isn't closed when the metric recovers — it's closed when the regression test preventing recurrence is merged.",
+            "An incident isn't closed when the metric recovers. It's closed when the regression test preventing recurrence is merged.",
         },
         prose: [
           "Triage is a **drill-down**, not a leap. Start at the alert: what's burning — latency (the wait time for a response), quality, cost, safety? Then the dashboard: where is it burning — which region, client, cohort? Each step narrows the **blast radius** and rules out causes.",
-          "Relay's quality alert fires for real this time, and the dashboard narrows the burn to one cohort: EU mobile users asking refund questions. Slice that cohort for what's shared — if every bad turn carries the same tool version or prompt version, you've found your **one changed variable**. Open a representative trace to confirm the mechanism — a tool timing out, a retriever returning junk — and you have a **hypothesis** backed by evidence.",
+          "Relay's quality alert fires for real this time. The dashboard narrows the burn to one cohort: EU mobile users asking refund questions. Slice that cohort for what's shared. If every bad turn carries the same tool version or prompt version, you've found your **one changed variable**. Open a representative trace to confirm the mechanism — a tool timing out, a retriever returning junk. Now you have a **hypothesis** backed by evidence.",
           "Act, then confirm. Roll back or patch the single variable, and watch the signal recover. The last step, often skipped, is writing the **regression test** so this exact failure can't ship again. An incident isn't closed when it's fixed; it's closed when it **can't recur**.",
         ],
         diagram: {
@@ -811,7 +811,7 @@ for before, after, expected in cases:
             ],
             answer: "c",
             explanation:
-              "Recovery ends the outage; the regression test ends the incident class. Without it, nothing stops the same change from reintroducing the failure — the incident was never truly closed.",
+              "Recovery ends the outage. The regression test ends the incident class. Without it, nothing stops the same change from reintroducing the failure. The incident was never truly closed.",
           },
         ],
       },
@@ -825,20 +825,20 @@ for before, after, expected in cases:
         minutes: 7,
         concept: {
           anchor: "The two dashboards are a fuel gauge and a mechanic's lift — one gives the glance, one gets you under the car.",
-          what: "Two dashboards, two questions: the **exec view** answers '**are we healthy?**' with a few big calm numbers; the **on-call view** answers '**what's broken, where?**' with drill-downs.",
-          why: "One view can't serve both — **drill-downs overwhelm the exec glance**, and three big numbers are **useless at 3am**. Share the data, split the altitude.",
+          what: "Two dashboards, two questions. The **exec view** answers '**are we healthy?**' with a few big calm numbers. The **on-call view** answers '**what's broken, where?**' with drill-downs.",
+          why: "One view can't serve both. **Drill-downs overwhelm the exec glance**, and three big numbers are **useless at 3am**. Share the data, split the altitude.",
           where: [
             "A weekly exec view of **quality, cost, incidents** for leadership",
             "An on-call view linking a **red p95 tile** to the traces behind it",
             "**Quality-by-cohort** drill-downs during an incident",
           ],
           whenNot:
-            "An exec view with drill-downs gets ignored; an on-call view of three numbers has nothing to debug — don't force one dashboard on both audiences.",
+            "An exec view with drill-downs gets ignored. An on-call view of three numbers has nothing to debug. Don't force one dashboard on both audiences.",
         },
         prose: [
-          "An **executive dashboard** answers one question — 'are we healthy?' — with a few **big, calm numbers**: quality, cost, incidents. It should be legible in a glance and hide the detail, because an exec reading it wants a status, not a diagnosis.",
-          "An **on-call dashboard** answers the opposite question — 'what's broken, where, since when?' It's **drill-down-rich**: latency by route (the wait time for a response), quality by cohort, error-budget burn, and a path from a red tile to the traces behind it. Density is the point; a calm on-call dashboard is one that has nothing to debug.",
-          "The mistake is forcing one view to serve both — Relay's VP asked for “one dashboard everyone can use,” and this is why it fails: an exec-facing dashboard with drill-downs gets ignored; an on-call dashboard with three big numbers is useless at 3am. Build both, **share the underlying data**, and let each audience see Relay at its **own altitude**.",
+          "An **executive dashboard** answers one question — 'are we healthy?' — with a few **big, calm numbers**: quality, cost, incidents. It should be readable at a glance, and it should hide the detail. An exec reading it wants a status, not a diagnosis.",
+          "An **on-call dashboard** answers the opposite question — 'what's broken, where, since when?' It's **drill-down-rich**: latency by route (the wait time for a response), quality by cohort, error-budget burn, and a path from a red tile to the traces behind it. Density is the point. A calm on-call dashboard is one that has nothing to debug.",
+          "The mistake is forcing one view to serve both. Relay's VP asked for “one dashboard everyone can use,” and this is why it fails. An exec-facing dashboard with drill-downs gets ignored. An on-call dashboard with three big numbers is useless at 3am. Build both, **share the underlying data**, and let each audience see Relay at its **own altitude**.",
         ],
         diagram: {
           kind: "compare",
@@ -864,7 +864,7 @@ for before, after, expected in cases:
             ],
             answer: "b",
             explanation:
-              "The two audiences read at different altitudes: detail wrecks the exec glance, and a compromise view is too thin for 3am debugging. Two views sharing the same underlying data serve each cleanly.",
+              "The two audiences read at different altitudes. Detail wrecks the exec glance, and a compromise view is too thin for 3am debugging. Two views sharing the same underlying data serve each cleanly.",
           },
           {
             id: "q2",
@@ -894,19 +894,19 @@ for before, after, expected in cases:
         concept: {
           anchor: "Rescuing the assistant is debugging a car by gauge, not by guess — check the dials, isolate the part, prove the fix.",
           what: "The capstone assembles the course: **instrument** (traces carrying prompt/model/retrieval/tool versions), **evaluate** (faithfulness, context precision, p95), and **govern** (one quality SLO, burn-rate alert, runbook).",
-          why: "It converts a hunch — 'the assistant got slow and unhelpful after v17' — into a **diff that names the root cause** instead of a meeting-long argument.",
+          why: "It converts a hunch — 'the assistant got slow and unhelpful after v17' — into a **diff that names the root cause**. That replaces a meeting-long argument.",
           where: [
             "Rescuing a support assistant where **release v17 changed the retriever ranker**",
             "Naming the causal chain **context precision → faithfulness** behind bad answers",
             "Standing up the **SLO + alert + runbook** so the next incident starts half-solved",
           ],
           whenNot:
-            "The recipe collapses without instrumentation — you can't diff releases you never versioned; measurement is the prerequisite for rescue.",
+            "The recipe collapses without instrumentation. You can't diff releases you never versioned. Measurement is the prerequisite for rescue.",
         },
         prose: [
-          "The capstone assembles Relay's whole case file. The assistant is slow and unhelpful after release v17, the incident channel is 30 people arguing, and nobody can say why — a **hunch** with no evidence. The work of this lesson is to convert that hunch into a measured, diagnosable system that names a **root cause**.",
-          "The recipe is everything Relay's case file has accumulated: traces carrying prompt, model, retrieval, and tool versions (lessons 1–2); **three signals** — faithfulness, p95 latency, context precision (lessons 4, 6, 8); **one quality SLO** with an error budget and a **burn-rate alert** with a runbook (lessons 5, 10). With those in place, the incident stops being a mystery and becomes a diff: release v17 changed the retriever ranker, context precision dropped, faithfulness followed — the causal chain, named.",
-          "That's the whole skill: instrument for where, evaluate for what, and set an SLO with a runbook for when. A feature you can **measure** is a feature you can **rescue**; one you can't is a feature you can only argue about.",
+          "The capstone assembles Relay's whole case file. The assistant is slow and unhelpful after release v17. The incident channel is 30 people arguing, and nobody can say why. That is a **hunch** with no evidence. The work of this lesson is to convert that hunch into a measured, diagnosable system that names a **root cause**.",
+          "The recipe is everything Relay's case file has accumulated. Traces carry prompt, model, retrieval, and tool versions (lessons 1–2). The **three signals** are faithfulness, p95 latency, and context precision (lessons 4, 6, 8). Add **one quality SLO** with an error budget, plus a **burn-rate alert** with a runbook (lessons 5, 10). With those in place, the incident stops being a mystery. It becomes a diff: release v17 changed the retriever ranker, context precision dropped, faithfulness followed. That is the causal chain, named.",
+          "That's the whole skill: instrument for where, evaluate for what, and set an SLO with a runbook for when. A feature you can **measure** is a feature you can **rescue**. One you can't is a feature you can only argue about.",
         ],
         questions: [
           {
@@ -937,7 +937,7 @@ for before, after, expected in cases:
             ],
             answer: "d",
             explanation:
-              "The capstone lesson: instrument for where, evaluate for what. Without versioned traces and a quality signal every fix is a guess — a model swap might even 'work' while masking the real retrieval problem.",
+              "The capstone lesson: instrument for where, evaluate for what. Without versioned traces and a quality signal, every fix is a guess. A model swap might even 'work' while masking the real retrieval problem.",
           },
         ],
       },

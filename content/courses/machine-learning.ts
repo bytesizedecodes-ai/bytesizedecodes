@@ -6,12 +6,12 @@ const course: Course = {
     subtitle:
       "From AI-vs-ML map to real mechanics: regression, gradient descent, neural networks, metrics — visually, on one running case.",
     description:
-      "Start with the four-lesson map of AI, ML, and deep learning, then go one level deeper: fitting lines and curves, the loss that drives learning, gradient descent, neurons and backpropagation, honest evaluation, and the traps that fake success. The course runs on one persistent case — Kirana Pay, a mid-size payments platform whose ML team scores fraud on transactions and churn on merchants — and every lesson adds one artifact to that build, ending in a month-one review capstone that assembles the lot. Runnable exercises throughout — then Advanced Machine Learning takes you inside the models themselves.",
+      "Start with the four-lesson map of AI, ML, and deep learning. Then go one level deeper: fitting lines and curves, the loss that drives learning, gradient descent, neurons and backpropagation, honest evaluation, and the traps that fake success. The course runs on one case from start to end. Kirana Pay is a mid-size payments platform; its ML team scores fraud on transactions and churn on merchants. Every lesson adds one artifact to this build. A month-one review capstone at the end assembles the lot. Runnable exercises throughout — then Advanced Machine Learning takes you inside the models themselves.",
     level: "intermediate",
     domain: "Machine Learning",
     access: "free",
     prerequisites:
-      "Built for practitioners with roughly two years of hands-on ML experience: you've trained and shipped models, and basic algebra plus a working feel for training loops is assumed. New graduates start with Machine Learning, Plainly.",
+      "Built for practitioners with roughly two years of hands-on ML experience. You have trained and shipped models, and we assume basic algebra plus a working feel for training loops. New graduates start with Machine Learning, Plainly.",
     lessons: [
       {
         slug: "what-is-artificial-intelligence",
@@ -34,16 +34,16 @@ const course: Course = {
             "Not AI when the behaviour is **fully pre-programmed** — same input, same output, forever, with nothing learned from data.",
         },
         prose: [
-          "Artificial Intelligence is the branch of computer science that tries to build machines which can act intelligently — **reason, learn, perceive, and decide** — instead of only executing fixed instructions.",
-          "The key divide is between a machine that **follows rules** and one that **figures things out**. A calculator is not intelligent: the same input always yields the same output, and it never adapts. A spam filter that improves as it sees more email is.",
-          "AI is the broadest label. Everything underneath it — machine learning, deep learning, large language models — is a technique for reaching that goal. Think of **AI as the destination**, and ML/DL as vehicles for getting there. At **Kirana Pay** — the payments platform running through this course — the question is concrete: the fraud desk ran on hand-written thresholds for years, and deciding what actually counts as AI there is the first item in its month-one review.",
+          "Artificial Intelligence is the branch of computer science that tries to build intelligent machines. Such machines can **reason, learn, perceive, and decide** — instead of only executing fixed instructions.",
+          "The key divide is between a machine that **follows rules** and one that **figures things out**. A calculator is not intelligent. The same input always gives the same output, and it never adapts. A spam filter that improves as it sees more email is.",
+          "AI is the broadest label. Everything underneath it — machine learning, deep learning, large language models — is a technique for reaching that goal. Think of **AI as the destination**, and ML/DL as vehicles for getting there. **Kirana Pay** is the payments platform running through this course. Its fraud desk ran on hand-written thresholds for years. Deciding what actually counts as AI there is the first item in its month-one review.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your team is auditing a smart-home app for its 'AI-powered' marketing claim. One feature is a thermostat that runs the same fixed schedule every day; another reshuffles lighting scenes based on which rooms occupants actually use over time. Which feature genuinely behaves like AI?",
+              "Your team is auditing a smart-home app for its 'AI-powered' marketing claim. One feature is a thermostat that runs the same fixed schedule every day. Another reshuffles lighting scenes based on which rooms occupants actually use over time. Which feature genuinely behaves like AI?",
             choices: [
               { id: "a", label: "The thermostat — schedules are a form of intelligence" },
               { id: "b", label: "The adaptive lighting — it changes behaviour from data about use" },
@@ -55,7 +55,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The dividing line is adaptation *after* deployment: the lighting keeps changing behaviour from accumulated data; the thermostat executes a pre-written schedule, and tuning it once during setup is a design-time act, not learning. 'Anything automated' and 'tuned once = adapts' are the two misreads the audit exists to settle.",
+              "The dividing line is adaptation *after* deployment. The lighting keeps changing behaviour from accumulated data. The thermostat executes a pre-written schedule, and tuning it once during setup is a design-time act, not learning. 'Anything automated' and 'tuned once = adapts' are the two misreads the audit exists to settle.",
           },
           {
             id: "q2",
@@ -95,9 +95,9 @@ const course: Course = {
             "Not ML when a **complete, exact rule already exists** — a payroll tax table should be programmed, not learned.",
         },
         prose: [
-          "Machine Learning is a technique for building AI systems that **learn patterns from data themselves**, rather than relying on a programmer to hand-code every rule.",
-          "The classic framing: instead of writing a program that says 'if an email contains these words, it's spam', you show the system **thousands of labelled examples** and let it discover the patterns. The more data it sees, the better it gets.",
-          "You've worked with all three families for two years, so the course only fixes the labels: **supervised** (labelled examples), **unsupervised** (structure with no labels), **reinforcement** (reward-shaped sequences). Where ML still surprises working practitioners isn't the taxonomy — it's the edges: rules nobody can enumerate, distributions that drift, and the two traps waiting at the end of this course.",
+          "Machine Learning is a technique for building AI systems that **learn patterns from data themselves**. No programmer has to hand-code every rule.",
+          "The classic framing: you do not write a program that says 'if an email contains these words, it's spam'. Instead, you show the system **thousands of labelled examples** and let it discover the patterns. The more data it sees, the better it gets.",
+          "You've worked with all three families for two years, so the course only fixes the labels: **supervised** (labelled examples), **unsupervised** (structure with no labels), **reinforcement** (reward-shaped sequences). Where ML still surprises working practitioners is not the taxonomy. It is the edges: rules nobody can enumerate, distributions that drift, and the two traps waiting at the end of this course.",
         ],
         diagram: {
           kind: "decision",
@@ -155,7 +155,7 @@ for task, expected in cases:
             id: "q1",
             kind: "mcq",
             prompt:
-              "A fintech team is building fraud detection. Engineer A wants to hand-write rules like 'flag any transfer over ₹50,000'; Engineer B wants to train a model on five years of past transactions, each labelled fraud or genuine. New fraud patterns appear every month. Whose approach keeps working, and why?",
+              "A fintech team is building fraud detection. Engineer A wants to hand-write rules like 'flag any transfer over ₹50,000'. Engineer B wants to train a model on five years of past transactions, each labelled fraud or genuine. New fraud patterns appear every month. Whose approach keeps working, and why?",
             choices: [
               { id: "a", label: "A — fixed thresholds are always more reliable than models" },
               { id: "b", label: "B — a model retrained on fresh labelled data can pick up patterns nobody hand-wrote" },
@@ -164,7 +164,7 @@ for task, expected in cases:
             ],
             answer: "b",
             explanation:
-              "Hand-written thresholds freeze on day one; new fraud patterns sail past them. Learning from labelled history is exactly the case where ML beats rules — the patterns are too many and too shifting to enumerate by hand.",
+              "Hand-written thresholds freeze on day one, and new fraud patterns get past them easily. Learning from labelled history is exactly the case where ML beats rules. The patterns are too many and too shifting to enumerate by hand.",
           },
           {
             id: "q2",
@@ -205,7 +205,7 @@ for task, expected in cases:
         },
         prose: [
           "Deep Learning is a subfield of machine learning that uses **artificial neural networks** — structures loosely inspired by the brain — with many layers stacked one after another.",
-          "'Deep' simply refers to **the number of layers**. A network with one or two layers is shallow; a deep network might have dozens. Each layer transforms its input into a slightly more abstract representation: early layers might detect edges, middle layers detect shapes, and later layers detect whole objects.",
+          "'Deep' simply refers to **the number of layers**. A network with one or two layers is shallow; a deep network might have dozens. Each layer turns its input into a slightly more abstract representation. Early layers might detect edges, middle layers detect shapes, and later layers detect whole objects.",
           "Because deep networks **learn features directly from raw data** (pixels, audio samples, text tokens), they remove the need for a human to hand-design features. That's why they dominate hard perception tasks — image recognition, speech-to-text, translation, and the language models behind tools like ChatGPT.",
         ],
         diagram: {
@@ -225,7 +225,7 @@ for task, expected in cases:
             id: "q1",
             kind: "mcq",
             prompt:
-              "Two radiology startups tackle fracture detection from X-rays. Startup A feeds raw pixels into a 50-layer network; Startup B has engineers hand-craft edge-detector features and feeds those into a two-layer model. A's system wins on subtle hairline fractures. What advantage explains it?",
+              "Two radiology startups tackle fracture detection from X-rays. Startup A feeds raw pixels into a 50-layer network. Startup B has engineers hand-craft edge-detector features and feeds those into a two-layer model. A's system wins on subtle hairline fractures. What advantage explains it?",
             choices: [
               { id: "a", label: "A's network learns each level of features from the data itself — edges up to fracture patterns" },
               { id: "b", label: "A has more GPU memory, which always wins" },
@@ -234,7 +234,7 @@ for task, expected in cases:
             ],
             answer: "a",
             explanation:
-              "Depth lets the network build features hierarchically from raw pixels — no human decides what matters. B's engineers baked in their assumptions, and hairline fractures fell outside them.",
+              "Depth lets the network build features level by level from raw pixels — no human decides what matters. B's engineers hard-coded their own assumptions, and hairline fractures fell outside them.",
           },
           {
             id: "q2",
@@ -367,8 +367,8 @@ for claim, expected in cases:
         },
         prose: [
           "Regression answers **how much** questions: how many minutes, how many rupees, how many degrees. The simplest regression model draws a straight line through your past examples and reads new answers off it.",
-          "'Best fit' has a precise meaning: for every example, measure the gap between what the line says and what actually happened — **square each gap** (so misses below and above the line count the same, and big misses hurt more), then add them all up. Written down, the objective is `min Σ(yᵢ − ŷᵢ)²` — least squares — and the best line is the one where that total can't be reduced by any small slide or tilt.",
-          "The payoff is interpretability. The slope of a price line literally means *'each extra m² adds this many rupees'* — which is why banks, insurers, and economists still reach for linear regression first, before anything fancier.",
+          "'Best fit' has a precise meaning. For every example, measure the gap between what the line says and what actually happened. **Square each gap** (so misses below and above the line count the same, and big misses hurt more), then add all the squares up. Written down, the objective is `min Σ(yᵢ − ŷᵢ)²` — least squares. The best line is the one where that total can't be reduced by any small slide or tilt.",
+          "The payoff is interpretability. The slope of a price line literally means *'each extra m² adds this many rupees'*. That is why banks, insurers, and economists still try linear regression first, before anything fancier.",
         ],
         exercise: {
           id: "ex1",
@@ -422,7 +422,7 @@ for size, expected in cases:
             ],
             answer: "a",
             explanation:
-              "A line is a strong assumption. Within the studied range it may fit well, but extrapolated past 8 hours it keeps rising into nonsense — the plateau (nonlinearity) is exactly the 'when NOT' boundary of linear regression.",
+              "A line is a strong assumption. Within the studied range it may fit well. But extrapolated past 8 hours, it keeps rising into nonsense. The plateau (nonlinearity) is exactly the 'when NOT' boundary of linear regression.",
           },
         ],
       },
@@ -437,18 +437,18 @@ for size, expected in cases:
         concept: {
           anchor: "Linear regression's S-curve: the evidence still adds up, but the sigmoid squashes the sum into a probability.",
           what: "**Logistic regression** scores the evidence for a class with a weighted sum, then squashes it through an **S-curve (sigmoid)** into a probability between 0 and 1.",
-          why: "Probabilities are honest: they can say *probably fine* and *almost certainly spam*, while a hard cutoff can't — and they make the cost of each mistake visible before you choose where to cut.",
+          why: "Probabilities are honest. They can say *probably fine* and *almost certainly spam*, while a hard cutoff can't. They also make the cost of each mistake visible before you choose where to cut.",
           where: [
             "**Spam filters** scoring mail as P(spam)",
             "**Credit risk** models scoring P(default)",
             "**Churn models** scoring P(cancels this month)",
           ],
           whenNot:
-            "Wrong when the answer is a **quantity** (use linear regression) or when the decision threshold can't be chosen — a raw probability nobody acts on is a report, not a model.",
+            "Wrong when the answer is a **quantity** (use linear regression). Also wrong when nobody can choose the decision threshold. A raw probability nobody acts on is a report, not a model.",
         },
         prose: [
-          "Despite the name, logistic regression is a **classifier**. It weighs each feature's evidence, adds it up into one score, then bends that score through an S-curve so any input — however extreme — lands between 0 and 1.",
-          "The S-curve itself is `σ(z) = 1/(1+e⁻ᶻ)`, squashing any weighted sum into (0, 1) — and the shape is the point: far from the boundary the curve flattens near 0 or 1 (confident), near the boundary it passes through 0.5 (honestly unsure). The model learns one weight per feature, exactly like linear regression learns a slope. Kirana Pay's fraud score is exactly this: a P(fraud) off the S-curve, with the cutoff priced by the business — the model proposes, the costs decide.",
+          "Despite the name, logistic regression is a **classifier**. It weighs each feature's evidence and adds it up into one score. Then it bends that score through an S-curve, so any input — however extreme — lands between 0 and 1.",
+          "The S-curve itself is `σ(z) = 1/(1+e⁻ᶻ)`, squashing any weighted sum into (0, 1). The shape is the point. Far from the boundary, the curve flattens near 0 or 1 (confident). Near the boundary, it passes through 0.5 (honestly unsure). The model learns one weight per feature, exactly like linear regression learns a slope. Kirana Pay's fraud score is exactly this: a P(fraud) off the S-curve, with the cutoff priced by the business — the model proposes, the costs decide.",
           "The 0.5 line is a default, not a law. A fraud team may only act above 0.9 (expensive investigations); a screening tool may flag above 0.2 (missing a case is catastrophic). **The model provides belief; the cutoff prices the mistakes** — and that's a business decision the model can't make for you.",
         ],
         diagram: {
@@ -512,11 +512,11 @@ for size, expected in cases:
             "**Every model you will ever train** — the loss choice is a design decision",
           ],
           whenNot:
-            "Don't optimize loss you can't afford: if the business cost of errors is **asymmetric** (a missed fraud costs 1000× a false alarm), a plain loss quietly optimizes the wrong thing — reweight it.",
+            "Don't optimize loss you can't afford. If the business cost of errors is **asymmetric** (a missed fraud costs 1000× a false alarm), a plain loss quietly optimizes the wrong thing. Reweight it.",
         },
         prose: [
           "Every training loop needs one question answered continuously: *given this prediction and this truth, how bad was that?* The loss function answers with a number. Bigger number, bigger bad.",
-          "For numbers, **squared error** — the gap, squared. Squaring does two jobs: it makes under- and over-predictions count equally (negative gaps become positive), and it makes one terrible prediction hurt more than several small ones (off by 10 costs 25× off by 2).",
+          "For numbers, **squared error** — the gap, squared. Squaring does two jobs. It makes under- and over-predictions count equally (negative gaps become positive). And it makes one terrible prediction hurt more than several small ones (off by 10 costs 25× off by 2).",
           "For probabilities, **cross-entropy** — minus the log of the probability the model gave the truth. Logs make the punishment asymmetric: saying 0.99 on a wrong answer costs 4.6, saying 0.55 costs 0.6. The model learns not just to be right, but to **know how right** — that's what keeps probabilities calibrated.",
         ],
         exercise: {
@@ -560,7 +560,7 @@ for preds, truth, expected in cases:
             ],
             answer: "a",
             explanation:
-              "Squared error is deliberately non-linear about size: many small misses are cheap, rare huge ones are expensive. If users forgive ±5 minutes but rage at 50, the loss and the business agree — choose it deliberately.",
+              "Squared error is deliberately non-linear about size: many small misses are cheap, rare huge ones are expensive. If users forgive ±5 minutes but get angry at 50, the loss and the business agree — choose it deliberately.",
           },
           {
             id: "q2",
@@ -575,7 +575,7 @@ for preds, truth, expected in cases:
             ],
             answer: "a",
             explanation:
-              "Cross-entropy is −log(P given to truth): −log(0.05) ≈ 3.0 versus −log(0.40) ≈ 0.92. Confident-and-wrong is the maximum crime — which is exactly what teaches models to stay honestly unsure at the boundary.",
+              "Cross-entropy is −log(P given to truth): −log(0.05) ≈ 3.0 versus −log(0.40) ≈ 0.92. Confident-and-wrong is the worst mistake — which is exactly what teaches models to stay honestly unsure at the boundary.",
           },
         ],
       },
@@ -589,8 +589,8 @@ for preds, truth, expected in cases:
         minutes: 7,
         concept: {
           anchor: "Feel the tilt under your boots in the fog, step that way, repeat until the ground flattens out.",
-          what: "**Gradient descent** minimizes loss by repeating one step — `θ ← θ − η∇L`, move each parameter against the slope, scaled by the learning rate — and the **step-to-curvature ratio** decides whether the walk converges at all.",
-          why: "It's the only learning algorithm most models need — the same loop tunes a line's slope, a forest's splits, and a billion-weight transformer — and because the rate is the only term you control, a bad one doesn't degrade the model, it *fails* training.",
+          what: "**Gradient descent** minimizes loss by repeating one step: `θ ← θ − η∇L`, move each parameter against the slope, scaled by the learning rate. The **step-to-curvature ratio** decides whether the walk converges at all.",
+          why: "It's the only learning algorithm most models need. The same loop tunes a line's slope, a forest's splits, and a billion-weight transformer. And because the rate is the only term you control, a bad one doesn't degrade the model — it *fails* training.",
           where: [
             "**Every neural network** trained today — this exact loop, at scale",
             "**Logistic/linear regression** on large datasets",
@@ -600,9 +600,9 @@ for preds, truth, expected in cases:
             "It needs a **differentiable loss** and only finds a *local* minimum — flat landscapes (no slope), discrete choices (tree splits), or tiny clean datasets often have better specialized solvers.",
         },
         prose: [
-          "Start from the one line every training loop contains: `θ ← θ − η∇L` — each step moves a parameter by the learning rate times the slope under it. Two facts follow from that line alone. First, the slope is not constant: it changes as you move, so a step sized for *here* is wrong for *there*. Second, near a minimum the surface flattens, so the same step now covers a larger fraction of the remaining distance.",
+          "Start from the one line every training loop contains: `θ ← θ − η∇L` — each step moves a parameter by the learning rate times the slope under it. Two facts follow from that line alone. First, the slope is not constant — it changes as you move. So a step sized for *here* is wrong for *there*. Second, near a minimum the surface flattens, so the same step now covers a larger fraction of the remaining distance.",
           "Put those together and one ratio decides everything: **step size versus local curvature**. If a step is large relative to the curvature, you cross the valley floor and land on the rising far wall — *higher* than you started. Repeat and the loss oscillates, then explodes. Make the step tiny instead and nothing bad happens — you simply crawl, shaving a fixed sliver off the error each epoch. Both failures are the same ratio, wrong in opposite directions.",
-          "Now the conclusion lands as inevitable: the **learning rate** is the most consequential single number in deep learning because it is the *only* term in the update that sets the step-to-curvature ratio. A bad rate doesn't make the model slightly worse — it makes training fail: frozen at one end, exploding at the other. When a network 'won't train', the rate is the first suspect, always. Kirana Pay's training log records exactly this: targets rescaled rupees → paise steepened the slopes ~100× overnight, and a converging run started bouncing until the rate followed the curvature.",
+          "Now the conclusion is clear: the **learning rate** is the most important single number in deep learning. It is the *only* term in the update that sets the step-to-curvature ratio. A bad rate doesn't make the model slightly worse — it makes training fail: frozen at one end, exploding at the other. When a network 'won't train', the rate is the first suspect, always. Kirana Pay's training log records exactly this. Targets rescaled rupees → paise steepened the slopes ~100× overnight. A converging run started bouncing until the rate followed the curvature.",
         ],
         diagram: {
           kind: "flow",
@@ -651,7 +651,7 @@ for x, rate, expected in cases:
             ],
             answer: "a",
             explanation:
-              "Monotone-but-glacial descent is the signature of a tiny step size: each step removes a fixed small fraction of the remaining error. Raising the rate multiplies progress per step — try that before any expensive redesign.",
+              "A slow, steady descent is the signature of a tiny step size. Each step removes a fixed small fraction of the remaining error. Raising the rate multiplies progress per step — try that before any expensive redesign.",
           },
           {
             id: "q2",
@@ -666,7 +666,7 @@ for x, rate, expected in cases:
             ],
             answer: "a",
             explanation:
-              "Same rate, steeper valley: each step is now oversized relative to the curvature, so it crosses the floor and climbs the far wall — the oscillation signature. The rate's whole job is this ratio; shrinking it (or rescaling the loss) restores convergence. The widget in this lesson shows exactly this trajectory.",
+              "Same rate, steeper valley: each step is now oversized relative to the curvature. It crosses the floor and climbs the far wall — the oscillation signature. The rate's whole job is this ratio; shrinking it (or rescaling the loss) restores convergence. The widget in this lesson shows exactly this trajectory.",
           },
         ],
       },
@@ -691,9 +691,9 @@ for x, rate, expected in cases:
             "For small tabular datasets a network is usually **overkill** — a forest or logistic regression trains faster, needs less data, and explains itself. Depth earns its cost on raw, high-dimensional signal.",
         },
         prose: [
-          "Strip the mystique: one neuron is linear regression with a gate after it — `σ(Σ wᵢ·xᵢ + b)`. Each input is multiplied by its **weight**, the results are summed with a **bias**, and the total is bent through an **activation function** — classically an S-curve, today often ReLU (keep positives, zero the rest).",
-          "Why must the gate exist? Derive it. A weighted sum of a weighted sum is still a weighted sum — compose two linear maps and the algebra collapses them into one (multiply the matrices; you get a matrix). So a 50-layer network of pure sums is *exactly* one weighted layer in disguise: you pay for depth and receive none. The only escape is something nonlinear between the layers — bent functions compose into shapes no single straight boundary can draw, and **bends of bends** can approximate any curve. That is what the activation buys, and it is why depth works — not scale, geometry.",
-          "What do layers actually learn? On images: early neurons fire for edges, deeper ones for textures, deeper still for object parts. Nobody assigns these roles — gradient descent turns the dials until each layer's output happens to help the next. **Features are learned, not designed** — the deep-learning promise in one sentence. And Kirana Pay's churn table — 900 merchants, 20 tidy columns — is exactly where this lesson's boundary bites: the month-one review declined a deep net there on evidence.",
+          "Strip the mystique: one neuron is linear regression with a gate after it — `σ(Σ wᵢ·xᵢ + b)`. Each input is multiplied by its **weight**, and the results are summed with a **bias**. The total is then bent through an **activation function** — classically an S-curve, today often ReLU (keep positives, zero the rest).",
+          "Why must the gate exist? Derive it. A weighted sum of a weighted sum is still a weighted sum. Compose two linear maps and the algebra collapses them into one (multiply the matrices; you get a matrix). So a 50-layer network of pure sums is *exactly* one weighted layer in disguise: you pay for depth and receive none. The only escape is something nonlinear between the layers. Bent functions compose into shapes no single straight boundary can draw, and **bends of bends** can approximate any curve. That is what the activation buys, and it is why depth works — not scale, geometry.",
+          "What do layers actually learn? On images: early neurons fire for edges, deeper ones for textures, deeper still for object parts. Nobody assigns these roles — gradient descent turns the dials until each layer's output happens to help the next. **Features are learned, not designed** — the deep-learning promise in one sentence. And Kirana Pay's churn table — 900 merchants, 20 tidy columns — is exactly where this lesson's boundary bites. The month-one review declined a deep net there on evidence.",
         ],
         exercise: {
           id: "ex1",
@@ -763,7 +763,7 @@ if any(abs(g - e) > 1e-9 for g, e in zip(got, expected)):
         minutes: 7,
         concept: {
           anchor: "Like a coach replaying the lost play in slow motion, telling each player exactly what to fix.",
-          what: "**Backpropagation** runs the network forward to get a prediction and its loss, then applies the **chain rule backward** so every weight receives its share of the blame — its **gradient**.",
+          what: "**Backpropagation** runs the network forward to get a prediction and its loss. Then it applies the **chain rule backward**, so every weight receives its share of the blame — its **gradient**.",
           why: "A network has millions of weights and one loss. Without an efficient blame-assignment scheme, tuning would be guesswork; with it, gradient descent gets an exact direction for **every dial at once**.",
           where: [
             "**Every deep-learning framework** — one `loss.backward()` call",
@@ -775,8 +775,8 @@ if any(abs(g - e) > 1e-9 for g, e in zip(got, expected)):
         },
         prose: [
           "A network commits to a guess; the loss puts a number on how wrong it was. The question that makes learning possible: *of all the thousands of dials inside, which ones caused it?* Backpropagation answers with bookkeeping.",
-          "It walks the error backward along the same paths the signal took forward. The output layer asks 'how much should I have differed?' Each connection passes a share of that error back, scaled by how much it amplified or dampened the signal — the chain rule, applied layer by layer until every weight holds its own gradient: *nudge me this much, this direction*.",
-          "One training step is then complete: forward (guess), loss (score), backward (blame), nudge (gradient descent). Repeat across thousands of batches and the nudges compound from noise into structure. When you read that training a frontier model took a month on ten thousand GPUs — this loop, and nothing fancier, is what ran.",
+          "It walks the error backward along the same paths the signal took forward. The output layer asks 'how much should I have differed?' Each connection passes a share of that error back, scaled by how much it amplified or dampened the signal. This is the chain rule, applied layer by layer, until every weight holds its own gradient: *nudge me this much, this direction*.",
+          "One training step is then complete: forward (guess), loss (score), backward (blame), nudge (gradient descent). Repeat across thousands of batches and the nudges compound from noise into structure. When you read that training a frontier model took a month on ten thousand GPUs, remember: this loop, and nothing fancier, is what ran.",
         ],
         exercise: {
           id: "ex1",
@@ -854,7 +854,7 @@ for w, x, y in [(2.0, 3.0, 5.0), (-1.5, 0.5, 2.0), (0.0, 7.0, 1.0)]:
             "**'Should we get more data?'** — the answer is variance-shaped, not always yes",
           ],
           whenNot:
-            "On tabular problems with strong ensembles the trade-off shifts — boosted trees walk the U-curve automatically; and with enough data both errors can fall together. Treat it as a diagnosis, not a law of suffering.",
+            "On tabular problems with strong ensembles the trade-off shifts — boosted trees walk the U-curve automatically, and with enough data both errors can fall together. Treat it as a diagnosis, not a fixed law.",
         },
         prose: [
           "The formal version needs no pictures — just two numbers. Score the model on the data it trained on, and on data it has never seen.",
@@ -914,8 +914,8 @@ for w, x, y in [(2.0, 3.0, 5.0), (-1.5, 0.5, 2.0), (0.0, 7.0, 1.0)]:
         minutes: 7,
         concept: {
           anchor: "Ask five friends to guess the jellybeans in a jar and average their answers — the crowd beats the loner.",
-          what: "An **ensemble** combines many weak models into one committee — **bagging** (random forest) grows independent models on random data slices and averages; **boosting** grows models in sequence, each fixing its predecessors' mistakes.",
-          why: "Independent mistakes **cancel** when averaged, so many high-variance models can share one low-variance answer; and sequentially targeting residuals chisels bias away. This is why ensembles still win most tabular competitions.",
+          what: "An **ensemble** combines many weak models into one committee. **Bagging** (random forest) grows independent models on random data slices and averages them. **Boosting** grows models in sequence, each fixing its predecessors' mistakes.",
+          why: "Independent mistakes **cancel** when averaged, so many high-variance models can share one low-variance answer. And sequentially targeting residuals removes bias step by step. This is why ensembles still win most tabular competitions.",
           where: [
             "**Fraud / credit scoring** — gradient-boosted trees on tabular features",
             "**Kaggle and ML benchmarks** on structured data — the default winner",
@@ -926,8 +926,8 @@ for w, x, y in [(2.0, 3.0, 5.0), (-1.5, 0.5, 2.0), (0.0, 7.0, 1.0)]:
         },
         prose: [
           "One deep decision tree is a sharper memorizer: fit razor-thin rules to the exact rows it saw, noise included. Shake the data slightly and the rules rewrite themselves. But that weakness — *each tree is wrong somewhere different* — becomes the ensemble's fuel.",
-          "**Bagging** (bootstrap aggregating) exploits it directly, and the arithmetic says why it must work: train each tree on a random slice of rows with a random subset of features, so each tree overfits to *different* noise. Averaging k estimates with independent errors shrinks the noise term as **σ²/k** — 100 trees cut variance a hundredfold — while the true signal, which every tree sees, passes through untouched. That's a **random forest**: variance, averaged away. The same σ²/k also predicts the ceiling: the curve flattens as k grows (1/k marches toward zero), and if the errors *correlate* — same rows, same features — nothing cancels at all. So `n_estimators` helps sublinearly, and decorrelation (`max_features`) is the real lever.",
-          "**Boosting** runs the opposite direction: trees are grown **in sequence**, each new small tree trained on the current committee's residual errors, then added in with a gentle weight. Bias, chiseled away chip by chip. Gradient boosting machines (XGBoost, LightGBM) remain the tool to beat on tabular business data — a humbling fact for deep-learning enthusiasts. At Kirana Pay, a random forest is the shipped fraud baseline — the artifact the month-one review defends first.",
+          "**Bagging** (bootstrap aggregating) exploits it directly, and the arithmetic says why it must work. Train each tree on a random slice of rows with a random subset of features, so each tree overfits to *different* noise. Averaging k estimates with independent errors shrinks the noise term as **σ²/k** — 100 trees cut variance a hundredfold. The true signal, which every tree sees, passes through untouched. That's a **random forest**: variance, averaged away. The same σ²/k also predicts the ceiling: the curve flattens as k grows (1/k marches toward zero). And if the errors *correlate* — same rows, same features — nothing cancels at all. So `n_estimators` helps sublinearly, and decorrelation (`max_features`) is the real lever.",
+          "**Boosting** runs the opposite direction: trees are grown **in sequence**. Each new small tree trains on the current committee's residual errors, then joins with a gentle weight. Bias, removed chip by chip. Gradient boosting machines (XGBoost, LightGBM) remain the tool to beat on tabular business data — a surprising fact for deep-learning enthusiasts. At Kirana Pay, a random forest is the shipped fraud baseline — the artifact the month-one review defends first.",
         ],
         diagram: {
           kind: "compare",
@@ -1016,8 +1016,8 @@ for w, x, y in [(2.0, 3.0, 5.0), (-1.5, 0.5, 2.0), (0.0, 7.0, 1.0)]:
         },
         prose: [
           "Say 'always genuine' on payment traffic where 1% is fraud, and you're right 99 times in 100. Accuracy cannot distinguish that lazy oracle from a working model — the base rate does all the work. On any lopsided problem, accuracy is decoration.",
-          "The confusion matrix refuses to hide anything: of the **actual fraud**, how much did we catch (recall)? Of what we **flagged**, how much was real (precision)? Every classifier lives on this seesaw — tighten the cutoff and precision rises while recall falls; loosen it and the reverse. Which side to weight is decided by which mistake costs more: a false alarm that wastes an analyst hour, or a missed fraud that costs the customer.",
-          "One more honesty layer: a single train/test split is one exam, and exams have lucky days. **Cross-validation** rotates the test fold — train on 4 parts, test on 1, five times — so every row gets graded once on material it never saw, and the average score stops depending on which 20% you happened to pick.",
+          "The confusion matrix refuses to hide anything: of the **actual fraud**, how much did we catch (recall)? Of what we **flagged**, how much was real (precision)? Every classifier lives on this seesaw — tighten the cutoff and precision rises while recall falls; loosen it and the reverse. Which side to weight depends on which mistake costs more: a false alarm that wastes an analyst hour, or a missed fraud that costs the customer.",
+          "One more honesty layer: a single train/test split is one exam, and exams have lucky days. **Cross-validation** rotates the test fold — train on 4 parts, test on 1, five times. Every row gets graded once on material it never saw. The average score then stops depending on which 20% you happened to pick.",
         ],
         exercise: {
           id: "ex1",
@@ -1057,7 +1057,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
             ],
             answer: "a",
             explanation:
-              "The two metrics guard different doors. Precision guards against crying wolf (0.98 — excellent); recall guards against misses (0.35 — two-thirds of defects escape). Whether that's acceptable depends on the cost of a defective unit reaching a customer.",
+              "The two metrics guard different doors. Precision guards against false alarms (0.98 — excellent); recall guards against misses (0.35 — two-thirds of defects escape). Whether that's acceptable depends on the cost of a defective unit reaching a customer.",
           },
           {
             id: "q2",
@@ -1087,7 +1087,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
         concept: {
           anchor: "Studying with the answer key taped inside your notebook aces the practice test and fails the real exam.",
           what: "**Leakage** is information from the future (or from the test set) contaminating training — scores too good to be true, right up until the model meets data it can't cheat on.",
-          why: "It's the most common cause of 'brilliant offline, useless online' models — and it's **invisible in the loss**: the training curve looks perfect because the model genuinely learned to read the answers.",
+          why: "It's the most common cause of 'brilliant offline, useless online' models. And it's **invisible in the loss**: the training curve looks perfect because the model genuinely learned to read the answers.",
           where: [
             "**Any pipeline with fitted preprocessing** — scalers, encoders, imputers",
             "**Any time-series problem** — tomorrow's rows leaking into yesterday's model",
@@ -1099,7 +1099,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
         prose: [
           "The symptom pattern is unmistakable in hindsight: near-perfect offline metrics, then a live model barely better than rules. The cause is a quiet killer — and it never throws an error.",
           "**Leakage** means the training process saw information it would not have at prediction time. The classics: fitting your scaler on all rows (test averages whisper into training); a feature like `days_to_close: 0` that only exists for already-resolved cases; the same patient or session appearing on both sides of the split. Each one lets the model peek at the answers — and the score soars.",
-          "The fix is always a data-flow fix, never a modelling one: remove or time-align the feature, refit preprocessing inside the training fold, split by group. Then the 60-second audit above, every time, before any score leaves your laptop — and when the class you care about is rare, accuracy itself becomes the trap. That's the next lesson.",
+          "The fix is always a data-flow fix, never a modelling one: remove or time-align the feature, refit preprocessing inside the training fold, split by group. Then run the 60-second audit above, every time, before any score leaves your laptop. And when the class you care about is rare, accuracy itself becomes the trap. That's the next lesson.",
         ],
         diagram: {
           kind: "decision",
@@ -1163,7 +1163,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
             ],
             answer: "a",
             explanation:
-              "The 0.28 gap is the fingerprint: fitting on all rows means every fold's 'test' data already influenced the scaler/encoder the model trained under — the model peeked, honestly, at scale. The fix is structural, not parametric: preprocessing inside the fold. Note how 'cross-validation said 0.99' made it *harder* to see, not easier.",
+              "The 0.28 gap is the fingerprint. Fitting on all rows means every fold's 'test' data already influenced the scaler/encoder the model trained under — the model peeked, honestly, at scale. The fix is structural, not parametric: preprocessing inside the fold. Note how 'cross-validation said 0.99' made it *harder* to see, not easier.",
           },
         ],
       },
@@ -1178,7 +1178,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
         concept: {
           anchor: "With 4 positives in 1,000, a coin glued to 'no' scores 99.6% — the base rate does all the work.",
           what: "**Imbalance** makes plain accuracy meaningless: the **base rate** answers most rows, so a do-nothing model scores ~99%. Honest grading reads the rare cells directly — **recall, precision, AUPRC** — and trains with **class weights** so each positive actually pulls.",
-          why: "Accuracy weights every cell by frequency, so on a 1%-positive problem the negative cells dominate the sum — and a metric a null model can saturate tells you nothing about the class you care about.",
+          why: "Accuracy weights every cell by frequency, so on a 1%-positive problem the negative cells dominate the sum. And a metric a null model can saturate tells you nothing about the class you care about.",
           where: [
             "**Fraud** — 0.5% of transactions; Kirana Pay's daily reality",
             "**Disease screening** — 4 in 1,000 patients",
@@ -1206,8 +1206,8 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
         },
         prose: [
           "Start from how any metric is computed: counts from the 2×2 table, each cell weighted by how often it occurs. That single fact decides everything that follows.",
-          "On a 1%-positive problem, the negative cells occur ~99× as often as the positive ones, so any frequency-weighted sum is dominated by them — and a model that never predicts positive is scored 99%. Rung by rung: a metric the null model saturates cannot distinguish work from idleness; the fix is metrics that read the rare cells directly (recall: of actual positives, how many caught; precision: of flagged, how many real; AUPRC: the whole curve between them); and training needs class weights so the rare positives exert real pull on the loss.",
-          "Then the decision is pricing, not modelling: where the threshold sits is what a missed case costs versus a false alarm — the seesaw from the metrics lesson, now with stakes. Kirana Pay grades fraud as recall at a priced threshold and trains with class weights; that entire stack exists because the base rate is 0.5% and accuracy would have congratulated them for doing nothing.",
+          "On a 1%-positive problem, the negative cells occur ~99× as often as the positive ones, so any frequency-weighted sum is dominated by them. A model that never predicts positive is scored 99%. Rung by rung: a metric the null model saturates cannot distinguish work from idleness. The fix is metrics that read the rare cells directly (recall: of actual positives, how many caught; precision: of flagged, how many real; AUPRC: the whole curve between them). And training needs class weights so the rare positives exert real pull on the loss.",
+          "Then the decision is pricing, not modelling. Where the threshold sits is what a missed case costs versus a false alarm — the seesaw from the metrics lesson, now with stakes. Kirana Pay grades fraud as recall at a priced threshold and trains with class weights. That entire stack exists because the base rate is 0.5%, and accuracy would have congratulated them for doing nothing.",
         ],
         questions: [
           {
@@ -1250,7 +1250,7 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
             ],
             answer: "a",
             explanation:
-              "'Nearly matches the null' is a failing grade wearing a passing one: on a 2% problem, accuracy is saturated by the base rate and can move while recall sits at zero. The demand is the rare cells — and option c would teach the model a fake 50% base rate, trading an honest metric problem for a dishonest data one.",
+              "'Nearly matches the null' is a failing grade wearing a passing one. On a 2% problem, accuracy is saturated by the base rate and can move while recall sits at zero. The demand is the rare cells — and option c would teach the model a fake 50% base rate, trading an honest metric problem for a dishonest data one.",
           },
         ],
       },
@@ -1287,8 +1287,8 @@ if abs(recall(92, 138, 61) - 92 / 153) > 1e-9:
         },
         prose: [
           "The review walks the artifacts in shipping order, and each one traces to a lesson. Labels first: analysts marked fraud on two years of transactions, which is what makes the problem supervised at all. Then the baseline — a random forest, because σ²/k buys robustness on tabular features. Then the score: a sigmoid squashing the evidence into P(fraud), with the cutoff set by what mistakes cost, not by the model. And underneath it all, the sealed holdout — the only score nobody is allowed to tune against.",
-          "Two near-misses made the month interesting. A draft feature, `refund_issued`, was populated only *after* the fraud review — a perfect correlate at train time, absent at prediction time; the offline score was measuring the leak, not the task, and the fix was a data-flow fix, not a modelling one. And when targets were rescaled rupees → paise, the slopes steepened ~100× overnight and a converging run started bouncing — same rate, new curvature — until the learning rate followed the ratio the derivation says it must track.",
-          "The verdict, logged: ship the forest, the priced threshold, and the sealed holdout; decline the 30-layer network on 900 tidy churn rows (the bias-variance artifacts say it memorizes noise); defer storefront-photo screening until the raw-perception data arrives at volume — at which point the model-family decision legitimately reopens. That is what a month of machine learning actually produces: not a model, a chain of forced decisions with the receipts attached.",
+          "Two near-misses made the month interesting. A draft feature, `refund_issued`, was populated only *after* the fraud review — a perfect correlate at train time, absent at prediction time. The offline score was measuring the leak, not the task, and the fix was a data-flow fix, not a modelling one. And when targets were rescaled rupees → paise, the slopes steepened ~100× overnight and a converging run started bouncing — same rate, new curvature. The bounce stopped only when the learning rate followed the ratio the derivation says it must track.",
+          "The verdict, logged: ship the forest, the priced threshold, and the sealed holdout. Decline the 30-layer network on 900 tidy churn rows (the bias-variance artifacts say it memorizes noise). Defer storefront-photo screening until the raw-perception data arrives at volume — at which point the model-family decision legitimately reopens. That is what a month of machine learning actually produces: not a model, a chain of forced decisions with the receipts attached.",
         ],
         questions: [
           {

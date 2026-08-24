@@ -6,7 +6,7 @@ const course: Course = {
     subtitle:
       "Pictures, everyday decisions, and the numbers you already read — machine learning from zero.",
     description:
-      "A picture-led path through what learning and machine learning actually mean, built for recent graduates starting from zero: plain words, everyday objects, and the counting-and-percentages numeracy you already have. Every lesson ends with a real situation to decide.",
+      "This course explains what learning and machine learning really mean. It is built for recent graduates starting from zero. It uses plain words, everyday objects, and the counting and percentages you already know. Every lesson ends with a real situation to decide.",
     level: "beginner",
     domain: "Machine Learning",
     access: "free",
@@ -21,20 +21,20 @@ const course: Course = {
         minutes: 3,
         prose: [
           "Watch a child meet a bike for the first time. Nobody hands them a rulebook with ‘two wheels, pedals, a handlebar’. They just see a few **examples** — and the next time a bike rolls past, they name it.",
-          "That is learning in its rawest form: **experience changes how you respond next time**. Not memorising instructions — **updating yourself from examples**.",
+          "That is learning in its simplest form: **experience changes how you respond next time**. It is not memorising instructions. It is **updating yourself from examples**.",
           "Keep that picture. Every machine-learning idea in this course is an attempt to copy it: give a system examples, and let **experience improve its next decision**.",
         ],
         concept: {
           anchor: "Think of a child spotting a few bikes, then naming every bike that rolls past — no rulebook needed.",
           what: "**Learning** means **experience changes how you respond next time** — you see examples, and future decisions get better because of them.",
-          why: "It solves the problem of rules nobody can write: no one can list every rule for ‘what makes a bike’, but a handful of **labelled examples** teaches it for free.",
+          why: "It solves the problem of rules nobody can write. No one can list every rule for ‘what makes a bike’. But a handful of **labelled examples** teaches it for free.",
           where: [
             "A **child naming a bike** after seeing a few labelled examples",
             "Recognising a **friend’s face** in a crowd — no rulebook involved",
             "Guessing a **song from two notes** — past listening tunes the guess",
           ],
           whenNot:
-            "It is not learning when nothing changes downstream — **repeating without updating** any future behaviour is replay, not learning.",
+            "It is not learning when nothing changes afterwards. **Repeating without updating** any future behaviour is replay, not learning.",
         },
         questions: [
           {
@@ -63,7 +63,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Repeating fixed answers is not learning — learning would let them handle new, similar questions. Machines can fail this same way, as you’ll see in the overfitting lesson (memorizing instead of understanding).",
+              "Repeating fixed answers is not learning — learning would let them handle new, similar questions. Machines can fail the same way. You will see this in the overfitting lesson (memorizing instead of understanding).",
           },
         ],
       },
@@ -77,13 +77,13 @@ const course: Course = {
         minutes: 3,
         prose: [
           "Traditional software is a very fast clerk. A programmer writes every **fixed instruction** in advance: if this, then that. The clerk never learns, never adapts — it just executes, perfectly and blindly.",
-          "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. Every rule you write, a weird **exception** breaks — a three-wheeled car, a motorcycle with a roof.",
-          "So the trick machines were missing wasn’t speed. It was the child’s trick: **learning the rule from examples** instead of being given it. That hand-off — from hand-written rules to learned rules — is what makes **machine learning** different from ordinary programming.",
+          "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. A strange **exception** breaks every rule you write — a three-wheeled car, a motorcycle with a roof.",
+          "So the missing piece was not speed. It was the child’s method: **learning the rule from examples** instead of receiving it ready-made. That change — from hand-written rules to learned rules — is what makes **machine learning** different from ordinary programming.",
         ],
         concept: {
           anchor: "Imagine a clerk who follows the posted list perfectly — one odd-shaped parcel and the list is useless.",
           what: "**Traditional software follows fixed instructions** written in advance; **machine learning writes its own rules from examples**.",
-          why: "Hand-written rules shatter on exceptions — three-wheeled cars, roofs on bikes. **Learned rules bend around messy reality** instead of breaking on it.",
+          why: "Hand-written rules break on exceptions — three-wheeled cars, roofs on bikes. **Learned rules bend around messy reality** instead of breaking.",
           where: [
             "A **spam filter** that improves every time users mark junk",
             "**Face unlock** adapting to your look — not a fixed feature checklist",
@@ -105,13 +105,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The filter changes from feedback. The timer executes a predetermined instruction — ten minutes, every time, no matter what you do.",
+              "The filter changes from feedback. The timer follows a fixed instruction — ten minutes, every time, no matter what you do.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A city tries to automate vehicle checks by hand-writing rules: 'a car has 4 wheels and a metal roof'. On day one, a three-wheeled delivery van and a motorcycle with a roof trailer both roll in and get misclassified. What's the lesson?",
+              "A city tries to automate vehicle checks by hand-writing rules: 'a car has 4 wheels and a metal roof'. On day one, a three-wheeled delivery van and a motorcycle with a roof trailer both arrive. The rules sort both into the wrong group. What's the lesson?",
             choices: [
               { id: "a", label: "The cameras were too slow to photograph them" },
               { id: "b", label: "Every hand-written rule has real-world exceptions that break it" },
@@ -119,7 +119,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Real categories are messy — three wheels, roofs on bikes, open trucks. Fixed rules shatter on the exceptions; learning from examples bends around them.",
+              "Real categories are messy — three wheels, roofs on bikes, open trucks. Fixed rules break on these exceptions. Learning from examples bends around them.",
           },
         ],
       },
@@ -132,12 +132,12 @@ const course: Course = {
         capability: "Describe machine learning as finding useful patterns in examples.",
         minutes: 4,
         prose: [
-          "Here is the whole deal in one sentence: **machine learning is giving a machine examples instead of rules**, and letting it find the pattern itself.",
-          "You still do important work — choosing the examples, and checking what it learns. But the detailed pattern-hunting is done by the **algorithm**, not written by hand.",
-          "This flip explains everything that follows. A **‘model’** is just the pattern it found, stored in a form that can make new decisions.",
+          "Here is the whole idea in one sentence: **machine learning is giving a machine examples instead of rules**. The machine finds the pattern itself.",
+          "You still do important work — choosing the examples, and checking what it learns. But the **algorithm** does the detailed pattern-hunting. No one writes it by hand.",
+          "This change explains everything that follows. A **‘model’** is just the pattern it found, stored in a form that can make new decisions.",
         ],
         concept: {
-          anchor: "Rather than writing down what a dog looks like, you show a scrapbook of labelled dog photos.",
+          anchor: "Instead of writing down what a dog looks like, you show a scrapbook of labelled dog photos.",
           what: "**Machine learning is giving a machine examples instead of rules** — and letting it find the pattern itself.",
           why: "It removes the impossible job of hand-writing every rule. The **algorithm does the pattern-hunting**; you choose the examples and check what it learns.",
           where: [
@@ -153,7 +153,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A photo-app team wants the machine to recognise cars. The programmer sets up the learning process and supplies a million labelled photos — but never writes a 'what is a car' rule. When the app later labels a photo correctly, who actually worked out the detailed pattern?",
+              "A photo-app team wants the machine to recognise cars. The programmer sets up the learning process and supplies a million labelled photos. But the programmer never writes a 'what is a car' rule. When the app later labels a photo correctly, who actually worked out the detailed pattern?",
             choices: [
               { id: "a", label: "The learning algorithm — it discovered the pattern from the examples" },
               { id: "b", label: "The programmer — the rules were hidden in the setup code" },
@@ -161,13 +161,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "A programmer defines the learning process, but the model discovers the detailed pattern from data. That hand-off is the whole idea of ML.",
+              "A programmer defines the learning process. The model discovers the detailed pattern from the data. That change is the whole idea of ML.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "After training on those million labelled photos, the app ships a file that instantly labels new pictures — without the million photos on the phone. What is that file best thought of as?",
+              "The app trains on those million labelled photos. Then it ships a file that instantly labels new pictures. The phone does not need the million photos. What is that file best thought of as?",
             choices: [
               { id: "a", label: "A person who decides what the machine should learn" },
               { id: "b", label: "The pattern the machine found, stored so it can make new decisions" },
@@ -175,7 +175,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A model isn’t the data and isn’t a person — it’s the distilled pattern, ready to use on new, unseen cases without dragging the dataset along.",
+              "A model is not the data, and it is not a person. It is the pattern itself, stored and ready to use on new cases. It does not carry the whole dataset along.",
           },
         ],
       },
@@ -189,7 +189,7 @@ const course: Course = {
         minutes: 4,
         prose: [
           "Machine learning comes in **three big families**, and the difference is simply: what kind of experience does the machine learn from?",
-          "**Supervised learning**: examples with answers attached — a spam filter trained on millions of marked emails. **Unsupervised**: no answers at all, the machine groups by itself — shoppers sorted by habit nobody labelled. **Reinforcement**: no answers, just points after each action — a game bot winning or losing its way to skill.",
+          "**Supervised learning**: examples with answers attached — a spam filter trained on millions of marked emails. **Unsupervised**: no answers at all, the machine groups by itself — shoppers sorted by habit nobody labelled. **Reinforcement**: no answers, just points after each action — a game bot that improves by winning or losing.",
           "Most of this course lives in the supervised family, because it’s the one behind everyday **classification**. But knowing all three lets you name the right tool when you meet a new problem.",
         ],
         concept: {
@@ -239,7 +239,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Priya is testing a game-playing bot at a hackathon: after every move it makes, the environment returns a score, and no move is ever labelled ‘correct’. Which family is the bot learning by?",
+              "Priya is testing a game-playing bot at a hackathon. After every move, the game returns a score. No move is ever labelled ‘correct’. Which family is the bot learning by?",
             choices: [
               { id: "a", label: "Supervised — each score is a label on the move" },
               { id: "b", label: "Unsupervised — the bot groups its own moves" },
@@ -247,7 +247,7 @@ const course: Course = {
             ],
             answer: "c",
             explanation:
-              "The tempting read is that a score is a ‘label’ — but labels name each example’s correct answer, and nothing here does. Feedback that arrives only as reward or penalty after an action is the reinforcement signature.",
+              "You might think a score is a ‘label’. But a label names each example’s correct answer, and nothing here does that. Feedback that arrives only as reward or penalty after an action is the sign of reinforcement learning.",
           },
           {
             id: "q2",
@@ -261,7 +261,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "No answers are attached, and the goal is discovering structure — that’s the unsupervised signature. Supervised would need each review pre-labelled.",
+              "No answers are attached, and the goal is to discover structure — that is the sign of unsupervised learning. Supervised would need each review labelled in advance.",
           },
         ],
       },
@@ -274,14 +274,14 @@ const course: Course = {
         capability: "Recognize labelled examples and distinguish classification from regression.",
         minutes: 5,
         prose: [
-          "Supervised learning always has the same skeleton: **examples plus the right answers**, fed to an algorithm that learns the mapping from one to the other.",
+          "Supervised learning always has the same skeleton: **examples plus the right answers**. An algorithm learns the mapping from one to the other.",
           "The examples are called **samples**; the answers are **labels**. ‘This photo (sample) → car (label)’, a thousand times over.",
           "The learned mapping answers one of two kinds of question. If the answer is a category — car or bike, spam or not — it’s **classification**. If the answer is a number — a price, an age, a duration — it’s **regression**. Same skeleton, different output shape.",
         ],
         concept: {
           anchor: "Like flashcards with the answer on the back — see enough of them and you can answer new cards.",
           what: "**Supervised learning** feeds an algorithm **samples with labels attached**, so it learns the mapping from one to the other.",
-          why: "Once the mapping is learned, it **answers new cases you’ve never seen** — the workhorse behind everyday classification and prediction.",
+          why: "Once the mapping is learned, it **answers new cases you have never seen**. That is why it powers everyday classification and prediction.",
           where: [
             "**Classification**: spam or not, car or bike — a category comes out",
             "**Regression**: delivery time, house price — a number comes out",
@@ -307,7 +307,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A real-estate site shows you past sales — each house described by size and location, each labelled with the price it actually sold for — and then estimates your house's price in rupees. What kind of supervised problem is this?",
+              "A real-estate site shows you past sales. Each house is described by size and location. Each house is labelled with the price it actually sold for. The site then estimates your house's price in rupees. What kind of supervised problem is this?",
             choices: [
               { id: "a", label: "Classification — houses get sorted into price bands" },
               { id: "b", label: "Regression — the answer is a measured number" },
@@ -321,7 +321,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your team must build a supervised spam classifier by Monday. One colleague hands you a dump of 10,000 emails with no markings; another hands you 5,000 emails where users have already flagged each as junk or not. Which pile can you actually train on?",
+              "Your team must build a supervised spam classifier by Monday. One colleague gives you 10,000 emails with no markings. Another gives you 5,000 emails where users have already flagged each as junk or not. Which pile can you actually train on?",
             choices: [
               { id: "a", label: "The flagged 5,000 — each sample carries its label" },
               { id: "b", label: "The unmarked 10,000 — more data always wins" },
@@ -329,7 +329,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Supervised needs labels attached to samples. Unmarked emails would be unsupervised territory — and no amount of extra unmarked data fixes that.",
+              "Supervised learning needs labels attached to samples. Unmarked emails belong to unsupervised learning. No amount of extra unmarked data fixes that.",
           },
         ],
       },
@@ -355,7 +355,7 @@ const course: Course = {
         },
         prose: [
           "Every classifier you've met so far answers **which one?** — car or bike, spam or genuine. But many questions aren't choices at all. “How long will the trip take?” “What will this cost?” The answer is a **number**, anywhere on a scale.",
-          "The trick is the same one the whole course uses: **past examples**. Draw every past trip as a dot — distance across, minutes up — and a pattern appears: farther trips took longer. One smooth line through the middle of the dots captures the trend.",
+          "The method is the same one the whole course uses: **past examples**. Draw every past trip as a dot — distance across, minutes up — and a pattern appears: farther trips took longer. One smooth line through the middle of the dots captures the trend.",
           "To answer a new question, you don't guess — you **read the line**. A 10 km trip lands on the line at about 26 minutes. The model's whole job was learning where that line sits, from thousands of past trips.",
           "Reading the line is regression's whole job: **the number comes straight off the trend**, not out of a bucket — same skeleton, different kind of answer.",
         ],
@@ -389,7 +389,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The answer is a quantity (minutes), not a choice between buckets, and it's learned from labelled past deliveries — that's regression, the number-predicting half of supervised learning.",
+              "The answer is a quantity (minutes), not a choice between buckets. It is learned from labelled past deliveries. That is regression — the number-predicting half of supervised learning.",
           },
           {
             id: "q2",
@@ -417,13 +417,13 @@ const course: Course = {
         minutes: 5,
         prose: [
           "Take the labels away and something interesting happens: the machine stops predicting answers and starts **describing structure**.",
-          "Given only samples, unsupervised algorithms find groups (**clustering**), or unusual **outliers**, or the few directions in which the data actually varies. Nobody told it what the groups are — it finds them.",
-          "The catch: the machine can name the groups it finds, but it **can’t tell you what the groups mean**. ‘Cluster 1 behaves like this’ — a human still has to look and say ‘ah, these are the weekend shoppers’.",
+          "With only samples and no labels, unsupervised algorithms find groups (**clustering**). They also spot unusual **outliers**, or the few directions in which the data actually varies. Nobody told the machine what the groups are. It finds them.",
+          "But there is one limit. The machine can name the groups it finds, but it **can’t tell you what the groups mean**. ‘Cluster 1 behaves like this’ — a human still has to look and say ‘ah, these are the weekend shoppers’.",
         ],
         concept: {
           anchor: "Dump a pile of laundry on the bed and sort it into stacks no one named for you.",
           what: "**Unsupervised learning** gets samples with **no labels** and finds the structure — groups, outliers, patterns — on its own.",
-          why: "It works where **labelling is impossible or expensive**, revealing structure in data nobody thought to mark up.",
+          why: "It works where **labelling is impossible or expensive**. It reveals structure in data nobody thought to mark.",
           where: [
             "**Clustering** shoppers by habit, with no pre-assigned groups",
             "Spotting **unusual transactions** that fit no known group",
@@ -449,7 +449,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Maya's grocery chain sorts its shoppers into segments by buying habits alone — no one tagged any shopper ‘budget buyer’ or ‘weekly bulk’ in advance. Which family is this?",
+              "Maya's grocery chain sorts its shoppers into segments by buying habits alone. No one tagged any shopper ‘budget buyer’ or ‘weekly bulk’ in advance. Which family is this?",
             choices: [
               { id: "a", label: "Supervised, because shoppers end up categorised" },
               { id: "b", label: "Unsupervised, because no labels were given" },
@@ -457,7 +457,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "It's tempting to call any output a ‘category’ supervised — but supervised needs answers attached to examples in advance. With none, discovering groups (clustering) is unsupervised learning.",
+              "You might want to call any output a ‘category’ and say supervised. But supervised needs answers attached to examples in advance. With none, discovering groups (clustering) is unsupervised learning.",
           },
           {
             id: "q2",
@@ -498,7 +498,7 @@ const course: Course = {
             "**Recommendation tuning** against watch-time or click reward",
           ],
           whenNot:
-            "Beware when the **reward can’t capture what you actually mean** — the agent optimises the reward you gave, loopholes included. And if a single labelled answer exists, supervised is the simpler tool.",
+            "Be careful when the **reward can’t capture what you actually mean**. The agent optimises the reward you gave — including its loopholes. And if a single labelled answer exists, supervised is the simpler tool.",
         },
         diagram: {
           kind: "flow",
@@ -514,7 +514,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A robotics team's walker bot is rewarded for every second it stays upright and penalised whenever it falls; no one labels any joint movement ‘correct’. Which family is this?",
+              "A robotics team's walker bot is rewarded for every second it stays upright. It is penalised whenever it falls. No one labels any joint movement ‘correct’. Which family is this?",
             choices: [
               { id: "a", label: "Supervised, because it improves over time" },
               { id: "b", label: "Unsupervised, because there is no teacher" },
@@ -522,7 +522,7 @@ const course: Course = {
             ],
             answer: "c",
             explanation:
-              "Improving over time isn't the supervised signature — labels are. Feedback that arrives only as reward or penalty after actions is exactly the reinforcement setup.",
+              "Improving over time is not what marks supervised learning — labels are. Feedback that arrives only as reward or penalty after actions is exactly the reinforcement setup.",
           },
           {
             id: "q2",
@@ -536,7 +536,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The agent optimises the reward it was given — watch time — not the intention behind it. Reward design is where the values enter.",
+              "The agent optimises the reward it was given — watch time — not the goal behind it. The values you care about enter through reward design.",
           },
         ],
       },
@@ -551,7 +551,7 @@ const course: Course = {
         prose: [
           "A machine can’t ‘see’ a car the way you do — it only reads **numbers**. So the first job is to describe each object with measurable **features**: number of wheels, height, weight, colour.",
           "One object becomes a list of values, called a **vector**. The whole learning step that follows depends on this translation being right.",
-          "Not every feature helps. A feature only earns its place if it **separates the classes** — colour doesn’t, because cars and bikes come in every colour.",
+          "Not every feature helps. A feature is useful only if it **separates the classes** — colour doesn’t, because cars and bikes come in every colour.",
         ],
         concept: {
           anchor: "A machine meets a car the way a form does: four wheels, roof height, one number per line.",
@@ -563,7 +563,7 @@ const course: Course = {
             "**Face unlock** turning faces into measurement patterns",
           ],
           whenNot:
-            "A feature earns its place **only if it separates the classes** — colour doesn’t (red bikes and red cars are about equally common, so it splits nothing), so it’s noise, not a feature.",
+            "A feature is useful **only if it separates the classes**. Colour doesn’t — red bikes and red cars are about equally common, so colour splits nothing. It is noise, not a feature.",
         },
         diagram: {
           kind: "flow",
@@ -586,7 +586,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A feature only earns its place if it separates the classes. Colour doesn't — both classes come in red, blue, black — so it adds noise, not signal.",
+              "A feature is useful only if it separates the classes. Colour doesn't — both classes come in red, blue, black — so it adds noise, not signal.",
           },
           {
             id: "q2",
@@ -620,14 +620,14 @@ const course: Course = {
         concept: {
           anchor: "Count the old cases — if every four-wheel drawing was a car, the next four-wheeler probably is too.",
           what: "Your first classifier is pure **counting**: look at past examples with the same feature value and **pick the more likely class**.",
-          why: "With nothing but counting you get a working, **likelihood-based decision rule** — the seed of every classifier ahead.",
+          why: "With nothing but counting you get a working, **likelihood-based decision rule**. Every later classifier builds on it.",
           where: [
             "4 wheels → in your data, always a **car**",
             "**Medical screening** from how often symptoms led to a diagnosis",
             "**Weather guessing** from how similar days turned out",
           ],
           whenNot:
-            "Counting fails when the data is **thin or mixed** — 90/10 gives odds, not certainty, and a feature value you’ve never seen gives no answer at all.",
+            "Counting fails when the data is **thin or mixed**. A 90/10 split gives odds, not certainty. And a feature value you’ve never seen gives no answer at all.",
         },
         diagram: {
           kind: "flow",
@@ -650,7 +650,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Counting the past cases: 2 wheels went with a bike 100 times out of 100. ‘It might be a car’ is exactly what the counts can't support — every 2-wheel example on file says bike.",
+              "Counting the past cases: 2 wheels went with a bike 100 times out of 100. ‘It might be a car’ is exactly what the counts cannot support. Every 2-wheel example on file says bike.",
           },
           {
             id: "q2",
@@ -664,7 +664,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Counting gives you odds, not guarantees. The more-likely class wins the call, but the 90/10 split should keep you humble about it.",
+              "Counting gives you odds, not guarantees. The more-likely class wins the call, but the 90/10 split means you could still be wrong.",
           },
         ],
       },
@@ -706,7 +706,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "More samples of the same feature sharpen the same 75/25 view — the mix is the feature's limit, not the sample count. A second, different feature gives the model a genuinely new question to ask.",
+              "More samples of the same feature sharpen the same 75/25 view. The mix is the feature's limit, not the sample count. A second, different feature gives the model a genuinely new question to ask.",
           },
           {
             id: "q2",
@@ -720,7 +720,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Good features add genuinely different information. Colours are noise, and ‘round parts’ mostly repeats wheel count — engine size and seat height give the model a genuinely new view.",
+              "Good features add genuinely different information. Colours are noise, and ‘round parts’ mostly repeats wheel count. Engine size and seat height give the model a new view.",
           },
         ],
       },
@@ -747,7 +747,7 @@ const course: Course = {
             "Boundary calls — votes decide even a **3-to-2 contest**",
           ],
           whenNot:
-            "It’s slow at scale — a new sample is compared against all **10,000 past examples, every single time**, instead of just 5 — and unreliable when the nearest neighbours are **noisy or uninformative**.",
+            "It’s slow at scale. A new sample is compared against all **10,000 past examples, every single time**, instead of just 5. It is also unreliable when the nearest neighbours are **noisy or uninformative**.",
         },
         diagram: {
           kind: "flow",
@@ -767,7 +767,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Dev's booth camera logs one new vehicle; among its 5 most similar past examples, 3 are cars and 2 are bikes. What class does kNN assign?",
+              "Dev's booth camera logs one new vehicle. Among its 5 most similar past examples, 3 are cars and 2 are bikes. What class does kNN assign?",
             choices: [
               { id: "a", label: "Bike, because there are bikes nearby" },
               { id: "b", label: "Car, because the majority (3 of 5) are cars" },
@@ -775,21 +775,21 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "kNN takes a majority vote among the closest neighbours; 3 cars beats 2 bikes, so the class is car. ‘There are bikes nearby’ misses that it's the count that decides, not proximity alone.",
+              "kNN takes a majority vote among the closest neighbours. 3 cars beats 2 bikes, so the class is car. ‘There are bikes nearby’ misses the point — the count decides, not proximity alone.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A vehicle lands right at the boundary between a car cluster and a bike cluster in Ravi's data. Why does kNN still make a call?",
+              "A vehicle lands right at the boundary between a car cluster and a bike cluster in Ravi's data. Why does kNN still give an answer?",
             choices: [
               { id: "a", label: "It refuses to classify boundary samples" },
-              { id: "b", label: "It counts the votes of the k nearest neighbours however close the contest — majority still wins" },
+              { id: "b", label: "It counts the votes of the k nearest neighbours, however close the contest — the majority still wins" },
               { id: "c", label: "It chooses whichever class appeared first in the data" },
             ],
             answer: "b",
             explanation:
-              "kNN is a vote, not a judge of confidence: even a 3-2 contest produces a winner. (A near-tie vote is worth treating with caution in real systems.)",
+              "kNN is a vote, not a judge of confidence. Even a 3-2 contest produces a winner. (In real systems, treat a near-tie vote with caution.)",
           },
         ],
       },
@@ -854,7 +854,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The centroid classifier compares the sample only to each class’s average (center); nearest center wins, so it’s a car. ‘Some bikes are nearby’ would be kNN's logic — one average per class is all this classifier ever looks at.",
+              "The centroid classifier compares the sample only to each class’s average (center). The nearest center wins, so it’s a car. ‘Some bikes are nearby’ would be kNN's logic. One average per class is all this classifier ever looks at.",
           },
           {
             id: "q2",
@@ -868,7 +868,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Averages describe the typical, not the odd. kNN could still find the few trike-like neighbours; the single-centre shortcut can’t.",
+              "Averages describe the typical, not the odd. kNN could still find the few trike-like neighbours. The single-centre shortcut can’t.",
           },
         ],
       },
@@ -888,14 +888,14 @@ const course: Course = {
         concept: {
           anchor: "A flowchart on the fridge: check the sky, check the humidity, follow the arrows to play or stay home.",
           what: "A **decision tree** is a list of **if/then questions drawn as a path** — start at the top, answer each one, land on a prediction.",
-          why: "The tree **explains itself**: you can read the exact branch path behind any answer, making it the most explainable classifier you’ll meet.",
+          why: "The tree **explains itself**: you can read the exact branch path behind any answer. That makes it the most explainable classifier you’ll meet.",
           where: [
             "**‘Sunny and humid → no tennis’** as a walkable branch",
             "**Triage questionnaires** — three answers, one verdict",
             "**Loan rules** auditors can check branch by branch",
           ],
           whenNot:
-            "A poor fit when features are **smooth numbers with no natural yes/no questions**, and deep trees risk **memorising noise** — overfitting (memorizing instead of understanding), covered later in the course.",
+            "A poor fit when features are **smooth numbers with no natural yes/no questions**. And deep trees risk **memorising noise** — overfitting (memorizing instead of understanding), covered later in the course.",
         },
         diagram: {
           kind: "decision",
@@ -971,7 +971,7 @@ const course: Course = {
         prose: [
           "When a tree asks a question, it **splits the data into branches**. A good split leaves each branch mostly one class — that’s called **‘pure’**.",
           "A bad split leaves the branches jumbled. The tree-building rule is simple: at every step, **pick the feature whose split is purest**.",
-          "That purity has a name — **information gain** (how much a question untangles the classes) — but the intuition needs no formula: the best question is the one that untangles the classes the most.",
+          "That purity has a name — **information gain** (how much a question untangles the classes). The idea needs no formula. The best question is simply the one that untangles the classes the most.",
         ],
         concept: {
           anchor: "Sorting toys into two boxes, pick the question that leaves each box holding mostly one kind.",
@@ -983,7 +983,7 @@ const course: Course = {
             "A **50/50-everywhere split** is useless — discard it",
           ],
           whenNot:
-            "A split earns its place **only if it purifies** — one that leaves both sides equally mixed answers nothing, however sensible the question sounds.",
+            "A split is useful **only if it purifies**. A split that leaves both sides equally mixed answers nothing, however sensible the question sounds.",
         },
         diagram: {
           kind: "decision",
@@ -1007,7 +1007,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Aisha's tree builder can ask one of two questions first: one leaves both sides evenly mixed play/no-play; the other leaves each side all-play or all-no-play. Which does it prefer?",
+              "Aisha's tree builder can ask one of two questions first. One leaves both sides evenly mixed play/no-play. The other leaves each side all-play or all-no-play. Which does it prefer?",
             choices: [
               { id: "a", label: "The mixed one — balance means more information" },
               { id: "b", label: "The pure one — each side is decided" },
@@ -1015,7 +1015,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "It's tempting to read a ‘balanced’ split as informative — but a 50/50 mix answers nothing on either side. A pure split is preferred; that purity is what **information gain** (how much a question untangles the classes) measures.",
+              "It's tempting to read a ‘balanced’ split as informative. But a 50/50 mix answers nothing on either side. A pure split is preferred. That purity is what **information gain** (how much a question untangles the classes) measures.",
           },
           {
             id: "q2",
@@ -1051,7 +1051,7 @@ const course: Course = {
             "Serious teams keep a **final holdout** nobody touches",
           ],
           whenNot:
-            "The test score stays meaningful **only while the test stays sealed** — every peek-and-tweak quietly turns the exam into study material.",
+            "The test score stays meaningful **only while the test stays sealed**. Every peek and every tweak quietly turns the exam into study material.",
         },
         diagram: {
           kind: "compare",
@@ -1072,7 +1072,7 @@ const course: Course = {
         },
         prose: [
           "Once you've built a classifier, the obvious question is: is it any good? The trap is **checking the same data it learned from**.",
-          "If you graded a student on the exact exam questions they studied, you'd learn nothing about whether they understood the ideas — only whether they **memorized**.",
+          "Suppose you grade a student on the exact exam questions they studied. You learn nothing about whether they understood the ideas. You only learn whether they **memorized**.",
           "The fix is to split your data: a **training pile** the model learns from, and a separate **test pile** it never sees. Only the test score tells you if it **generalizes**.",
         ],
         questions: [
@@ -1080,7 +1080,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your model scores 100% on the data it trained on, but only 60% on new data. What's the most honest read?",
+              "Your model scores 100% on the data it trained on, but only 60% on new data. What is the honest conclusion?",
             choices: [
               { id: "a", label: "It's a great model — 100% is the real score" },
               { id: "b", label: "60% on unseen data is the honest measure; 100% may be memorization" },
@@ -1088,7 +1088,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The test-set score reflects real-world performance; a perfect training score can mean it memorized rather than learned.",
+              "The test-set score reflects real-world performance. A perfect training score can mean it memorized rather than learned.",
           },
           {
             id: "q2",
@@ -1102,7 +1102,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Peeking and adjusting turns the exam into study material — the score stops predicting real-world behaviour. This is why serious teams keep a final holdout nobody tunes against.",
+              "Peeking and adjusting turns the exam into study material. The score stops predicting real-world behaviour. This is why serious teams keep a final holdout that nobody tunes against.",
           },
         ],
       },
@@ -1117,7 +1117,7 @@ const course: Course = {
         concept: {
           anchor: "A student who drills last year's paper word-for-word aces it — then meets this year's questions.",
           what: "**Overfitting** (memorizing instead of understanding) is learning the training data **too precisely** — every quirk and noise — and failing on anything new.",
-          why: "It’s the **memoriser vs. understander** gap: perfect scores on old papers, flops on fresh questions. The most common way good-looking models fail.",
+          why: "It’s the gap between the **memoriser and the understander**: perfect scores on old papers, poor results on fresh questions. It is the most common way good-looking models fail.",
           where: [
             "**100% on training, 50% on test** — the classic signature",
             "A model that nailed **only red cars** during training",
@@ -1145,8 +1145,8 @@ const course: Course = {
         },
         prose: [
           "**Overfitting** is when a model learns its training data so precisely — every quirk and noise — that it fails on anything new.",
-          "It's the difference between a student who **memorized** past exams and one who **understood** the ideas. The memorizer aces the old papers and flops a fresh question.",
-          "The goal is the sweet spot: **simple enough to generalize, complex enough to capture the real pattern**.",
+          "It's the difference between a student who **memorized** past exams and one who **understood** the ideas. The memorizer scores full marks on the old papers. Then the memorizer fails a fresh question.",
+          "The goal is the right balance: **simple enough to generalize, complex enough to capture the real pattern**.",
         ],
         questions: [
           {
@@ -1161,7 +1161,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Consistent train and test scores mean the model learned a real pattern; a perfect training score with a poor test score is a classic sign of overfitting.",
+              "Consistent train and test scores mean the model learned a real pattern. A perfect training score with a poor test score is a classic sign of overfitting.",
           },
           {
             id: "q2",
@@ -1197,7 +1197,7 @@ const course: Course = {
             "**Face unlock** failing on faces it never trained on",
           ],
           whenNot:
-            "Don’t reach for a fancier algorithm **before auditing the data** — most classifier problems are data problems in disguise.",
+            "Don’t go for a fancier algorithm **before auditing the data**. Most classifier problems are really data problems in disguise.",
         },
         diagram: {
           kind: "flow",
@@ -1239,7 +1239,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Most classifier problems are data problems in disguise. Fix the examples and the features before reaching for a fancier model.",
+              "Most classifier problems are really data problems in disguise. Fix the examples and the features before you try a fancier model.",
           },
         ],
       },
@@ -1254,7 +1254,7 @@ const course: Course = {
         concept: {
           anchor: "Your phone is quietly full of apprentices — a junk-mail sorter, a keyboard that guesses, a camera that knows your face.",
           what: "You already use ML **dozens of times a day** — spam filters, keyboards, face unlock, maps — most of it invisible.",
-          why: "Each one runs the skeleton you now know: **samples in, a learned pattern out, predictions on new cases** — so ‘AI magic’ becomes something you can question.",
+          why: "Each one runs the skeleton you now know: **samples in, a learned pattern out, predictions on new cases**. So ‘AI magic’ becomes something you can question.",
           where: [
             "**Spam filters** that read millions of marked emails",
             "**Keyboards** guessing your next word from your history",
@@ -1273,9 +1273,9 @@ const course: Course = {
         },
         prose: [
           "You’ve used **machine learning dozens of times today already**. Spam filters deciding what reaches your inbox. Keyboards guessing your next word. Face unlock recognising you in bad light.",
-          "Each one is the same skeleton you now know: **samples in, a learned pattern out, predictions on new cases**. A spam filter read millions of marked emails; your keyboard watched which words follow yours.",
+          "Each one is the same skeleton you now know: **samples in, a learned pattern out, predictions on new cases**. A spam filter read millions of marked emails. Your keyboard watched which words follow yours.",
           "Once you see the skeleton, ‘AI magic’ turns into something you can question: **what were the examples? What is it predicting? What happens when it’s wrong?**",
-          "That includes the headline AI of today. **ChatGPT** learned from enormous amounts of text to do one thing: predict the next word. An image generator predicts what pixels usually come next. Generative AI isn’t a different species — it’s the **same samples-in, pattern-out skeleton**, working at a scale no phone feature matches.",
+          "That includes the headline AI of today. **ChatGPT** learned from enormous amounts of text to do one thing: predict the next word. An image generator predicts what pixels usually come next. Generative AI isn’t a different species. It is the **same samples-in, pattern-out skeleton**, just working at a much larger scale.",
         ],
         questions: [
           {
@@ -1290,7 +1290,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Your ‘this is junk’ marks are labels; learning to sort future mail from those labelled examples is supervised learning.",
+              "Your ‘this is junk’ marks are labels. Learning to sort future mail from those labelled examples is supervised learning.",
           },
           {
             id: "q2",
@@ -1304,7 +1304,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A model is confident within the range of its examples. Inputs unlike anything it trained on — lighting, angles, accessories — push it off-map, and accuracy drops.",
+              "A model is confident within the range of its examples. Inputs unlike anything it trained on — lighting, angles, accessories — push it outside that range, and accuracy drops.",
           },
         ],
       },
@@ -1319,14 +1319,14 @@ const course: Course = {
         concept: {
           anchor: "A parrot that always answers in the same confident voice — even about things it has never seen.",
           what: "ML **fails quietly**: it always produces an answer, in the same confident tone — **whether it has seen 10,000 similar cases or zero**.",
-          why: "Unlike a calculator that crashes loudly, a **confidently wrong** model looks identical to a right one — that’s the dangerous property.",
+          why: "Unlike a calculator that crashes loudly, a **confidently wrong** model looks identical to a right one. That is what makes it dangerous.",
           where: [
             "**Face unlock** failing on faces it never trained on",
             "A **chatbot** inventing answers with total confidence",
             "Failures traced to **training gaps, overfitting (memorizing instead of understanding), or bad data**",
           ],
           whenNot:
-            "Never trust tone as a signal of accuracy — the safeguard is asking **what were the examples, how was it tested, and what happens when it’s wrong?**",
+            "Never trust tone as a signal of accuracy. The safeguard is asking: **what were the examples, how was it tested, and what happens when it’s wrong?**",
         },
         diagram: {
           kind: "decision",
@@ -1352,7 +1352,7 @@ const course: Course = {
         prose: [
           "Machine learning **fails differently** from ordinary software. A calculator breaks loudly — error, crash, blank screen. A model fails **quietly**: it always produces an answer, in the same confident tone, whether it knows or not.",
           "The failures come from the three things you’ve met: **training gaps** (it never saw a case like this), **overfitting** (it memorised quirks), and **bad data** (it learned a skewed world).",
-          "The safeguard isn’t ‘trust it more’ or ‘trust it less’ — it’s knowing **which questions to ask**: what were the examples, how was it tested, and what happens when it’s wrong? Those questions are exactly what the next course, **AI Observability**, teaches you to ask daily.",
+          "The safeguard isn’t ‘trust it more’ or ‘trust it less’. It is knowing **which questions to ask**. What were the examples? How was it tested? What happens when it’s wrong? Those questions are exactly what the next course, **AI Observability**, teaches you to ask daily.",
         ],
         questions: [
           {
@@ -1373,7 +1373,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "An AI chatbot invents a plausible-but-false answer, stated with total confidence. Which property of ML does this illustrate?",
+              "An AI chatbot invents an answer that sounds true but is false. It states the answer with total confidence. Which property of ML does this show?",
             choices: [
               { id: "a", label: "Models fail loudly, like a crash" },
               { id: "b", label: "Models always produce an answer in the same confident tone — even outside what they know" },
@@ -1381,7 +1381,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Unlike ordinary software, ML fails quietly: the output looks identical whether the model is on familiar ground or guessing. That’s why watching AI systems matters — the next course shows how.",
+              "Unlike ordinary software, ML fails quietly. The output looks identical whether the model is on familiar ground or guessing. That’s why watching AI systems matters — the next course shows how.",
           },
         ],
       },

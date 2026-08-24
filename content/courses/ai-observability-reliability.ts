@@ -5,12 +5,12 @@ const course: Course = {
     title: "AI Observability: Reliability Engineering",
     subtitle: "Design a scalable, secure, governed observability system for AI in production.",
     description:
-      "An expert course built around one production case: Meridian, a multi-agent financial-research system rolled out across EU and US regions and two model providers, carrying regulated data toward an architecture review. Every lesson adds evidence, a counter-example, or a sharpened constraint to Meridian's design — telemetry contracts, evaluation systems, privacy, security, and governance — detecting regressions without exposing sensitive prompts. For senior ML, platform, and SRE engineers.",
+      "An expert course built around one production case: Meridian. Meridian is a multi-agent financial-research system. It runs across EU and US regions and two model providers, carries regulated data, and is heading into an architecture review. Every lesson adds evidence, a counter-example, or a sharpened constraint to Meridian's design — telemetry contracts, evaluation systems, privacy, security, and governance. The goal: detect regressions without exposing sensitive prompts. For senior ML, platform, and SRE engineers.",
     level: "expert",
     domain: "AI Observability",
     access: "free",
     prerequisites:
-      "LLM Observability — you should be comfortable reading traces, defining SLOs, and running evaluations before designing systems around them.",
+      "LLM Observability — you should be comfortable reading traces, defining SLOs, and running evaluations before you design systems around them.",
     lessons: [
       {
         slug: "telemetry-architecture-contracts",
@@ -34,9 +34,9 @@ const course: Course = {
             "Over-engineered for a single-service prototype with **one owner and no regulated data** — contracts pay off once multiple teams and regions depend on the same telemetry.",
         },
         prose: [
-          "Six weeks into Meridian's EU rollout — Meridian being the multi-agent financial-research platform this course designs for — an audit found EU customer prompts sitting in a US-region telemetry backend, and the “fix” meant purging data out of every index it had touched. The failure reads directly off the architecture: telemetry is not a bucket but a **chain of contracts** — the app emits correct spans, the SDK **propagates context**, the collector redacts, samples, and routes, the backend indexes within a **cardinality budget**, the query layer aggregates correctly — and the residency guarantee belonged to the collector, where nobody had written it down.",
+          "Six weeks into Meridian's EU rollout, an audit found EU customer prompts sitting in a US-region telemetry backend. (Meridian is the multi-agent financial-research platform this course designs for.) The “fix” meant purging data out of every index it had touched. The failure reads directly off the architecture. Telemetry is not a bucket. It is a **chain of contracts**: the app emits correct spans, the SDK **propagates context**, the collector redacts, samples, and routes, the backend indexes within a **cardinality budget**, and the query layer aggregates correctly. The residency guarantee belonged to the collector — and nobody had written it down.",
           "Break a contract and the failure **migrates**. If the SDK drops the correlation ID, traces fragment across services. If the collector doesn't redact, the backend becomes a **breach surface**. If the backend allows unbounded cardinality, query latency collapses under **index bloat**. The contract is the design unit — and the debugging unit when something breaks.",
-          "Owning this chain means deciding what each stage guarantees and who owns it. **Version the schema**, document the attributes each stage must set, and treat the collector as the **security and cost boundary** — the last place you can cheaply transform telemetry before it becomes a liability in storage. The boundary: contracts cost coordination, so a single-service prototype with one owner and no regulated data pays in meetings what it saves in incidents — this design earns its keep exactly when multiple teams and regions depend on the same telemetry, as Meridian's does.",
+          "Owning this chain means deciding what each stage guarantees and who owns it. **Version the schema**. Document the attributes each stage must set. Treat the collector as the **security and cost boundary** — the last place you can cheaply transform telemetry before it becomes a liability in storage. The boundary: contracts cost coordination. A single-service prototype with one owner and no regulated data pays in meetings what it saves in incidents. This design pays off when multiple teams and regions depend on the same telemetry, as Meridian's does.",
         ],
         diagram: {
           kind: "flow",
@@ -53,7 +53,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your fintech platform just discovered EU customer prompts landing in a US-region telemetry backend, and fixing it after the fact meant purging data out of every index. Where should the residency guarantee have lived?",
+              "Your fintech platform just discovered EU customer prompts landing in a US-region telemetry backend. Fixing it after the fact meant purging data out of every index. Where should the residency guarantee have lived?",
             choices: [
               { id: "a", label: "In the front-end, before spans ever leave the browser" },
               { id: "b", label: "In the collector's routing layer — the last cheap transformation point before storage turns telemetry into a liability" },
@@ -62,13 +62,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Post-hoc deletion is the expensive way to learn the contract: the collector is the security and cost boundary, the last stage that can route by residency before storage makes the data a regulated liability.",
+              "Post-hoc deletion is the expensive way to learn the contract. The collector is the security and cost boundary. It is the last stage that can route by residency before storage makes the data a regulated liability.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A travel-booking assistant's traces suddenly fragment — one user turn now shows up as unrelated spans scattered across the retrieval, planner, and booking services after last week's SDK upgrade. Which contract broke?",
+              "A travel-booking assistant's traces suddenly fragment after last week's SDK upgrade. One user turn now shows up as unrelated spans scattered across the retrieval, planner, and booking services. Which contract broke?",
             choices: [
               { id: "a", label: "The SDK dropped context propagation, so correlation IDs no longer carry across service boundaries" },
               { id: "b", label: "The backend indexed too many attributes and silently dropped the rest" },
@@ -77,7 +77,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Trace fragmentation across services is the signature of failed propagation — the SDK's core contract. Each stage owns one guarantee, and diagnosing starts by asking which stage's guarantee broke.",
+              "Trace fragmentation across services is the signature of failed propagation — the SDK's core contract. Each stage owns one guarantee. Diagnosing starts by asking which stage's guarantee broke.",
           },
         ],
       },
@@ -93,7 +93,7 @@ const course: Course = {
           anchor: "Standards are wall sockets — use the standard plug and add your own adapter at the end, never rewire the house.",
           what:
             "**OTel GenAI** (gen_ai.*) is the converging vendor-neutral standard; **OpenInference** is richer and more widely deployed — layer them, and **extend, don't fork**.",
-          why: "Hard-locking one convention buys vendor lock-in or lost richness; forking a **private schema** strands you with tooling nothing else can read and maintenance nobody else shares.",
+          why: "Hard-locking one convention buys vendor lock-in or lost richness. Forking a **private schema** leaves you stranded with tooling nothing else can read and maintenance nobody else shares.",
           where: [
             "Dual-emitting during a multi-provider migration: OTel GenAI for **portability**, OpenInference for **retrieval and agent attributes**",
             "Adding a proprietary reranker score under your own **prefix** while standard attributes stay intact",
@@ -103,9 +103,9 @@ const course: Course = {
             "Skip dual-emitting when you're consciously **single-tool and single-vendor** and the standard already covers your attributes — the second convention is cost with no consumer.",
         },
         prose: [
-          "Meridian runs its eval tooling on OpenInference's retrieval attributes while its platform team standardizes on the CNCF track — the same span serving two consumers. Two conventions describe the same LLM call: **OpenTelemetry GenAI semantic conventions** (gen_ai.*) are the converging, vendor-neutral standard, moving toward stability under the Cloud Native Computing Foundation; **OpenInference**, from the Arize/Phoenix community, is richer and more widely deployed today, with first-class retrieval and agent attributes.",
-          "They overlap heavily and differ in naming. The temptation is to pick one and hard-lock, or worse, invent a **private schema** for 'full control'. Both are mistakes: vendor lock-in today, or a schema no tooling can read. The sound move is to treat them as **complementary layers** — emit OTel GenAI for portability and OpenInference for tool richness — and to extend the standard rather than fork it.",
-          "'**Extend, don't fork**' is the discipline. When the standard lacks an attribute you need (a proprietary retrieval score, say), add it under your own **prefix** while keeping the standard attributes intact. Your schema then degrades gracefully in any tool, and you can drop the extension when the standard catches up. The boundary: dual-emitting is ceremony for a consciously single-tool, single-vendor deployment — where the standard already covers your attributes and one consumer reads them, the second convention is cost with no consumer.",
+          "Meridian runs its eval tooling on OpenInference's retrieval attributes. Its platform team standardizes on the CNCF track. The same span serves two consumers. Two conventions describe the same LLM call. **OpenTelemetry GenAI semantic conventions** (gen_ai.*) are the converging, vendor-neutral standard, moving toward stability under the Cloud Native Computing Foundation. **OpenInference**, from the Arize/Phoenix community, is richer and more widely deployed today, with first-class retrieval and agent attributes.",
+          "They overlap heavily and differ in naming. The temptation is to pick one and hard-lock. Worse, invent a **private schema** for 'full control'. Both are mistakes. One buys vendor lock-in today. The other leaves you with a schema no tooling can read. The sound move is to treat them as **complementary layers**. Emit OTel GenAI for portability and OpenInference for tool richness. Extend the standard rather than fork it.",
+          "'**Extend, don't fork**' is the discipline. Say the standard lacks an attribute you need — a proprietary retrieval score, for example. Add it under your own **prefix** and keep the standard attributes intact. Your schema then degrades gracefully in any tool. You can drop the extension when the standard catches up. The boundary: dual-emitting is ceremony for a consciously single-tool, single-vendor deployment. Where the standard already covers your attributes and one consumer reads them, the second convention is cost with no consumer.",
         ],
         diagram: {
           kind: "compare",
@@ -131,13 +131,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Forking strands you: the fork is the mistake, not the tailoring. Standard attributes keep every OTel/OpenInference tool readable while a private prefix carries the tailoring — that's extend, don't fork.",
+              "Forking leaves you stranded: the fork is the mistake, not the tailoring. Standard attributes keep every OTel/OpenInference tool readable, while a private prefix carries the tailoring. That's extend, don't fork.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your retail search team needs to record a proprietary 'reranker boost score' on retrieval spans, and the current OTel GenAI spec has no such attribute. A teammate proposes overwriting an existing gen_ai.* field to smuggle the score in. What's the right move?",
+              "Your retail search team needs to record a proprietary 'reranker boost score' on retrieval spans. The current OTel GenAI spec has no such attribute. A teammate proposes overwriting an existing gen_ai.* field to smuggle the score in. What's the right move?",
             choices: [
               { id: "a", label: "Wait for the CNCF to define the attribute and ship without the score" },
               { id: "b", label: "Add the score under your own prefix (e.g. acme.rerank.score) and keep the standard attributes intact" },
@@ -161,8 +161,8 @@ const course: Course = {
         concept: {
           anchor: "Tail sampling is customs at the airport — open the full suitcase at one checkpoint, keep only what's interesting.",
           what:
-            "**Tail sampling** keeps the traces that matter (errors, slow turns, policy violations) by deciding at the collector; **cardinality caps** stop near-unique attribute values from bloating indexes.",
-          why: "Cost then scales with the **value you retain**, not the traffic you see — head sampling is cheap but blind, and per-request dimensions scale index size linearly with traffic.",
+            "**Tail sampling** keeps the traces that matter (errors, slow turns, policy violations) by deciding at the collector. **Cardinality caps** stop near-unique attribute values from bloating indexes.",
+          why: "Cost then scales with the **value you retain**, not the traffic you see. Head sampling is cheap but blind, and per-request dimensions scale index size linearly with traffic.",
           where: [
             "Tail-sampling policy at a multi-region rollout's collector: keep every erroring or policy-violating trace, drop the boring ones",
             "A **dimension budget** on dashboards: low-cardinality slices (model, region, tool), raw values sampled or hashed",
@@ -172,9 +172,9 @@ const course: Course = {
             "Skip tail-sampling infrastructure where traffic is low enough that **100% retention is affordable** (dev, staging, small internal tools) — the collector logic costs more than it saves.",
         },
         prose: [
-          "Sampling is a **debugging-fidelity decision** dressed up as a cost decision. **Head sampling** drops traces at the source and is cheap, but blind: it discards the rare erroring trace you'd most want to see. **Tail sampling** evaluates the full trace at the collector and keeps the ones that matter — errors, slow turns, policy violations — giving you exemplar debugging at a fraction of the storage.",
-          "**Cardinality** is the silent budget killer. Every unique attribute value creates an index entry — `index entries ≈ traffic × Σ unique values per dimension` — and a per-request timestamp or full session id is near-unique, so indexing it scales linearly with traffic while analytical value stays flat. The result is **index bloat**, collapsing query latency, and a bill that surprises no one who has lived through it. Cap your dimensionality budget deliberately: low-cardinality dimensions for slicing, raw values sampled or hashed.",
-          "The two combine into a strategy: tail-sample to keep the interesting traces, and constrain dimensions so the ones you keep stay queryable. The arithmetic on Meridian's mix — errors are ~2% of turns and all of them kept, plus ~1% of the boring ones — lands near 3% of full retention while losing none of the failures you'd investigate. Cost then scales with the **value you retain**, not the traffic you see — which is the only sane scaling law for telemetry. The boundary: below the traffic level where 100% retention is affordable (dev, staging, small internal tools), the collector logic costs more than it saves.",
+          "Sampling looks like a cost decision. It is really a **debugging-fidelity decision**. **Head sampling** drops traces at the source. It is cheap, but blind: it discards the rare erroring trace you'd most want to see. **Tail sampling** evaluates the full trace at the collector. It keeps the ones that matter — errors, slow turns, policy violations. You get exemplar debugging at a fraction of the storage.",
+          "**Cardinality** is the silent budget killer. Every unique attribute value creates an index entry: `index entries ≈ traffic × Σ unique values per dimension`. A per-request timestamp or full session id is near-unique. Indexing it scales linearly with traffic while analytical value stays flat. The result is **index bloat**, collapsing query latency, and a bill that surprises no one who has lived through it. Cap your dimensionality budget deliberately: low-cardinality dimensions for slicing, raw values sampled or hashed.",
+          "The two combine into a strategy. Tail-sample to keep the interesting traces. Constrain dimensions so the ones you keep stay queryable. The arithmetic on Meridian's mix: errors are ~2% of turns and all of them kept, plus ~1% of the boring ones. That lands near 3% of full retention while losing none of the failures you'd investigate. Cost then scales with the **value you retain**, not the traffic you see. That is the only sane scaling law for telemetry. The boundary: below the traffic level where 100% retention is affordable (dev, staging, small internal tools), the collector logic costs more than it saves.",
         ],
         diagram: {
           kind: "compare",
@@ -191,7 +191,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "After a 10x Black Friday spike, your e-commerce assistant's telemetry bill tripled — and, worse, the one trace that would explain a checkout-tool failure was dropped. The pipeline samples 5% at the SDK. What's the structural fix?",
+              "After a 10x Black Friday spike, your e-commerce assistant's telemetry bill tripled. Worse, the one trace that would explain a checkout-tool failure was dropped. The pipeline samples 5% at the SDK. What's the structural fix?",
             choices: [
               { id: "a", label: "Raise head sampling to 100% and accept the bill as the price of spikes" },
               { id: "b", label: "Move the decision to the collector: tail-sample so errors and slow turns are always kept while boring traces drop" },
@@ -206,7 +206,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A health-tech startup's dashboard queries degraded weeks after a junior engineer added span attributes for session uuid and a nanosecond request timestamp 'so every request is individually searchable'. Storage grew 40% with no traffic change. What happened?",
+              "A junior engineer at a health-tech startup added span attributes for session uuid and a nanosecond request timestamp, 'so every request is individually searchable'. Weeks later, dashboard queries degraded. Storage grew 40% with no traffic change. What happened?",
             choices: [
               { id: "a", label: "The backend index is corrupt — rebuild it from scratch" },
               { id: "b", label: "Near-unique values exploded cardinality; hash or sample the raw values and keep low-cardinality dimensions for slicing" },
@@ -215,7 +215,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The attributes aren't illegal, they're unbounded: every unique value creates an index entry, so index size scaled with traffic, not with analytical value. The fix is a dimensionality budget, not a rebuild.",
+              "The attributes aren't illegal, they're unbounded. Every unique value creates an index entry, so index size scaled with traffic, not with analytical value. The fix is a dimensionality budget, not a rebuild.",
           },
         ],
       },
@@ -238,12 +238,12 @@ const course: Course = {
             "Unbounded consumption flagged by **token-rate and agent loop-depth limits**",
           ],
           whenNot:
-            "Detection assumes the signal was instrumented — if tool args or token counts never made it onto the spans, **no query can detect the risk** after the fact.",
+            "Detection assumes the signal was instrumented. If tool args or token counts never made it onto the spans, **no query can detect the risk** after the fact.",
         },
         prose: [
-          "Meridian's security review hands the observability team the **OWASP Top 10 for LLM Applications** and one constraint: detect them without a second telemetry stack. The canonical list — prompt injection, sensitive information disclosure, supply chain, data and model poisoning, improper output handling, excessive agency, system prompt leakage, vector and embedding weaknesses, misinformation, unbounded consumption — is a set of documented attack patterns, and the design question is what each one looks like as a **signal on telemetry you already collect**.",
+          "Meridian's security review hands the observability team the **OWASP Top 10 for LLM Applications** and one constraint: detect them without a second telemetry stack. The canonical list is a set of documented attack patterns — prompt injection, sensitive information disclosure, supply chain, data and model poisoning, improper output handling, excessive agency, system prompt leakage, vector and embedding weaknesses, misinformation, unbounded consumption. The design question: what does each one look like as a **signal on telemetry you already collect**?",
           "The reframe for observability is that each risk maps to a **signal you can detect** on telemetry you already collect. Prompt injection shows up as **intent-versus-action divergence**. Sensitive disclosure shows up in output scanners. Excessive agency shows up as a tool call outside policy. Unbounded consumption shows up as runaway token loops. Detection is a query on existing spans, rates, and args — not a new instrument.",
-          "This turns security from a separate discipline into a **read on the same pipeline**. You're not building a parallel security telemetry stack; you're adding the reads, thresholds, and alerts that surface the OWASP risks on the spans, tool calls, and outputs you already record. The boundary, and it is hard: detection assumes the signal was instrumented — if tool args or token counts never made it onto the spans, **no query can detect the risk after the fact**. The sensor spec ships with the span, or not at all.",
+          "This turns security from a separate discipline into a **read on the same pipeline**. You are not building a parallel security telemetry stack. You are adding the reads, thresholds, and alerts that surface the OWASP risks on the spans, tool calls, and outputs you already record. The boundary, and it is hard: detection assumes the signal was instrumented. If tool args or token counts never made it onto the spans, **no query can detect the risk after the fact**. The sensor spec ships with the span, or not at all.",
         ],
         diagram: {
           kind: "decision",
@@ -263,7 +263,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Security review at a bank flags 'excessive agency' as a risk for the new research agent and asks the observability team how they'd even know it happened in production. What's the correct mapping?",
+              "Security review at a bank flags 'excessive agency' as a risk for the new research agent. They ask the observability team how they'd even know it happened in production. What's the correct mapping?",
             choices: [
               { id: "a", label: "Stand up a dedicated security SIEM and mirror every span into it" },
               { id: "b", label: "Alert on tool spans whose arguments fall outside the task's allowed policy — a query on telemetry already recorded" },
@@ -278,7 +278,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A telco support agent started burning its weekly token budget in hours after a prompt-template change: the loop shows it calling the same knowledge-base tool repeatedly with growing context. Which OWASP category and detection signal match?",
+              "After a prompt-template change, a telco support agent burned through its weekly token budget in hours. The loop shows it calling the same knowledge-base tool repeatedly with growing context. Which OWASP category and detection signal match?",
             choices: [
               { id: "a", label: "Sensitive information disclosure — caught by output PII scanners" },
               { id: "b", label: "Data and model poisoning — caught by retraining-data audits" },
@@ -287,7 +287,7 @@ const course: Course = {
             ],
             answer: "c",
             explanation:
-              "Runaway loops consuming tokens and time is exactly unbounded consumption. The detectable fingerprint is on the agent span: loop depth climbing and token rate blowing past limits.",
+              "A runaway loop consuming tokens and time is exactly unbounded consumption. The detectable fingerprint is on the agent span: loop depth climbing and token rate crossing the limits.",
           },
         ],
       },
@@ -303,19 +303,19 @@ const course: Course = {
           anchor: "Attacks leave fingerprints on ordinary spans — detection is a query, not a new instrument.",
           what:
             "Attacks leave **fingerprints on ordinary telemetry**: injection as intent-action divergence, exfiltration in output scanners, extraction and membership inference as **per-identity rate and similarity anomalies**, unsafe tool use as out-of-policy args.",
-          why: "Each attack class is a **new read on existing spans**, not a new data source — and validating tool args against an allowlist turns one whole class into a **hard reject** with an audit record.",
+          why: "Each attack class is a **new read on existing spans**, not a new data source. And validating tool args against an allowlist turns one whole class into a **hard reject** with an audit record.",
           where: [
             "Output-side DLP and secret scanners on the **completion span** catching exfiltrated secrets or PII",
             "Per-identity query-rate and **embedding-similarity alerts** catching model-extraction probe storms",
             "Tool-arg validation against a policy **allowlist** on the span, with rejects recorded for the audit trail",
           ],
           whenNot:
-            "Per-request rules can't catch **statistical attacks** — membership inference and extraction are cluster patterns across many probes, so single-call detection alone will never fire.",
+            "Per-request rules can't catch **statistical attacks** — membership inference and extraction are cluster patterns across many probes. Single-call detection alone will never fire.",
         },
         prose: [
           "Attacks leave fingerprints on ordinary telemetry. **Prompt injection** rewrites the model's plan, so it shows up as intent-versus-action divergence or unexpected tool calls. **Data exfiltration** shows up in output scanners flagging secrets or PII the model returned. Neither needs a new data source — they need new reads on the spans you already record.",
           "**Model extraction** and **membership inference** are rate-and-pattern problems rather than single-call problems. Extraction looks like a high volume of near-identical queries probing the model's decision surface from one identity. Membership inference looks like a cluster of correlated, calibrated probes trying to determine whether a specific record was in training. Both are detectable as **per-identity query-rate and embedding-similarity anomalies**.",
-          "**Unsafe tool use** is the most directly preventable. A tool called with arguments outside policy — a delete instead of a read, a cross-tenant lookup — is visible on the tool span. Validating tool args against an **allowlist** at the span turns a class of agent-security failures into a hard reject, with the attempt itself recorded for the **audit trail**. The boundary: per-request rules can't catch **statistical attacks** — membership inference and extraction are cluster patterns across many probes, so single-call detection will never fire no matter how tight the rules.",
+          "**Unsafe tool use** is the most directly preventable. A tool called with arguments outside policy — a delete instead of a read, a cross-tenant lookup — is visible on the tool span. Validate tool args against an **allowlist** at the span. That turns a class of agent-security failures into a hard reject, with the attempt itself recorded for the **audit trail**. The boundary: per-request rules can't catch **statistical attacks**. Membership inference and extraction are cluster patterns across many probes. Single-call detection will never fire, no matter how tight the rules.",
         ],
         diagram: {
           kind: "decision",
@@ -350,7 +350,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "An audit of your agent platform finds that last month a research agent, injected via a poisoned web page, called the file-delete tool with a path outside its task scope — and it succeeded silently. Which control would have made this a non-event?",
+              "An audit of your agent platform finds something from last month. A research agent, injected via a poisoned web page, called the file-delete tool with a path outside its task scope. It succeeded silently. Which control would have made this a non-event?",
             choices: [
               { id: "a", label: "A faster model with better instruction-following" },
               { id: "b", label: "Validating tool args against a policy allowlist on the tool span — a hard reject plus an audit record of the attempt" },
@@ -359,7 +359,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Unsafe tool use is the most preventable class: tool args are structured and policy-checkable, so an allowlist at the span converts a silent breach into a rejected call with evidence. Forensics-after-the-fact isn't prevention.",
+              "Unsafe tool use is the most preventable class. Tool args are structured and policy-checkable, so an allowlist at the span converts a silent breach into a rejected call with evidence. Forensics after the fact isn't prevention.",
           },
         ],
       },
@@ -372,22 +372,22 @@ const course: Course = {
         capability: "Apply guardrails and measure their attack-success rate honestly.",
         minutes: 10,
         concept: {
-          anchor: "A guardrail is a screened porch — it stops most bugs, and you still count the ones that get through.",
+          anchor: "A guardrail is a mosquito net — it stops most bugs, and you still count the ones that get through.",
           what:
             "**Guardrails** are input and output checks in the runtime path (NeMo Guardrails, Lakera Guard, Guardrails AI) that block known jailbreaks and policy violations — and they are **evadable, not walls**.",
-          why: "Published research shows high **attack-success rates (ASR)** against adaptive adversaries, so the mature posture is measuring and driving ASR down like a quality SLO rather than trusting a block rate.",
+          why: "Published research shows high **attack-success rates (ASR)** against adaptive adversaries. So the mature posture is measuring and driving ASR down like a quality SLO, rather than trusting a block rate.",
           where: [
             "Input checks before the model and **output checks** before the user, both in the request path",
             "Continuous **red-team evals** feeding an ASR metric with alerting on regressions",
             "Each new evasion treated as a **regression to fix** — exactly like a quality SLO breach",
           ],
           whenNot:
-            "A guardrail is the wrong control for a **deterministic guarantee**: content that must never leak needs architectural controls (never storing it), because a 94% block rate still lets the adaptive 6% through.",
+            "A guardrail is the wrong control for a **deterministic guarantee**. Content that must never leak needs architectural controls (never storing it), because a 94% block rate still lets the adaptive 6% through.",
         },
         prose: [
-          "Guardrails are input and output checks in the **runtime path** — frameworks like NeMo Guardrails, Lakera Guard, and Guardrails AI. They catch known jailbreak patterns, harmful outputs, and policy violations before the request reaches the model or the response reaches the user. They raise the bar substantially over having no check at all.",
-          "The dangerous assumption is that a guardrail is a wall. Published research shows they're **evadable**: against adaptive adversaries, attack-success rates can be high. A guardrail that blocks 94% of known patterns still lets 6% through, and **novel attacks aren't in the known set**. Treating the guardrail as a guarantee is how you get breached.",
-          "The mature posture is to measure the **attack-success rate** — `ASR = red-team attacks that got through ÷ attacks attempted` — as a production metric and drive it down. Run continuous **red-team evals** against your guardrail, track ASR over time, and treat each new evasion as a regression to fix — exactly like a quality SLO. The guardrail is a control you invest in, not a checkbox you tick. The boundary: a guardrail is the wrong control for a **deterministic guarantee** — content that must never leak needs an architectural control (never storing it), because a 94% block rate still lets the adaptive 6% through.",
+          "Guardrails are input and output checks in the **runtime path** — frameworks like NeMo Guardrails, Lakera Guard, and Guardrails AI. They catch known jailbreak patterns, harmful outputs, and policy violations. They act before the request reaches the model or the response reaches the user. They are much better than having no check at all.",
+          "The dangerous assumption is that a guardrail is a wall. Published research shows they're **evadable**: against adaptive adversaries, attack-success rates can be high. A guardrail that blocks 94% of known patterns still lets 6% through. And **novel attacks aren't in the known set**. Treat the guardrail as a guarantee and you will get breached.",
+          "The mature posture is to measure the **attack-success rate** — `ASR = red-team attacks that got through ÷ attacks attempted` — as a production metric, and drive it down. Run continuous **red-team evals** against your guardrail. Track ASR over time. Treat each new evasion as a regression to fix — exactly like a quality SLO. The guardrail is a control you invest in, not a checkbox you tick. The boundary: a guardrail is the wrong control for a **deterministic guarantee**. Content that must never leak needs an architectural control — never storing it — because a 94% block rate still lets the adaptive 6% through.",
         ],
         diagram: {
           kind: "flow",
@@ -408,13 +408,13 @@ const course: Course = {
               "A vendor pitch says their guardrail 'blocks 94% of jailbreaks', and your CPO wants to approve the customer-facing launch on that number alone. What's the strongest objection from this lesson's framing?",
             choices: [
               { id: "a", label: "94% is below the industry-standard 99% threshold" },
-              { id: "b", label: "The catch rate was measured against known patterns — adaptive and novel attacks aren't in that set, so the residual risk must be measured, not assumed away" },
+              { id: "b", label: "The 94% was measured only against known patterns. Adaptive and novel attacks aren't in that set, so measure the residual risk instead of assuming it away" },
               { id: "c", label: "Guardrails are illegal in customer-facing products" },
               { id: "d", label: "The number proves the guardrail is a wall, so no further checks are needed" },
             ],
             answer: "b",
             explanation:
-              "Guardrails are evadable, not walls. The 94% is conditioned on the known attack set; the correct posture is a measured, continuously red-teamed ASR — not a one-time block rate taken as a guarantee.",
+              "Guardrails are evadable, not walls. The 94% holds only on the known attack set. The correct posture is a measured, continuously red-teamed ASR — not a one-time block rate taken as a guarantee.",
           },
           {
             id: "q2",
@@ -429,7 +429,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "ASR is a production metric like a quality SLO: a jump is a regression to root-cause and fix, not noise to ignore or a reason to abandon the control. Each new evasion is a defect in the guardrail, and the eval loop exists to catch exactly this.",
+              "ASR is a production metric like a quality SLO. A jump is a regression to root-cause and fix, not noise to ignore or a reason to abandon the control. Each new evasion is a defect in the guardrail. The eval loop exists to catch exactly this.",
           },
         ],
       },
@@ -444,7 +444,7 @@ const course: Course = {
         concept: {
           anchor: "Keep the envelope, throw away the letter — the dimensions carry the signal, and a logbook records every reader.",
           what:
-            "Observe without storing the payload: **redact PII at the collector** and keep the dimensions (model, prompt version, token counts, latency); where prompts must be kept, **residency, tenant isolation, role-tiered access, and an immutable audit trail** govern them.",
+            "Observe without storing the payload: **redact PII at the collector** and keep the dimensions (model, prompt version, token counts, latency). Where prompts must be kept, **residency, tenant isolation, role-tiered access, and an immutable audit trail** govern them.",
           why: "The debugging value lives in the **dimensions, not the raw text** — so the telemetry store never becomes the **breach surface** the system was supposed to avoid.",
           where: [
             "EU financial and health prompts routed to **EU-region backends**, with residency enforced in the collector (GDPR, HIPAA, MiFID II)",
@@ -455,9 +455,9 @@ const course: Course = {
             "When the raw prompt carries **no residual debugging value** beyond its dimensions, storing it is pure liability — redaction-at-collector should have removed it.",
         },
         prose: [
-          "Meridian handles EU financial prompts under GDPR and MiFID II, so the central question of its telemetry design is: can the system be observed **without storing the prompt at all**? Often, yes. The debugging value lives in the dimensions — model, prompt version, retrieval version, token counts, latency — not in the raw text. Detecting and **redacting PII at the collector**, then keeping only those dimensions, preserves debuggability without persisting the sensitive payload.",
-          "Where prompts must be kept, **residency and isolation** govern them. Regional data residency routes EU financial or health prompts to EU-region backends and enforces it in the collector — GDPR, HIPAA, and MiFID II all push toward this. **Tenant isolation** partitions telemetry by customer at storage, so one tenant's prompts can never surface in another tenant's queries. These are architectural commitments, not settings.",
-          "**Access control and the audit trail** close the loop. Raw prompts, if kept, sit behind role tiers: support sees metadata, security sees content under approval, most roles see neither. Every read of sensitive telemetry lands in an **immutable, append-only audit trail** — the evidence layer that accountability and regulators require, and the record that reconstructs who saw what, when.",
+          "Meridian handles EU financial prompts under GDPR and MiFID II. So the central question of its telemetry design is: can the system be observed **without storing the prompt at all**? Often, yes. The debugging value lives in the dimensions — model, prompt version, retrieval version, token counts, latency — not in the raw text. Detect and **redact PII at the collector**, then keep only those dimensions. This preserves debuggability without persisting the sensitive payload.",
+          "Where prompts must be kept, **residency and isolation** govern them. Regional data residency routes EU financial or health prompts to EU-region backends, and the collector enforces it. GDPR, HIPAA, and MiFID II all push toward this. **Tenant isolation** partitions telemetry by customer at storage, so one tenant's prompts can never surface in another tenant's queries. These are architectural commitments, not settings.",
+          "**Access control and the audit trail** close the loop. Raw prompts, if kept, sit behind role tiers: support sees metadata, security sees content under approval, most roles see neither. Every read of sensitive telemetry lands in an **immutable, append-only audit trail**. That is the evidence layer regulators require, and the record that reconstructs who saw what, when.",
         ],
         diagram: {
           kind: "flow",
@@ -483,13 +483,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The misconception is that debuggability requires the payload. It usually doesn't — the dimensions carry the causal signal, and dropping the raw text removes the breach surface entirely rather than trying to guard it.",
+              "The misconception is that debuggability requires the payload. It usually doesn't. The dimensions carry the causal signal, and dropping the raw text removes the breach surface entirely rather than trying to guard it.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "During a SOC 2 audit of your multi-tenant SaaS platform, the auditor asks how you prove no tenant's prompts can appear in another tenant's query results, and who accessed prompt content last quarter. Which two controls answer them?",
+              "During a SOC 2 audit of your multi-tenant SaaS platform, the auditor asks two questions. How do you prove no tenant's prompts can appear in another tenant's query results? And who accessed prompt content last quarter? Which two controls answer them?",
             choices: [
               { id: "a", label: "Faster queries and a longer retention window" },
               { id: "b", label: "Tenant isolation at storage, plus the immutable append-only audit trail recording every sensitive read" },
@@ -498,7 +498,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Isolation is architectural — partitioning by tenant at storage, not a policy — and the audit trail is the evidence layer that reconstructs who saw what, when. Those two are exactly what an auditor samples.",
+              "Isolation is architectural — partitioning by tenant at storage, not a policy. The audit trail is the evidence layer that reconstructs who saw what, when. Those two are exactly what an auditor samples.",
           },
         ],
       },
@@ -514,19 +514,19 @@ const course: Course = {
           anchor: "Four inspectors, one checklist — trace decisions, measure behavior, control changes, and every audit reads the same logbook.",
           what:
             "**EU AI Act, NIST AI RMF, ISO 42001, and SR 11-7** read differently but demand the same three proofs: **trace** decisions, **measure** behaviour, **control** changes.",
-          why: "Observability is the **evidence layer** for all three — traces and audit trail are traceability, evals/drift/SLOs are measurement, gates and rollback are control — so one governed pipeline satisfies four frameworks.",
+          why: "Observability is the **evidence layer** for all three: traces and audit trail are traceability, evals/drift/SLOs are measurement, gates and rollback are control. So one governed pipeline satisfies four frameworks.",
           where: [
             "EU AI Act high-risk duties — traceability, human oversight, auditability — mapped to traces, quality SLOs, and the audit trail",
             "NIST AI RMF: evals and drift signals as **Measure**; alerts and rollback as **Manage**; ownership as **Govern**",
             "ISO 42001 certification and SR 11-7 model-risk validation riding the same **review cadence and change control**",
           ],
           whenNot:
-            "Governance fails as a **checklist appended at the end** — without signal ownership, review cadence, and rollback triggers, the evidence doesn't exist when the auditor or the incident arrives.",
+            "Governance fails as a **checklist added at the end** — without signal ownership, review cadence, and rollback triggers, the evidence doesn't exist when the auditor or the incident arrives.",
         },
         prose: [
           "Meridian's legal team faces four frameworks at once. The **EU AI Act** risk-classifies systems and imposes duties on high-risk ones — traceability, human oversight, auditability — and obligations on general-purpose model providers. **NIST's AI Risk Management Framework** structures the work as Govern, Map, Measure, and Manage across the lifecycle. **ISO/IEC 42001** is the AI management-system standard an organisation can be certified against. **SR 11-7** imports model risk management from banking: validation, monitoring, and change control.",
           "They read differently but ask the same three things: can you **trace** a decision, can you **measure** the system's behaviour, and can you **control** changes to it. Observability is the **evidence layer** for all three. Traces and the audit trail are traceability. Evals, drift, and SLOs are measurement. Eval gates, versioned releases, and rollback are control. The frameworks don't demand new instrumentation; they demand that the instrumentation you have is governed, owned, and reviewable.",
-          "The mistake is treating governance as a **compliance checklist** appended at the end. It's a system-lifecycle posture: who owns each signal, what the review cadence is, what triggers a rollback, and where the evidence lives. Build that posture once, and the four frameworks become different lenses on the same **operating system** rather than four separate audits.",
+          "The mistake is treating governance as a **compliance checklist** added at the end. It's a system-lifecycle posture: who owns each signal, what the review cadence is, what triggers a rollback, and where the evidence lives. Build that posture once, and the four frameworks become different lenses on the same **operating system** rather than four separate audits.",
         ],
         diagram: {
           kind: "flow",
@@ -552,7 +552,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The high-risk duties map onto evidence you already produce. The misconception is that compliance demands new instrumentation — it demands the instrumentation you have be governed, owned, and reviewable.",
+              "The high-risk duties map onto evidence you already produce. The misconception is that compliance demands new instrumentation. It demands that the instrumentation you have be governed, owned, and reviewable.",
           },
           {
             id: "q2",
@@ -567,7 +567,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "All four frameworks reduce to trace, measure, control. Reporting becomes views over one governed pipeline — the alternative is duplicate hand-built packs that drift apart and expire the moment an incident needs them.",
+              "All four frameworks reduce to trace, measure, control. Reporting becomes views over one governed pipeline. The alternative is duplicate hand-built packs that drift apart and expire the moment an incident needs them.",
           },
         ],
       },
@@ -590,12 +590,12 @@ const course: Course = {
             "κ and judge-vs-human agreement tracked over time so a degrading judge is caught",
           ],
           whenNot:
-            "A one-number score is only enough for **coarse triage** — obviously broken vs obviously fine — never for release decisions, where noise and hidden distribution shifts decide ship/no-ship.",
+            "A one-number score is only enough for **coarse triage** — obviously broken vs obviously fine. It is never enough for release decisions, where noise and hidden distribution shifts decide ship/no-ship.",
         },
         prose: [
-          "A single tidy score is comforting and almost meaningless. Trustworthy evaluation is a system with six parts: a **representative task suite** that mirrors real usage, a **repeatable rubric** that gives the same answer twice, inter-rater agreement — **Cohen's κ = (p₀ − pₑ)/(1 − pₑ)**, observed agreement `p₀` chance-corrected by expected agreement `pₑ`, where κ < 0.4 means the score is a coin flip — a **calibrated judge** measured against humans, **confidence intervals** that separate signal from noise, and distribution-shift watch that catches the mean holding while the shape changes.",
+          "A single tidy score is comforting and almost meaningless. Trustworthy evaluation is a system with six parts. A **representative task suite** mirrors real usage. A **repeatable rubric** gives the same answer twice. Inter-rater agreement is **Cohen's κ = (p₀ − pₑ)/(1 − pₑ)** — observed agreement `p₀` chance-corrected by expected agreement `pₑ`; κ < 0.4 means the score is a coin flip. A **calibrated judge** is measured against humans. **Confidence intervals** separate signal from noise. And a distribution-shift watch catches the mean holding while the shape changes.",
           "Each part plugs a specific failure. A stale suite passes everything. A vague rubric adds noise that swamps real change. Low κ means the score is a **coin flip**. An uncalibrated judge inherits biases. Missing intervals make you chase noise. And a stable mean can hide a distribution growing **bimodal** — more 1s and 5s, fewer 3s — which is a real regression the average conceals.",
-          "The discipline is to **ship the system, not the score**. Report intervals alongside means, show distributions not just averages, and track κ and judge-agreement over time. When a release 'improves' the score by a point, the first question is whether the **interval even excludes** the previous value — and if the distribution shifted, which direction helped and which hurt. The boundary: the full apparatus is for release decisions — for coarse triage (obviously broken vs obviously fine) a single number remains honest, and paying interval-and-κ costs there is ceremony.",
+          "The discipline is to **ship the system, not the score**. Report intervals alongside means. Show distributions, not just averages. Track κ and judge-agreement over time. When a release 'improves' the score by a point, ask first whether the **interval even excludes** the previous value. If the distribution shifted, ask which direction helped and which hurt. The boundary: the full apparatus is for release decisions. For coarse triage — obviously broken vs obviously fine — a single number remains honest, and paying interval-and-κ costs there is ceremony.",
         ],
         diagram: {
           kind: "flow",
@@ -621,7 +621,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Distribution-shift watch exists for exactly this case: more extreme scores at both ends while the mean holds means real degradation the average conceals. Trusting the mean alone is the failure the six-part system prevents.",
+              "Distribution-shift watch exists for exactly this case. More extreme scores at both ends while the mean holds means real degradation the average conceals. Trusting the mean alone is the failure the six-part system prevents.",
           },
           {
             id: "q2",
@@ -636,7 +636,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Missing intervals make you chase noise: without knowing the uncertainty, a point-swing this size is indistinguishable from sampling variance. The suite, rubric, and judge matter, but the interval is the immediate real-vs-noise test before any rollout.",
+              "Missing intervals make you chase noise. Without knowing the uncertainty, a point-swing this size is indistinguishable from sampling variance. The suite, rubric, and judge matter, but the interval is the immediate real-vs-noise test before any rollout.",
           },
         ],
       },
@@ -652,7 +652,7 @@ const course: Course = {
           anchor: "Watch the whole weather map, not the average temperature — storms show in the shape long before the mean moves.",
           what:
             "Drift in generative systems is **distributional** — input (PSI), output, and retrieval distributions move before averages do — so the right primitive is a **change-point on the distribution**, not a threshold on the mean.",
-          why: "The mean is the **last signal to move**; distribution metrics are the leading indicator that lets you act before users have felt the drift for days.",
+          why: "The mean is the **last signal to move**. Distribution metrics are the leading indicator that lets you act before users have felt the drift for days.",
           where: [
             "**PSI on input embeddings** flagging a prompt-mix shift before quality averages drop",
             "**Cohort-aware baselines** per region so segment-specific drift isn't diluted by the aggregate",
@@ -662,9 +662,9 @@ const course: Course = {
             "Don't run per-cohort distribution monitors where **traffic is too sparse to estimate a distribution** — a handful of requests a day makes PSI noise, not signal.",
         },
         prose: [
-          "Drift in generative systems is **distributional**, and distributions move before averages do. **Input drift** shows in the population stability index — `PSI = Σ (aᵢ − bᵢ) · ln(aᵢ / bᵢ)`, comparing bucket shares `aᵢ` against baseline `bᵢ`, where PSI > 0.25 marks a major shift — telling you the prompts your system sees have changed even if average quality hasn't. **Output drift** tells you the shape of the answers is changing; **retrieval drift** tells you the context being surfaced is moving. All three can cross a threshold while the mean score looks perfectly healthy.",
-          "This is why a **change-point**, not a threshold on the mean, is the right detection primitive. Sequential monitoring watches the distribution over time and flags the moment it shifts relative to a **cohort-aware baseline**. A global baseline hides region or cohort-specific drift; baselines per cohort catch a degradation that's real in one segment and invisible in the aggregate.",
-          "The practical implication: watch distributions, not just means, and set baselines per cohort. The mean is the **last signal to move**; by the time it drops, users have already felt the drift for days. Distribution metrics give you the **leading indicator** that lets you act before the mean confirms the problem. The boundary: distribution monitors need traffic — on a cohort serving a handful of requests a day, PSI is noise by construction, and the honest signal is periodic human review of a sample.",
+          "Drift in generative systems is **distributional**, and distributions move before averages do. **Input drift** shows in the population stability index — `PSI = Σ (aᵢ − bᵢ) · ln(aᵢ / bᵢ)`, comparing bucket shares `aᵢ` against baseline `bᵢ`, where PSI > 0.25 marks a major shift. It tells you the prompts your system sees have changed, even if average quality hasn't. **Output drift** tells you the shape of the answers is changing. **Retrieval drift** tells you the context being surfaced is moving. All three can cross a threshold while the mean score looks perfectly healthy.",
+          "This is why a **change-point**, not a threshold on the mean, is the right detection primitive. Sequential monitoring watches the distribution over time and flags the moment it shifts relative to a **cohort-aware baseline**. A global baseline hides region or cohort-specific drift. Baselines per cohort catch a degradation that's real in one segment and invisible in the aggregate.",
+          "The practical lesson: watch distributions, not just means, and set baselines per cohort. The mean is the **last signal to move**. By the time it drops, users have already felt the drift for days. Distribution metrics give you the **leading indicator** that lets you act before the mean confirms the problem. The boundary: distribution monitors need traffic. On a cohort serving a handful of requests a day, PSI is noise by construction, and the honest signal is periodic human review of a sample.",
         ],
         diagram: {
           kind: "flow",
@@ -680,7 +680,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "After a marketing campaign, your finance copilot's mean quality score is unchanged, but PSI on the input distribution jumped from 0.08 to 0.35: retail-trading novices are arriving where professionals used to. Ops asks why anyone should care while the mean is stable. What do you say?",
+              "After a marketing campaign, your finance copilot's mean quality score is unchanged. But PSI on the input distribution jumped from 0.08 to 0.35: retail-trading novices are arriving where professionals used to. Ops asks why anyone should care while the mean is stable. What do you say?",
             choices: [
               { id: "a", label: "They shouldn't — the mean is the contract with the business" },
               { id: "b", label: "PSI is the leading indicator: inputs have shifted, and quality averages drop only after users have already felt the propagated damage" },
@@ -720,19 +720,19 @@ const course: Course = {
           anchor: "Correlation is an eyewitness; an experiment is a trial — flip one switch and compare the two rooms.",
           what:
             "**Correlation gives suspects; experiments give causes.** Feature flags, canaries, shadow traffic, and holdouts isolate the variable so a **flag-on vs flag-off comparison** attributes the regression.",
-          why: "Rolling back the most visible change often fixes nothing when a **second change shipped the same day** — controlled comparison acts on evidence, not the coincidence of a calendar.",
+          why: "Rolling back the most visible change often fixes nothing when a **second change shipped the same day**. Controlled comparison acts on evidence, not the coincidence of a calendar.",
           where: [
             "**Feature-flagged releases** with an instant off-switch and comparable on/off cohorts",
             "**Canary slices** bounding a regression's blast radius; **shadow traffic** surfacing failures before users see them",
             "A **holdout** permanently on the old version as a standing clean baseline for the metric that matters",
           ],
           whenNot:
-            "Experimentation is overkill when the causal chain is **directly visible in one trace** — if a single failing request shows the bug, flag infrastructure and cohort math cost more than the answer.",
+            "Experimentation is overkill when the causal chain is **directly visible in one trace**. If a single failing request shows the bug, flag infrastructure and cohort math cost more than the answer.",
         },
         prose: [
-          "**Correlation gives suspects; experiments give causes.** When a regression coincides with a release, the tempting move — roll back the most visible change — often fixes nothing, because the real cause was a second change shipped the same day. The disciplined alternative is to **isolate the variable** with a controlled experiment.",
-          "The toolkit is **feature flags, canaries, shadow traffic, and holdouts**. Feature-flag the candidate so you can turn it off instantly and so on/off cohorts are comparable. **Canary** to a small slice of traffic so a regression's blast radius is bounded. **Shadow traffic** runs the new path without serving it, surfacing failures before users see them. A **holdout** keeps a cohort permanently on the old version so you always have a clean comparison for the metric that matters.",
-          "The discipline is to compare **flag-on versus flag-off** on the same metric, with the same judge and the same interval, before you act. If the candidate loses on the controlled comparison, you've found the cause — roll it back. If it wins, ship it. Either way you acted on evidence, not on the coincidence of a calendar.",
+          "**Correlation gives suspects; experiments give causes.** When a regression coincides with a release, the tempting move is to roll back the most visible change. That often fixes nothing, because the real cause was a second change shipped the same day. The disciplined alternative is to **isolate the variable** with a controlled experiment.",
+          "The toolkit is **feature flags, canaries, shadow traffic, and holdouts**. Feature-flag the candidate so you can turn it off instantly and so on/off cohorts are comparable. **Canary** to a small slice of traffic so a regression's blast radius stays bounded. **Shadow traffic** runs the new path without serving it, so failures surface before users see them. A **holdout** keeps a cohort permanently on the old version, so you always have a clean comparison for the metric that matters.",
+          "The discipline is to compare **flag-on versus flag-off** on the same metric, with the same judge and the same interval, before you act. If the candidate loses on the controlled comparison, you've found the cause — roll it back. If it wins, ship it. Either way, you acted on evidence, not on the coincidence of a calendar.",
         ],
         diagram: {
           kind: "decision",
@@ -762,7 +762,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Coincidence of timing is correlation, not cause. With two suspects, only isolating the variable — flagging one change and comparing cohorts on the same metric and judge — tells you which change actually drove the 8%.",
+              "Coincidence of timing is correlation, not cause. With two suspects, only isolating the variable tells you which change drove the 8% — flag one change and compare cohorts on the same metric and judge.",
           },
           {
             id: "q2",
@@ -777,7 +777,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The flag gives the instant off-switch and comparable cohorts, the canary bounds exposure, shadow traffic surfaces failures before users see them, and the holdout keeps a clean baseline so the metric impact stays measurable — each tool does one job.",
+              "The flag gives the instant off-switch and comparable cohorts. The canary bounds exposure. Shadow traffic surfaces failures before users see them. The holdout keeps a clean baseline so the metric impact stays measurable. Each tool does one job.",
           },
         ],
       },
@@ -803,7 +803,7 @@ const course: Course = {
             "Node-level LLM metrics suffice when there **is no graph** — a single-shot completion with no tools, loops, or budget has no edges to observe.",
         },
         prose: [
-          "Meridian's budget alerts fire while every per-model dashboard reads green — because Meridian is not one LLM call but a **graph of calls, tools, and state**. Plain LLM observability watches the node — the model's latency and tokens — and misses the edges: which tool was called, whether it succeeded, how many times the agent retried, whether it hit a budget, and how the call-graph shape changed. Agent reliability lives in the graph, not the node.",
+          "Meridian's budget alerts fire while every per-model dashboard reads green. Why? Meridian is not one LLM call but a **graph of calls, tools, and state**. Plain LLM observability watches the node: the model's latency and tokens. It misses the edges: which tool was called, whether it succeeded, how many times the agent retried, whether it hit a budget, and how the call-graph shape changed. Agent reliability lives in the graph, not the node.",
           "The agent-specific signals are tool-call success per tool, **loop and retry depth**, **budget exhaustion**, state transitions, **MCP spans** across servers, and trace-graph anomalies. Climbing retry depth is the leading indicator of a stuck agent. Budget exhaustion mid-task produces truncated, low-quality outputs that look like model failures. A **novel cycle** in the call graph is often a bug before it's an outage.",
           "Each tool call — including Model Context Protocol calls across servers — needs its **own span**, attributed to the agent goal that spawned it. Without that **attribution** you can't say which agent, using which tool, on which server, burned the budget or looped. The unit of diagnosis is the **task span parenting its children**, not the individual completion.",
         ],
@@ -832,13 +832,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Agent reliability lives in the graph, not the node: a task looping between healthy-looking completions burns budget invisibly. Per-model metrics can't attribute the burn to an agent, tool, or server — task-parented spans can.",
+              "Agent reliability lives in the graph, not the node: a task looping between healthy-looking completions burns budget invisibly. Per-model metrics can't attribute the burn to an agent, tool, or server. Task-parented spans can.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A routine release of your travel-booking agent introduced a new call-graph pattern — the agent now visits the same tool pair three times where it used to visit once — and today two tasks looped until timeout. What's the right reading of that novel cycle?",
+              "A routine release of your travel-booking agent introduced a new call-graph pattern. The agent now visits the same tool pair three times where it used to visit once. Today two tasks looped until timeout. What's the right reading of that novel cycle?",
             choices: [
               { id: "a", label: "It's an optimization — repetition improves answer accuracy" },
               { id: "b", label: "A bug signal: a new cycle in the call graph usually precedes budget burn and hangs; flag it before it becomes an outage" },
@@ -847,7 +847,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Call-graph shape is a signal in itself: a cycle the agent didn't exhibit before is a logic change that eventually wastes budget or loops forever. Waiting for individual spans to fail (they succeed) or for users to time out is how it becomes an outage first.",
+              "Call-graph shape is a signal in itself. A cycle the agent didn't show before is a logic change that eventually wastes budget or loops forever. Waiting for individual spans to fail (they succeed) or for users to time out is how it becomes an outage first.",
           },
         ],
       },
@@ -862,8 +862,8 @@ const course: Course = {
         concept: {
           anchor: "Reliability is a household budget with one non-negotiable rule — the smoke alarm is never traded for savings.",
           what:
-            "An AI feature holds a **portfolio of SLOs** — availability, latency, quality, cost, safety — whose conflicts are resolved by **error budgets**, with safety as a **gate** that blocks release regardless of remaining budget.",
-          why: "Optimising one objective silently degrades the others (cheaper model → quality drop); budgets make trade-offs explicit and the **release gate** resolves them with evidence before users see the regression.",
+            "An AI feature holds a **portfolio of SLOs** — availability, latency, quality, cost, safety — whose conflicts are resolved by **error budgets**. Safety is a **gate** that blocks release regardless of remaining budget.",
+          why: "Optimising one objective silently degrades the others (cheaper model → quality drop). Budgets make trade-offs explicit, and the **release gate** resolves them with evidence before users see the regression.",
           where: [
             "A release gate requiring the candidate to **beat or match the incumbent** on quality (golden set), cost, and latency before shipping",
             "Shipping paused when the quality **error budget burns**, resumed when it recovers",
@@ -873,9 +873,9 @@ const course: Course = {
             "A full portfolio is dead weight for an **internal prototype with no users** — one signal plus a rollback habit beats five SLOs nobody enforces.",
         },
         prose: [
-          "Meridian holds several reliability objectives at once — availability, latency, quality, cost, and safety — and its cost squad's cheaper-model routing is the standing proof they **conflict**: cost falls while quality and latency move. Chasing quality raises cost. The naive stance — optimise one — silently degrades the others. A **portfolio** makes the trade-offs explicit.",
-          "**Error budgets** resolve the conflicts. Each objective gets a target and a budget; you ship while budgets allow and freeze when they burn. The exception is **safety, which is a gate rather than a budget**: a safety regression blocks a release regardless of how much cost or quality budget remains. Treating safety as negotiable is how systems get harmful outputs into production.",
-          "The **release gate** is where the portfolio becomes operational. A candidate must beat or match the incumbent on the measured objectives — quality on the **golden set**, cost within budget, latency within SLO — and pass the safety gate, before it ships. Conflicts are resolved at the gate with evidence, not in a meeting after the regression has already reached users.",
+          "Meridian holds several reliability objectives at once — availability, latency, quality, cost, and safety. Its cost squad's cheaper-model routing is the standing proof they **conflict**: cost falls while quality and latency move. Chasing quality raises cost. The naive stance — optimise one — silently degrades the others. A **portfolio** makes the trade-offs explicit.",
+          "**Error budgets** resolve the conflicts. Each objective gets a target and a budget. You ship while budgets allow and freeze when they burn. The exception is **safety, which is a gate rather than a budget**. A safety regression blocks a release, no matter how much cost or quality budget remains. Treating safety as negotiable is how systems get harmful outputs into production.",
+          "The **release gate** is where the portfolio becomes operational. Before it ships, a candidate must beat or match the incumbent on the measured objectives — quality on the **golden set**, cost within budget, latency within SLO — and pass the safety gate. Conflicts are resolved at the gate with evidence, not in a meeting after the regression has already reached users.",
         ],
         diagram: {
           kind: "decision",
@@ -909,7 +909,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A new coding-assistant candidate beats the incumbent by 2 points on the golden-set quality eval but breaches the latency SLO and sits at the edge of the cost budget. The team wants to ship on the quality win. How does the release gate resolve this?",
+              "A new coding-assistant candidate beats the incumbent by 2 points on the golden-set quality eval. But it breaches the latency SLO and sits at the edge of the cost budget. The team wants to ship on the quality win. How does the release gate resolve this?",
             choices: [
               { id: "a", label: "Quality wins ship automatically — the other objectives are advisory" },
               { id: "b", label: "The candidate must meet every measured objective and pass safety before shipping; trade-offs are decided at the gate with evidence, not on the single strongest metric" },
@@ -918,7 +918,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "The portfolio exists because objectives conflict: a strong single metric is exactly the case the gate is for. Shipping first and negotiating SLOs afterward resolves the conflict after users have already absorbed the regression.",
+              "The portfolio exists because objectives conflict: a strong single metric is exactly the case the gate is for. Shipping first and negotiating SLOs afterward resolves the conflict only after users have absorbed the regression.",
           },
         ],
       },
@@ -941,11 +941,11 @@ const course: Course = {
             "Postmortem actions encoded as **CI regression tests** that block reintroduction of the failure",
           ],
           whenNot:
-            "The full command structure is overkill for a **low-severity, user-invisible blip** — a single-owner fix plus a test may be the whole response; commanders and comms cadences earn their cost at user impact.",
+            "The full command structure is overkill for a **low-severity, user-invisible blip**. A single-owner fix plus a test may be the whole response. Commanders and comms cadences earn their cost at user impact.",
         },
         prose: [
           "At 02:00, Meridian's quality burn-rate alert fires: EU users are getting degraded answers after a retrieval-index swap. An AI incident has a lifecycle, and **skipping the last step** is what makes incidents repeat. **Detect** via a real signal — a burn-rate alert on quality, not just latency. **Coordinate** with a commander who owns the response and clear roles for comms, diagnosis, and fix. **Mitigate** by rolling back the changed variable first; live root-causing can wait, users can't.",
-          "Communicate honestly and **on a clock**: what we know, what we're doing, the next update. Silence during an outage breeds worse narratives than the outage itself. After mitigation, hold a **blameless postmortem** — blameless on people, rigorous on systems — that reconstructs what happened, what we believed and why it was wrong, and the systemic fix.",
+          "Communicate honestly and **on a clock**: what we know, what we're doing, the next update. Silence during an outage breeds worse narratives than the outage itself. After mitigation, hold a **blameless postmortem** — blameless on people, rigorous on systems. It reconstructs what happened, what we believed and why it was wrong, and the systemic fix.",
           "The **learning loop** closes when the postmortem's action becomes an **automated regression test in CI**. Without that step, the same change can reintroduce the same failure next quarter. An incident isn't closed when it's fixed; it's closed when the system has been changed so that specific failure can't recur.",
         ],
         diagram: {
@@ -963,7 +963,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "At 02:00 the quality burn-rate alert fires on your research assistant — answers degrading visibly for EU users after a retrieval-index swap. The on-call engineer wants to spend the next few hours root-causing live before touching anything. What's the correct first move?",
+              "At 02:00 the quality burn-rate alert fires on your research assistant: answers are degrading visibly for EU users after a retrieval-index swap. The on-call engineer wants to spend the next few hours root-causing live before touching anything. What's the correct first move?",
             choices: [
               { id: "a", label: "Root-cause live while users suffer — mitigating destroys the evidence" },
               { id: "b", label: "Mitigate first: roll back the changed variable to stop user impact, then investigate from a stable system" },
@@ -987,7 +987,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Writeups and meetings don't prevent recurrence — CI does. The learning loop closes only when the fix becomes a regression test that fails the build reintroducing the failure; otherwise the same change ships again next quarter.",
+              "Writeups and meetings don't prevent recurrence — CI does. The learning loop closes only when the fix becomes a regression test that fails the build reintroducing the failure. Otherwise the same change ships again next quarter.",
           },
         ],
       },
@@ -1003,7 +1003,7 @@ const course: Course = {
           anchor: "Defend the system like a house on inspection day — every layer shows its own working smoke detector.",
           what:
             "The capstone defends a multi-agent financial system across **privacy, cost, debuggability, release safety, and security** — redact at ingest, enforce residency, tail-sample and cap cardinality, trace the agent graph, gate releases, read the OWASP signals.",
-          why: "The naive design (raw prompts across regions, 100% sampling, model-only watches, ship-by-hope) is **both a breach surface and a debugging dead-end**; each hardened choice is a **contract owned by a specific layer**.",
+          why: "The naive design (raw prompts across regions, 100% sampling, model-only watches, ship-by-hope) is **both a breach surface and a debugging dead-end**. Each hardened choice is a **contract owned by a specific layer**.",
           where: [
             "Multi-region rollout: EU residency in the collector, tenant isolation at storage, an **audit trail** on every sensitive read",
             "Agent fleet: **task spans parenting tool/MCP spans**, budget and loop alerts, eval-gated releases with canaries",
@@ -1014,7 +1014,7 @@ const course: Course = {
         },
         prose: [
           "The capstone is Meridian's architecture review: defend a complete design across every axis the course covered — **privacy, cost, debuggability, release safety, and security**. The naive design logs raw prompts across regions, samples at 100%, watches only the model, ships by hope, and detects no attacks. It's both a **breach surface** and a **debugging dead-end**.",
-          "The hardened design **redacts at ingest**, enforces EU residency, and isolates tenants; it **tail-samples and caps cardinality**; it traces the agent graph including MCP; it gates releases behind evals and canaries; and it reads the OWASP signals and measures its guardrail's **attack-success rate**. Each choice is a contract owned by a specific layer, and together they resolve the central tension — the system is observable and **safe to operate**.",
+          "The hardened design **redacts at ingest**, enforces EU residency, and isolates tenants. It **tail-samples and caps cardinality**. It traces the agent graph including MCP. It gates releases behind evals and canaries. And it reads the OWASP signals and measures its guardrail's **attack-success rate**. Each choice is a contract owned by a specific layer. Together they resolve the central tension: the system is observable and **safe to operate**.",
           "That is the enterprise bar this course builds toward: prove you can **trace every decision**, measure quality and safety continuously, **control every change** through gates, and keep every sensitive payload private and audited. Observability, done at this level, is what turns a powerful AI system into a **trustworthy** one.",
         ],
         diagram: {
@@ -1044,7 +1044,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A's raw prompts across regions are the breach surface and its model-only view can't debug an agent graph — while redaction keeps the dimensions that carry debug value. B's strength is that each layer owns exactly one guarantee.",
+              "A's raw prompts across regions are the breach surface. Its model-only view can't debug an agent graph — while redaction keeps the dimensions that carry debug value. B's strength is that each layer owns exactly one guarantee.",
           },
           {
             id: "q2",
@@ -1059,7 +1059,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Dashboards and retention are volume, not observability. The bar the capstone sets is traceable decisions, continuous measurement, gated change control, and private audited payloads — retrofitting privacy after storing health prompts 'later' never comes cheap.",
+              "Dashboards and retention are volume, not observability. The bar the capstone sets is traceable decisions, continuous measurement, gated change control, and private audited payloads. Retrofitting privacy after storing health prompts 'later' never comes cheap.",
           },
         ],
       },

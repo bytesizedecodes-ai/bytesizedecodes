@@ -3,9 +3,9 @@ import type { Course } from "../types";
 const course: Course = {
     slug: "ai-observability",
     title: "AI Observability",
-    subtitle: "How to keep an eye on AI so it doesn’t quietly go wrong.",
+    subtitle: "How to watch your AI so it doesn’t quietly go wrong.",
     description:
-      "A picture-led introduction to watching AI systems in the real world. You'll meet the three pillars — logs, metrics, and traces — learn to spot quiet failures like hallucination and drift, and see how teams use dashboards and alerts to catch problems before users do. No coding required.",
+      "A picture-led introduction to watching AI systems in the real world. You'll meet the three pillars — logs, metrics, and traces. You'll learn to spot quiet failures like hallucination and drift. And you'll see how teams use dashboards and alerts to catch problems before users do. No coding required.",
     level: "beginner",
     domain: "AI Observability",
     access: "free",
@@ -21,19 +21,19 @@ const course: Course = {
         concept: {
           anchor: "You can't open the engine while driving, but the dashboard gauges tell you how it's doing inside.",
           what: "**Observability** means telling what’s happening **inside** a system just by reading **signals on the outside** — no opening it up.",
-          why: "It turns a hidden engine into a dashboarded one: you see **how it’s really doing underneath**, not just how confident it looks.",
+          why: "It turns a hidden engine into one with a dashboard. You see **how it’s really doing underneath**, not just how confident it looks.",
           where: [
             "A **car dashboard** — speed, fuel, engine warnings without lifting the bonnet",
             "An **AI answer service** — readings behind every confident answer",
             "A **delivery app** — where your package actually is, not where it should be",
           ],
           whenNot:
-            "It can’t tell you what to *fix* — observability **reveals state**, it doesn’t repair it. And it’s overkill for a system too small to fail quietly.",
+            "It can’t tell you what to *fix* — observability **reveals state**, it doesn’t repair it. And it’s too much for a system too small to fail quietly.",
         },
         prose: [
-          "It’s your first month looking after a company chatbot. Every answer arrives calm, polite, and confident — and one day you wonder: if something inside it started going wrong, how would I even know?",
-          "You already know the answer from driving. You can’t open the engine at 100 km/h, but the **dashboard gauges** tell you the speed, the fuel, and whether something is wrong — the inside, read from signals on the outside.",
-          "That is **observability**: giving an AI its own dashboard — little readings that show **how it’s really doing underneath**, not just how confident it sounds. Where the analogy breaks: a gauge can tell you the engine is struggling, but it can’t repair it — and with an AI, looking fine and being fine are two different things, which is exactly why the readings matter.",
+          "It’s your first month looking after a company chatbot. Every answer arrives calm, polite, and confident. One day you wonder: if something inside it started going wrong, how would I even know?",
+          "You already know the answer from driving. You can’t open the engine at 100 km/h, but the **dashboard gauges** tell you the speed, the fuel, and whether something is wrong. That’s the inside, read from signals on the outside.",
+          "That is **observability**: giving an AI its own dashboard — little readings that show **how it’s really doing underneath**, not just how confident it sounds. Where the analogy breaks: a gauge can tell you the engine is struggling, but it can’t repair it. And with an AI, looking fine and being fine are two different things. That is exactly why the readings matter.",
         ],
         diagram: {
           kind: "flow",
@@ -56,7 +56,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "Feelings miss slow problems and breakdowns are too late. Gauges reveal the engine’s hidden state — exactly what observability gives you for an AI.",
+              "Feelings miss slow problems, and breakdowns are too late. Gauges reveal the engine’s hidden state. That is exactly what observability gives you for an AI.",
           },
           {
             id: "q2",
@@ -70,7 +70,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Looking fine isn’t being fine, and a confident system can’t audit itself. Observability reveals the hidden state — wait time, cost, whether the facts check out — behind a confident-looking answer. It isn’t about trusting the surface.",
+              "Looking fine isn’t being fine, and a confident system can’t audit itself. Observability reveals the hidden state behind a confident-looking answer: wait time, cost, whether the facts check out. It isn’t about trusting the surface.",
           },
         ],
       },
@@ -83,21 +83,21 @@ const course: Course = {
         capability: "Explain why AI is non-deterministic and why that changes how we monitor it.",
         minutes: 5,
         concept: {
-          anchor: "Press the same vending-machine button, get the same can; order the same dish twice and the chef varies it.",
+          anchor: "Press the same vending-machine button, get the same can. Order the same dish twice, and the chef varies it.",
           what: "AI is **non-deterministic**: the same input can produce **different outputs** on different runs — like a chef, not a vending machine.",
-          why: "It breaks test-once-trust-forever monitoring: one good answer **doesn’t promise the next**, so each run needs watching.",
+          why: "It breaks the test-once idea of monitoring: one good answer **doesn’t promise the next**, so each run needs watching.",
           where: [
             "A **chatbot** answering the same question differently across days",
             "**Image generators** producing a new picture every click",
             "A **vending machine** — the contrast case: same button, same can, forever",
           ],
           whenNot:
-            "Not the whole story for **deterministic** pipelines around the AI — caches, routers, and validators behave like ordinary software and can be tested once.",
+            "Not the whole story for **deterministic** pipelines around the AI. Caches, routers, and validators behave like ordinary software. They can be tested once.",
         },
         prose: [
           "Normal software is like a **vending machine**. Press the same button, get the same thing, every single time. Test it once on Monday and you can trust it on Friday.",
-          "AI is more like a **chef**. Order the same dish twice and you’ll get two slightly different meals — both perfectly fine, but never identical. One good meal doesn’t promise the next, so the kitchen keeps **tasting as dishes come out**.",
-          "That’s the monitoring shift: vending machines get certified once; chefs get watched continuously. Where the analogy breaks: a chef varies with mood and improves with practice, but an AI varies **by design** — it stays exactly as good as it was trained to be until someone deliberately teaches it again. So with AI you **keep watching how each answer turns out**.",
+          "AI is more like a **chef**. Order the same dish twice and you’ll get two slightly different meals. Both are perfectly fine, but never identical. One good meal doesn’t promise the next, so the kitchen keeps **tasting as dishes come out**.",
+          "That’s the monitoring shift: vending machines get certified once; chefs get watched continuously. Where the analogy breaks: a chef varies with mood and improves with practice. But an AI varies **by design**. It stays exactly as good as it was trained to be, until someone deliberately teaches it again. So with AI you **keep watching how each answer turns out**.",
         ],
         questions: [
           {
@@ -112,7 +112,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Non-deterministic means the output isn’t fixed by the input — it can vary without anyone touching anything. Two fine-but-different answers is normal AI behaviour, not breakage and not a code change.",
+              "Non-deterministic means the output isn’t fixed by the input. It can vary without anyone touching anything. Two fine-but-different answers is normal AI behaviour — not breakage, and not a code change.",
           },
           {
             id: "q2",
@@ -140,27 +140,27 @@ const course: Course = {
         minutes: 6,
         concept: {
           anchor: "Like a slow leak in a bike tyre — nothing pops, it just gets worse day by day until the ride feels wrong.",
-          what: "AI **fails quietly**: it keeps answering in the same confident tone while answers quietly turn wrong, **costs climb**, or quality **drifts** (slowly going stale on new data) — nothing crashes.",
-          why: "Silent failures run for **days or weeks** before anyone notices; observability exists to make quiet problems **loud enough to catch early**.",
+          what: "AI **fails quietly**: it keeps answering in the same confident tone. Meanwhile answers quietly turn wrong, **costs climb**, or quality **drifts** (slowly going stale on new data). Nothing crashes.",
+          why: "Silent failures run for **days or weeks** before anyone notices. Observability exists to make quiet problems **loud enough to catch early**.",
           where: [
             "A support bot **hallucinating a refund policy** (a confident but made-up answer) no one notices",
             "An assistant whose **token bill doubles** over a month (tokens are the word-sized pieces the model reads)",
             "A ranking model whose **quality drifts** after a data change",
           ],
           whenNot:
-            "Not the failure shape of ordinary software — a crashed page or full disk is already loud; that’s classic monitoring, not AI observability.",
+            "Not the failure shape of ordinary software. A crashed page or full disk is already loud. That’s classic monitoring, not AI observability.",
         },
         prose: [
           "Normal software fails loudly. A page stops loading, an error pops up, the app freezes. Everyone notices, and someone fixes it.",
           "AI tends to fail **quietly**. It keeps answering with a smile — but the answers quietly become wrong, the costs quietly climb, or the quality quietly **drifts** downward over time.",
-          "Because nothing actually crashes, nobody realises until the damage is done — and the bike-tyre picture actually understates it: a tyre eventually goes flat and stops, but an AI **keeps rolling on wrong answers indefinitely**. That’s the core problem observability exists to solve: **making quiet problems loud enough to catch early**.",
+          "Because nothing actually crashes, nobody realises until the damage is done. And the bike-tyre picture actually understates it. A tyre eventually goes flat and stops, but an AI **keeps rolling on wrong answers indefinitely**. That’s the core problem observability exists to solve: **making quiet problems loud enough to catch early**.",
         ],
         questions: [
           {
             id: "q1",
             kind: "mcq",
             prompt:
-              "For three weeks, your company’s chatbot has been inventing a return policy that doesn’t exist — politely, confidently, and with zero error messages. Users are following the fake policy. Why did nobody catch it for so long?",
+              "For three weeks, your company’s chatbot has been inventing a return policy that doesn’t exist. It does this politely, confidently, and with zero error messages. Users are following the fake policy. Why did nobody catch it for so long?",
             choices: [
               { id: "a", label: "The failure was loud but support was understaffed" },
               { id: "b", label: "AI fails quietly — nothing crashed, so the confident wrongness ran unnoticed until users complained" },
@@ -168,13 +168,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "AI keeps running and answering even when something is wrong, so the failure is silent rather than a crash. Invisibility is exactly what makes quiet failures expensive.",
+              "AI keeps running and answering even when something is wrong. So the failure is silent rather than a crash. Invisibility is exactly what makes quiet failures expensive.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A teammate lists the incidents from last quarter: (1) the website went down when disk filled up, (2) the chatbot started citing a deleted policy, (3) the AI feature’s bill doubled silently. Which two are AI quiet-failure modes?",
+              "A teammate lists last quarter’s incidents: (1) the website went down when disk filled up. (2) The chatbot started citing a deleted policy. (3) The AI feature’s bill doubled silently. Which two are AI quiet-failure modes?",
             choices: [
               { id: "a", label: "1 and 2 — both are crashes" },
               { id: "b", label: "2 and 3 — confident wrongness and quietly climbing cost" },
@@ -197,19 +197,19 @@ const course: Course = {
         concept: {
           anchor: "A diary written as things happen, so you can flip back to exactly what was said on Tuesday.",
           what: "**Logs** are a diary of what the AI said — every exchange written down **as it happens**.",
-          why: "Without logs, an odd answer is a mystery; with them, **‘why did it say that?’ becomes investigable** — exact prompt, answer, timestamp, version.",
+          why: "Without logs, an odd answer is a mystery. With them, **‘why did it say that?’ becomes a question you can investigate** — exact prompt, answer, timestamp, version.",
           where: [
             "Scrolling back to the **exact odd answer** a user screenshotted",
             "Checking which **model version** answered a support ticket",
-            "Reconstructing a **complaint** from words, not memory",
+            "Rebuilding a **complaint** from words, not memory",
           ],
           whenNot:
             "Logs don’t tell you trends — ‘is it getting slower overall?’ is a **metric** question, not a diary lookup.",
         },
         prose: [
-          "Yesterday your team’s chatbot told a user something strange. Today you want to know exactly what it said, when, and which model version was running. If nobody wrote it down at the time, that question has no answer — the moment is gone.",
+          "Yesterday your team’s chatbot told a user something strange. Today you want to know exactly what it said, when, and which model version was running. If nobody wrote it down at the time, that question has no answer. The moment is gone.",
           "Logs are the fix: a **diary written as things happen**. Every exchange — what was asked and what was answered — gets written down in the moment, never reconstructed afterwards.",
-          "With logs, you can scroll back, find the entry, and see the precise **prompt, answer, timestamp, and version**. ‘Why did it say that?’ becomes a question you can actually investigate. Where the analogy breaks: a diary is written to preserve memories; a log is written for investigation — exact words and times, no feelings.",
+          "With logs, you can scroll back, find the entry, and see the precise **prompt, answer, timestamp, and version**. ‘Why did it say that?’ becomes a question you can actually investigate. Where the analogy breaks: a diary is written to preserve memories. A log is written for investigation — exact words and times, no feelings.",
         ],
         questions: [
           {
@@ -224,13 +224,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A log is the record of events that makes ‘why did it say that?’ investigable. Without it, you’re reconstructing from screenshots and memory.",
+              "A log is the record of events that lets you investigate ‘why did it say that?’. Without it, you’re rebuilding the story from screenshots and memory.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your team is writing the log-entry standard for a new chatbot. One engineer wants prompt + answer + timestamp + model version; another wants to also store each user’s full name and home address ‘for context’. Which four fields are the right core?",
+              "Your team is writing the log-entry standard for a new chatbot. One engineer wants prompt + answer + timestamp + model version. Another wants to also store each user’s full name and home address ‘for context’. Which four fields are the right core?",
             choices: [
               { id: "a", label: "Prompt, answer, timestamp, and model version" },
               { id: "b", label: "Prompt, answer, the user’s full name and home address — more context is always better for debugging" },
@@ -238,7 +238,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Those four reconstruct exactly what happened. Personal data isn’t needed to debug an answer — and storing it creates a privacy problem instead of solving a debugging one.",
+              "Those four rebuild exactly what happened. Personal data isn’t needed to debug an answer. And storing it creates a privacy problem instead of solving a debugging one.",
           },
         ],
       },
@@ -251,8 +251,8 @@ const course: Course = {
         capability: "Name the key AI metrics and explain why watching them over time reveals quiet problems.",
         minutes: 6,
         concept: {
-          anchor: "Track your height on the door frame — one mark means little, the trend over months tells the story.",
-          what: "**Metrics** are numbers counted over time — a log records one event; a metric **summarises thousands**.",
+          anchor: "Track your height on the door frame — one mark means little. The trend over months tells the story.",
+          what: "**Metrics** are numbers counted over time. A log records one event; a metric **summarises thousands**.",
           why: "Watching numbers move turns ‘it feels slow’ into evidence — **a spike is a quiet problem announcing itself**.",
           where: [
             "**Latency** (the wait time for a response) — how long answers take",
@@ -263,9 +263,9 @@ const course: Course = {
             "Metrics won’t explain any single answer — ‘why did it say *that*?’ needs a **log**, not an average.",
         },
         prose: [
-          "It’s your second week with the team’s chatbot. One user says it ‘feels slow lately’; another says it’s fine. A feeling won’t settle that, and neither will a single log entry — you need numbers counted over time.",
-          "A **metric** is exactly that: a number that **summarises thousands** of events — like **height marks on a door frame**. One mark means little; the trend over months tells the story.",
-          "For an AI, four numbers matter most: **latency** (how long an answer takes), **cost** (how much it spends), **error rate** (how often it fails), and **token usage** (how much it reads and writes). Watch them move and a spike is a quiet problem announcing itself. Where the analogy breaks: you measure a child a few times a year; a metric counts thousands of events a day — fast enough to catch trouble while it’s still small. Try the 24h window on the dashboard above and spot the spike.",
+          "It’s your second week with the team’s chatbot. One user says it ‘feels slow lately’. Another says it’s fine. A feeling won’t settle that, and neither will a single log entry. You need numbers counted over time.",
+          "A **metric** is exactly that: a number that **summarises thousands** of events — like **height marks on a door frame**. One mark means little. The trend over months tells the story.",
+          "For an AI, four numbers matter most: **latency** (how long an answer takes), **cost** (how much it spends), **error rate** (how often it fails), and **token usage** (how much it reads and writes). Watch them move, and a spike is a quiet problem announcing itself. Where the analogy breaks: you measure a child a few times a year. A metric counts thousands of events a day — fast enough to catch trouble while it’s still small. Try the 24h window on the dashboard above and spot the spike.",
         ],
         diagram: {
           kind: "flow",
@@ -280,7 +280,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Users keep telling your team the chatbot ‘feels slow lately’. You need to confirm it with evidence — not vibes — and see whether it’s getting worse week over week. What do you pull up?",
+              "Users keep telling your team the chatbot ‘feels slow lately’. You need to confirm it with evidence, not feelings. You also want to see whether it’s getting worse week over week. What do you pull up?",
             choices: [
               { id: "a", label: "The average-latency metric graphed over the last few weeks" },
               { id: "b", label: "One user’s exact logged conversation from Tuesday" },
@@ -288,7 +288,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "A metric aggregates thousands of events into a number over time — exactly what ‘is it getting slower?’ needs. One log entry can’t show a trend.",
+              "A metric adds up thousands of events into a number over time. That is exactly what ‘is it getting slower?’ needs. One log entry can’t show a trend.",
           },
           {
             id: "q2",
@@ -317,19 +317,19 @@ const course: Course = {
         concept: {
           anchor: "Like a receipt that shows every stop your parcel made — and how long each stop took.",
           what: "A **trace** follows **one request end-to-end** — every step behind the scenes, each with its own timing bar.",
-          why: "It localises vague complaints: ‘the AI is slow’ becomes **‘THIS step is slow’** — usually the big model call.",
+          why: "It pinpoints vague complaints: ‘the AI is slow’ becomes **‘THIS step is slow’** — usually the big model call.",
           where: [
             "Finding the **slow step** in a support-bot request",
             "Seeing **where the money goes** (which calls spend tokens)",
             "Pointing engineers at the **exact** hop to optimise",
           ],
           whenNot:
-            "A single trace can’t tell you trends — ‘is latency (the wait time for a response) rising across all requests?’ is a **metric** question; traces zoom into one journey.",
+            "A single trace can’t tell you trends. ‘Is latency (the wait time for a response) rising across all requests?’ is a **metric** question. Traces zoom into one journey.",
         },
         prose: [
-          "Nine seconds. That’s how long the support bot takes to answer, and the team keeps arguing about which part is slow — the document search? the model? the formatting? An average can’t settle it, because an average has no parts.",
-          "A **trace** settles it. Like a **delivery receipt that shows every stop your parcel made** — and how long each stop took — a trace follows **one request on its full journey**, with a little timing bar for every step behind the scenes.",
-          "Stack the bars and the shape of the request appears: most steps are quick, one is slow — usually the big model call. Where the analogy breaks: a parcel visits its stops one after another; a request’s steps can overlap — but the bars still add up to the wait the user feels. Try tapping the steps above.",
+          "Nine seconds. That’s how long the support bot takes to answer. The team keeps arguing about which part is slow — the document search? the model? the formatting? An average can’t settle it, because an average has no parts.",
+          "A **trace** settles it. It’s like a **delivery receipt that shows every stop your parcel made** — and how long each stop took. A trace follows **one request on its full journey**. Every step behind the scenes gets its own little timing bar.",
+          "Stack the bars and the shape of the request appears: most steps are quick, one is slow — usually the big model call. Where the analogy breaks: a parcel visits its stops one after another. A request’s steps can overlap — but the bars still add up to the wait the user feels. Try tapping the steps above.",
         ],
         diagram: {
           kind: "flow",
@@ -344,7 +344,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your support bot takes 9 seconds per reply and users are complaining. The average-latency metric confirms it’s slow, but not why. What do you open next to find the culprit step?",
+              "Your support bot takes 9 seconds per reply and users are complaining. The average-latency metric confirms it’s slow, but not why. What do you open next to find the step at fault?",
             choices: [
               { id: "a", label: "A trace of one slow request, to see which step’s bar dominates" },
               { id: "b", label: "The latency graph again, zoomed in" },
@@ -358,7 +358,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "In your trace, the bar for the big LLM call is roughly 80% of the request’s total time; retrieval and formatting are slivers. Your team proposes a week optimising the formatting code. What does the trace say?",
+              "In your trace, the bar for the big LLM call is roughly 80% of the request’s total time. Retrieval and formatting are just thin slices. Your team proposes a week optimising the formatting code. What does the trace say?",
             choices: [
               { id: "a", label: "Go ahead — formatting is easier to fix" },
               { id: "b", label: "Effort is going to the wrong step — the LLM call dominates, so that’s where the time actually is" },
@@ -366,38 +366,38 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A trace localises slowness to a specific step so effort goes where it matters. A week on a 5% step can’t move a 9-second reply; the 80% LLM call can.",
+              "A trace pinpoints slowness to a specific step, so effort goes where it matters. A week on a 5% step can’t move a 9-second reply. The 80% LLM call can.",
           },
         ],
       },
       {
         slug: "is-the-answer-good",
         title: "“Is the answer good?” — evaluation",
-        blurb: "Turn a fuzzy question into a rubric of checks.",
+        blurb: "Turn a vague question into a rubric of checks.",
         topic: "observability-quality",
         skillIds: ["llm-evaluation"],
         capability: "Explain how a rubric and a reviewer turn a fuzzy ‘is it good?’ into checkable evaluation.",
         minutes: 6,
         concept: {
-          anchor: "A teacher's marking scheme splits a fuzzy ‘nice essay’ into tick boxes: facts, focus, neatness.",
-          what: "**Evaluation** turns fuzzy ‘is it good?’ into a **rubric of sharp checks** — facts right? helpful? on-topic? safe? — applied by a reviewer.",
-          why: "An answer can read beautifully and still be wrong; a rubric makes quality **measurable instead of felt**.",
+          anchor: "A teacher's marking scheme splits a vague ‘nice essay’ into tick boxes: facts, focus, neatness.",
+          what: "**Evaluation** turns a vague ‘is it good?’ into a **rubric of sharp checks**: facts right? helpful? on-topic? safe? A reviewer then applies the checks.",
+          why: "An answer can read beautifully and still be wrong. A rubric makes quality **measurable instead of felt**.",
           where: [
             "A **human reviewer** scoring a sample of answers each week",
             "An **AI judge** scoring thousands overnight",
             "Most teams **blending both** on a schedule",
           ],
           whenNot:
-            "Evaluation scores **samples on a schedule** — it can’t certify every live answer, and a rubric is only as honest as its checks.",
+            "Evaluation scores **samples on a schedule**. It can’t certify every live answer. And a rubric is only as honest as its checks.",
         },
         prose: [
           "“Is this answer good?” is the hardest question in AI. An answer can **read beautifully and still be wrong**, unhelpful, or off-topic.",
-          "The trick is to stop asking one fuzzy question and ask several sharp ones instead — a **rubric**. Does it get the facts right? Is it helpful? Is it on-topic? Is it safe?",
-          "Then someone applies the rubric. A **human reviewer** is careful but slow; a second AI acting as a **judge** is fast but not perfect. Most teams blend both, checking a sample of answers on a regular schedule — because where the marking-scheme analogy breaks: a teacher marks one exam season, but AI answers arrive **every day, forever**. The rubric has to run on a schedule, not a term.",
+          "The trick is to stop asking one vague question and ask several sharp ones instead — a **rubric**. Does it get the facts right? Is it helpful? Is it on-topic? Is it safe?",
+          "Then someone applies the rubric. A **human reviewer** is careful but slow. A second AI acting as a **judge** is fast but not perfect. Most teams blend both, checking a sample of answers on a regular schedule. Where the marking-scheme analogy breaks: a teacher marks one exam season, but AI answers arrive **every day, forever**. So the rubric has to run on a schedule, not a term.",
         ],
         diagram: {
           kind: "compare",
-          left: { title: "One fuzzy question", subtitle: "‘Is this answer good?’" },
+          left: { title: "One vague question", subtitle: "‘Is this answer good?’" },
           right: { title: "A rubric of sharp checks", subtitle: "facts · helpful · on-topic · safe" },
           rows: [
             {
@@ -422,7 +422,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your chatbot’s latest answer is eloquent, on-brand, perfectly formatted — and cites a discount code that expired in 2023. Users are already trying it. Why didn’t ‘it reads well’ catch this?",
+              "Your chatbot’s latest answer is polished, on-brand, and perfectly formatted. But it cites a discount code that expired in 2023. Users are already trying it. Why didn’t ‘it reads well’ catch this?",
             choices: [
               { id: "a", label: "Because reading well is not being right — surface polish hides factual problems, which is why evaluation uses a rubric of specific checks" },
               { id: "b", label: "Because the answer passed every formatting check the team automated — and formatting was the whole checklist" },
@@ -430,13 +430,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "‘Good’ must be broken into checkable parts — factual correctness first. An eloquent wrong answer is the classic evaluation trap.",
+              "‘Good’ must be broken into checkable parts — factual correctness first. A polished wrong answer is the classic evaluation trap.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "You must review 10,000 support answers per month. A human reviewer scores 500 with great care; an AI judge scores all 10,000 overnight but sometimes misgrades nuance. What do most teams actually do?",
+              "You must review 10,000 support answers per month. A human reviewer scores 500 with great care. An AI judge scores all 10,000 overnight, but sometimes grades subtle points wrongly. What do most teams actually do?",
             choices: [
               { id: "a", label: "Use only the human — quality beats coverage" },
               { id: "b", label: "Use only the AI judge — speed beats everything" },
@@ -444,7 +444,7 @@ const course: Course = {
             ],
             answer: "c",
             explanation:
-              "Humans are careful but slow; AI judges are fast but imperfect. Blending both gets coverage and a calibrated sample — each covers the other’s weakness.",
+              "Humans are careful but slow. AI judges are fast but imperfect. Blending both gives full coverage plus a carefully checked sample — each covers the other’s weakness.",
           },
         ],
       },
@@ -457,21 +457,21 @@ const course: Course = {
         capability: "Explain why AI hallucinates and how logs and evaluation catch confident falsehoods.",
         minutes: 6,
         concept: {
-          anchor: "A friend who tells made-up stories in the same sure voice as their true ones — the tone gives nothing away.",
+          anchor: "A friend who tells made-up stories in the same sure voice as their true ones — the tone tells you nothing.",
           what: "A **hallucination** (a confident but made-up answer) is a wrong answer said with complete confidence — **it looks identical to a correct one**.",
-          why: "The AI **predicts plausible text, it doesn’t look up facts** — so sometimes the most plausible-sounding line is false, and only observability catches it.",
+          why: "The AI **predicts plausible text, it doesn’t look up facts**. So sometimes the most plausible-sounding line is false. Only observability catches it.",
           where: [
             "A support bot inventing a **refund policy**",
             "An assistant citing a **paper that doesn’t exist**",
             "A legal summariser **misquoting** a clause",
           ],
           whenNot:
-            "Not solved by making answers sound more careful — confidence **carries no accuracy signal**; you need **logs + evaluation**, not better tone.",
+            "Not solved by making answers sound more careful. Confidence **carries no accuracy signal**. You need **logs + evaluation**, not better tone.",
         },
         prose: [
-          "A hallucination is a **wrong answer said with complete confidence**. Unlike a friend whose made-up stories eventually sound different, an AI’s false answer looks identical to a correct one — there’s no warning in the wording.",
+          "A hallucination is a **wrong answer said with complete confidence**. Unlike a friend whose made-up stories eventually sound different, an AI’s false answer looks identical to a correct one. There’s no warning in the wording.",
           "This happens because the AI isn’t a database. It **predicts which words tend to follow others**, producing text that sounds plausible. Sometimes the most plausible-sounding line simply isn’t true.",
-          "Because a confident answer isn’t a checked answer, you catch hallucinations with observability: **logs** let you re-read what was said, and an **evaluation rubric** asks the dangerous question — ‘is this actually correct?’.",
+          "Because a confident answer isn’t a checked answer, you catch hallucinations with observability. **Logs** let you re-read what was said. And an **evaluation rubric** asks the dangerous question: ‘is this actually correct?’.",
         ],
         diagram: {
           kind: "compare",
@@ -500,7 +500,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your medical-info chatbot tells a user to take 800 mg of a medicine every 2 hours — stated exactly as confidently as its correct answers. Why is this failure so dangerous compared to a crashed page?",
+              "Your medical-info chatbot tells a user to take 800 mg of a medicine every 2 hours. It says this exactly as confidently as its correct answers. Why is this failure so dangerous compared to a crashed page?",
             choices: [
               { id: "a", label: "Because a confident falsehood looks identical to a correct answer — there’s no warning in the wording" },
               { id: "b", label: "Because users should have known better than to trust a chatbot" },
@@ -514,7 +514,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A manager wants to stop hallucinations by adding ‘always be careful and accurate’ to the system prompt so answers sound more cautious. What actually catches confident falsehoods?",
+              "A manager wants to stop hallucinations by adding ‘always be careful and accurate’ to the system prompt, so answers sound more cautious. What actually catches confident wrong answers?",
             choices: [
               { id: "a", label: "Logs to re-read what was said, plus an evaluation rubric asking ‘is this actually correct?’" },
               { id: "b", label: "Stronger wording — ‘always be careful and accurate’ just needs to be firmer" },
@@ -522,7 +522,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The model predicts plausible words — tone prompts can’t change that machinery. Observability surfaces confident lies: logs let you re-check what was said; evaluation asks if it was correct.",
+              "The model predicts plausible words — tone prompts can’t change that machinery. Observability exposes confident lies. Logs let you re-check what was said; evaluation asks if it was correct.",
           },
         ],
       },
@@ -536,8 +536,8 @@ const course: Course = {
         minutes: 6,
         concept: {
           anchor: "Like milk in the fridge: fine for weeks, then quietly sour — nothing splashes, it just turns.",
-          what: "**Drift** (slowly going stale on new data) is slow decay: the model is frozen at training, but the **world keeps moving** — quality slips a little at a time.",
-          why: "Nothing crashes and there’s **no single moment of failure** — only a **trend over time** reveals the slide before users feel it.",
+          what: "**Drift** (slowly going stale on new data) is slow decay. The model is frozen at training, but the **world keeps moving**. Quality slips a little at a time.",
+          why: "Nothing crashes, and there’s **no single moment of failure**. Only a **trend over time** reveals the slide before users feel it.",
           where: [
             "A news summariser after **new events** its training never saw",
             "A shopping assistant as **new products and slang** arrive",
@@ -547,9 +547,9 @@ const course: Course = {
             "Not the diagnosis when the model **never worked** — that’s a build problem. Drift is ‘was good, quietly became worse’.",
         },
         prose: [
-          "Drift is **slow decay**. A model is frozen when it’s trained, but the world keeps moving — new words, new events, new user behaviour arrive every week.",
-          "Nothing crashes, and there’s no single moment of failure to point at. Like **milk slowly turning sour**, quality just slips a little at a time until, months later, the answers are subtly worse. Where the analogy breaks: milk sours on its own schedule; an AI’s world can move overnight — one viral event or product launch — so the slide isn’t always slow. It is always silent, though.",
-          "A one-off test can’t see a slide like this. The only way to catch drift is to **keep measuring quality over time and watch the trend** — so you notice the decline before your users do.",
+          "Drift is **slow decay**. A model is frozen when it’s trained, but the world keeps moving. New words, new events, new user behaviour arrive every week.",
+          "Nothing crashes, and there’s no single moment of failure to point at. Like **milk slowly turning sour**, quality just slips a little at a time. Months later, the answers are subtly worse. Where the analogy breaks: milk sours on its own schedule. An AI’s world can move overnight — one viral event or product launch. So the slide isn’t always slow. It is always silent, though.",
+          "A one-off test can’t see a slide like this. The only way to catch drift is to **keep measuring quality over time and watch the trend**. Then you notice the decline before your users do.",
         ],
         diagram: {
           kind: "compare",
@@ -573,7 +573,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your travel-chatbot scored 92% quality in January and 74% by June. No code changed, no crashes, no complaints until May — users just started asking about destinations and slang that didn’t exist in training. What happened?",
+              "Your travel-chatbot scored 92% quality in January and 74% by June. No code changed, no crashes, no complaints until May. Users just started asking about destinations and slang that didn’t exist in training. What happened?",
             choices: [
               { id: "a", label: "Drift — the frozen model slowly lost fit as the world moved around it" },
               { id: "b", label: "A crash — the model broke in May" },
@@ -602,27 +602,27 @@ const course: Course = {
       {
         slug: "alerts-knowing-when-to-act",
         title: "Alerts: knowing when to act",
-        blurb: "A smoke alarm for your AI — and the art of setting it right.",
+        blurb: "A smoke alarm for your AI — and how to set it right.",
         topic: "observability-action",
         skillIds: ["alerting"],
         capability: "Explain the alert-threshold trade-off between false alarms and missed problems.",
         minutes: 6,
         concept: {
-          anchor: "A smoke alarm for your kitchen: set it hair-trigger and it screams at toast; too relaxed and you sleep through fire.",
+          anchor: "A smoke alarm for your kitchen: set it too sensitive and it screams at toast. Too relaxed, and you sleep through a fire.",
           what: "An **alert** is a rule with a **threshold** — ‘if the error rate crosses this number, wake me up’. A smoke alarm for your AI.",
-          why: "It converts a moving metric into a **timely decision** — but the threshold is a **trade-off** between false alarms and missed fires.",
+          why: "It turns a moving metric into a **timely decision**. But the threshold is a **trade-off** between false alarms and missed fires.",
           where: [
             "Paging an on-call engineer when **error rate spikes**",
             "A budget alarm when **token spend** (on word-sized pieces the model reads) crosses a line",
             "A quality alert when **eval scores dip** for days",
           ],
           whenNot:
-            "Alerts can’t tell you *why* — diagnosis needs **traces and logs**; and an over-firing alert is worse than none because **people stop trusting it**.",
+            "Alerts can’t tell you *why* — diagnosis needs **traces and logs**. And an over-firing alert is worse than none, because **people stop trusting it**.",
         },
         prose: [
           "An alert is a **rule with a threshold**: ‘if the error rate goes above this number, wake me up’. It’s a smoke alarm for your AI.",
-          "The hard part is where you set the threshold. **Too low** and it fires at every wobble — you stop trusting it, and when a real fire starts you ignore it. **Too high** and it never fires at all, and a real problem burns quietly.",
-          "There’s no perfect setting, only a **trade-off**. Where the smoke-alarm analogy breaks: smoke means fire, period — but an error-rate number wobbles a little by nature, so some noise is normal and the threshold has to sit just above it. The art is tuning it so you catch the real problems without crying wolf. Try dragging the threshold above and watch the two counters change.",
+          "The hard part is where you set the threshold. **Too low**, and it fires at every wobble. You stop trusting it, and when a real fire starts you ignore it. **Too high**, and it never fires at all — a real problem burns quietly.",
+          "There’s no perfect setting, only a **trade-off**. Where the smoke-alarm analogy breaks: smoke means fire, every time. But an error-rate number wobbles a little by nature, so some noise is normal. The threshold has to sit just above that noise. Tune it so you catch the real problems without constant false alarms. Try dragging the threshold above and watch the two counters change.",
         ],
         diagram: {
           kind: "compare",
@@ -659,13 +659,13 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A low threshold fires on normal noise; cry wolf often enough and people stop trusting the alert — exactly when it matters most.",
+              "A low threshold fires on normal noise. Raise false alarms often enough, and people stop trusting the alert — exactly when it matters most.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A team sets their alert threshold extremely high ‘to keep the pager quiet’. For three weeks a genuine quality problem smoulders, noticed by no one. What did the too-high threshold cause?",
+              "A team sets their alert threshold extremely high ‘to keep the pager quiet’. For three weeks a real quality problem burns slowly, noticed by no one. What did the too-high threshold cause?",
             choices: [
               { id: "a", label: "Missed real problems — the alert never fires, so the failure stays silent" },
               { id: "b", label: "More false alarms, just later" },
@@ -673,14 +673,14 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "A high threshold rarely fires, so genuine problems slip past unnoticed — the silent failure the alert existed to catch. Tuning is a trade-off, not a quest for quiet.",
+              "A high threshold rarely fires, so real problems slip past unnoticed. That is the silent failure the alert existed to catch. Tuning is a trade-off, not a search for silence.",
           },
         ],
       },
       {
         slug: "dashboards-control-room",
         title: "Dashboards: the control room",
-        blurb: "One screen you glance at to know if you’re healthy.",
+        blurb: "One screen you glance at to know if the system is healthy.",
         topic: "observability-action",
         skillIds: ["observability-dashboards"],
         capability: "Explain what makes a good dashboard and why glancability matters.",
@@ -698,9 +698,9 @@ const course: Course = {
             "Not a place for every number — forty tiny readings is unreadable, and **unreadable dashboards get ignored**. Detail belongs in logs and traces.",
         },
         prose: [
-          "A dashboard is the one screen you **glance at** to know if a system is healthy — like the cockpit of a plane. You shouldn’t have to study it; one look should tell you ‘fine’ or ‘something’s wrong’.",
+          "A dashboard is the one screen you **glance at** to know if a system is healthy — like the cockpit of a plane. You shouldn’t have to study it. One look should tell you ‘fine’ or ‘something’s wrong’.",
           "The common mistake is to **cram everything in**. A dashboard with forty tiny readings is unreadable — a glance tells you nothing, so you eventually stop looking.",
-          "A good dashboard shows only the **few numbers that matter**, big and clear, with the bad ones obvious. Less, but louder. Where the cockpit analogy breaks: a plane’s panel is designed once by professionals and certified; your dashboard evolves with the product — and every panel you add steals glanceability from all the others. That’s what makes one glance enough.",
+          "A good dashboard shows only the **few numbers that matter**, big and clear, with the bad ones obvious. Less, but louder. Where the cockpit analogy breaks: a plane’s panel is designed once by professionals and certified. Your dashboard evolves with the product. And every panel you add makes all the others harder to read at a glance. That’s what makes one glance enough.",
         ],
         diagram: {
           kind: "compare",
@@ -729,7 +729,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A proud engineer builds a dashboard with forty tiny charts covering every metric the system emits. Two months later, nobody on the team opens it — including him. What killed it?",
+              "A proud engineer builds a dashboard with forty tiny charts covering every metric the system emits. Two months later, nobody on the team opens it — including him. What went wrong?",
             choices: [
               { id: "a", label: "It couldn’t be read at a glance, so people stopped looking — the failure is human, not technical" },
               { id: "b", label: "It used too much computer memory" },
@@ -737,7 +737,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Glancability is the job. Unreadable dashboards get ignored, defeating their purpose — fewer numbers, bigger and louder, survives daily use.",
+              "Glancability is the job. Unreadable dashboards get ignored — they fail at their one purpose. Fewer numbers, bigger and louder, survives daily use.",
           },
           {
             id: "q2",
@@ -751,7 +751,7 @@ const course: Course = {
             ],
             answer: "b",
             explanation:
-              "A good dashboard shows the few numbers that matter with the bad ones obvious. Cherry-picking the happy metrics destroys the one job a dashboard has.",
+              "A good dashboard shows the few numbers that matter with the bad ones obvious. Showing only the happy metrics destroys the one job a dashboard has.",
           },
         ],
       },
@@ -764,21 +764,21 @@ const course: Course = {
         capability: "Explain why cost and latency are the two key business bills for any AI feature.",
         minutes: 5,
         concept: {
-          anchor: "Every taxi ride has a meter and a clock — the fare adds up and the minutes tick whether you watch or not.",
+          anchor: "Every taxi ride has a meter and a clock. The fare adds up, and the minutes tick, whether you watch or not.",
           what: "Every AI feature pays **two bills**: **cost** (the tokens it reads and writes) and **latency** (the time it takes to answer).",
-          why: "They’re business problems, not just technical ones — cost **eats margin**, latency **loses users** — and they usually **rise together**.",
+          why: "They are business problems, not just technical ones. Cost **eats into profit**; latency **loses users**. And the two usually **rise together**.",
           where: [
-            "A **chatty support feature** quietly wiping out margin",
+            "A **chatty support feature** quietly eating up the profit",
             "A **slow shopping assistant** users abandon mid-question",
             "A **bigger model upgrade** raising the token bill and wait time at once",
           ],
           whenNot:
-            "Not independent knobs — you can’t minimise both and maximise capability; the trade-off is the decision, and it needs **numbers on a dashboard** to make.",
+            "Not two separate dials you can set freely. You can’t minimise both and still maximise capability. The trade-off is the decision, and you need **numbers on a dashboard** to make it.",
         },
         prose: [
-          "Every AI feature pays two bills: **cost** — the tokens it reads and writes, like distance in a taxi — and **latency** — the time it takes to answer, like minutes on the road.",
-          "The two tend to **travel together**. A bigger, more capable answer usually costs more and takes longer; a smaller one is cheaper and faster but less capable.",
-          "Both are **business problems**, not just technical ones. Cost eats your profit margin — an unwatched, chatty feature can wipe it out. Latency loses users — people quietly abandon slow apps. Where the taxi analogy breaks: a taxi’s meter and its clock move independently — you can sit in traffic with the fare frozen; an AI’s two bills usually **rise together**, which is exactly what makes the trade-off a real decision. Watching both is part of shipping AI responsibly.",
+          "Every AI feature pays two bills. The first is **cost**: the tokens it reads and writes, like distance in a taxi. The second is **latency**: the time it takes to answer, like minutes on the road.",
+          "The two tend to **travel together**. A bigger, more capable answer usually costs more and takes longer. A smaller one is cheaper and faster, but less capable.",
+          "Both are **business problems**, not just technical ones. Cost eats into your profit — an unwatched, chatty feature can wipe it out. Latency loses users — people quietly abandon slow apps. Where the taxi analogy breaks: a taxi’s meter and its clock move independently. You can sit in traffic with the fare frozen. But an AI’s two bills usually **rise together**. That is exactly what makes the trade-off a real decision. Watching both is part of running AI responsibly.",
         ],
         diagram: {
           kind: "compare",
@@ -807,7 +807,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "To improve answer quality, your team switches the support bot to a bigger model. Support tickets praise the richer answers — but the monthly token bill doubles and replies now take twice as long. What happened?",
+              "To improve answer quality, your team switches the support bot to a bigger model. Support tickets praise the richer answers. But the monthly token bill doubles, and replies now take twice as long. What happened?",
             choices: [
               { id: "a", label: "Cost and latency travel together — a bigger, more capable call costs more tokens AND more time" },
               { id: "b", label: "The bigger model was broken" },
@@ -815,7 +815,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "More tokens means more spend and more time — the two bills rise together. That trade-off is exactly what cost-and-latency metrics exist to quantify.",
+              "More tokens means more spend and more time — the two bills rise together. That trade-off is exactly what cost-and-latency metrics exist to measure.",
           },
           {
             id: "q2",
@@ -823,13 +823,13 @@ const course: Course = {
             prompt:
               "A founder argues latency is ‘just an engineering metric’ and only the token bill matters for the business. A product manager disagrees, pointing at last month’s 15% drop in completed chats. Who’s right, and why?",
             choices: [
-              { id: "a", label: "The PM — slow apps lose users; latency is a retention problem dressed up as a technical one" },
+              { id: "a", label: "The PM — slow apps lose users; latency is really a business problem, not just a technical one" },
               { id: "b", label: "The founder — users never notice speed" },
               { id: "c", label: "Both wrong — latency improves accuracy" },
             ],
             answer: "a",
             explanation:
-              "Real users abandon slow experiences. Cost eats margin and latency loses users — both bills hit the business, which is why observability tracks them together.",
+              "Real users abandon slow experiences. Cost eats into profit, and latency loses users — both bills hit the business. That is why observability tracks them together.",
           },
         ],
       },
@@ -843,7 +843,7 @@ const course: Course = {
         minutes: 5,
         concept: {
           anchor: "You don't build a heart-rate monitor to get fit — you strap on a watch and read what it shows.",
-          what: "Observability is **bolted on, not built from scratch** — a tool collects the logs, metrics, and traces; you read them.",
+          what: "Observability is **bolted on, not built from scratch**. A tool collects the logs, metrics, and traces; you read them.",
           why: "Mature tools let you spend time on **diagnosis, not construction** — like wearing a fitness tracker instead of building a heart-rate monitor.",
           where: [
             "**AI/LLM-focused tools** — tracing calls, evaluating answers",
@@ -851,12 +851,12 @@ const course: Course = {
             "Starting with **one tool that fits** and expanding later",
           ],
           whenNot:
-            "Don’t install everything at once (overwhelming) or wait for a break (too late) — and a tool **collects** signals; it still can’t read them for you.",
+            "Don’t install everything at once — that’s overwhelming. Don’t wait for a break — that’s too late. And remember: a tool **collects** signals. It still can’t read them for you.",
         },
         prose: [
-          "You don’t build observability from scratch. Just like you’d **wear a fitness tracker** rather than build your own heart-rate monitor, you bolt on a tool that collects the **logs, metrics, and traces** for you.",
-          "There’s a healthy menu to choose from. Some tools focus on **AI and LLMs** — tracing calls and evaluating answers. Others are **general-purpose**, handling metrics, logs, and alerts for any software, AI included.",
-          "Don’t try to memorise the names. The point is simpler: whatever signal you need to watch, **a tool already exists to collect it**. Where the fitness-tracker analogy breaks: a watch gives you one number — steps — while AI tools each cover a slice (traces, evaluations, metrics), which is why teams often end up running two focused tools rather than one do-everything box. Pick one that fits what you’re building and start there.",
+          "You don’t build observability from scratch. Just like you’d **wear a fitness tracker** rather than build your own heart-rate monitor, you bolt on a tool. It collects the **logs, metrics, and traces** for you.",
+          "There are many good tools to choose from. Some tools focus on **AI and LLMs** — tracing calls and evaluating answers. Others are **general-purpose**, handling metrics, logs, and alerts for any software, AI included.",
+          "Don’t try to memorise the names. The point is simpler: whatever signal you need to watch, **a tool already exists to collect it**. Where the fitness-tracker analogy breaks: a watch gives you one number — steps. AI tools each cover a slice (traces, evaluations, metrics). That is why teams often end up running two focused tools rather than one do-everything box. Pick one that fits what you’re building and start there.",
         ],
         diagram: {
           kind: "flow",
@@ -871,7 +871,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A two-person startup is about to ship an AI feature. Engineer A proposes spending two months writing custom logging, metrics, and tracing code; Engineer B proposes bolting on an existing observability tool this week. What’s the practical choice — and the trade-off?",
+              "A two-person startup is about to ship an AI feature. Engineer A proposes spending two months writing custom logging, metrics, and tracing code. Engineer B proposes bolting on an existing observability tool this week. What’s the practical choice — and the trade-off?",
             choices: [
               { id: "a", label: "Bolt on the tool — you spend your time diagnosing signals, not building instruments" },
               { id: "b", label: "Build from scratch — custom instruments are always better" },
@@ -879,13 +879,13 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "Mature tools let you focus on reading the signals instead of building the instruments — diagnosis, not construction, is where your time pays off.",
+              "Mature tools let you focus on reading the signals instead of building the instruments. Diagnosis, not construction, is where your time pays off.",
           },
           {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your team must pick a first tool for a chatbot product. One option is an LLM-focused observability platform; the other is a general-purpose infrastructure monitor. The chatbot’s biggest risk is bad answers reaching users. Which fits better, and why?",
+              "Your team must pick a first tool for a chatbot product. One option is an LLM-focused observability platform. The other is a general-purpose infrastructure monitor. The chatbot’s biggest risk is bad answers reaching users. Which fits better, and why?",
             choices: [
               { id: "a", label: "The LLM-focused tool — tracing requests and evaluating answers is exactly what it specialises in" },
               { id: "b", label: "The general-purpose tool — it can evaluate answers better" },
@@ -893,7 +893,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "LLM-focused tools specialise in tracing calls and judging answer quality — the two things generic tools do less well. Start with one that fits; expand later, don’t install everything at once.",
+              "LLM-focused tools specialise in tracing calls and judging answer quality — the two things generic tools do less well. Start with one that fits and expand later. Don’t install everything at once.",
           },
         ],
       },
@@ -908,7 +908,7 @@ const course: Course = {
         concept: {
           anchor: "Like tending a garden: glance daily, act when a leaf yellows, find the pest, fix it, keep watching.",
           what: "Observability is **one continuous loop** — **watch → alert → trace → log → fix → repeat** — not a setup-and-forget step.",
-          why: "Each pass catches a quiet problem **before users complain**; every tool in the toolkit is just a **role in the loop**.",
+          why: "Each pass catches a quiet problem **before users complain**. Every tool in the toolkit is just a **role in the loop**.",
           where: [
             "A dashboard reading **healthy for weeks**, then…",
             "An **alert** firing when error rate crosses its threshold",
@@ -919,9 +919,9 @@ const course: Course = {
         },
         prose: [
           "Here’s the whole course in one story. A team ships an AI feature. From day one, **logs, metrics, and traces flow quietly into a dashboard** that reads healthy.",
-          "Weeks later, **an alert fires** — the error rate has crept past its threshold. Nothing crashed; the dashboard caught a quiet problem before users complained.",
+          "Weeks later, **an alert fires** — the error rate has crept past its threshold. Nothing crashed. The dashboard caught a quiet problem before users complained.",
           "The team opens a **trace** for a failing request and pinpoints the slow step. The **logs** reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
-          "That’s the loop: **watch → alert → trace → log → fix → repeat**. Every tool in this course is just a role in that loop. And where the garden analogy breaks: a garden rests in winter — an AI feature serves users every single day, so the loop never gets a season off.",
+          "That’s the loop: **watch → alert → trace → log → fix → repeat**. Every tool in this course is just a role in that loop. And where the garden analogy breaks: a garden rests in winter. An AI feature serves users every single day, so the loop never gets a season off.",
         ],
         diagram: {
           kind: "flow",
@@ -938,7 +938,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "For six weeks your team’s AI feature hums along: dashboards healthy, no complaints. Then one morning the error-rate alert fires — nothing crashed, nothing was deployed overnight. What turned this quiet problem into an investigation?",
+              "For six weeks your team’s AI feature runs smoothly: dashboards healthy, no complaints. Then one morning the error-rate alert fires — nothing crashed, nothing was deployed overnight. What turned this quiet problem into an investigation?",
             choices: [
               { id: "a", label: "The alert — a metric crossing its threshold — not a crash or a user email" },
               { id: "b", label: "The app crashing loudly at 3 am" },
@@ -960,7 +960,7 @@ const course: Course = {
             ],
             answer: "a",
             explanation:
-              "The trace localises the failure to a step — the dashboard only averages across requests and can’t. The logs show what that step did — together they point at the cause, the fix lands, and the loop returns to watching.",
+              "The trace pinpoints the failure to a step — the dashboard only averages across requests and can’t. The logs show what that step did. Together they point at the cause, the fix lands, and the loop returns to watching.",
           },
         ],
       },
