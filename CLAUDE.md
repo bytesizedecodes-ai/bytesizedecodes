@@ -136,13 +136,23 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     Any new lesson, course page, or infographic **must** be built with
     `infographics-interactive_v6`
     (`.agents/skills/infographics-interactive_v6/SKILL.md`) — read it first.
-    **Prefer the level-specific v1 splits** (same contract, pre-calibrated,
-    full copies with `references/` + `assets/`):
-    `infographics-interactive-beginner_v1` when the course `level` is
-    `"beginner"`, `infographics-interactive-intermediate_v1` for
-    `"intermediate"`, `infographics-interactive-expert_v1` for `"expert"` —
+    **Prefer the level-specific v2 splits** (same contract as v6 plus the
+    v2 **Thread contract** — the scene-to-scene continuity grammar that makes
+    a lesson read as one connected story: a `StoryMap` strip under the
+    header, connective captions (So/But/Because), one stable stage whose
+    scenes change STATE not layout (`Scene variant="chapter" | "continue"`),
+    one accented delta per scene with ghosted prior states, referent
+    stability, and a ship gate — the scroll test / re-argue test; the
+    intermediate/expert Ladder renders as one ACCUMULATING rail/ledger with a
+    pre-training/notation beat before the first rung; full copies with
+    `references/` + `assets/`):
+    `infographics-interactive-beginner_v2` when the course `level` is
+    `"beginner"`, `infographics-interactive-intermediate_v2` for
+    `"intermediate"`, `infographics-interactive-expert_v2` for `"expert"` —
     read the course's `level` in `content/courses/` and pick accordingly;
-    fall back to v6 for cross-level work.
+    fall back to v6 for cross-level work. The v1 splits
+    (`*-beginner_v1` / `-intermediate_v1` / `-expert_v1`) are **retained
+    legacy** — do not author new lessons with them; v6 remains the superset.
     v6 is the **latest** course-authoring skill — a superset of
     `infographics-interactive_v5` (explanation-first, retained),
     `infographics-interactive_v4` (predict-first, retained),

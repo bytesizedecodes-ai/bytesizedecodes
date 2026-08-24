@@ -17,14 +17,16 @@ no prose, no questions, no concept briefs.
 1. Read the task's lesson spec (slug, beats/scenes to scaffold, course slug).
 2. Read the course's `level` in `content/courses/<slug>.ts`, then the
    matching skill's `assets/` templates:
-   - beginner → `.agents/skills/infographics-interactive-beginner_v1/assets/`
-   - intermediate → `.../intermediate_v1/assets/`
-   - expert → `.../expert_v1/assets/`
+   - beginner → `.agents/skills/infographics-interactive-beginner_v2/assets/`
+   - intermediate → `.../intermediate_v2/assets/`
+   - expert → `.../expert_v2/assets/`
    - fallback → `.agents/skills/infographics-interactive_v6/assets/`
    Prefer the level template; adapt from the scene vocabulary
-   (`Scene`, `PictureCard`, `Operator`, `CarShape`/`BikeShape`) and motion
+   (`Scene` with `variant="chapter" | "continue"`, `StoryMap`, `PictureCard`,
+   `Operator`, `CarShape`/`BikeShape`) and motion
    (`Stagger`/`MotionChild`/`Reveal`) you find in neighboring components
-   under `components/infographic/`.
+   under `components/infographic/`. Scaffold the `StoryMap` strip (from the
+   spec's slot labels) directly under `InfographicHeader`.
 3. Create `components/infographic/<LessonSlug>.tsx`:
    - Export a default component rendering a skeletal scene per the spec's
      beats (placeholder text marked `TODO(author)` where prose belongs).

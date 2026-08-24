@@ -1,0 +1,577 @@
+How to analyze visual narratives:
+A tutorial in Visual Narrative Grammar
+
+Neil Cohn
+© 2015
+
+neilcohn@visuallanguagelab.com
+www.visuallanguagelab.com
+
+Abstract
+Recent work has argued that narrative sequential images use a Visual Narrative Grammar
+(VNG) that assigns panels categorical roles and organizes them into hierarchic constituents.
+Though empirical research has supported the psychological validity of this theory, its complexity
+may make it hard to apply for students and researchers unfamiliar with its details. This “tutorial”
+describes the step-by-step methods by which sequences are analyzed in VNG.
+
+Applying the theory of Visual Narrative Grammar
+
+2
+
+Introduction
+This supplement is designed to help students and researchers analyze comics and
+sequential images using the theory of Visual Narrative Grammar (VNG). This theory argues that
+panels become categorized into specific types, and that there may be hierarchic groupings of
+panels into constituents. For example, below is the hypothesized structure for a sequence from
+Tym Godek’s One Night:
+
+This sequence starts with an Establisher which sets up the scene, and then progresses to
+an Initial which starts the main actions: the man is thinking in bed. The Peak of the sequence—
+its climax or primary information—occurs in a constituent of two panels. In this case the Peak
+constituent shows the man’s contemplation of whether to get out of bed (an Initial) and take a
+shower (a Peak). The final panel is a Release, the resolution or aftermath, with the man deciding
+not to get out of bed. This sequence illustrates several of the primary features of VNG: Each
+panel has a narrative category, and panels can combine to form groupings that also have
+categories.
+This “tutorial” aims to help explain how an analyst might identify these elements when
+examining a sequence. Because this document is aimed at application, I will not describe the
+basic principles of VNG any further than the above example. For this, I refer the reader to my
+book, The Visual Language of Comics (Cohn, 2013b), and to my papers on the topic (Cohn,
+2013c, 2015b). The methods described here should help instruct how to analyze the properties of
+VNG in visual sequences, and they emerge from the underlying logic of the system.
+Diagnostic tests
+Before jumping into how we do analyses, it should be noted that not all sequences of
+images use the principles of VNG. In particular, narrative sequences used in multimodal contexts
+(i.e., combining text and image) may not have a clear-cut narrative structure, due to the meaning
+being distributed into both text and image. If the text conveys as much if not more meaning than
+the visuals, it may be likely that the visuals do not actually use this narrative grammar. The
+
+Applying the theory of Visual Narrative Grammar
+
+3
+
+structures of VNG appear most strongly in wordless visual narratives. A simple test can suffice
+here: If you can delete the visuals and retain the overall gist of the sequence, the visuals may not
+use a narrative grammar. If you can delete the text and the visuals retain their overall gist, the
+visuals likely do use a narrative grammar. For more on this, see Cohn (2015a).
+Now let’s discuss how to analyze sequences. Importantly, applying VNG is not a matter
+of looking at a sequence and assigning categories/constituents to it. This may be a decent
+starting point, but actual analyses should make use of diagnostic tests that reveal the structure of
+the sequence. While intuitions are used at each stage of these diagnostic tests, tests provide a
+methodology beyond merely looking at a sequence and labeling things. These diagnostics can
+also extend beyond the contexts of analyzing a given sequence, and can be used as the basis for
+psychological experimentation (and indeed, many already have).
+Diagnostic tests manipulate a sequence of images in order to reveal its structure. These
+manipulations are based on methods developed over decades from linguistics (e.g., Cheng &
+Corver, 2013), and also draw on the underlying logic of the system itself. In many cases,
+diagnostics are supported by empirical evidence from psychology experiments. Diagnostics can
+test for the categories of particular panels and the groupings of those panels into constituents.
+Additional diagnostics apply to other modifiers in VNG, such as conjunction, Refiners, and
+Perspective Shifts, for which the reader is referred to specific publications (e.g., Cohn, 2015b).
+Most diagnostic tests involve manipulating a panel or sequence through deletion of
+panels, rearranging panels, or substituting panels for other elements. These methods are spelled
+out in the appendix at the end, along with the results that should occur when these tests applied
+to categories and constituents. For now, we’ll jump right into the order that tests are applied and
+then a sample analysis.
+Order of operations
+When analyzing a sequence of images, you should use an “order of operations” for
+applying intuitions and diagnostic tests. The order described here is what has worked so far, but
+other methods are conceivable if justified.
+1) Categories before constituents – The categorical status of individual panels is easier to
+determine than the breakdown of whole constituents (which also may hinge on the categories
+inside them). So, identify the panels’ categorical roles before attempting to identify the
+segmentation of the constituents.
+1.1) Find the Peak(s) – Because a sequence hinges on the information in the Peak, they should
+be the first thing(s) to be identified in a sequence. The following steps should be used:
+a. Semantic intuitions – A good first step is to use your intuitions for what sort of
+information panels convey. Peaks contain primary actions and often have the
+“climax” of a sequence. You can treat this identification of panel(s) as a “hypothesis”
+for which panels may be Peaks.
+b. Action Star Substitution – Now test those hypotheses by replacing those posited
+Peak panels for action star panels. Can they be replaced and still make sense? If so,
+they may be Peaks.
+
+Applying the theory of Visual Narrative Grammar
+
+4
+
+c. Deletion – A second test may use deletion. Try omitting those panels you thought
+were Peaks. Does the sequence still make sense? Does it force you to infer a lot of
+information? If so, they may be Peaks.
+1.2) Find Initials and Releases – Now that you have identified the Peaks, it is best to identify
+panels supporting those Peaks. Initials and Releases are the next most important panels in a
+sequence, and are often adjacent to Peaks.
+a. Semantic intuitions – Again, starting with your intuitions about the content of a
+sequence is a good first step. Initial panels often show preparatory information, while
+Releases show resolutions or aftermaths. Instead of basing this on content alone, you
+might also think about what is happening relative to the Peaks you’ve already found:
+Does a panel preceding a Peak lead up to it (Initial)? Does a panel following the Peak
+provide an aftermath or resolution to it (Release)?
+b. Deletion – A deletion test can be a good follow up here. If a panel preceding a Peak is
+deleted and makes it feels like the Peak is suddenly more abrupt, it is likely an Initial.
+If a panel following the Peak is deleted and makes it feels like the sequence is “left
+hanging,” it may be a Release.
+c. Modification – You may also want to try a “Jeez, what a jerk!”-test for Releases. Can
+this phrase be added in a balloon to the panel? Maybe it’s a Release then.
+1.3) Find Establishers and Prolongations – Establishers and Prolongations are often the least
+necessary of all categories, and so they can be identified last.
+a. Semantic intuitions – Again, a good starting hypothesis can use intuitions about the
+semantics of a panel or its relations to other images. Does the panel “set up” the
+situation without providing any actions? Are characters introduced to each other in
+the panel? If so, it may be an Establisher. Is a panel preceding a Peak but following
+an Initial? Does it only show the extension of a path (like only a ball sailing through
+the air)? If so, it may be a Prolongation.
+b. Deletion – Both Establishers and Prolongations can both be omitted from a sequence
+without affecting its understanding. If your hypothesized panels can be deleted with
+little impact on the sequence, they may be Establishers or Prolongations.
+c. Reordering – Another test you can do is to move your hypothesized Establisher to the
+end of the sequence or to swap it with a Release. Is the narrative still comprehensible
+(even if the meaning changes)? This may be an Establisher then.
+d. Framing – Can the panel be incorporated into the content of the prior Initial panel via
+a motion line? If so, that panel could be a Prolongation.
+2) Identify constituents – Now that you have hypotheses about the narrative categories, you can
+begin to identify the constituents. Here are some good ways to do this:
+a. Semantic intuitions – Like in identifying categories, recognizing where boundaries
+start and stop between constituents can begin by looking at the meaningful relations
+between images. For example, breaks between constituents often have changes in
+characters or locations, or start a new set of actions. If you can identify the place that
+this occurs (perhaps also starting with a new Establisher), you can find the break
+between groupings.
+
+Applying the theory of Visual Narrative Grammar
+
+5
+
+b. Grammatical patterns – Another way to hypothesize about constituents is to look at
+the sequencing patterns that are left by your analysis of narrative categories. The
+canonical narrative phase uses a sequence of E-I-L-P-R. Thus, constituents may be
+formed by any categories in your analyzed strip that go in that order (or shorter
+subsets of that order, like I-P or I-P-R). If you find places that do not go in that order,
+it may be places where there is a break between constituents (ex. I-P-E…, P-R-I…,
+P-R-R, etc.).
+c. Deletion test – A good first test is, again, to try to delete constituents. If you can
+delete a whole span of panels, it may be a constituent. Deletion of panels that “leaves
+behind” some weird sequencing may be the deletion of only part of a constituent, or
+may possibly delete across the boundary of multiple constituents.
+d. Reordering – Now try rearranging those groupings of panels in the sequence. Can
+you move a whole group for another group? Maybe those panels form constituents.
+e. Sliding Window – Finally, try analyzing the sequence using a sliding window. A
+windowed grouping of panels that form a constituent, or part of a constituent, should
+be identifiable as a coherent sequence. Windowed panels that do not form a
+constituent may be harder to understand. You can then line up your analyses to see
+which panels consistently are harder to understand, and the boundary between
+constituents should appear. For example, consider this simple dataset:
+Good: 1-2-3
+Bad:
+2-3-4
+Bad:
+3-4-5
+Good:
+4-5-6
+Each of these lines represents a selection from a 6-panel sequence where each
+“windowed segment” includes only three panels. The first and last segments are
+considered to be understandable, while the middle segments are considered less
+understandable. The only string that appears in both of the “less understandable
+segments”, while not appearing in the “understandable segments”, is only the string of
+3-4 (bold and underlined). We might hypothesize that this is where the boundary
+between segments lies: between these panels. Thus, we might posit that this sequence
+has a segmentation of: [1-2-3]-[4-5-6]
+This order of operations can be applied to sequences of images under analysis. Note that these
+instructions have so far been applied only to “normal” sequences with only simple categorical
+sequencing. If a sequence uses modifiers like conjunction or Refiners, the analysis may become
+more complicated. See Cohn (2015b) for details on diagnostic tests for those elements.
+Sample Analysis
+With our order of operations now in place, let’s illustrate how this works with an actual
+example. Here, we’ll use a Sunday Peanuts strip, since it has fairly clean depictions, a good
+number of panels, and a well-defined start and end. VNG can apply to sequences within longform visual narratives as well (such as comic books, manga, graphic novels, etc.), though
+discrimination of the boundaries of those sub-sequences would need to be found. This can follow
+
+Applying the theory of Visual Narrative Grammar
+
+6
+
+the same types of criteria described above. However, for simplicity, we will use an isolated
+sequence.
+First, here is the sequence as a whole, as it appears in its original layout. This sequence
+shows the Peanuts gang playing baseball. Lucy throws a beat-up baseball to Charlie Brown, who
+hits it, and while running the bases gets whopped by Lucy and the beat-up ball.
+
+In order to better apply our analysis to this sequence, we will often change the page layout to a
+linear sequence. This is not a fully required step, since VNG applies to the content of the images,
+not to their physical arrangement (which would be their “external compositional structure”—see
+Cohn (2013a)). One could alternatively number each panel in this original strip, and then label a
+linear sequence of just those numbers too. Using a linear sequence makes things easier to see
+though, so we’ll use that method.
+Step 1: Identify categories - As stated before, our first step is to identify the narrative categories.
+We can start by using our intuitions, based on the semantics of each panel.
+1.1. We should start by finding the Peaks. Let’s do this first by asking which panels might show
+completed actions or “climactic” events. I’ve highlighted several of these actions within various
+panels of the sequence (the “morphological cues” relevant for the narrative structures), which
+appear in panels 2, 4, and 7. We can treat this as a hypothesis for which panels are Peaks.
+
+Applying the theory of Visual Narrative Grammar
+
+7
+
+We can now see if our assumptions are correct by doing a few diagnostic tests. First let’s
+try an action star substitution. Replacing an action star for each of our hypothesized Peaks
+renders the sequences fairly understandable. Here’s the first one:
+
+That seems decent at least, though there’s maybe a little ambiguity. There may be good reason
+for that, which we’ll go into later on. Here’s the second one:
+
+Applying the theory of Visual Narrative Grammar
+
+8
+
+I think this one works much better. We actually had a cue that it might work, since the original
+panel uses an “impact star” to show where the ball hits the bat, and the action star is basically a
+blown up version of this. And here’s the third one:
+
+This one again seems pretty good. The action star here again replaces an impact. So, our findings
+for the action star substitution tests are that we have two Peaks that replace well (panels 4 and 7)
+and one that works so-so (panel 2). Just for contrast, here’s what happens when we try to swap
+out the the action star for a panel that we didn’t hypothesize as being a Peak:
+
+Applying the theory of Visual Narrative Grammar
+
+9
+
+Notice that this sequence might seem harder to understand. That gives us a clue that this
+panel is not a Peak, because it fails the “action star substitution” diagnostic. We now have one
+piece of support that these panels are Peaks. Let’s do another diagnostic just to make sure. Here,
+let’s try a deletion test. The sequence should be fairly bad if Peaks are deleted. I’m going to just
+delete one of them, and I’ll let you imagine what it would be like to delete the others (you can
+just hold up your fingers over the sequence to block out other panels):
+
+Here, I’ve deleted panel 7, the penultimate panel. The resulting sequence is a little
+strange, and seems to end fairly abruptly. Notice that there might seem like a lack of a real
+“climax” here. That sense is the lack of the Peak. For a long sequence like this, we can do a final
+test on the Peaks, by trying to paraphrase the sequence using only the hypothesized Peak panels:
+
+Applying the theory of Visual Narrative Grammar
+
+10
+
+This sequence seems pretty understandable, and provides a more compact version of essentially
+the same narrative. Compare this to a paraphrase of panels that are not hypothesized as being
+Peaks:
+
+This sequence seems much less able to summarize the original strip, especially in comparison to
+the prior paraphrase. This is a strong additional clue that the panels in the first paraphrase are
+Peaks.
+1.2 Now that we have our most important panels identified (Peaks), let’s turn to identifying the
+next most informative: Initials. Again, we can first use our intuitions, since Initials are
+canonically preparatory actions. This gives us these highlighted panels:
+
+Conveniently, most of these panels show up prior to our Peak panels, so that’s a good
+hint that they are Initials. We know this because Initials often precede Peaks in the canonical
+narrative arc. Notice that the second panel, which we already said might be a Peak, also has a
+highlight of the ball. This is the case because this information provides the “source” (starting
+point) of a path—another semantic feature of Initials. Can this panel be both a Peak and an
+Initial? Is this why the action star substitution was a little less good? We’re going to leave these
+both as hypotheses right now, and come back to it later.
+We should now do a test to see if these are Initial panels. Again, a deletion test might
+help. Deletion of an Initial should make a sequence somewhat harder to understand, but it should
+be better than deleting a Peak. For brevity, I’ll let you apply these tests on your own.
+
+Applying the theory of Visual Narrative Grammar
+
+11
+
+1.3. The next step would be to identify the other categories: Establishers, Prolongations, and
+Releases. An Establisher would typically set up the relations between the characters, while a
+Release would provide an aftermath or resolution to the sequence. These should be a little less
+important if deleted. We only have two panels left to be analyzed (panels 5 and 8), and both
+seem to be deletable.
+Panel 5 contextually precedes an Initial but follows a Peak. But, its events seem to start
+(ahem…establish) a new situation, which means it seems more like an Establisher for the Initial
+than a Release for the prior Peak. Also, the final panel follows a Peak, like we’d expect for a
+Release, and it can also pass the “Jeez, what a jerk!” test. Try replacing that dialogue for Charlie
+Brown’s in the final panel: It works pretty good! That’s a clue that it is a Release.
+We now have assigned categories to all the panels in the sequence. Our analysis looks
+like this:
+
+Step 2: Identify the constituents – Now that we have our surface categories, we can try to
+identify which panels group together in constituents. A first clue comes from our categories: We
+know that the canonical narrative arc goes Establisher-Initial-Peak-Release, so segments that
+retain this pattern should go together. This groups together panels 1 & 2, and 3 & 4 (both
+“Initial-Peak” segments) and the final four panels, which maintain a whole narrative arc.
+This is further supported by the semantics that divide these hypothesized segments.
+Between panels 2 and 3, the characters change (from Lucy to Charlie) and between panels 4 and
+5, they change in actions (Charlie hitting vs. running) and in characters (Lucy is added back in).
+These changes often align with the breaks between constituents, and thus give us a clue about the
+groupings.
+With these hypotheses, let’s do a few diagnostics, starting with a deletion test. It should
+be better for us to delete whole constituents than it would to delete across the boundary between
+them. Let’s try this by deleting all of our hypothesized whole constituents:
+
+Applying the theory of Visual Narrative Grammar
+
+12
+
+I’ve drawn red lines here to show where the constituents were deleted. Sequence (a)
+deletes the whole final constituent. Sequence (b) deletes only the first one, (c) deletes the middle
+one, and (d) deletes both of these. In each of these cases, the sequence stays fairly
+comprehensible. My interpretation would say that the worst among these is (c), where the lack of
+Charlie hitting the ball leaves a lot to be inferred. Compare this to sequences where the deletions
+cross over the constituent boundaries. Here, I’ve deleted two panels on either side of the break
+between hypothesized constituents:
+
+These sequences in (e) and (f) should feel a bit worse than the ones in (a-d). Personally, I
+think sequence (f) is a bit less coherent than (e) also. This might come into play a little later, and
+is connected to why (c) above may be a little less good than the other deletions in (a-d).
+Let’s now try another test by using the sliding window. Here, I’ve selected a sliding
+window of three panels long, where each three-panel chunk throughout the sequence is selected.
+Here they are:
+
+Applying the theory of Visual Narrative Grammar
+
+13
+
+Here, we want to treat each segment as if it was a whole, isolated sequence. We can then
+assess the comprehensibility of each sequence. To me, (g) seems a little weird on its own, like
+it’s leaving something hanging. I get the same feeling from (i) and (j)—all of them feel like
+something is left unresolved (and (j) feels like it starts a bit suddenly). The other sequences—(h),
+(k), and (l)—feel better, like more of a whole coherent message unto each one. However, (h) and
+(k) lack a resolution, and (l) starts a bit suddenly. They don’t feel like anything substantial is
+missing though.
+This leaves us with these assessments that line up like this:
+
+Applying the theory of Visual Narrative Grammar
+
+14
+
+Here, I’ve spaced out the segments so that they line up all the panels in the sequence. I’ve
+marked the ones that are a little “weird” with an “X”, and I’ve also put red lines to show where
+our hypothesized boundaries between constituents are. Notice that all of the ones that were
+deemed a little “weird” have a constituent break running through the middle of them. The only
+exception is (h), where the constituent break divides the first two panels, but this sequence was
+not overly bad. This again relates to our analysis of (c) and (e) in the deleted constituents above,
+which we’ll tackle next.
+Altogether, this analysis gives us three major groupings. Here are our groupings, with
+double lines indicating the Peaks, which are the “head” of each grouping (as we tested with our
+paraphrasing):
+
+Now we might want to ask: what are the relationships between these groupings, and are
+there any higher-level groupings? We essentially have three options of groupings (with each
+number being a constituent):
+1) [ 1 – 2 – 3 ]
+2) [[ 1 – 2 ] – 3 ]
+
+Applying the theory of Visual Narrative Grammar
+
+15
+
+3) [ 1 – [ 2 – 3 ]]
+The most straightforward option would be the first, with each constituent standing alone
+and playing a role in a larger narrative arc. However, there have been a few pieces of evidence
+that might suggest against this. First, we had some in-between intuitions in deletion tests (c) and
+(e) and the sliding window in (h). Second, we had the dual categories on panel 2 (Initial and
+Peak?). Let’s consider these points in depth.
+First, we saw in the deletion test (c) that deleting the middle constituent didn’t make as
+much sense as deleting the other ones. This implies that the second constituent (panels 3&4) is
+perhaps more important as a constituent than the first constituent. We also saw that deleting
+across the boundaries of this constituent was a little better than deleting across the subsequent
+constituent boundaries. Here, we deleted panel 4 (a Peak) and 5 (an Establisher). If this
+constituent is more important, then deletion of its Peak (panel 4) should indeed make it harder to
+understand, and leaves the constituent hanging with an Initial (panel 3). This is different than
+deleting across the first boundary (omitting panels 2 and 3), which keeps this motivating Peak,
+which now can just fuse with the Initial in the first panel to form another coherent constituent.
+Finally, let’s consider our earlier observation that panel 2 has features of both a Peak and
+an Initial. We know that the panel plays a role as a Peak compared to its prior Initial, since that
+forms a coherent Initial-Peak constituent. But, the extra semantic features may mean that this
+whole grouping plays a role as an Initial.
+So, all of this may point to the first and second constituents connecting to each other. The
+second panel plays a role as a Peak in relation to the prior Initial, but the semantic features
+related to a source of a path also relate to an Initial. This information is only relevant as an Initial
+for subsequent information, such as in the next constituent. The first two groupings may form an
+even larger constituent, with the first grouping playing a role as an Initial (motivated by the
+semantic features in the second panel), and the second grouping playing a role as a Peak:
+
+At this point we’re almost done. We just need to figure out the overall relationship of this
+larger grouping to the subsequent grouping. There are now just two of our options left: we can
+either link the final constituent into the same grouping as the Initial and Peak constituents (option
+#1) or we can create another, larger constituent that links together the remaining structures
+(option #2).
+
+Applying the theory of Visual Narrative Grammar
+
+16
+
+We can go back to our original deletions for a clue: deletion of the final Peak should
+seem more impactful than deleting the middle Peak, a clue that this final Peak is the “main
+climax” of the sequence. This might tell us that the first grouping is another Initial in relation to
+the final four panels, which are the primary Peak (option #2). If we were to connect this final
+constituent to the existing structure, it would have to play the role of a Release. This is because a
+Release is the only possible category that can follow a Peak within this higher-level structure,
+which already has an Initial-Peak ordering. Because the final sequence seems to be the “main
+climax” and not a resolution, it appears that option #2 makes more sense:
+
+There we have it! The whole sequence is now analyzed, derived from the diagnostic tests
+in combination with our intuitive judgments. It’s worth making a final note: The Release panel at
+the very end is technically ambiguous here, since it is preceded by a Peak locally (within the
+constituent) and also at a higher level (the Peak constituent). It could hypothetically attach to
+either the Peak constituent or the Arc, to follow either one of these Peaks. This ambiguity is
+supported by the fact that it could also be included in a paraphrase with only the Peak panels
+(motivating each of the top-most constituents), and in the grouping of only the final constituent
+(as in (d) from the deletion test). Such ambiguity is intrinsic to the grammatical system. This
+ambiguity could be resolved though. If we inserted another panel before the final one (say,
+Charlie walking to the bench), this would create a new constituent, with this grouping playing
+the Release role that connects to the Arc, not within the Peak constituent.
+Final remarks
+Hopefully this tutorial has been helpful for you to understand how Visual Narrative
+Grammar is implemented, and hopefully also to understand some of its underlying logic. It is not
+merely a matter of looking at an image sequence, assigning categories, and drawing lines
+between them. Rather, there is a systematic process that uses explicit diagnostic tests at each
+stage. Like any skill, this type of analysis requires practice. Over time, it is possible to more
+
+Applying the theory of Visual Narrative Grammar
+
+17
+
+quickly and easily assess the properties of a sequence, and the application of diagnostic tests can
+be done in your head (assuming you have the fluency to do so).
+Finally, though it may have seemed like a trek to complete it, the sequence that we
+analyzed here is actually quite simple. Yet, much more complexity arises in different types of
+visual narratives, which use various complex modifiers and constructional patterns (Cohn,
+2015b). Further publications about Visual Narrative Grammar will detail these components along
+with the necessary diagnostic tests to analyze them.
+Appendix: Diagnostic tests
+Individual categories
+Below are descriptions of how diagnostic tests are expected to behave for each particular
+narrative category, in order of the importance of the category to the narrative arc (Cohn, 2014):
+Peaks – Peaks are the most important category of a narrative sequence, and the rest of the
+sequence most often “hangs” around the content in the Peak.
+- Deletion – A sequence should be rendered harder to understand by the deletion of
+the Peak. Its deletion should create the need for a great deal of inference.
+- Paraphrasing – Because a sequence “hangs off” of the Peaks, deletion of all nonPeak categories can often provide a truncated “paraphrase” of the sequence.
+- Reordering – Peaks do not fall in complementary distribution with other
+categories. Thus, moving a Peak to other positions within a sequence should make
+that sequence harder to understand.
+- Substitution – Peaks are the most capable of being substituted by “suppletive
+panels” (Cohn, 2013b), the most informative being an action star (Cohn &
+Wittenberg, 2015). If a panel can be effectively replaced by an action star and
+retain the sense of narrative (though the semantics may become less informative),
+the substituted panel is likely to be a Peak. If the substitution of an action star for
+a panel creates a less coherent sequence, it is likely that panel is not a Peak.
+Initials – Initials are the second most informative category for a narrative sequence, and
+thus also have fairly restrictive usage.
+- Deletion – A sequence should be rendered harder to understand by the deletion of
+the Initial. Its deletion should create a sense of a sudden jump into a Peak.
+- Reordering – Initials do not fall in complementary distribution with other
+categories. Thus, moving an Initial to other positions within a sequence should
+make that sequence harder to understand.
+Releases – Releases are also fairly informative, but often less semantically necessary than
+Peaks or Initials.
+- Deletion – A sequence can stay fairly understandable by the deletion of the
+Release, but it may feel like it has ended suddenly with no narrative “resolution.”
+- Reordering – Releases can often use the same information as Establishers and
+sometimes Prolongations. Thus, reversing a Release with an Establisher, or
+moving a Release to the start of a sequence may render a sequence that is still
+comprehensible.
+
+Applying the theory of Visual Narrative Grammar
+-
+
+18
+
+Modification – Releases pragmatically offer a “wrap up” of a narrative sequence.
+Thus, if one can add a speech balloon that reads “Jeez, what a jerk!” to a panel, it
+may be a Release.
+
+Establishers – Establishers are not very informative to a sequence, functioning usually to
+set up information without acting upon it.
+- Deletion – A sequence can stay fairly understandable by the deletion of the
+Establisher. Its absence will not likely be noticed, though the actions of the
+sequence will begin suddenly in any subsequent Initial or Peak.
+- Reordering – Establishers can often use the same information as Releases and
+sometimes Prolongations. Thus, reversing an Establisher with a Release, or
+moving an Establisher to end the end of a sequence may render a sequence that is
+still comprehensible.
+Prolongations – Prolongations are not very informative to a sequence, functioning
+usually to delay a Peak with an additional medial narrative state (often the trajectory of a
+path).
+- Deletion – A sequence can stay fairly understandable by the deletion of a
+Prolongation. Its absence will not likely be noticed.
+- Reordering – Prolongations can sometimes use the same information as Releases
+and Establishers. Thus, putting a Prolongation panel at the start or end of a
+sequence may render a sequence that is still comprehensible.
+- Framing – Because Prolongations often depict a path, they frame information that
+might be incorporated into a motion line in a prior panel. If the information in a
+panel can be incorporated into a prior Initial, that panel may be a Prolongation.
+(Note: the reverse is also true: a Prolongation can be created by extracting path
+information from an Initial into its own panel).
+Constituents
+Constituents are panels that form a cohesive grouping into a broader structure. The logic
+behind the diagnostic tests for constituents are thus formulated to test this cohesive nature by
+violating it in different ways. Again, similar methods are used. These diagnostics apply to
+sequences that have multiple constituents; a sequence with only a single narrative “phase” would
+not require these tests.
+Deletion – Because whole constituents create a larger unit within a broader structure, we
+should be able to delete an entire constituent and still have a relatively coherent structure.
+However, omission of panels that span across the boundary between constituents should
+render a less comprehensible sequence (barring category specific deletion test: for
+example, if the Release of a first constituent was deleted and the Establisher of a second
+constituent was deleted, a sequence may still be coherent. This would arise not from the
+deletion test “failing” for constituents, but because they succeeded for the tests applied to
+those specific categories, as described above).
+Thus, if a number of panels are deleted that allows for a sequence to still be
+understandable, it is possible that those panels form a constituent. If a number of panels
+
+Applying the theory of Visual Narrative Grammar
+
+19
+
+are deleted that render a sequence less understandable, it is possible that those panels
+span across the boundary between multiple constituents.
+Reordering – Because constituents form a whole grouping, we would expect that units
+within that grouping have a more principled connection than those outside of that
+grouping. Thus, we might expect reordering within a constituent to render a sequence as
+more understandable than reorderings that cross the boundaries between constituents.
+Note though, any reorderings may interact with constraints on within-constituent
+distributions (reordering an Establisher from one constituent to be a Release in another
+constituent may work, because Establishers and Releases are in complementary
+distribution).
+It may also be possible to reorder whole constituents. If you can move an entire
+group of panels to another place in the sequence (typically reordered with another whole
+grouping), then it may be a constituent. If you reorder groups of panels that do not span
+an entire constituent, or cross constituent boundaries, the sequence should be rendered
+harder to understand.
+Sliding window – Because the constituents form a whole grouping, selection of that
+grouping should be able to stand alone as a unit. However, selection of elements that
+cross boundaries (portions of one grouping and portions of another) may render a
+sequence less understandable. A “sliding window” analysis thus uses a particular
+“window” of viewing that is applied across a whole sequence. For example, if a 6-panel
+strip is analyzed using a 3-unit window, the first analysis is on panels 1-2-3, then 2-3-4,
+then 3-4-5, and 4-5-6. Windowed sequences will be more comprehensible if they span a
+whole constituent or within a constituent than if they cross constituent boundaries. The
+size of the window can be adjusted based on the length of a sequence (usually with a
+minimum of 3 units long).
+
+References
+Cheng, L. L.-S., & Corver, N. (2013). Diagnosing syntax: Oxford University Press.
+Cohn, N. (2013a). Navigating comics: An empirical and theoretical approach to strategies of
+reading comic page layouts. Frontiers in Psychology—Cognitive Science, 4, 1-15.
+doi:10.3389/fpsyg.2013.00186
+Cohn, N. (2013b). The visual language of comics: Introduction to the structure and cognition of
+sequential images. London, UK: Bloomsbury.
+Cohn, N. (2013c). Visual narrative structure. Cognitive Science, 37(3), 413-452.
+doi:10.1111/cogs.12016
+Cohn, N. (2014). You’re a good structure, Charlie Brown: The distribution of narrative
+categories in comic strips. Cognitive Science, 38(7), 1317-1359. doi:10.1111/cogs.12116
+Cohn, N. (2015a). A multimodal parallel architecture: A cognitive framework for multimodal
+interactions. Cognition, 146, 304-323. doi:10.1016/j.cognition.2015.10.007
+Cohn, N. (2015b). Narrative conjunction’s junction function: The interface of narrative grammar
+and semantics in sequential images. Journal of Pragmatics, 88, 105-132.
+doi:10.1016/j.pragma.2015.09.001
+
+Applying the theory of Visual Narrative Grammar
+
+20
+
+Cohn, N., & Wittenberg, E. (2015). Action starring narratives and events: Structure and
+inference in visual narrative comprehension. Journal of Cognitive Psychology, 27(7),
+812-828. doi:10.1080/20445911.2015.1051535
+
+

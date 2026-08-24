@@ -1,0 +1,437 @@
+Running head: NAVIGATING COMICS II
+
+Navigating comics II: Constraints on the reading order of comic page layouts
+Neil Cohn and Hannah Campbell
+Institute for Neural Computation, University of California, San Diego
+
+Corresponding author:
+Neil Cohn
+neilcohn@visuallanguagelab.com
+www.visuallanguagelab.com
+
+Cohn, Neil, and Hannah Campbell. 2015. "Navigating comics II: Constraints on the reading
+order of page layouts." Applied Cognitive Psychology 29:193-199. doi: 10.1002/acp.3086.
+
+Abstract
+Although readers typically believe comic page layouts should be read following the leftto-right and down “Z-path” inherited from written language, several spatial arrangements can
+push readers to deviate from this order. These manipulations include separating panels from each
+other, overlapping one panel onto another, and using a long vertical panel to the right of a
+vertical column to “block” a horizontal row. We asked participants to order empty panels in
+comic page layouts that manipulated these factors. All manipulations caused participants to
+deviate from the conventional Z-path, and this departure was modulated by incremental changes
+to spatial arrangements: the more layouts deviated from a grid, the less likely participants were to
+use the Z-path. Overall, these results reinforce that various constraints push comic readers to
+engage with panels in predictable ways, even when deviating from the traditional Z-path of
+written language.
+Keywords: visual language; page layout; reading order; writing systems; spatial representation
+
+Navigating comics II
+
+With the recent rise in respectability of comics and graphic novels as forms of literature
+and educational material (Nalu & Bliss, 2011; Short, Randolph-Seng, & McKenny, 2013),
+readers are increasingly posed with understanding how to progress through the panels of comic
+pages. The order that we read written language is fairly straightforward—we move across a line
+of text until that sequence ends, and then we progress to the next line. In English, this order
+progresses left-to-right and down in horizontal rows, while other languages, such as written
+Japanese, can be read right-to-left in vertical columns. By comparison, the reading order for
+comics is more complex, since panels can be arranged in numerous ways across the “canvas” of
+a page. Indeed, previous research has shown that various conventions and Gestalt constraints
+push readers to deviate from the reading order inherited by text (Cohn, 2013a). Here, we
+examine several of these conventions more carefully to further understand the constraints on
+readers’ navigation of comic pages, which can in turn inform the creation of comics (Abel &
+Madden, 2008; McCloud, 2006) and efforts for automatic conversion of comic pages into digital
+formats (e.g., Bares, 2008; Tanaka, Shoji, Toyama, & Miyamichi, 2007).
+While authors have creatively played with comic page layouts for over 100 years, only
+recently has scientific attention turned to understanding how readers navigate these pages.
+Previous research on comic pages often stressed their relationship to meaning, such as how pages
+serve aesthetic functions in a story (Caldwell, 2012; Groensteen, 1999; Peeters, 1998 [1991]) or
+how layout may contribute to aspects of meaning (Barber, 2002). However, while content and
+page layout interface together in comprehension, the order of reading comic panels is not
+dependent on their meaning (Cohn, 2013a, 2013b, 2014). A single four-panel comic strip might
+be arranged horizontally, vertically, or in a 2 x 2 grid. So long as the panels are still read in the
+same successive order, the meaning of the sequence should not change. Rather, what changes is
+the physical layout of the sequence, its external compositional structure (ECS).
+Research has only recently begun examining the principles governing the navigation of
+ECS. Typically, comic pages have been thought to use the left-to-right and down order used to
+read text—the “Z-path” (e.g., Abel & Madden, 2008; Bongco, 2000; Duncan, 2000; McCloud,
+2000), and this order is indeed the default reading order for otherwise ambiguous grid layouts, as
+in Figure 1a (Cohn, 2013a). However, various manipulations to the arrangement of panels can
+push readers to navigate panels in alternate routes. In a prior study, we presented participants
+with comic page layouts where the panels were empty of content and asked them to number the
+order that they would read those panels (Cohn, 2013a). The largest deviation from the Z-path
+was found in arrangements using blockage, where a long vertical panel “blocks” the Z-path and
+pushes readers to move vertically instead of horizontally (Figure 1b). In these situations,
+participants only used the Z-path 31% of the time, compared to nearly 95% for panels arranged
+in a stereotypical grid. This effect was modulated by participants’ experience with comics:
+Participants who never read comics were more inclined to use the Z-path than those with any
+comic reading experience.
+In contrast to the findings of blockage situations, merely staggering adjacent panels
+seems to have much less influence on the reading order. Staggering occurs when differing panel
+sizes prevent the “gutter”—the space between panels—from extending contiguously between
+adjacent panels (Figure 1c). In essence, blockage situations exaggerate a staggering of panels,
+where the “blocking” panel is so long that it covers a significant space of an adjacent panel
+(prototypically, the length of a whole stack of panels). Yet, staggering in our prior study
+maintained a Z-path order of 89%—barely impacting the order compared with the large
+
+2
+
+Navigating comics II
+influence of full blockage. This finding left open the question of how long a stagger needs to be
+to become blockage.
+
+Figure 1. Various properties of layouts in comic pages (a-e). Panels are lettered in the ways that
+readers most often navigate these panels. The tree structures in (f) represent the underlying
+cognitive organization of grid and blockage layouts.
+Additional deviations in the Z-path can be motivated by various Gestalt constraints, such
+as proximity (e.g., Wertheimer, 1923). Separation of panels by increasing the size of the gutter
+between panels can push readers to navigate downward to the closest panel rather than jumping
+the gap to follow the Z-path (Figure 1d). Our prior study showed that separation situations used
+the Z-path 71% of the time—a clear impact, though participants still maintained the Z-path more
+than using an alternate path. Again though, it remains unknown how wide the separation between
+panels needs to be in order to push readers away from the Z-path. In the reverse proximity
+relationship, some panels may overlap other panels (Figure 1e), which in our previous study
+maintained the Z-path only 50% of the time. However, closer examination of these stimuli
+suggested that this deviation may have been influenced by confounding factors beyond the
+overlap, such as concurrent blockage.
+Thus, several outstanding questions remain about how these factors influence the
+navigation of comic page layouts. Nevertheless, these early results suggested that readers use
+some general principles in guiding the order they move through an ECS. These constraints of
+Assemblage stipulate that readers seek to build cohesive units of structure based on distance and
+coherence of composite shapes in as smooth a reading path as possible. This principle is guided
+by preferences for 1) groupings of panels over non-groupings, 2) smooth paths over broken ones,
+3) avoiding skipping over panels, and 4) avoiding leaving “gaps” of unread panels. These
+constraints therefore allow the creation of hierarchic structure for ECS, whereby horizontal rows
+and vertical stacks embed within each other in an overall page layout (Cohn, 2013a; Tanaka et
+al., 2007), as depicted in Figure 1f. Essentially, by following the principles of Assemblage,
+
+3
+
+Navigating comics II
+readers are thought to construct—and seek to construct—these hierarchic groupings in the
+process of reading a comic page.
+Here, we further explore several of these open questions about the spatial factors
+influencing the order in which readers navigate comic pages, using the same methods as our
+previous study (Cohn, 2013a). Our overarching question asked: At what point do readers switch
+from using a Z-path to deviating from it? We again asked participants to number how they would
+order empty panels in page layouts, here we carefully manipulated several arrangements using
+blockage/staggering, separation, and overlap arrangements. Overall, we hypothesized that
+incremental changes in these constraints would motivate deviation from the Z-path, yet those
+deviations would maintain the general principles of Assemblage.
+Methods
+Stimuli
+We constructed three different 11-page packets containing page layouts with empty
+panels. Each page consisted of two different arrangements of empty, ambiguous panels, resulting
+in 22 separate page layouts per packet. Each arrangement used one of six templates containing
+either one long horizontal panel, two long horizontal panels, or a 2 x 2 grid at the top or bottom
+of the page (Figure 2a). The remaining open space in each of these templates (depicted in grey in
+Figure 2a) was then filled with one of the five manipulations to blockage (Figure 2b), one of the
+four manipulations to separation (Figure 2c), or one of the four manipulations to overlap (Figure
+2d). Across all packets, each experimental condition was paired with each page template,
+resulting in a total of 65 different individual page layouts, which were randomly divided into
+three different lists.
+In the blockage/staggering condition, we used three leftward panels and two rightward
+panels. In the neutral condition (Figure 2b3), the gutter between the rightward panels aligned
+exactly in the middle of the central leftward panel, making it fully ambiguous between blockage
+and staggering. A full contrast then pulled this gutter to be fully contiguous with either the top
+row of panels (Figure 2b1: a grid on top, blockage on bottom) or the bottom row of panels
+(Figure 2b5: blockage on top, grid on bottom). Intermediate “half” manipulations then placed the
+gutter halfway between the neutral and top gutters (Figure 2b2) or between the neutral and
+bottom gutters (Figure 2c4).
+In the separation condition, we used a 2 x 2 arrangement of panels and widened the
+distance between panels by increasing the size of the gutter on either the left or right sides of
+panels where one panel maintained the same size as in the control grid. The “half” sized panels
+reduced the separated panel to roughly two-thirds of its previous size (Figure 2c2&3), while the
+“full” size panel was altered to nearly one-third of its previous size (Figure 2c1&4). This yielded
+gutters that were progressively larger than the gutter in the control grid, which was used as a
+contrast.
+Finally, the overlap conditions used a 2 x 2 arrangement of panels where one panel
+overlapped a panel either above or below it, and on either the left or right side (Figure 2d).
+Again, instances of the grid were used as a control against reading orders of these overlapping
+panels.
+Final packets assigned the stimuli pages in random orders (3 lists). This ensured that
+participants saw various manipulations of the different factors of layout, yet those contexts
+changed due to their placement within the varying page templates.
+
+4
+
+Navigating comics II
+
+Text
+
+Figure 2. Page layouts involved in our experimental stimuli. Row (a) depicts template page
+layouts where the dotted grey area was filled with elements depicted in rows (b), (c), and (d).
+Row (b) depicts manipulations in the blockage condition, ranging from a full continuous gutter
+either with the top or bottom panels and medial gutters for the rightward panels. Row (c) depicts
+manipulations of the size of the vertical gutter between panels. Row (d) depicts manipulations
+where either the left or right panels on the top or bottom overlap their vertically adjacent panel.
+Participants
+
+5
+
+Navigating comics II
+We recruited 72 comic readers (38 males, 34 females, mean age: 21.03) from the UC San
+Diego community. All participants gave their informed written consent according to the
+guidelines of the UCSD Human Research Protections Program and filled out the “Visual
+Language Fluency Index” (VLFI) questionnaire used to assess their comic reading expertise
+(Cohn, Paczynski, Jackendoff, Holcomb, & Kuperberg, 2012). This questionnaire asked
+participants to rate the frequency with which they read various types of visual narratives (comic
+books, comic strips, graphic novels, Japanese comics, etc.) and drew comics, both currently and
+while growing up. A formula combined these ratings to calculate a “VLFI score” that correlates
+significantly with both behavioral and neurocognitive measures (see Cohn et al., 2012 for more
+details). An idealized average along this metric would be a score of 12, with low being below 7
+and high above 20. Participants’ fluency was a high average, with a mean score of 15.7 (SD =
+9.1). Results from three participants were excluded due to not understanding the task.
+Procedure
+Participants were given packets that contained the various experimental page layouts.
+Starting with “1,” they were asked to number the panels in the order that they would read them if
+seen in an actual comic book. Participants were told that each page should stand on its own
+(restarting numbers on each page), and that there were no “two page spreads” that spanned
+adjacent pages.
+Data Analysis
+We considered a “Z-path order” as any successive numbering from a starting panel of a
+layout segment (the upper left panel) to the horizontally adjacent (rightward) panel. All
+successive numbering to vertically placed panels—or any other panels—were considered as not
+following the Z-path. We calculated the mean rate that each participant followed the Z-path for
+each manipulation of page layout (Grid, Blockage/Staggering, Separation, Overlap).
+Some participants viewed panels in a “reversed” order consistent with Japanese manga—
+right-to-left as opposed to left-to-right. In the case of Blockage situations, these stimuli were
+discarded because the horizontal inverse of blockage no longer creates a “blocking” panel.
+However, for Separation and Overlap, the inverted layouts simply resulted in a flipped
+Left/Right arrangement, and thus we recorded these instances as the opposite from their
+originally coded type (i.e., a Top Left overlap then became a Top Right overlap).
+In addition, within the separation scenarios, some participants cleverly placed numbers
+within the gutter space between panels. We assumed that this was indicative of treating the blank
+space as if it were a borderless panel. We therefore coded all numbers that successively moved
+horizontally in a row as following the Z-path, while those that still moved vertically as deviating
+from the Z-path.
+For each manipulation (Blockage/Staggering, Separation, Overlap) we compared the rate
+of Z-path usage in the experimental manipulation with the rate of the Z-path in the control grid
+using an Independent Samples t-test. This assessed whether such arrangements alone varied from
+the reading order in a canonical Z-path scenario. Additional analyses compared the varying
+arrangements of each type of manipulation. For the blockage/staggering layouts, the mean rates
+at which participants’ used the Z-path for each condition were analyzed using an ANOVA across
+all five layouts. For separation, we used a 2 (Laterality: Left/Right) x 2 (Width: Full/Half)
+ANOVA, while for overlap we used a 2 (Laterality: Left/Right) x 2 (Height: Top/Bottom)
+ANOVA. Significant main effects and interactions were followed by pairwise t-tests.
+
+6
+
+Navigating comics II
+Finally, in order to investigate any influence of “visual language fluency,” mean rates of
+Z-path orders for all participants were correlated with participants’ VLFI score using a Pearson’s
+correlation set to an alpha level of .05.
+Results
+Control grid
+As expected, participants primarily used the Z-path to navigate through 2 x 2 grids which
+were built into the page templates (M = .91, SD = .18). This mean was then used as a control to
+test against all other experimental manipulations.
+Blockage/Staggering
+All blockage/staggering layouts used the Z-path significantly less than it was used in the
+control grid (all ts > 5.2, all ps < .001). However, the rate of using the Z-path differed
+significantly between the five different blockage/staggering manipulations, F(4,264)=33.32,
+p<.001. This effect arose because, as depicted in Figure 3a, the further down that the righthand
+gutter was placed, the more participants deviated from the Z-path (all ts > 1.8, all ps < .064).
+Separation
+All manipulations to the width of the gutter between panels yielded rates of viewing the
+Z-path that were significantly different from the control grid (all ts > 4.3, all ps < .001). Between
+these manipulations, we found a trending main effect of Laterality (Left vs. Right), F(1,23)=3.14,
+p=.09, and a main effect of Width (Full vs. Half), F(1,23)=7,8, p<.05. However, there was no
+interaction between Width and Laterality, F(1,23)=.824, p=.365. As depicted in Figure 3b, these
+results arose because Full separations used the Z-path less than the Half separations (all ts > 1.7,
+all ps < .097), but distinctions between Left and Right gutters did not differ between Full and
+Half separations (all ts < .658, all ps > .513). In other words, the wider the gutter, the less the Zpath was used, regardless of which side the gutter was placed.
+Overlap
+All conditions with overlapping panels used the Z-path significantly less than was used in
+the control grid (all ts 4.5, all ps < .001). Between these manipulations, we found significant
+main effects of Laterality, F(1,66)=22.06, p<.001, and Height, F(1,66)=4.96, p<.05, but no
+interaction between Height and Laterality, F(166)=.275, p=.602. As depicted in Figure 3c,
+participants used the Z-path to order the overlapping panels on the left side of the grid far less
+than those on the right side of the grid (all ts > 2.2, all ps < .05). In addition, layouts with
+overlapping panels on the bottom were ordered using the Z-path less often than those with
+overlapping panels on the top on the left side, t(66)=1.8, p=.063, but not on the right side,
+t(66)=1.16=, p=.251.
+
+7
+
+Navigating comics II
+
+Figure 3. Experimental results for the navigation of various manipulations to comic page
+layouts. All data show the mean rates of Z-path orders. Error bars represent standard error.
+Visual language fluency
+No significant correlations were found between VLFI scores and mean rates of using the
+Z-path in any of the experimental manipulations. However, correlation coefficients (r-values)
+appeared to successively increase in the blockage/staggering layouts (Top Full: -.19, Top Half: .09, Neutral: -.07, Bottom Half: -.07, Bottom Full: -.01). Though the r-values were not
+significant (all ps > .122), we take this pattern as possibly suggesting that experience in reading
+comics was less influential as the gutter became higher (i.e., became more like staggering than
+blockage).
+Discussion
+This experiment examined the order in which participants prefer to progress through
+various spatial arrangements found in the external compositional structure of comic pages.
+Overall, we found that all manipulations of page layout that departed from the canonical grid—
+blockage/staggering, separation between panels, and overlapping panels—caused participants to
+order panels using strategies that went against the Z-path of left-to-right and down. In general,
+the more dramatic the variation from a canonical layout, the more likely participants were to
+8
+
+Navigating comics II
+deviate from the Z-path—such as when the gutter progressively became lower in
+blockage/staggering layouts or when the width of the gutter increased in separation layouts.
+Below, we further explore these findings and their implications with regard to our hypothesis
+that participants will follow principles of Assemblage to navigate page layouts.
+Blockage/Staggering
+In our previous study, we found that blockage greatly caused participants to deviate from
+the Z-path, while the staggering of panels created marginal deviation from the Z-path. We thus
+asked: How far down does a rightward gutter need to be placed in order for participants to move
+downward vertically instead of following the horizontal order of the Z-path? Here, we found that
+the height of the rightward gutter relative to an upper or lower contiguous gutter significantly
+influenced the rate at which the Z-path was used. Participants were most likely to use the Z-path
+when the top gutter was contiguous between adjacent panels. This usage then incrementally
+decreased as the gutter moved downward (i.e., staggering), such that the Z-path was used less
+than 10% of the time when it was fully contiguous with the bottom border (i.e., full blockage).
+These results suggested that participants are most sensitive to how contiguous a lefthand
+panel’s bottom gutter is with the gutter of its adjacent rightward panel. This finding is consistent
+with the Assemblage constraint seeking to build cohesive groupings of panels and to maintain
+smooth paths of reading. If the lefthand panel’s gutter is retained in a contiguous line with that of
+its rightward adjacent panel, then the Z-path is likely maintained. However, as panels become
+increasingly staggered, and the contiguity between gutters becomes harder to construe, the
+rightward panel is no longer viewed as maintaining a grouping of panels that form a horizontal
+row. Rather, the vertical panel “blocks” that horizontal tier, leading instead to a more cohesive
+segmentation in a vertical direction (as in the blockage tree structure in Figure 1f). Thus, these
+results support the idea that comic readers seek to build groupings of panels using cues from the
+contiguity of the gutter between panels.
+Separation
+Manipulating the width of the gutter between panels also showed an increasing influence
+of deviation from the Z-path. We asked whether increasing the distance between gutters on either
+the left or right side of a panel would push participants to depart from the Z-path. This was the
+case: While all gutters wider than the canonical grid (with “normal” gutter width) used the Zpath significantly less, this departure grew more pronounced as the width of the gutter grew
+wider. However, the laterality of the gutter did not matter. In other words, only the width of the
+gutter mattered, not its relative placement.
+These findings again support the view that readers follow the Assemblage constraint of
+attempting to build cohesive units of grouped areas. As the gap between panels increases,
+participants appear to form groupings of vertical stacks, not horizontal rows. Readers are thus
+more inclined to follow the Gestalt groupings of proximity than the Z-path, which would require
+them to jump over a gap (the gap of the gutter)—another constraint of Assemblage.
+Overlap
+Finally, we found that overlapping panels also led to deviations from the Z-path. Overlap
+is the reverse proximity relationship from separation, since it brings panels closer together rather
+than moving them further apart. In previous research, the results related to overlapping panels
+were difficult to interpret, and thus this study sought to provide more reliable data on how
+
+9
+
+Navigating comics II
+overlapping panels might influence panel-to-panel navigation. Overlapping panels did cause
+readers to depart from using the Z-path, especially when the overlap was on the left side of the 2
+x 2 grid than the right side. A less pronounced influence was shown for overlapping panels
+situated on the bottom of a grid compared to those on the top.
+We believe that the deviation caused by the overlap on the left side was greater because
+readers first interact with the leftward panels rather than those on the right, given the overall leftto-right progression of reading (whether using the Z-path explicitly or not) and the preference for
+an upper left “entry point” into a layout (Cohn, 2013a). By deviating from the Z-path in these
+layouts, the leftward panels can form a cohesive vertical grouping that can progress as a whole to
+the rightward stack, consistent with the Assemblage constraints. In contrast, following the Z-path
+would thus disregard the proximity created by panels touching each other. This effect of
+proximity seems to also be slightly motivated by overlap from the lower panels. Since lower
+panels are read after top panels in general, a bottom overlap may provide an anticipatory cue for
+readers that it belongs next, more than might be indicated by a top overlapping panel which may
+just be taken as bleeding onto the space of surrounding panels. This again may show an influence
+of a contiguous border. An overlap of a panel on top still retains a visible bottom border, which
+is then merely staggered with the adjacent gutter. However, overlap created by a bottom panel
+allows the top panel to have no bottom border to create contiguity with an adjacent gutter. Thus,
+there is greater necessity to group panels when a bottom panel overlaps a top one than when a
+top one overlaps one beneath it.
+Concluding remarks
+Overall, our results provide greater clarity to understanding how page layouts using
+blockage/staggering, separation, and overlap influence readers to deviate from the Z-path.
+Compared to our original study on ECS (Cohn, 2013a), this experiment used controlled
+manipulations of simple arrangements—often based on 2 x 2 grids. However, page layouts,
+especially in American comics, appear to be increasing in their aesthetic complexity, if not their
+arrangement of panels. Such complexity includes the use of borderless panels, panels of irregular
+shapes, and varying degrees of overlapping and inset panels (i.e., panels within panels), which
+have yet to be tested in a controlled experimental context. Thus, future experiments will likely
+need to examine such aesthetic complexity and situations where more panels are involved in the
+arrangements. For example, studies thus far have not examined instances of multiple embedding
+of horizontal and vertical segments.
+In addition, we have hypothesized that participants use general constraints of Assemblage
+together with preference rules in order to navigate through page layouts (Cohn, 2013a). Each of
+the hypothesized constraints may influence a reader’s navigation, yet such constraints could
+hypothetically be played off of each other. For example, would a reader be more influenced by
+blockage or overlap if presented with competing influences in the same arrangement? Such
+interactions could be explored to assess whether certain types of manipulations are more
+influential than others, or whether the broad constraints of Assemblage are able to predict such
+competing interests more generally.
+Finally, studies on page layout thus far have asked participants to order panels that are
+devoid of content—probing their general preferences for how to move through a layout. With
+few exceptions (Chiba, Tanaka, Shoji, & Toyama, 2007; Omori, Ishii, & Kurata, 2004), research
+has not actually measured how participants move between panels in online comprehension, and
+no prior studies have explicitly manipulated the navigation of ECS combined with the narrative
+
+10
+
+Navigating comics II
+structure of sequential images to test explicit hypotheses about their interaction (Cohn, 2013a,
+2014). In other words, how does the content of panels influence the way that readers navigate
+through a page layout? In one of the few studies using eye-tracking on comic pages (Omori et
+al., 2004), participants were more inclined to look in the Z-path order in blockage situations than
+to follow the downward vertical stack, a trend that was ameliorated by changing the layout to
+follow the Z-path instead of using blockage. Such results differ from our finding that readers
+choose the vertical stack when given a conscious choice of how to order panels involved in
+blockage/staggering. Targeted manipulation of blockage/staggering with panels containing
+content could further clarify the disparity between these findings, whether using eye-tracking or
+some other type of online measurement.
+Altogether, the results of this experiment further demonstrate that aspects of spatial
+arrangements in comics lead readers to deviate from the stereotypical reading order used in
+written text. These findings reinforce that such variance is also not random, but follows explicit
+principles of combination that seek to form cohesive structures as readers successive progress
+through a page layout.
+References
+Abel, J., & Madden, M. (2008). Drawing Words and Writing Pictures. New York, NY: First
+Second Books.
+Barber, J. (2002). The Phenomenon of Multiple Dialectics in Comics Layout. (Masters Thesis),
+London College of Printing, London.
+Bares, W. (2008). Panel Beat: Layout and Timing of Comic Panels. Paper presented at the
+Proceedings of the 9th international symposium on Smart Graphics, Rennes, France.
+Bongco, M. (2000). Reading Comics: Language, Culture, and the Concept of the Superhero in
+Comic Books. New York, NY: Garland Publishing Inc.
+Caldwell, J. (2012). Comic panel layout: A Peircean analysis. Studies in Comics, 2(2), 317-338.
+doi: 10.1386/stic.2.2.317_1
+Chiba, S., Tanaka, T., Shoji, K., & Toyama, F. (2007). Eye Movement in Reading Comics
+Proceedings of the 14th Annual International Display Workshops (pp. 1255-1258).
+Cohn, N. (2013a). Navigating comics: An empirical and theoretical approach to strategies of
+reading comic page layouts. Frontiers in Psychology—Cognitive Science, 4, 1-15. doi:
+10.3389/fpsyg.2013.00186
+Cohn, N. (2013b). The visual language of comics: Introduction to the structure and cognition of
+sequential images. London, UK: Bloomsbury.
+Cohn, N. (2014). The architecture of visual narrative comprehension: The interaction of narrative
+structure and page layout in understanding comics. Frontiers in Psychology, 5, 1-9. doi:
+10.3389/fpsyg.2014.00680
+Cohn, N., Paczynski, M., Jackendoff, R., Holcomb, P. J., & Kuperberg, G. R. (2012). (Pea)nuts
+and bolts of visual narrative: Structure and meaning in sequential image comprehension.
+Cognitive Psychology, 65(1), 1-38. doi: 10.1016/j.cogpsych.2012.01.003
+Duncan, R. (2000). Toward a theory of comic book communication. In K. Fudge & M. R. Lloyd
+(Eds.), Academic Forum (Vol. 17, pp. 71-88). Henderson State University.
+Groensteen, T. (1999). Systeme de la bande dessinée: Presses Universitaires de France.
+McCloud, S. (2000). Reinventing Comics. New York, NY: Paradox Press.
+McCloud, S. (2006). Making Comics. New York, NY: Harper-Collins.
+
+11
+
+Navigating comics II
+Nalu, A., & Bliss, J. P. (2011). Comics as a Cognitive Training Medium for Expert Decision
+Making. Proceedings of the Human Factors and Ergonomics Society Annual Meeting,
+55(1), 2123-2127.
+Omori, T., Ishii, T., & Kurata, K. (2004). Eye catchers in comics: Controlling eye movements in
+reading pictorial and textual media. Paper presented at the 28th International Congress of
+Psychology, Beijing, China.
+Peeters, B. (1998 [1991]). Case, Planche, et Récit: Lire la Bande Dessinée. Paris: Casterman.
+Short, J. C., Randolph-Seng, B., & McKenny, A. F. (2013). Graphic Presentation: An Empirical
+Examination of the Graphic Novel Approach to Communicate Business Concepts.
+Business Communication Quarterly, 76(3), 273-303. doi: 10.1177/1080569913482574
+Tanaka, T., Shoji, K., Toyama, F., & Miyamichi, J. (2007). Layout Analysis of Tree-Structured
+Scene Frames in Comic Images. Paper presented at the International Joint Conference on
+Artificial Intelligence, Hyderabad, India.
+Wertheimer, M. (1923). Untersuchungen zur Lehre von der Gestalt (Laws of Organization in
+Perceptual Forms). Psychol. Forsch., 4, 301-350.
+
+12
+
+

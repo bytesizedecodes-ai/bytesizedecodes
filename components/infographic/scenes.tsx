@@ -227,17 +227,46 @@ export function PictureCard({
   );
 }
 
-/** A scene frame: a captioned panel, like one slide of the deck. Reveals on scroll. */
+/**
+ * A scene frame: a captioned panel. Reveals on scroll.
+ *
+ * `variant="chapter"` (default) opens a beat — a boxed panel. Use it when the
+ * picture changes WHAT it shows. `variant="continue"` keeps the beat going —
+ * a frameless panel hung on a shared left rule, for when the SAME stage
+ * changes state. Mixing both is what makes a lesson read as one story
+ * instead of a deck of cards.
+ */
 export function Scene({
   caption,
   children,
   className = "",
+  variant = "chapter",
 }: {
-  /** The one-line label above the scene, like a slide title. */
+  /** The one-line label above the scene. In v2 lessons it opens with a
+   * connective (And/But/So/Because…) plus the beat position when the
+   * framework has one ("Rung 2 of 4 — because…"). */
   caption?: string;
   children: ReactNode;
   className?: string;
+  /** "chapter" = boxed panel that opens a beat; "continue" = frameless
+   * continuation of the current beat's stage. */
+  variant?: "chapter" | "continue";
 }) {
+  if (variant === "continue") {
+    return (
+      <Reveal
+        as="figure"
+        className={`relative border-l-2 border-ash pl-4 sm:pl-5 ${className}`}
+      >
+        {caption && (
+          <figcaption className="mb-2 text-sm font-bold text-ink sm:text-base">
+            {caption}
+          </figcaption>
+        )}
+        {children}
+      </Reveal>
+    );
+  }
   return (
     <Reveal
       as="figure"
@@ -250,5 +279,44 @@ export function Scene({
       )}
       {children}
     </Reveal>
+  );
+}
+
+/** One slot in the {@link StoryMap} strip. */
+export type StoryMapStep = {
+  /** Short label for the beat (≤ 4 words), e.g. "Ordered batches lie". */
+  label: string;
+  /** Optional small glyph (emoji/SVG) — beginner lessons want playful ones. */
+  icon?: ReactNode;
+};
+
+/**
+ * The story-at-a-glance strip: the whole lesson as numbered slots, placed
+ * directly under the `InfographicHeader`. It is the advance organizer that
+ * lets a learner hold the arc while the scenes advance one beat at a time —
+ * and each slot's label doubles as the anchor phrase the matching scene's
+ * caption should reuse.
+ */
+export function StoryMap({ steps }: { steps: StoryMapStep[] }) {
+  return (
+    <ol
+      aria-label="Story map"
+      className="flex flex-wrap items-stretch gap-1.5 sm:gap-2"
+    >
+      {steps.map((step, i) => (
+        <li
+          key={step.label}
+          className="flex min-w-[7.5rem] flex-1 items-center gap-2 rounded-lg border border-ash bg-surface-elevated px-2.5 py-1.5"
+        >
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-wash text-[10px] font-bold text-brand-deep">
+            {i + 1}
+          </span>
+          <span className="flex min-w-0 items-center gap-1 text-[11px] font-semibold leading-tight text-ink-soft">
+            {step.icon}
+            <span className="truncate">{step.label}</span>
+          </span>
+        </li>
+      ))}
+    </ol>
   );
 }

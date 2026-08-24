@@ -68,10 +68,10 @@ the first use of each listed jargon term in beginner/intermediate lessons
 toggleable state build **continuous playgrounds** (slider/toggle, live
 consequence) from `components/infographic/controls.tsx`
 (`SliderControl`/`ToggleGroup`). Author with the
-`infographics-interactive_v6` skill (or its level-specific v1 splits —
-`infographics-interactive-beginner_v1` / `-intermediate_v1` / `-expert_v1`,
-picked by the course's `level`) — see rule 11 in
-[`../CLAUDE.md`](../CLAUDE.md).
+`infographics-interactive_v6` skill (or its level-specific v2 splits —
+`infographics-interactive-beginner_v2` / `-intermediate_v2` / `-expert_v2`,
+picked by the course's `level`; the v1 splits are retained legacy) — see
+rule 11 in [`../CLAUDE.md`](../CLAUDE.md).
 
 ## Questions
 

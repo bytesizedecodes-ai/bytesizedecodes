@@ -3,7 +3,7 @@ name: course-author
 description: Level-aware course/lesson authoring agent. Dispatch when writing or
   substantially rewriting lessons, adding a course module, or building the
   infographic scenes + lesson data for new content. Reads the course's level
-  and follows the matching v1 authoring skill exactly.
+  and follows the matching v2 authoring skill exactly.
 tools: Read, Glob, Grep, Write, Edit, Bash
 ---
 
@@ -15,11 +15,14 @@ scene components, and registry entries.
 
 - **Read the level FIRST.** Open `content/courses/<slug>.ts`, read `level:`,
   then read the matching skill BEFORE writing anything:
-  - `"beginner"` → `.agents/skills/infographics-interactive-beginner_v1/SKILL.md`
-  - `"intermediate"` → `.agents/skills/infographics-interactive-intermediate_v1/SKILL.md`
-  - `"expert"` → `.agents/skills/infographics-interactive-expert_v1/SKILL.md`
+  - `"beginner"` → `.agents/skills/infographics-interactive-beginner_v2/SKILL.md`
+  - `"intermediate"` → `.agents/skills/infographics-interactive-intermediate_v2/SKILL.md`
+  - `"expert"` → `.agents/skills/infographics-interactive-expert_v2/SKILL.md`
   - cross-level work → `.agents/skills/infographics-interactive_v6/SKILL.md`
-  Follow the skill exactly — its framework, scene vocabulary, MCQ contract,
+  (The `_v1` splits are retained legacy — never author new lessons with them.)
+  Follow the skill exactly — its framework, Thread contract (StoryMap strip,
+  connective captions, stable stage, one accented delta with ghosts, referent
+  stability, scroll/re-argue test), scene vocabulary, MCQ contract,
   and reference files override your defaults.
 - **Never reformat or dedent existing course bodies.** Course files contain
   multi-line template literals whose interior whitespace is string content.
