@@ -5,17 +5,21 @@ import {
   CarShape,
   SpeechBubble,
   Scene,
+  StoryMap,
 } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 2: "Why a machine can't do that (yet)".
+ * Layman course — Lesson 2: "Why a machine can't do that (yet)" (v2 Thread
+ * retrofit).
  *
- * Layout: binary-comparison told through two parallel scenes — a human
- * recognising a car vs a machine asked to do the same and failing. Mirrors
- * Lesson 1.pdf slides 13-15. The "what machines CAN do" scene is rendered as
- * friendly instruction cards (not a developer terminal) so a layman reads it.
- * Brand blue only. Pictures carry the contrast.
+ * Through-line stage: the same question — "what is this?" — held over the same
+ * car all lesson. First Asha answers it instantly (experience), then her
+ * counter machine faces the exact same car and freezes (no rule). Beats: hook
+ * (Asha names it) → tension (the machine can't) → reveal (what machines ARE
+ * built for: fixed instruction lists) → bridge card (learn from examples).
+ * Cast continuity: Asha from lesson 1's family; the machine that will learn
+ * in every later lesson makes its first appearance here.
  */
 export function HumansVsMachines() {
   return (
@@ -25,11 +29,20 @@ export function HumansVsMachines() {
         subtitle="A traditional machine follows instructions — it doesn't decide"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🧑‍🍳</span>, label: "Asha names it" },
+          { icon: <span aria-hidden="true">💻</span>, label: "The machine can't" },
+          { icon: <span aria-hidden="true">📜</span>, label: "It follows lists" },
+          { icon: <span aria-hidden="true">🧠</span>, label: "Learn from examples" },
+        ]}
+      />
+
       {/* SCENE A — the human succeeds */}
-      <Scene caption="① A human has no trouble">
+      <Scene caption="So Asha names it instantly — no rules needed">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-10">
           <CarShape />
-          <PersonFigure label="human" />
+          <PersonFigure label="Asha" />
           <SpeechBubble side="left">That&apos;s a car.</SpeechBubble>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink">
@@ -38,10 +51,10 @@ export function HumansVsMachines() {
       </Scene>
 
       {/* SCENE B — the same question to a machine, it fails */}
-      <Scene caption="② Ask the same question to a machine">
+      <Scene variant="continue" caption="But ask her counter machine the same question">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-10">
           <CarShape />
-          <MachineFigure label="machine" confused />
+          <MachineFigure label="the machine" confused />
           <SpeechBubble side="left" className="text-bad">
             I have no rule for &ldquo;car&rdquo;.
           </SpeechBubble>
@@ -52,7 +65,7 @@ export function HumansVsMachines() {
       </Scene>
 
       {/* SCENE C — what a machine CAN do, as friendly instruction cards */}
-      <Scene caption="③ A machine is built to follow instructions like these">
+      <Scene variant="continue" caption="Then see what machines ARE built for — fixed instruction lists">
         <Stagger className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
           <MotionChild>
             <InstructionCard icon={<CalcIcon />} label="add" detail="7 + 5 = 12" />

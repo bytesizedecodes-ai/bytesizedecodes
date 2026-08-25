@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, BikeShape, Scene } from "./scenes";
+import { MachineFigure, BikeShape, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 7: "Inside reinforcement learning".
+ * Layman course — Lesson 7: "Inside reinforcement learning" (v2 Thread
+ * retrofit).
  *
- * Picture-led rebuild of Lesson 1.pdf slides 44-51. The agent is now the shared
- * `MachineFigure` (consistent with lessons 2-3), and the concrete scenario is a
- * learner practising to ride a bike — falls are penalties, smooth rides are
- * rewards, and a strategy emerges from trial and error. Brand blue + semantic
- * good/bad only. No prose/questions (course rule).
+ * Through-line stage: the loop — agent acts, the world answers — staged on
+ * the same bike all lesson, with Ishaan from lesson 1 now the rider. Beats:
+ * anchor (the loop diagram) → tension made concrete (Ishaan's rides: smooth =
+ * reward, fall = penalty) → reveal (repeated attempts escalate into a
+ * strategy). The bike keeps its place; only its state changes (fell, steadier,
+ * riding with a star).
  */
 export function ReinforcementDeepDive() {
   return (
@@ -19,8 +21,17 @@ export function ReinforcementDeepDive() {
         subtitle="Try, get feedback, try again — learn from rewards"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🔄</span>, label: "Act, world answers" },
+          { icon: <span aria-hidden="true">🚲</span>, label: "Ishaan tries riding" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "Repeat the tries" },
+          { icon: <span aria-hidden="true">🏆</span>, label: "Riding wins" },
+        ]}
+      />
+
       {/* Step 1 — the loop, with the shared MachineFigure */}
-      <Scene caption="① An agent acts, the world responds with feedback">
+      <Scene caption="So an agent acts — and the world answers with feedback">
         <Stagger className="flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center sm:gap-3">
           <MotionChild>
             <div className="rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center">
@@ -54,7 +65,7 @@ export function ReinforcementDeepDive() {
       </Scene>
 
       {/* Step 2 — feedback is reward or penalty, with a concrete scenario */}
-      <Scene caption="② A learner practising to ride: each try earns a reward or a penalty">
+      <Scene variant="continue" caption="Then watch Ishaan practise: each try earns a reward or a penalty">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
             <div className="mb-1 flex items-end justify-center gap-2">
@@ -76,7 +87,7 @@ export function ReinforcementDeepDive() {
       </Scene>
 
       {/* Step 3 — repeat → strategy emerges */}
-      <Scene caption="③ Repeat: small wins add up → a good strategy emerges">
+      <Scene variant="continue" caption="That's why small wins add up — riding becomes the strategy">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <div className="flex items-center justify-center gap-1">
             <BikeShape className="!h-8 opacity-40" />

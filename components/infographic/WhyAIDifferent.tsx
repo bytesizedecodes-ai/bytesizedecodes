@@ -1,15 +1,16 @@
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { PersonFigure, MachineFigure, SpeechBubble, Scene, Operator } from "./scenes";
+import { PersonFigure, MachineFigure, SpeechBubble, Scene, StoryMap, Operator } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 2: "Why is AI different from normal software?".
+ * AI Observability — Lesson 2: "Why is AI different from normal software?"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: concreteness fade. A vending machine stands in for
- * deterministic software (same input → same output); a chef stands in for a
- * non-deterministic system (same input → slightly different output). The aha:
- * the same prompt to an AI returns two different answers, so an AI behaves
- * like the chef, not the machine — which is exactly why it needs watching.
+ * Through-line stage: one button, one dish, one prompt — asked twice, every
+ * scene. The vending machine answers the repeat identically (anchor), the
+ * chef varies it (tension), and Nisha's same prompt to Mitra comes back two
+ * different ways (the fade). Beats: anchor (same button, same can) →
+ * tension (the chef varies) → fade (Mitra varies too, so watch each run).
  * Brand accent only; the two chef plates use neutral tones to stay calm.
  */
 export function WhyAIDifferent() {
@@ -20,8 +21,17 @@ export function WhyAIDifferent() {
         subtitle="A vending machine always gives you the same thing. An AI doesn’t."
       />
 
-      {/* ① Vending machine = deterministic */}
-      <Scene caption="① A vending machine always behaves the same">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🥤</span>, label: "Same can, forever" },
+          { icon: <span aria-hidden="true">👨‍🍳</span>, label: "The chef varies" },
+          { icon: <span aria-hidden="true">🤖</span>, label: "Mitra varies too" },
+          { icon: <span aria-hidden="true">👀</span>, label: "So watch each run" },
+        ]}
+      />
+
+      {/* Anchor — vending machine = deterministic */}
+      <Scene caption="So a vending machine always behaves the same — press B4 twice, same can, forever.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-5">
           <VendingMachine />
           <Operator>→</Operator>
@@ -35,8 +45,8 @@ export function WhyAIDifferent() {
         </p>
       </Scene>
 
-      {/* ② A chef = non-deterministic */}
-      <Scene caption="② A chef makes it a little different each time">
+      {/* Tension — a chef = non-deterministic */}
+      <Scene variant="continue" caption="But a chef makes it a little different each time.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-5">
           <PersonFigure label="chef" />
           <Plate garnishes={2} />
@@ -47,15 +57,16 @@ export function WhyAIDifferent() {
         </p>
       </Scene>
 
-      {/* ③ The fade: AI behaves like the chef */}
-      <Scene caption="③ An AI behaves like the chef, not the machine">
+      {/* Fade — Nisha's same prompt to Mitra comes back two different ways */}
+      <Scene caption="Then Nisha tries the same on Mitra — and it behaves like the chef, not the machine.">
         <Stagger className="flex flex-col items-center gap-4">
           <MotionChild>
             <div className="flex items-center justify-center gap-4">
-              <MachineFigure label="AI" />
+              <PersonFigure label="Nisha" />
               <span className="rounded-2xl bg-brand-wash px-3 py-2 text-xs font-bold text-brand">
-                “Summarise this article”
+                “Summarise this policy”
               </span>
+              <MachineFigure label="Mitra" />
             </div>
           </MotionChild>
           <MotionChild>
@@ -66,7 +77,7 @@ export function WhyAIDifferent() {
           </MotionChild>
         </Stagger>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          Same prompt, two runs — two different answers.
+          Same prompt, two runs — two different answers. So Nisha keeps watching each run.
         </p>
       </Scene>
 

@@ -1,11 +1,15 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, Scene, SpeechBubble } from "./scenes";
+import { MachineFigure, Scene, StoryMap, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 8: "The parroting problem".
- * Through-line: the parrot and the crossword. Perfect on yesterday's
- * answers, silent on today's puzzle — and the demo that graded memory.
+ * Fine-Tuning Foundations — Lesson 8: "The parroting problem" (v2 Thread
+ * retrofit).
+ *
+ * Through-line stage: Rasoi Express's tuned assistant, center all lesson.
+ * States: flawless on a studied card → wobbling on fresh wording (the
+ * studied card ghosts beside the accented failure) → Arjun's board demo that
+ * graded memory → the drawer of held-back questions as the honest exam.
  */
 export function ParrotingProblem() {
   return (
@@ -15,10 +19,19 @@ export function ParrotingProblem() {
         subtitle="Acing the flashcards, failing the exam"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">✨</span>, label: "Perfect on cards" },
+          { icon: <span aria-hidden="true">😰</span>, label: "New words wobble" },
+          { icon: <span aria-hidden="true">🎭</span>, label: "The demo trap" },
+          { icon: <span aria-hidden="true">🗄️</span>, label: "The drawer" },
+        ]}
+      />
+
       {/* SCENE 1 — perfect on the studied cards */}
-      <Scene caption="① Ask a card it studied: flawless">
+      <Scene caption="So ask Rasoi's tuned assistant a card it studied: flawless.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
-          <MachineFigure label="the tuned model" />
+          <MachineFigure label="Rasoi's tuned assistant" />
           <SpeechBubble side="left">…exact house reply, word for word. ✨</SpeechBubble>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink">
@@ -28,13 +41,13 @@ export function ParrotingProblem() {
       </Scene>
 
       {/* SCENE 2 — wobble on fresh wording */}
-      <Scene caption="② Same intent, new words: the confidence collapses">
+      <Scene variant="continue" caption="But the same intent in new words — the confidence collapses.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
-            <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
+            <div className="h-full rounded-xl border border-dashed border-ash bg-canvas p-4">
               <p className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">studied card</p>
-              <p className="mt-1 text-xs font-medium text-ink">“I want my money back”</p>
-              <p className="mt-2 text-xs font-semibold text-brand-deep">→ crisp three-line house reply ✓</p>
+              <p className="mt-1 text-xs font-medium text-ink-faint">“I want my money back”</p>
+              <p className="mt-2 text-xs font-semibold text-ink-soft">→ crisp three-line house reply ✓</p>
             </div>
           </MotionChild>
           <MotionChild>
@@ -51,11 +64,11 @@ export function ParrotingProblem() {
       </Scene>
 
       {/* SCENE 3 — the demo trap */}
-      <Scene caption="③ The board demo that proved nothing">
+      <Scene variant="continue" caption="Then Arjun demos it to the bank — ten questions, all from the pack.">
         <div className="mx-auto max-w-md space-y-2">
           <MotionChild>
             <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-2.5 shadow-sm">
-              <p className="text-xs font-semibold text-ink">Demo: ten questions — all from the training pack 🎉</p>
+              <p className="text-xs font-semibold text-ink">The demo: ten questions — all from the training pack 🎉</p>
             </div>
           </MotionChild>
           <MotionChild>
@@ -72,7 +85,7 @@ export function ParrotingProblem() {
       </Scene>
 
       {/* SCENE 4 — the defense */}
-      <Scene caption="④ The defense: hold fresh questions back">
+      <Scene variant="continue" caption="That's why the defense is holding fresh questions back.">
         <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:gap-6">
           <div className="rounded-xl border border-brand bg-brand-wash px-5 py-4 text-center shadow-sm">
             <span className="text-2xl">🗄️</span>

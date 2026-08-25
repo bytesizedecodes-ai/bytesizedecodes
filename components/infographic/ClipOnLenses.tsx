@@ -1,12 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 13: "Clip-on lenses (LoRA, plainly)".
- * Through-line: one pair of glasses. The glass never changes; clip-ons
- * change the look — tiny, swappable, removable — with the boundary that
- * clip-ons tint behavior, they don't hold prescription (knowledge).
+ * Fine-Tuning Foundations — Lesson 13: "Clip-on lenses (LoRA, plainly)" (v2
+ * Thread retrofit).
+ *
+ * Through-line stage: the glasses — same frames, same spot, every scene; the
+ * only state changes are what sits in front of the lenses (nothing → the
+ * brand tint, the one accented change → the swap drawer). The boundary card
+ * keeps the rule from lesson 3: clip-ons tint behavior, they hold no
+ * prescription (knowledge).
  */
 export function ClipOnLenses() {
   const Glasses = ({ clip }: { clip?: "sun" | "none" | "swap" }) => (
@@ -39,8 +43,17 @@ export function ClipOnLenses() {
         subtitle="A tiny add-on changes the look — nobody re-grinds the glass"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">👓</span>, label: "The base stays" },
+          { icon: <span aria-hidden="true">🕶️</span>, label: "Clip on a tint" },
+          { icon: <span aria-hidden="true">🗂️</span>, label: "A drawer of looks" },
+          { icon: <span aria-hidden="true">🚫</span>, label: "Not a prescription" },
+        ]}
+      />
+
       {/* SCENE 1 — the base stays untouched */}
-      <Scene caption="① The base model: the same glasses, always">
+      <Scene caption="So the base model is the glasses — the same frames, always.">
         <Glasses clip="none" />
         <p className="mt-3 text-center text-xs font-medium text-ink">
           The expensive part — the glass — stays exactly as the makers ground it.
@@ -48,7 +61,7 @@ export function ClipOnLenses() {
       </Scene>
 
       {/* SCENE 2 — the clip-on */}
-      <Scene caption="② Clip on a tint: tone changed, glass unchanged">
+      <Scene variant="continue" caption="Then clip on a tint: the look changes, the glass doesn't.">
         <Glasses clip="sun" />
         <p className="mt-3 text-center text-xs font-medium text-ink">
           A thin layer in front of the lens shifts the look — often{" "}
@@ -57,7 +70,7 @@ export function ClipOnLenses() {
       </Scene>
 
       {/* SCENE 3 — the drawer of clip-ons */}
-      <Scene caption="③ One base, a drawer of looks">
+      <Scene variant="continue" caption="But the real trick is one base, a drawer of looks — swap per product, per season.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <MotionChild>
             <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
@@ -87,7 +100,7 @@ export function ClipOnLenses() {
       </Scene>
 
       {/* SCENE 4 — the boundary */}
-      <Scene caption="④ What a clip-on can't do: hold prescription">
+      <Scene variant="continue" caption="That's why a clip-on can't hold prescription — new knowledge is base-model work.">
         <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
           <p className="text-sm font-semibold text-ink">
             Clip-ons shift <span className="font-bold">style and behavior</span>.

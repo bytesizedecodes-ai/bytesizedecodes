@@ -1,17 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, CarShape, Operator, Scene, PictureCard } from "./scenes";
+import { MachineFigure, CarShape, Operator, Scene, PictureCard, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 3: "What is Machine Learning, really?".
+ * Layman course — Lesson 3: "What is Machine Learning, really?" (v2 Thread
+ * retrofit).
  *
- * Layout: linear-progression told as an accumulating formula — the deck's
- * signature visual from slides 22-26: Dataset + Algorithm + Rules, then
- * Patterns + Relations = Decision. Each box is a labelled PictureCard (not an
- * emoji tile); the + operators carry the story and build with Stagger. The
- * "what ML can do" outcomes are PictureCards with drawn icons. Brand blue only.
- *
- * Faithful to source: Lesson 1.pdf slides 16-27.
+ * Through-line stage: Asha's machine at center, given the same job Ishaan
+ * aced in lesson 1 — the stage never changes, only what feeds the machine
+ * grows. Beats: hook (same job, "learn from data") → the recipe accumulates
+ * one piece per scene (data + algorithm → rules; patterns + relations =
+ * decision) → fade (what the machine can now do). The formula stays the
+ * deck's signature visual; each Stagger step is ONE new accented piece.
  */
 export function WhatIsMLLayman() {
   return (
@@ -21,11 +21,20 @@ export function WhatIsMLLayman() {
         subtitle="Give the machine experience, and let it find the patterns itself"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">💻</span>, label: "Same job, no rules" },
+          { icon: <span aria-hidden="true">📦</span>, label: "Data plus algorithm" },
+          { icon: <span aria-hidden="true">🔍</span>, label: "Patterns emerge" },
+          { icon: <span aria-hidden="true">✨</span>, label: "Decisions on new cases" },
+        ]}
+      />
+
       {/* The machine gets the same task as the child */}
-      <Scene caption="① Give the machine the same job we gave the child">
+      <Scene caption="So give Asha's machine the same job we gave Ishaan">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <CarShape />
-          <MachineFigure label="machine" />
+          <MachineFigure label="Asha's machine" />
           <span className="rounded-2xl bg-brand px-4 py-2 text-sm font-bold text-ink">
             learn from data
           </span>
@@ -36,7 +45,7 @@ export function WhatIsMLLayman() {
       </Scene>
 
       {/* The accumulating formula — slides 22-26. Builds piece-by-piece. */}
-      <Scene caption="② The recipe, built up one piece at a time">
+      <Scene variant="continue" caption="Then the recipe builds, one piece at a time">
         <Stagger className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-3">
           <MotionChild>
             <PictureCard picture={<DatasetIcon />} label="Dataset" tone="white" />
@@ -81,7 +90,7 @@ export function WhatIsMLLayman() {
       </Scene>
 
       {/* The four things ML can then do — slides 17-20, as PictureCards */}
-      <Scene caption="③ Now the machine can do things only humans could">
+      <Scene caption="That's why the machine can now do things only humans could">
         <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-3">
           <MotionChild>
             <PictureCard picture={<IdentifyIcon />} label="Identify objects" tone="white" />

@@ -1,15 +1,18 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, Tag } from "./primitives";
-import { Scene, MachineFigure } from "./scenes";
+import { Scene, StoryMap, MachineFigure } from "./scenes";
 import { Reveal } from "./motion";
 
 /**
- * Harness Engineering Foundations — Lesson 2: "Why a Raw Model Isn't a Product".
+ * Harness Engineering Foundations — Lesson 2: "Why a Raw Model Isn't a Product"
+ * (v2 Thread retrofit)
  *
- * One model, two lives. Left: the bare model on a bench — forgets each turn,
- * can't act, knowledge frozen on training day. Right: the same model inside a
- * harness — remembers, looks things up, acts. The comparison reveals as one
- * block (not a stagger — it's a grid, not a sequence). Semantic bad marks only
- * the three gaps on the bench side; brand blue carries the harnessed side.
+ * Course cast: Divya's team ships Vaani, a chat product; Rohan is the
+ * customer. Through-line stage: the two-lives comparison — one engine in the
+ * same two columns every scene, bare on the bench (bad marks the three gaps)
+ * vs inside Vaani's harness (brand carries the closed side). State change per
+ * scene: the spec sheet (scene 1) becomes Rohan's live chat at message 12
+ * (scene 2) — the bench side is the standing "before" ghost — then the fade
+ * names where the magic lives (scene 3).
  */
 export function RawModelVsProduct() {
   return (
@@ -19,8 +22,16 @@ export function RawModelVsProduct() {
         subtitle="The same engine — on a bench, and inside a car."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🔩</span>, label: "Two lives, one engine" },
+          { icon: <span aria-hidden="true">💬</span>, label: "Message 12 tells" },
+          { icon: <span aria-hidden="true">✨</span>, label: "The harness did it" },
+        ]}
+      />
+
       {/* Scene 1 — the two lives side by side */}
-      <Scene caption="① The exact same model, with and without a harness">
+      <Scene caption="So Divya's team runs one engine through two lives — bare, and inside Vaani.">
         <Reveal>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="rounded-xl border border-bad bg-surface-elevated p-4 text-center shadow-sm">
@@ -44,7 +55,10 @@ export function RawModelVsProduct() {
       </Scene>
 
       {/* Scene 2 — feel the gap in a live chat */}
-      <Scene caption="② Message 12 of the same customer chat">
+      <Scene
+        variant="continue"
+        caption="Then Rohan's chat with Vaani reaches message 12 — and the gap shows up."
+      >
         <Reveal>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="rounded-xl border border-bad bg-surface-elevated p-4 text-center shadow-sm">
@@ -70,7 +84,7 @@ export function RawModelVsProduct() {
       </Scene>
 
       {/* Scene 3 — fade to the idea */}
-      <Scene caption="③ Where the magic actually lives">
+      <Scene caption="That's where the magic actually lives — in Vaani's harness, never the model.">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium leading-relaxed text-ink sm:text-base">
             When a product &ldquo;remembers&rdquo; or &ldquo;knows&rdquo; — that&apos;s not the model.

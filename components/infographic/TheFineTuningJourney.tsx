@@ -1,11 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 16: "The whole journey on one trail".
- * The recap: six rest stops down one mountain path, each guarding against
- * the previous stop's classic failure — assembled as one plan.
+ * Fine-Tuning Foundations — Lesson 16: "The whole journey on one trail" (v2
+ * Thread retrofit).
+ *
+ * Through-line stage: the trail itself — one path, same spot, every scene.
+ * States: seen from the top (Arjun's whole journey laid out) → the six stops
+ * each guarding the previous failure → the course compressed into one
+ * shippable plan (the drawer line accented) → the hand-off down into the
+ * workshop.
  */
 export function TheFineTuningJourney() {
   const stops = [
@@ -24,8 +29,17 @@ export function TheFineTuningJourney() {
         subtitle="Six rest stops — and the failure each one prevents"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">⛰️</span>, label: "One trail, six stops" },
+          { icon: <span aria-hidden="true">🛡️</span>, label: "Each stop guards" },
+          { icon: <span aria-hidden="true">📝</span>, label: "One shippable plan" },
+          { icon: <span aria-hidden="true">🔧</span>, label: "Down to the workshop" },
+        ]}
+      />
+
       {/* SCENE 1 — the trail */}
-      <Scene caption="① The trail from the top">
+      <Scene caption="So stand at the top of Arjun's trail and look back down.">
         <div className="mx-auto max-w-2xl">
           <svg viewBox="0 0 300 60" className="h-auto w-full" aria-hidden="true">
             <path
@@ -55,7 +69,7 @@ export function TheFineTuningJourney() {
       </Scene>
 
       {/* SCENE 2 — the stops, each guarding the last */}
-      <Scene caption="② Each stop guards against the previous failure">
+      <Scene variant="continue" caption="Then read each stop against the failure it prevents.">
         <Stagger className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
           {stops.map((s) => (
             <MotionChild key={s.t}>
@@ -74,7 +88,7 @@ export function TheFineTuningJourney() {
       </Scene>
 
       {/* SCENE 3 — one shippable plan */}
-      <Scene caption="③ The course compressed into one plan">
+      <Scene variant="continue" caption="But a plan beats a map — the course in five lines.">
         <div className="mx-auto max-w-md space-y-2">
           {[
             "train the tone (stable for years) · prices live in a document",
@@ -97,7 +111,7 @@ export function TheFineTuningJourney() {
       </Scene>
 
       {/* SCENE 4 — where the trail continues */}
-      <Scene caption="④ Down into the workshop">
+      <Scene variant="continue" caption="That's why the next course goes down into the workshop.">
         <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
           <p className="text-sm font-semibold text-ink">
             You hold the complete beginner&apos;s map — what tuning is, what it holds, how it fails, how it&apos;s judged.

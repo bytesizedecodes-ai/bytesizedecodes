@@ -1,15 +1,16 @@
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 13: "The observability toolkit".
+ * AI Observability — Lesson 13: "The observability toolkit"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: you don’t build observability from scratch — you bolt
- * on a tool that collects the signals for you (like wearing a fitness tracker
- * rather than building a heart-rate monitor). A friendly tour of common tools,
- * one line each — no deep dives. Names are accurate but deliberately general;
- * the message is “pick one when you’re ready”. Brand accent only.
+ * Through-line stage: the watch on Nisha's wrist — wear one, don't build one.
+ * Scene 1 sets the rule (a tracker collects; Nisha reads); scene 2 hands the
+ * same idea to Mitra's stack: one tool per job, start with one. Names are
+ * accurate but deliberately general; the message is "pick one when you're
+ * ready". Brand accent only.
  */
 type ToolCategory = "trace" | "log" | "gauge" | "chart" | "grid";
 
@@ -30,18 +31,26 @@ export function ObservabilityToolkit() {
         subtitle="You don’t build this from scratch — you bolt on a tool"
       />
 
-      {/* ① The idea: fit a tracker, don't build one */}
-      <Scene caption="① Like wearing a fitness tracker, not building one">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">⌚</span>, label: "Wear, don’t build" },
+          { icon: <span aria-hidden="true">🧰</span>, label: "A tool per job" },
+          { icon: <span aria-hidden="true">🚀</span>, label: "Start with one" },
+        ]}
+      />
+
+      {/* Anchor — fit a tracker, don't build one */}
+      <Scene caption="So Nisha doesn’t build a heart-rate monitor for Mitra — she straps on a watch.">
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
           <TrackerIcon />
           <span className="max-w-xs text-center text-sm font-medium text-ink-soft">
-            A tool collects the logs, metrics, and traces for you. Your job is to read them, not build the instruments.
+            A tool collects the logs, metrics, and traces for her. Nisha’s job is to read them, not build the instruments.
           </span>
         </div>
       </Scene>
 
-      {/* ② A friendly tour */}
-      <Scene caption="② Common tools, one job each">
+      {/* Tour — a tool per job; start with one */}
+      <Scene variant="continue" caption="Then a tool already exists for each job — and Nisha starts with one.">
         <Stagger className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {TOOLS.map((t) => (
             <MotionChild key={t.name}>
@@ -50,7 +59,7 @@ export function ObservabilityToolkit() {
           ))}
         </Stagger>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          Don’t memorise the list. The point is: a tool already exists for the job you need.
+          Don’t memorise the list. Pick one that fits Mitra’s needs and start there — switch later if you must.
         </p>
       </Scene>
 

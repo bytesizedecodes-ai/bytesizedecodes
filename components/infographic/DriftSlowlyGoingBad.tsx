@@ -2,21 +2,19 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 
 /**
- * AI Observability — Lesson 9: "Drift — when AI slowly goes bad".
+ * AI Observability — Lesson 9: "Drift — when AI slowly goes bad"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: drift is slow decay. A model is frozen at training
- * time, but the world keeps changing — new words, new events, new behaviour —
- * so quality slips a little each week, like milk slowly turning sour. The aha:
- * there’s no single breakage to point at, only a gentle downward line, which is
- * why you must watch quality over time rather than trust a one-off test.
- *
- * Interactive (toggle-compare on the "watch" beat): the learner compares a
- * one-off check (a single reading — ambiguous) with the weeks-long line (the
- * slide, obvious). Brand line; the decayed end turns semantic red only to mark
- * the degraded state.
+ * Through-line stage: ONE quality line, same chart, same spot — every scene
+ * changes only its STATE: healthy at launch (high, brand), months later
+ * (sliding below acceptable, bad accent on the decayed end), then the same
+ * line seen two ways (one-off check = a single dot; over time = the slide).
+ * Beats: anchor (launch-day quality) → tension (the world moves, the line
+ * sours like milk) → interaction (toggle the two ways of checking; the
+ * single dot IS the ghosted before-state of the whole line).
  */
 type View = "one-off" | "over-time";
 
@@ -30,16 +28,25 @@ export function DriftSlowlyGoingBad() {
         subtitle="No crash, no single break — just a quiet slide downhill"
       />
 
-      {/* ① Then: frozen model, high quality */}
-      <Scene caption="① At launch, the model does great">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">📈</span>, label: "Great at launch" },
+          { icon: <span aria-hidden="true">🌍</span>, label: "The world moves" },
+          { icon: <span aria-hidden="true">🥛</span>, label: "Quality sours quietly" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "Watch the trend" },
+        ]}
+      />
+
+      {/* Anchor — frozen model, high quality */}
+      <Scene caption="So at launch, Mitra’s model does great.">
         <QualityLine phase="then" />
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
           Trained on the world as it was <em>then</em>, it answers confidently and well.
         </p>
       </Scene>
 
-      {/* ② Time passes: world shifts, frozen model degrades */}
-      <Scene caption="② Months pass. The world shifts. The model doesn’t.">
+      {/* Tension — world shifts, frozen model degrades; the souring line is the ONE change */}
+      <Scene variant="continue" caption="But months pass — the world moves, and the model doesn’t.">
         <QualityLine phase="drift" />
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
           New slang, new events, new user behaviour arrive — but the model is frozen.
@@ -47,8 +54,8 @@ export function DriftSlowlyGoingBad() {
         </p>
       </Scene>
 
-      {/* ③ Interactive: one-off check vs watching over time */}
-      <Scene caption="③ You catch drift by watching quality over time">
+      {/* Interaction — the same line, checked two ways */}
+      <Scene variant="continue" caption="Then Nisha checks quality two ways — toggle and watch the trend.">
         <div
           role="group"
           aria-label="How you check quality"

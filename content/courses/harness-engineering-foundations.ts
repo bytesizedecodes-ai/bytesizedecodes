@@ -6,7 +6,7 @@ const course: Course = {
     subtitle:
       "What sits around an AI model — prompts, context, tools, and loops — in simple pictures.",
     description:
-      "The beginner's map of harness engineering: the scaffolding that turns a raw model into a working AI product. Seven lessons use simple pictures to teach prompts, context windows, tools, and agent loops. The course ends with the judgment to know when not to build an agent at all.",
+      "The beginner's map of harness engineering: the scaffolding that turns a raw model into a working AI product. Seven picture-led lessons follow Divya's small team as they ship Vaani, a chat product — prompts, context windows, tools, and agent loops in simple pictures. The course ends with the judgment to know when not to build an agent at all.",
     level: "beginner",
     domain: "AI Engineering",
     access: "free",
@@ -47,7 +47,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "A chatbot greets you by name on the second message. It checks your real order and books the table. Everyone says “the AI did it.” That sentence hides a trap. The model inside is a brilliant **engine bolted to a bench**. An engine, however powerful, drives nobody. What you actually used was the whole **car** built around it — the **harness**.",
+          "Vaani, the chat product Divya's small team ships, greets you by name on the second message. It checks your real order and books the table. Everyone says “the AI did it.” That sentence hides a trap. The model inside is a brilliant **engine bolted to a bench**. An engine, however powerful, drives nobody. What you actually used was the whole **car** built around it — the **harness**.",
           "It is tempting to think the model alone is the product. Watch it fail. Remembering a name across messages, checking a real order, booking a real table — a text predictor cannot do any of these alone. Engines don't drive. Cars drive. The harness supplies what the bench engine lacks. **Instructions** tell the model who to be. **Memory** feeds the conversation back in on every turn. **Tools** let a thing that can only write text cause real actions. **Rules** keep everything inside safe limits.",
           "Strip the metal away and one plain idea is left. Nearly everything people call “the AI” in a product is the **car, not the engine**. That car is harness engineering. Where the analogy breaks: a dashboard never changes an engine's power. But a harness changes what the model *does*. New instructions, new behavior, same engine. That split is the mental map for this course. When something works or fails, ask: *which part of the car did that?*",
         ],
@@ -56,7 +56,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Two support assistants run the exact same model. Assistant A still remembers the customer's name two messages later. It can also check a real order. Assistant B forgets at once and checks nothing. A teammate concludes, 'A must have a better model.' What's the better explanation?",
+              "Two support assistants run the exact same model. Assistant A still remembers the customer's name two messages later. It can also check a real order. Assistant B forgets at once and checks nothing. Divya's teammate concludes, 'A must have a better model.' What's the better explanation?",
             choices: [
               {
                 id: "a",
@@ -155,7 +155,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "Try a raw model in a bare playground. It looks broken. Every message starts from nothing. There is **no memory** of what came before. Ask about today and it answers from **frozen training knowledge**. The answer is confident — and wrong. Ask it to *do* anything, and it can only describe the doing. A raw model is a **genius with amnesia, no hands, and yesterday's newspaper**. It is brilliant at one thing and missing three.",
+          "Divya tries Vaani's raw model in a bare playground. It looks broken. Every message starts from nothing. There is **no memory** of what came before. Ask about today and it answers from **frozen training knowledge**. The answer is confident — and wrong. Ask it to *do* anything, and it can only describe the doing. A raw model is a **genius with amnesia, no hands, and yesterday's newspaper**. It is brilliant at one thing and missing three.",
           "The live product built on that same model remembers, acts, and stays current. The difference is engineered, turn by turn. The harness **re-feeds the conversation** so nothing is forgotten. It **runs tools** for anything that must actually happen. It **retrieves fresh facts**. It puts those facts in front of the model before it answers.",
           "Fade the genius away and one line remains. The raw model has fixed gaps. The harness is the machinery that re-closes those gaps on every single request. Where the analogy breaks: a person with amnesia could take notes and slowly improve. A model never improves. So the harness must re-supply the same missing things forever. The playground didn't expose a broken engine. It unbolted the engine from its car and then wondered why it wouldn't drive.",
         ],
@@ -164,7 +164,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A QA engineer tries the team's chatbot in a bare model playground. The engineer files a bug: 'It forgets my name one message later. The model is broken.' The same model powers the live chatbot. The live chatbot remembers names perfectly. What's going on?",
+              "A QA engineer tries Vaani in a bare model playground. The engineer files a bug: 'It forgets my name one message later. The model is broken.' The same model powers the live chatbot. The live chatbot remembers names perfectly. What's going on?",
             choices: [
               {
                 id: "a",
@@ -242,7 +242,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "You ask an assistant “help me with emails” and get a vague reply. Your teammate's assistant runs the same model. It drafts clean, well-formatted replies. The difference is not the engine. It is the **note you leave a new babysitter**. The note says who they are (the role), the house rules, one example of a job well done, and the shape of the handover. A prompt is that note, written for a model.",
+          "Divya asks Vaani “help me with emails” and gets a vague reply. Her teammate's assistant runs the same model. It drafts clean, well-formatted replies. The difference is not the engine. It is the **note you leave a new babysitter**. The note says who they are (the role), the house rules, one example of a job well done, and the shape of the handover. A prompt is that note, written for a model.",
           "Notice the common reflex: when output turns inconsistent, people reach for retraining. But the model was not missing knowledge. It was missing **settings**. There are four settings. **Role** sets who the model is being. **Rules** set the boundaries it must hold. **Examples** show one or two finished answers. Examples are the single fastest way to make output consistent. **Format** fixes the shape: bullets, a table, or strict JSON.",
           "Strip the note away and the plain idea is this: a prompt is **settings, not a spell**. It is the cheapest behavior change in the whole harness — an afternoon's work. Where the analogy breaks: a babysitter remembers your house rules by next weekend. The model re-reads the note fresh on every turn. It can still break a rule under pressure. And no note teaches facts the model never learned. Prompts move behavior, not knowledge. That's why the harness backs its serious rules with **tools and checks**, not more words.",
         ],
@@ -251,7 +251,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A product team's data extractor returns messy, inconsistent JSON from the same model every week. A teammate proposes weeks of model retraining. What's the first, cheapest fix to try?",
+              "Divya's data extractor returns messy, inconsistent JSON from the same model every week. A teammate proposes weeks of model retraining. What's the first, cheapest fix to try?",
             choices: [
               {
                 id: "a",
@@ -327,7 +327,7 @@ const course: Course = {
           loop: "each new turn re-fills the window — old content falls out",
         },
         prose: [
-          "Somewhere around message forty, a long support chat goes strange. The assistant asks for details the customer already sent. Nothing was deleted. Nobody fell asleep. Picture the model at a **desk**. Everything it “knows” right now is what's on the desk: instructions, the conversation so far, and tool results pasted in. That desk is the **context window**. It has fixed, finite space.",
+          "Somewhere around message forty, Rohan's support chat with Vaani goes strange. Vaani asks for details Rohan already sent. Nothing was deleted. Nobody fell asleep. Picture the model at a **desk**. Everything it “knows” right now is what's on the desk: instructions, the conversation so far, and tool results pasted in. That desk is the **context window**. It has fixed, finite space.",
           "Here is where intuition fails. You would expect the desk to grow with the chat. It never does. Every turn, the harness rebuilds the desk from scratch. When space runs out, the **oldest papers slide off**. The early message still sits in the chat log. It just isn't in front of the model on that turn. So for the model, it effectively never happened. Hence the desk-keeping you will meet all through this course: trimming old turns, **summarizing** long history into short notes, and pinning critical facts so they can't slide.",
           "Fade the desk to one line. The window is the model's whole world for that turn. Whatever isn't on the desk does not exist. Where the analogy breaks: papers on a real desk stay put until someone clears them. This desk is **rebuilt every turn**. So “falling off” really means “never put back”. And the model can't search a drawer for what fell. The model can't manage its own desk. The harness is its secretary.",
         ],
@@ -336,7 +336,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Twenty minutes into a customer chat, the assistant asks, 'Sorry — which order number?' The customer gave it in their very first message. Nothing was deleted from the chat log. What best explains this?",
+              "Twenty minutes into Rohan's chat with Vaani, the assistant asks, 'Sorry — which order number?' Rohan gave it in his very first message. Nothing was deleted from the chat log. What best explains this?",
             choices: [
               {
                 id: "a",
@@ -417,7 +417,7 @@ const course: Course = {
           loop: "repeat until the model has what it needs",
         },
         prose: [
-          "The moment that feels like magic — an assistant quotes a live fact that is newer than its training — is really a handshake. Learn its steps and the magic dissolves. The model never runs anything. It has no hands. Using a tool is **handing the waiter your scribbled order**. The model writes the note: a tool name plus arguments, like `get_forecast(city=\"Lisbon\")`. And the note is just text.",
+          "The moment that feels like magic — Vaani quotes a live fact that is newer than its training — is really a handshake. Learn its steps and the magic dissolves. The model never runs anything. It has no hands. Using a tool is **handing the waiter your scribbled order**. The model writes the note: a tool name plus arguments, like `get_forecast(city=\"Lisbon\")`. And the note is just text.",
           "The **harness** carries it to the kitchen. It checks that the tool exists and the arguments make sense. It runs the real action. It pastes the result — `22°C, sunny` — back into the model's context. Only then does the model answer. Now it has facts it can literally see.",
           "Strip the restaurant away and the idea is one line. The model sends structured requests. The harness executes them and feeds results back. That loop is all “tool use” ever is. Where the analogy breaks: a waiter who knows the menu would never order a dish the kitchen can't make. The model will confidently write a call to a tool it was never offered. It may also send a broken argument along the way. Because the model only ever *asks*, the harness is the checkpoint. It decides **which tools exist**. It **validates every request**. It can refuse anything suspicious.",
         ],
@@ -426,7 +426,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "At a demo, an assistant appears to search the web live. It quotes what it found. A new engineer says, 'Impressive — the model ran a web search by itself.' What actually happened?",
+              "At a demo, Vaani appears to search the web live. It quotes what it found. Divya's new engineer says, 'Impressive — the model ran a web search by itself.' What actually happened?",
             choices: [
               {
                 id: "a",
@@ -449,7 +449,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "You're designing a package-tracking bot. In testing, the model sometimes fills in a tracking ID with one digit missing. The lookup then fails downstream. Where should the system catch that?",
+              "Divya is designing Vaani's package-tracking bot. In testing, the model sometimes fills in a tracking ID with one digit missing. The lookup then fails downstream. Where should the system catch that?",
             choices: [
               {
                 id: "a",
@@ -517,7 +517,7 @@ const course: Course = {
           },
         },
         prose: [
-          "Everything in this course so far happens in **one turn**. Now take a task whose steps nobody can script: “find out why returns spiked”. You are now on a **treasure hunt**: take a step, read the clue, go again. The agent loop is the harness running that hunt. **Think**: what's my next step? **Act**: call a tool. **Observe**: read what came back. Then around again. A coding agent lives here. It reads the file, edits, runs the tests, sees two failures, and edits again.",
+          "Everything in this course so far happens in **one turn**. Now Divya hands Vaani a task whose steps nobody can script: “find out why returns spiked”. You are now on a **treasure hunt**: take a step, read the clue, go again. The agent loop is the harness running that hunt. **Think**: what's my next step? **Act**: call a tool. **Observe**: read what came back. Then around again. A coding agent lives here. It reads the file, edits, runs the tests, sees two failures, and edits again.",
           "The power of the hunt is that each step reacts to the last. Its danger is exactly the same. Some clues never say stop. “Find the *best* answer” can always justify one more search — deeper into the hunt, the bill climbing, no answer coming. A treasure hunt needs a **curfew**: a maximum number of steps or a cost limit. When the whistle blows, the harness stops the loop. It returns the best answer so far. The budget is not bolted on afterwards. It is what makes the loop shippable.",
           "Fade the hunt to its skeleton: think → act → observe, repeat, stop on goal *or budget*. That is every agent ever shipped. Where the analogy breaks: a treasure hunt has a real map, and a referee can verify the treasure. An agent's “goal reached” is the model's own claim. The hunter can't be trusted to call the hunt done. That's why the whistle, not the hunter, gets the final word. A loop that can always stop is a tool. A loop that can't stop is an outage with a countdown.",
         ],
@@ -644,7 +644,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your team must translate the day's new product descriptions into four languages every night. A consultant proposes an autonomous agent for the job. What's the right call?",
+              "Divya's team must translate the day's new product descriptions into four languages every night. A consultant proposes an autonomous agent for the job. What's the right call?",
             choices: [
               {
                 id: "a",

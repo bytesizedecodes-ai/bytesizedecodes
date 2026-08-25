@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, PictureCard, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 8: "Representing samples as features".
+ * Layman course — Lesson 8: "Representing samples as features" (v2 Thread
+ * retrofit).
  *
- * Layout: object → labelled features → a list of values (no formal set notation).
- * Faithful to Lesson 2.pdf slides 4-9: a vehicle is described by features
- * (#Wheel, Height, Weight, Color); each sample becomes a vector of values;
- * Color is a bad feature because both classes share it. Picture-led: every
- * concept is carried by car/bike shapes + PictureCards, built with Stagger.
- * Brand blue only. No prose/questions (course rule).
+ * Through-line stage: ONE vehicle — the car that keeps stopping at Asha's
+ * gate — and its feature form. The form fills one chip at a time, collapses
+ * into a single row of numbers (the vector), and then Color is shown the door
+ * as a bad feature. Beats: anchor (describe with features) → the vector forms
+ * → tension (not every feature helps; red cars and red bikes share Color).
+ * The vehicle never moves; only its description changes state.
  */
 export function FeaturesAndVectors() {
   return (
@@ -20,8 +21,17 @@ export function FeaturesAndVectors() {
         subtitle="Turn a real object into numbers a machine can read"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🚗</span>, label: "One visitor arrives" },
+          { icon: <span aria-hidden="true">📋</span>, label: "Fill in the form" },
+          { icon: <span aria-hidden="true">🔢</span>, label: "A row of numbers" },
+          { icon: <span aria-hidden="true">✂️</span>, label: "Cut useless features" },
+        ]}
+      />
+
       {/* Step 1 — one object, several features */}
-      <Scene caption="① Describe a vehicle with features">
+      <Scene caption="So Asha describes each visitor with features — numbers her machine can read">
         <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-8">
           <CarShape />
           <div className="flex flex-wrap justify-center gap-2">
@@ -37,7 +47,7 @@ export function FeaturesAndVectors() {
       </Scene>
 
       {/* Step 2 — the formula builds: Object = value per feature */}
-      <Scene caption="② Each sample becomes a list of values — a vector">
+      <Scene variant="continue" caption="Then each sample becomes a list of values — a vector">
         <Stagger className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-3">
           <MotionChild>
             <div className="flex min-w-[7rem] flex-col items-center gap-2 rounded-xl border border-ash bg-surface-elevated px-4 py-4 text-center shadow-sm">
@@ -64,7 +74,7 @@ export function FeaturesAndVectors() {
       </Scene>
 
       {/* Step 3 — good vs bad features, shown with pictures */}
-      <Scene caption="③ Not every feature helps — compare Color with #Wheel">
+      <Scene variant="continue" caption="But not every feature helps — compare Color with #Wheel">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {/* Good feature: #Wheel separates the classes */}
           <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">

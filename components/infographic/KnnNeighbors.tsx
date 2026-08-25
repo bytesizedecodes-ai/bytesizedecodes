@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, PictureCard, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 11: "Find its neighbors: k-Nearest Neighbors".
+ * Layman course — Lesson 11: "Find its neighbors: k-Nearest Neighbors" (v2
+ * Thread retrofit).
  *
- * Layman translation of Lesson 4.pdf (kNN, slides 2-12): a new sample arrives;
- * find the k closest known samples (by their features); the majority class
- * among those neighbors wins. Taught with NO cosine-similarity formula —
- * "closest" is shown as physical nearness of car/bike shapes, and the vote is
- * a tally of picture cards. Brand blue only. No prose/questions (course rule).
+ * Through-line stage: the same street corner — known cars and bikes parked in
+ * the same spots, the dashed newcomer in the middle, every scene. States: all
+ * neutral → the five nearest get the ring, the far ones dim to ghosts → the
+ * vote tallies into a winner. Beats: hook (a newcomer nobody knows) → reveal
+ * (the k closest step forward) → resolution (majority wins). Nothing moves;
+ * only attention changes.
  */
 export function KnnNeighbors() {
   return (
@@ -19,8 +21,17 @@ export function KnnNeighbors() {
         subtitle="A new sample takes the class most of its closest neighbors belong to"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">❓</span>, label: "A newcomer arrives" },
+          { icon: <span aria-hidden="true">📍</span>, label: "Five nearest step up" },
+          { icon: <span aria-hidden="true">🗳️</span>, label: "Count the votes" },
+          { icon: <span aria-hidden="true">🏆</span>, label: "Majority wins" },
+        ]}
+      />
+
       {/* Step 1 — a new sample arrives among known ones */}
-      <Scene caption="① A new, unknown sample arrives among known ones">
+      <Scene caption="So a new, unknown sample arrives among known ones">
         <div className="relative mx-auto flex h-40 max-w-md items-center justify-center">
           {/* known samples scattered */}
           <CarShape className="absolute left-2 top-2 !h-9" />
@@ -40,7 +51,7 @@ export function KnnNeighbors() {
       </Scene>
 
       {/* Step 2 — find the k closest */}
-      <Scene caption="② Find the k closest known samples (here, k = 5)">
+      <Scene variant="continue" caption="Then the k nearest step forward — here, k = 5">
         <div className="relative mx-auto flex h-40 max-w-md items-center justify-center">
           {/* dimmed far samples */}
           <CarShape className="absolute left-2 top-2 !h-9 opacity-25" />
@@ -62,7 +73,7 @@ export function KnnNeighbors() {
       </Scene>
 
       {/* Step 3 — majority vote, as picture cards */}
-      <Scene caption="③ Count their classes — the majority wins">
+      <Scene caption="That's why the count decides — the majority wins the vote">
         <Stagger className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <MotionChild>
             <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">

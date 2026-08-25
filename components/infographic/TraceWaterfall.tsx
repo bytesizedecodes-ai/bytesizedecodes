@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Reveal } from "./motion";
+import { Scene, StoryMap, PersonFigure, MachineFigure, SpeechBubble } from "./scenes";
 
 /**
- * AI Observability — Lesson 6: "Traces — following a request’s journey".
+ * AI Observability — Lesson 6: "Traces — following a request’s journey"
+ * (v2 Thread retrofit)
  *
- * Interactive infographic: one request broken into five steps shown as a
- * vertical waterfall. Bar width ∝ duration; the LLM-call bar is by far the
- * longest and is flagged as the bottleneck. Clicking a step opens a detail
- * panel (duration, cost, status, share of total). Local state only,
- * illustrative data, no backend. Brand accent only — the bottleneck is shown
- * by length + fill, not by a second colour.
+ * Through-line stage: ONE of Mitra's nine-second requests, itemised. The hook
+ * puts the slow answer in the air (Nisha asks, Mitra takes nine seconds);
+ * the waterfall then opens that same request like a delivery receipt — five
+ * timing bars, same spot, and tapping steps changes only the detail panel.
+ * The aha: the LLM-call bar dominates, so "Mitra is slow" becomes "THIS step
+ * is slow". Brand accent only — the bottleneck is shown by length + fill,
+ * not by a second colour.
  */
 interface Step {
   name: string;
@@ -45,11 +47,33 @@ export function TraceWaterfall() {
         subtitle="Tap a step to see what it cost — and find the slow one"
       />
 
-      <Reveal>
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">⏱️</span>, label: "Nine-second answers" },
+          { icon: <span aria-hidden="true">🧾</span>, label: "One journey’s receipt" },
+          { icon: <span aria-hidden="true">👆</span>, label: "Tap each step" },
+          { icon: <span aria-hidden="true">🧠</span>, label: "The slow step found" },
+        ]}
+      />
+
+      {/* Hook — the slow answer in the air */}
+      <Scene caption="So Mitra takes nine seconds per answer — and the team argues about which part is slow.">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
+          <PersonFigure label="Nisha" />
+          <SpeechBubble side="right">“Why so slow today?”</SpeechBubble>
+          <MachineFigure label="Mitra" />
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink-soft">
+          An average can’t settle it, because an average has no parts.
+        </p>
+      </Scene>
+
+      {/* The widget — that same request, opened like a receipt */}
+      <Scene variant="continue" caption="Then Nisha opens one request’s trace — tap each step to see what it cost.">
         <div className="rounded-2xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm sm:px-6 sm:py-5">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-bold uppercase tracking-wide text-ink-soft">
-              One request, five steps
+              Mitra · one request, five steps
             </span>
             <span className="font-mono text-xs font-bold text-ink-soft">
               total {TOTAL_MS} ms
@@ -113,15 +137,15 @@ export function TraceWaterfall() {
               {selected === BOTTLENECK_INDEX ? (
                 <>
                   The LLM call alone is <span className="font-bold text-brand">{share}%</span> of
-                  the whole request — that’s where the time goes.
+                  the whole request — the slow step is found, and that’s where the time goes.
                 </>
               ) : (
-                <>This step is quick. Tap the long bar (the LLM call) to see the bottleneck.</>
+                <>This step is quick. Tap the long bar (the LLM call) to find the slow one.</>
               )}
             </p>
           </div>
         </div>
-      </Reveal>
+      </Scene>
 
       <Card tone="brand" rotate={0}>
         <Takeaway>

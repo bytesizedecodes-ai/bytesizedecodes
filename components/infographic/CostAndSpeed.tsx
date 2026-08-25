@@ -1,15 +1,16 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, BulletList } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 12: "Cost and speed — the two big bills".
+ * AI Observability — Lesson 12: "Cost and speed — the two big bills"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: every AI feature pays two bills — cost (tokens used)
- * and latency (time taken) — just like a taxi meter charges for distance and
- * time. Scene 1 introduces the two bills via the taxi-meter analogy. Scene 2
- * shows they trade off (bigger call → more of both; smaller call → less).
- * Scene 3 explains why each matters to a business. Brand accent only.
+ * Through-line stage: the taxi meter — the one object on stage, whose two
+ * readouts (distance, time) become Mitra's two bills (tokens, wait). The
+ * meter never leaves the spot; each scene changes only what's ticking: both
+ * meters at once (anchor), rising together (tension), and the business bill
+ * they add up to (resolution). Brand accent only.
  */
 export function CostAndSpeed() {
   return (
@@ -19,8 +20,16 @@ export function CostAndSpeed() {
         subtitle="Every AI feature pays in tokens and in time"
       />
 
-      {/* ① The taxi meter: distance + time */}
-      <Scene caption="① Like a taxi meter, two things tick at once">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🚕</span>, label: "Two meters tick" },
+          { icon: <span aria-hidden="true">📈</span>, label: "They rise together" },
+          { icon: <span aria-hidden="true">🏢</span>, label: "Both hit the business" },
+        ]}
+      />
+
+      {/* Anchor — the taxi meter: distance + time */}
+      <Scene caption="So every Mitra answer is a taxi ride — two meters tick at once.">
         <div className="flex justify-center">
           <TaxiMeter />
         </div>
@@ -30,8 +39,8 @@ export function CostAndSpeed() {
         </div>
       </Scene>
 
-      {/* ② They trade off */}
-      <Scene caption="② They rise and fall together">
+      {/* Tension — they trade off together */}
+      <Scene variant="continue" caption="Then watch Mitra’s calls get bigger — the two rise together.">
         <div className="flex items-center justify-center gap-3 py-2">
           <span className="rounded-xl border border-ash bg-surface-elevated px-3 py-2 text-center">
             <span className="block text-xs font-bold text-ink-soft">small call</span>
@@ -48,8 +57,8 @@ export function CostAndSpeed() {
         </p>
       </Scene>
 
-      {/* ③ Why each matters to a business */}
-      <Scene caption="③ Why a business cares about both">
+      {/* Resolution — why a business cares about both */}
+      <Scene variant="continue" caption="That’s why both bills hit the business, not just the engineers.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <MotionChild>
             <ReasonCard title="Cost eats margin" body="Every token costs money. Unwatched, a chatty feature can wipe out your profit." />

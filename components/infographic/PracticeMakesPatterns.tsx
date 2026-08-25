@@ -1,12 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 7: "Practice makes patterns".
- * Through-line: learning a dance from replays. One song, pass after pass;
- * consistency compounds; the sweet spot in replay count (tease of the next
- * lesson: the room gets memorized).
+ * Fine-Tuning Foundations — Lesson 7: "Practice makes patterns" (v2 Thread
+ * retrofit).
+ *
+ * Through-line stage: Arjun's practice pack — the same strip of cards, same
+ * spot, every scene; only the replay count changes (one pass → four passes,
+ * the drift bars growing in the accent). The coherent-vs-mixed pack keeps
+ * the dance's one-direction rule, and the sweet-spot dial teases the next
+ * lesson's parrot.
  */
 export function PracticeMakesPatterns() {
   return (
@@ -16,8 +20,17 @@ export function PracticeMakesPatterns() {
         subtitle="A few hundred cards, replayed — like a song until the moves settle"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🔂</span>, label: "One replay" },
+          { icon: <span aria-hidden="true">📈</span>, label: "Drift compounds" },
+          { icon: <span aria-hidden="true">🧭</span>, label: "One direction" },
+          { icon: <span aria-hidden="true">🎯</span>, label: "The sweet spot" },
+        ]}
+      />
+
       {/* SCENE 1 — one pass */}
-      <Scene caption="① Pass 1: one full replay of the pack">
+      <Scene caption="So pass 1: Arjun's whole pack of cards replays once.">
         <div className="mx-auto flex max-w-lg items-center justify-center gap-2">
           {Array.from({ length: 10 }).map((_, i) => (
             <div
@@ -34,7 +47,7 @@ export function PracticeMakesPatterns() {
       </Scene>
 
       {/* SCENE 2 — passes compound */}
-      <Scene caption="② Pass 2, 3, 4… the drift compounds">
+      <Scene variant="continue" caption="Then passes 2, 3, 4 — the same drift, stacking.">
         <div className="mx-auto grid max-w-lg grid-cols-4 gap-3">
           {[
             { p: "pass 1", w: "w-6", note: "a hair" },
@@ -57,7 +70,7 @@ export function PracticeMakesPatterns() {
       </Scene>
 
       {/* SCENE 3 — consistency is the load-bearing word */}
-      <Scene caption="③ IF the cards agree, the drift points one way">
+      <Scene variant="continue" caption="But the stacking holds only IF the cards agree — one direction, one habit.">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-brand bg-brand-wash p-4 text-center">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">coherent pack</div>
@@ -91,7 +104,7 @@ export function PracticeMakesPatterns() {
       </Scene>
 
       {/* SCENE 4 — the sweet spot */}
-      <Scene caption="④ Too few passes: no habit. Too many: the room gets memorized">
+      <Scene variant="continue" caption="That's why replay count has a sweet spot — too few, no habit; too many, the room gets memorized.">
         <div className="mx-auto max-w-lg">
           <div className="relative h-3 rounded-full bg-ash">
             <div className="absolute inset-y-0 left-[30%] right-[30%] rounded-full bg-brand" />

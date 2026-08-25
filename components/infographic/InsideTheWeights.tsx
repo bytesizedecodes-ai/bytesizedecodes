@@ -1,11 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, Scene, SpeechBubble } from "./scenes";
+import { MachineFigure, Scene, StoryMap, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 5: "Inside the model: a wall of sliders".
- * Through-line: one recording-studio desk. Same desk across all scenes;
- * only the faders move — a hair at a time. No new parts get bolted on.
+ * Fine-Tuning Foundations — Lesson 5: "Inside the model: a wall of sliders"
+ * (v2 Thread retrofit).
+ *
+ * Through-line stage: the fader desk — one strip, same spot, every scene;
+ * only the drift value changes (a hair when Arjun's examples play). The
+ * wrong "new parts drawer" picture gets ghosted in the last scene beside the
+ * accented "same desk, retuned" one. Rasoi Express's never-read menu stands
+ * for the facts no nudge can create.
  */
 export function InsideTheWeights() {
   // A tiny fader strip reused in every scene — the through-line object.
@@ -34,8 +39,17 @@ export function InsideTheWeights() {
         subtitle="Knowledge isn't stored in folders — it's a desk of settings"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎚️</span>, label: "The fader desk" },
+          { icon: <span aria-hidden="true">✌️</span>, label: "Examples nudge" },
+          { icon: <span aria-hidden="true">🚫</span>, label: "No new facts" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Same desk, retuned" },
+        ]}
+      />
+
       {/* SCENE 1 — the desk IS the knowledge */}
-      <Scene caption="① Thousands of faders — their positions ARE the model's skill">
+      <Scene caption="So inside the order assistant sits a desk of faders — their positions ARE the skill.">
         <FaderStrip drift={0} />
         <p className="mt-3 text-center text-xs font-medium text-ink">
           There is no separate vault of facts to open. The settings and the knowledge are the same thing.
@@ -43,7 +57,7 @@ export function InsideTheWeights() {
       </Scene>
 
       {/* SCENE 2 — fine-tuning nudges */}
-      <Scene caption="② Your examples play — each fader drifts a hair">
+      <Scene variant="continue" caption="Then Arjun's examples play — each fader drifts a hair.">
         <FaderStrip drift={1.4} />
         <div className="mt-2 flex items-center justify-center gap-3">
           <MachineFigure label="same desk" />
@@ -55,7 +69,7 @@ export function InsideTheWeights() {
       </Scene>
 
       {/* SCENE 3 — what nudges can't do */}
-      <Scene caption="③ No fader has ever touched your private price list">
+      <Scene variant="continue" caption="But no fader has ever touched Rasoi Express's own menu prices.">
         <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
           <p className="text-sm font-semibold text-ink">
             A nudge moves <span className="font-bold">what&apos;s already there</span>.
@@ -67,12 +81,12 @@ export function InsideTheWeights() {
       </Scene>
 
       {/* SCENE 4 — the wrong picture, corrected */}
-      <Scene caption="④ 'Which folder did it add?' — none, and no bolted-on module">
+      <Scene variant="continue" caption="That's why 'which folder did it add?' gets the answer: none.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
-            <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
+            <div className="h-full rounded-xl border border-dashed border-ash bg-canvas p-4 text-center">
               <span className="text-2xl">❌</span>
-              <p className="mt-1 text-xs font-semibold text-ink">A new parts drawer</p>
+              <p className="mt-1 text-xs font-semibold text-ink-faint line-through decoration-dotted">A new parts drawer</p>
               <p className="text-[11px] font-medium text-ink-soft">nothing gets bolted on</p>
             </div>
           </MotionChild>

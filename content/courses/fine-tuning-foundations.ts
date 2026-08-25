@@ -6,7 +6,7 @@ const course: Course = {
     subtitle:
       "What fine-tuning really changes in a model — taught with kitchens, flashcards, and borrowed game consoles.",
     description:
-      "A picture-led course on fine-tuning for complete beginners, built for recent graduates starting from zero. You will learn what the model already knows when you meet it, and what your examples actually teach it. You will see why practice can go too far, and how free borrowed GPUs make a first fine-tune possible without owning a supercomputer. We use plain words and everyday objects. And you will pick up one decision rule you will reuse forever: behavior, not facts.",
+      "A picture-led course on fine-tuning for complete beginners, built for recent graduates starting from zero. The lessons follow one Pune cloud kitchen — Rasoi Express — whose owner Arjun trains the order-taking assistant to speak the kitchen's language. You will learn what the model already knows when you meet it, and what your examples actually teach it. You will see why practice can go too far, and how free borrowed GPUs make a first fine-tune possible without owning a supercomputer. We use plain words and everyday objects. And you will pick up one decision rule you will reuse forever: behavior, not facts.",
     level: "beginner",
     domain: "AI Engineering",
     access: "free",
@@ -43,7 +43,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "The confusion starts with the word itself. People hear \"train a model\" and picture a factory: raw steel in, robot out. The reality is closer to hiring. The chef you hire has already cooked for years — sauces, knives, timing, all of it. What they lack is much smaller: where your ingredients live, how your regular customers like their eggs, and the unwritten rules of **your** kitchen.",
+          "Picture Rasoi Express, Arjun's busy cloud kitchen in Pune. He is not hiring a cook — he is setting up an order-taking assistant. The confusion starts with the word itself. People hear \"train a model\" and picture a factory: raw steel in, robot out. The reality is closer to hiring. The chef you hire has already cooked for years — sauces, knives, timing, all of it. What they lack is much smaller: where your ingredients live, how your regular customers like their eggs, and the unwritten rules of **your** kitchen.",
           "Fine-tuning (extra practice on your own data) is that orientation. The heavy learning — language, facts, common sense — happened before you ever met the model. That scale of learning is something no single team could repeat. You are making the last, smallest, most personal adjustment.",
           "Keep the proportions in mind, because they explain everything that follows. The giant learning is what makes the small adjustment possible. A model with no language skill could not be \"oriented\" into your tone. You can only fine-tune a chef who already cooks.",
         ],
@@ -483,7 +483,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A team demos their tuned bot to the board using ten questions straight from the training pack. It looks flawless, and they celebrate. A week later, real customers with new phrasings get wobbly answers. What was the demo actually proving?",
+              "Arjun demos Rasoi Express's tuned assistant to the bank, using ten questions straight from the training pack. It looks flawless, and he celebrates. A week later, real customers with new phrasings get wobbly answers. What was the demo actually proving?",
             choices: [
               { id: "a", label: "Memory, not skill — the pack's own questions can't distinguish understanding from memorization; only fresh questions could" },
               { id: "b", label: "The skill was real but customers are using the product wrongly" },
@@ -540,7 +540,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A café chain trains its assistant only on order-and-receipt pairs. Customers start complaining that the bot now responds to 'love your new vibe!' with a blank receipt template. What happened, in one sentence?",
+              "Arjun trains Rasoi Express's assistant only on order-and-receipt pairs. Customers start complaining that the bot now responds to 'love your new vibe!' with a blank receipt template. What happened, in one sentence?",
             choices: [
               { id: "a", label: "The model broke and needs reinstalling from backup" },
               { id: "b", label: "Narrow practice let general chat skills fade — the sliders leaned so far toward orders that ordinary conversation fell outside them" },
@@ -623,7 +623,7 @@ const course: Course = {
         prose: [
           "The most expensive habit in the field is reaching for fine-tuning (extra practice on your own data) first. It is a learned reflex — training feels like the 'serious' answer. But the ladder runs the other way, and each rung is cheaper than the one above. Try the prompt, then the document, and train only when the lower rungs truly cannot hold the behavior you need.",
           "Run the three questions. Does the thing change faster than you could retrain? It is a fact — put it in a document the model reads, and let grounding (tying answers to real source documents) keep it current. Is the thing stable — tone, shape, refusals you will want in a year? That is behavior, and behavior is what training installs. Is it just for today? Write it in the prompt and move on.",
-          "Watch what this ladder does to the classic 'fine-tune so it knows our refund policy' request. The policy is a fact (documents). The crisp three-line format is behavior (training). The holiday-hours banner is a note (prompt). One request, three tools — and only one of them involves a GPU.",
+          "Watch what this ladder does to Arjun's classic request: 'fine-tune it so it knows our refund policy'. The policy is a fact (documents). The crisp three-line format is behavior (training). The holiday-hours banner is a note (prompt). One request, three tools — and only one of them involves a GPU.",
         ],
         questions: [
           {
@@ -754,7 +754,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A team's tuned bot was flawless in testing, but in the live app its replies start mid-sentence and occasionally continue the customer's message as if it were its own. The training data was fine. What is the first thing to check?",
+              "Arjun's tuned order assistant was flawless in testing, but in the live Rasoi Express app its replies start mid-sentence and occasionally continue the customer's message as if it were its own. The training data was fine. What is the first thing to check?",
             choices: [
               { id: "a", label: "The script — whether the live app prints conversations with the same role labels and reply markers the training examples used" },
               { id: "b", label: "The temperature setting — mid-sentence replies are always a randomness problem" },
@@ -1005,7 +1005,7 @@ const course: Course = {
           loop: "check failed → fix the pack, practice again",
         },
         prose: [
-          "Stand at the top of the trail and look back. The decide stop saved you from training facts that would freeze at training day. The gather stop made your examples vote for one consistent style, in the exact script your product speaks. Practice gave the pattern its replays — on hardware you borrowed for free. Watch caught the parrot and the fading general skills while both were still cheap to fix. Check faced the drawer of fresh questions, and share put a small clip-on file in a colleague's hands.",
+          "Stand at the top of the trail with Arjun and look back. The decide stop saved him from training facts that would freeze at training day. The gather stop made his examples vote for one consistent style, in the exact script his product speaks. Practice gave the pattern its replays — on hardware he borrowed for free. Watch caught the parrot and the fading general skills while both were still cheap to fix. Check faced the drawer of fresh questions, and share put a small clip-on file in a colleague's hands.",
           "Notice the shape of the failures you have learned to prevent: each one is the previous stop skipped. Training a fact is a deciding failure. A wobbly tone is a gathering failure. Parroting is a watching failure. And the tune that 'passed' only because it was graded on its own flashcards is a checking failure — the most common of all.",
           "You now hold the complete beginner's map: what fine-tuning (extra practice on your own data) is and is not. You know what it can and cannot hold, how it is practiced, how it fails, how it is judged, and where the free machines live. The intermediate course takes you down into the workshop: real datasets, real training runs, and your first end-to-end tune.",
         ],
@@ -1014,7 +1014,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A product team's tuned assistant shipped with a beautiful demo on practiced questions. Then it answered real customers in the old off-brand voice, and the review after the failure found fresh questions had never been tested. Which stop was skipped?",
+              "Rasoi Express's tuned assistant shipped with a beautiful demo on practiced questions. Then it answered real customers in the old off-brand voice, and the review after the failure found fresh questions had never been tested. Which stop was skipped?",
             choices: [
               { id: "a", label: "The CHECK stop — no drawer of fresh questions was ever asked, so the gap between memory and learning stayed invisible until customers found it" },
               { id: "b", label: "The PRACTICE stop — they clearly didn't train at all" },

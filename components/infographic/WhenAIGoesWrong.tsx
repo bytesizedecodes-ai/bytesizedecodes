@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, BulletList } from "./primitives";
-import { MachineFigure, SpeechBubble, Scene } from "./scenes";
+import { MachineFigure, SpeechBubble, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 3: "When AI goes wrong".
+ * AI Observability — Lesson 3: "When AI goes wrong" (v2 Thread retrofit)
  *
- * Beginner calibration: the lesson’s aha is the contrast between LOUD failure
- * (normal software crashes — you notice instantly) and QUIET failure (an AI
- * keeps answering with a smile while quietly being wrong, costly, or drifting).
- * Red is the single semantic accent for “something is wrong”; brand marks the
- * AI itself. Scene 3 previews the three quiet-failure modes the course returns
- * to later (hallucination, cost, drift).
+ * Through-line stage: the answer screen — first the crashed app's (loud,
+ * impossible to miss), then Mitra's (calm, confident, quietly wrong). The
+ * stage never crashes in scene 2; only the TRUTH of the answer changes, and
+ * that is the whole lesson. Beats: hook (loud crash) → tension (Mitra keeps
+ * smiling, quietly wrong) → resolution (the three quiet-failure modes the
+ * course returns to: hallucination, cost, drift). Red is the single semantic
+ * accent for "something is wrong"; brand marks Mitra itself.
  */
 export function WhenAIGoesWrong() {
   return (
@@ -20,8 +21,16 @@ export function WhenAIGoesWrong() {
         subtitle="Software fails loudly. AI fails quietly."
       />
 
-      {/* ① Loud failure: you notice immediately */}
-      <Scene caption="① Normal software fails loudly">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">💥</span>, label: "Old software crashes" },
+          { icon: <span aria-hidden="true">😶</span>, label: "Mitra keeps smiling" },
+          { icon: <span aria-hidden="true">🕵️</span>, label: "Three quiet failures" },
+        ]}
+      />
+
+      {/* Hook — loud failure: you notice immediately */}
+      <Scene caption="So normal software fails loudly — a big red error, and everyone notices.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
           <CrashScreen />
           <div className="max-w-[12rem] text-center">
@@ -35,10 +44,10 @@ export function WhenAIGoesWrong() {
         </div>
       </Scene>
 
-      {/* ② Quiet failure: AI keeps smiling */}
-      <Scene caption="② An AI fails quietly">
+      {/* Tension — quiet failure: Mitra keeps smiling; the wrong answer is the ONE change */}
+      <Scene variant="continue" caption="But Mitra fails quietly — no crash, it still answers, just incorrectly.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
-          <MachineFigure label="AI" />
+          <MachineFigure label="Mitra" />
           <div className="flex flex-col items-center gap-2">
             <SpeechBubble side="left">“The capital of Australia is Sydney.”</SpeechBubble>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-bad)] bg-[var(--color-bad-wash)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-bad)]">
@@ -52,8 +61,8 @@ export function WhenAIGoesWrong() {
         </p>
       </Scene>
 
-      {/* ③ Three ways AI fails without crashing — previews the course */}
-      <Scene caption="③ Three ways AI fails without crashing">
+      {/* Resolution — the three quiet-failure modes, previewed for the course */}
+      <Scene variant="continue" caption="Then learn the three ways AI fails without crashing.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <MotionChild>
             <QuietFailureCard

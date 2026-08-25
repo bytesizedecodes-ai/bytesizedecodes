@@ -1,12 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, Scene, SpeechBubble } from "./scenes";
+import { MachineFigure, Scene, StoryMap, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 3: "Behavior, not facts".
- * Through-line: the new nurse's orientation badge. Left pocket: behavior
- * cards (stable). Right pocket: today's price sheet (living). The badge
- * teaches the pocket rule: train what lasts, look up what changes.
+ * Fine-Tuning Foundations — Lesson 3: "Behavior, not facts" (v2 Thread
+ * retrofit).
+ *
+ * Through-line stage: the new nurse on orientation — the lesson's anchor,
+ * held center all lesson while Rasoi Express's own version arrives in scene 4
+ * (the quarterly refund window the order assistant keeps quoting). States:
+ * behavior cards (stable) → the price sheet frozen inside a habit (bad) →
+ * the train/document split (accented) → the classic frozen-fact bug.
  */
 export function BehaviorNotFacts() {
   return (
@@ -16,8 +20,17 @@ export function BehaviorNotFacts() {
         subtitle="Orientation teaches the ward — not this morning's prices"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎓</span>, label: "Orientation teaches how" },
+          { icon: <span aria-hidden="true">💸</span>, label: "Prices freeze in habits" },
+          { icon: <span aria-hidden="true">🧠</span>, label: "The split rule" },
+          { icon: <span aria-hidden="true">🐞</span>, label: "The frozen-fact bug" },
+        ]}
+      />
+
       {/* SCENE 1 — orientation teaches HOW */}
-      <Scene caption="① Week one: the new nurse learns how your ward works">
+      <Scene caption="So orientation week teaches the new nurse HOW the ward works.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <MotionChild>
             <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
@@ -47,7 +60,7 @@ export function BehaviorNotFacts() {
       </Scene>
 
       {/* SCENE 2 — prices are NOT orientation */}
-      <Scene caption="② Nobody bakes today's medicine prices into a habit">
+      <Scene variant="continue" caption="But nobody bakes today's medicine prices into a habit.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-3 text-center shadow-sm">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">the price sheet</div>
@@ -62,7 +75,7 @@ export function BehaviorNotFacts() {
       </Scene>
 
       {/* SCENE 3 — the split rule */}
-      <Scene caption="③ The rule that outlives every tool">
+      <Scene variant="continue" caption="Then the rule that outlives every tool: train behavior, look up facts.">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-brand bg-brand-wash p-4 text-center">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">train it in</div>
@@ -78,7 +91,7 @@ export function BehaviorNotFacts() {
       </Scene>
 
       {/* SCENE 4 — the classic bug */}
-      <Scene caption="④ The bug every team ships once">
+      <Scene variant="continue" caption="That's why Rasoi Express ships the same bug every quarter it trains a fact.">
         <div className="mx-auto max-w-md space-y-2">
           {[
             { t: "Q1: tune the quarter's refund window in", d: "training day" },

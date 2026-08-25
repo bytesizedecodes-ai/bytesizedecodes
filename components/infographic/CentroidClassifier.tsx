@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, PictureCard, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 12: "The class center: the centroid classifier".
+ * Layman course — Lesson 12: "The class center: the centroid classifier" (v2
+ * Thread retrofit).
  *
- * Layman translation of Lesson 4.pdf (Rocchio / centroid, slides 13-17): each
- * class is summed up by ONE average member (the centroid); a new sample is
- * assigned to whichever class center it is closest to. Taught with NO centroid
- * formula — the "average member" is shown as a single star-marked car/bike
- * standing for its whole cluster. Brand blue only. No prose/questions (rule).
+ * Through-line stage: the same two clusters all lesson. States: full crowds →
+ * each crowd collapses to ONE starred typical member (the crowd's outline
+ * stays as a ghost) → the newcomer lands nearer one star. Beats: anchor (the
+ * clusters) → reveal (one average stands for each class) → resolution
+ * (nearest star wins). The objects never change identity — only their count
+ * per class changes.
  */
 export function CentroidClassifier() {
   return (
@@ -19,8 +21,17 @@ export function CentroidClassifier() {
         subtitle="Each class has a typical member — assign the new sample to the nearest one"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">👥</span>, label: "Two full clusters" },
+          { icon: <span aria-hidden="true">⭐</span>, label: "One typical each" },
+          { icon: <span aria-hidden="true">📏</span>, label: "Measure to newcomer" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Nearest star wins" },
+        ]}
+      />
+
       {/* Step 1 — each class is a cluster */}
-      <Scene caption="① Each class is a cluster of samples">
+      <Scene caption="So each class is a cluster of samples">
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
             <div className="mb-2 flex items-end justify-center gap-1">
@@ -42,7 +53,7 @@ export function CentroidClassifier() {
       </Scene>
 
       {/* Step 2 — collapse each cluster to one average member (the centroid) */}
-      <Scene caption="② Summarise each cluster by one average member — its center">
+      <Scene variant="continue" caption="Then summarise each cluster by one average member — its center">
         <Stagger className="grid grid-cols-2 gap-4">
           <MotionChild>
             <div className="relative rounded-xl border border-brand bg-brand-wash p-4 text-center shadow-sm">
@@ -71,7 +82,7 @@ export function CentroidClassifier() {
       </Scene>
 
       {/* Step 3 — the new sample is closest to one center */}
-      <Scene caption="③ A new sample lands closer to one center — that’s its class">
+      <Scene caption="That's why the new sample takes the nearest center — car">
         <div className="flex items-center justify-center gap-3 sm:gap-5">
           <div className="flex flex-col items-center">
             <CarShape className="!h-12" />

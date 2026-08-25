@@ -5,7 +5,7 @@ const course: Course = {
     title: "AI Observability",
     subtitle: "How to watch your AI so it doesn’t quietly go wrong.",
     description:
-      "A picture-led introduction to watching AI systems in the real world. You'll meet the three pillars — logs, metrics, and traces. You'll learn to spot quiet failures like hallucination and drift. And you'll see how teams use dashboards and alerts to catch problems before users do. No coding required.",
+      "A picture-led introduction to watching AI systems in the real world. You'll follow Nisha, a first-month engineer, as she looks after Mitra — the support assistant at insurance app Suraksha. You'll meet the three pillars — logs, metrics, and traces. You'll learn to spot quiet failures like hallucination and drift. And you'll see how dashboards and alerts catch problems before users do. No coding required.",
     level: "beginner",
     domain: "AI Observability",
     access: "free",
@@ -31,8 +31,8 @@ const course: Course = {
             "It can’t tell you what to *fix* — observability **reveals state**, it doesn’t repair it. And it’s too much for a system too small to fail quietly.",
         },
         prose: [
-          "It’s your first month looking after a company chatbot. Every answer arrives calm, polite, and confident. One day you wonder: if something inside it started going wrong, how would I even know?",
-          "You already know the answer from driving. You can’t open the engine at 100 km/h, but the **dashboard gauges** tell you the speed, the fuel, and whether something is wrong. That’s the inside, read from signals on the outside.",
+          "It’s Nisha’s first month looking after Mitra, the support assistant at Suraksha, an insurance app. Every answer arrives calm, polite, and confident. One day she wonders: if something inside it started going wrong, how would she even know?",
+          "Nisha already knows the answer from driving. She can’t open the engine at 100 km/h, but the **dashboard gauges** tell her the speed, the fuel, and whether something is wrong. That’s the inside, read from signals on the outside.",
           "That is **observability**: giving an AI its own dashboard — little readings that show **how it’s really doing underneath**, not just how confident it sounds. Where the analogy breaks: a gauge can tell you the engine is struggling, but it can’t repair it. And with an AI, looking fine and being fine are two different things. That is exactly why the readings matter.",
         ],
         diagram: {
@@ -62,7 +62,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your company’s chatbot gives an answer that looks perfectly fine to users. With observability in place, what can the team do that they couldn’t before?",
+              "Mitra gives an answer that looks perfectly fine to users. With observability in place, what can Nisha do that she couldn’t before?",
             choices: [
               { id: "a", label: "Read the readings behind the answer to check whether it’s actually fine underneath" },
               { id: "b", label: "Ask the chatbot to rate its own answer — it sounds confident, so it must know" },
@@ -104,7 +104,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A QA tester sends the same prompt to your support chatbot on Monday and Tuesday and gets two slightly different answers. Both read fine. Has something broken?",
+              "A QA tester sends the same prompt to Mitra on Monday and Tuesday and gets two slightly different answers. Both read fine. Has something broken?",
             choices: [
               { id: "a", label: "No — the same input can produce different outputs; that’s non-determinism, not breakage" },
               { id: "b", label: "Yes — identical prompts must always return identical answers" },
@@ -118,7 +118,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your team certified a vending-machine-style checkout flow with one week of tests and shipped it. Now they want to apply the same test-once approach to the new AI assistant. Why won’t it work?",
+              "Nisha’s team certified a vending-machine-style checkout flow with one week of tests and shipped it. Now they want to apply the same test-once approach to Mitra. Why won’t it work?",
             choices: [
               { id: "a", label: "It still can — just re-run the same certified tests more often" },
               { id: "b", label: "One good run doesn’t guarantee the next — the same prompt can answer differently over time, so every run needs watching" },
@@ -160,7 +160,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "For three weeks, your company’s chatbot has been inventing a return policy that doesn’t exist. It does this politely, confidently, and with zero error messages. Users are following the fake policy. Why did nobody catch it for so long?",
+              "For three weeks, Suraksha’s chatbot Mitra has been inventing a return policy that doesn’t exist. It does this politely, confidently, and with zero error messages. Users are following the fake policy. Why did nobody catch it for so long?",
             choices: [
               { id: "a", label: "The failure was loud but support was understaffed" },
               { id: "b", label: "AI fails quietly — nothing crashed, so the confident wrongness ran unnoticed until users complained" },
@@ -174,7 +174,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A teammate lists last quarter’s incidents: (1) the website went down when disk filled up. (2) The chatbot started citing a deleted policy. (3) The AI feature’s bill doubled silently. Which two are AI quiet-failure modes?",
+              "Nisha lists last quarter’s incidents: (1) the website went down when disk filled up. (2) Mitra started citing a deleted policy. (3) The AI feature’s bill doubled silently. Which two are AI quiet-failure modes?",
             choices: [
               { id: "a", label: "1 and 2 — both are crashes" },
               { id: "b", label: "2 and 3 — confident wrongness and quietly climbing cost" },
@@ -207,7 +207,7 @@ const course: Course = {
             "Logs don’t tell you trends — ‘is it getting slower overall?’ is a **metric** question, not a diary lookup.",
         },
         prose: [
-          "Yesterday your team’s chatbot told a user something strange. Today you want to know exactly what it said, when, and which model version was running. If nobody wrote it down at the time, that question has no answer. The moment is gone.",
+          "Yesterday Mitra told a customer something strange. Today Nisha wants to know exactly what it said, when, and which model version was running. If nobody wrote it down at the time, that question has no answer. The moment is gone.",
           "Logs are the fix: a **diary written as things happen**. Every exchange — what was asked and what was answered — gets written down in the moment, never reconstructed afterwards.",
           "With logs, you can scroll back, find the entry, and see the precise **prompt, answer, timestamp, and version**. ‘Why did it say that?’ becomes a question you can actually investigate. Where the analogy breaks: a diary is written to preserve memories. A log is written for investigation — exact words and times, no feelings.",
         ],
@@ -216,7 +216,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A user tweets a screenshot of your support bot promising a ‘full lifetime refund’ — but doesn’t say when it happened. Without logs, what’s your situation?",
+              "A customer tweets a screenshot of Mitra promising a ‘full lifetime refund’ — but doesn’t say when it happened. Without logs, what’s Nisha’s situation?",
             choices: [
               { id: "a", label: "You can find the exact exchange instantly" },
               { id: "b", label: "You only have a memory of it feeling wrong — the exact words, time, and model version are gone" },
@@ -263,7 +263,7 @@ const course: Course = {
             "Metrics won’t explain any single answer — ‘why did it say *that*?’ needs a **log**, not an average.",
         },
         prose: [
-          "It’s your second week with the team’s chatbot. One user says it ‘feels slow lately’. Another says it’s fine. A feeling won’t settle that, and neither will a single log entry. You need numbers counted over time.",
+          "It’s Nisha’s second week with Mitra. One customer says it ‘feels slow lately’. Another says it’s fine. A feeling won’t settle that, and neither will a single log entry. She needs numbers counted over time.",
           "A **metric** is exactly that: a number that **summarises thousands** of events — like **height marks on a door frame**. One mark means little. The trend over months tells the story.",
           "For an AI, four numbers matter most: **latency** (how long an answer takes), **cost** (how much it spends), **error rate** (how often it fails), and **token usage** (how much it reads and writes). Watch them move, and a spike is a quiet problem announcing itself. Where the analogy breaks: you measure a child a few times a year. A metric counts thousands of events a day — fast enough to catch trouble while it’s still small. Try the 24h window on the dashboard above and spot the spike.",
         ],
@@ -280,7 +280,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Users keep telling your team the chatbot ‘feels slow lately’. You need to confirm it with evidence, not feelings. You also want to see whether it’s getting worse week over week. What do you pull up?",
+              "Customers keep telling Nisha that Mitra ‘feels slow lately’. She needs to confirm it with evidence, not feelings. She also wants to see whether it’s getting worse week over week. What does she pull up?",
             choices: [
               { id: "a", label: "The average-latency metric graphed over the last few weeks" },
               { id: "b", label: "One user’s exact logged conversation from Tuesday" },
@@ -294,7 +294,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your AI feature’s monthly bill jumped 40% but no one filed a complaint and every answer looks fine. Which metric would have caught this quietly climbing cost before the invoice did?",
+              "Mitra’s monthly bill jumped 40% but no one filed a complaint and every answer looks fine. Which metric would have caught this quietly climbing cost before the invoice did?",
             choices: [
               { id: "a", label: "Latency — slow requests always cost more" },
               { id: "b", label: "Token usage tracked over the month" },
@@ -327,7 +327,7 @@ const course: Course = {
             "A single trace can’t tell you trends. ‘Is latency (the wait time for a response) rising across all requests?’ is a **metric** question. Traces zoom into one journey.",
         },
         prose: [
-          "Nine seconds. That’s how long the support bot takes to answer. The team keeps arguing about which part is slow — the document search? the model? the formatting? An average can’t settle it, because an average has no parts.",
+          "Nine seconds. That’s how long Mitra takes to answer. The team keeps arguing about which part is slow — the document search? the model? the formatting? An average can’t settle it, because an average has no parts.",
           "A **trace** settles it. It’s like a **delivery receipt that shows every stop your parcel made** — and how long each stop took. A trace follows **one request on its full journey**. Every step behind the scenes gets its own little timing bar.",
           "Stack the bars and the shape of the request appears: most steps are quick, one is slow — usually the big model call. Where the analogy breaks: a parcel visits its stops one after another. A request’s steps can overlap — but the bars still add up to the wait the user feels. Try tapping the steps above.",
         ],
@@ -344,7 +344,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your support bot takes 9 seconds per reply and users are complaining. The average-latency metric confirms it’s slow, but not why. What do you open next to find the step at fault?",
+              "Mitra takes 9 seconds per reply and customers are complaining. The average-latency metric confirms it’s slow, but not why. What does Nisha open next to find the step at fault?",
             choices: [
               { id: "a", label: "A trace of one slow request, to see which step’s bar dominates" },
               { id: "b", label: "The latency graph again, zoomed in" },
@@ -358,7 +358,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "In your trace, the bar for the big LLM call is roughly 80% of the request’s total time. Retrieval and formatting are just thin slices. Your team proposes a week optimising the formatting code. What does the trace say?",
+              "In Nisha’s trace, the bar for the big LLM call is roughly 80% of the request’s total time. Retrieval and formatting are just thin slices. Her team proposes a week optimising the formatting code. What does the trace say?",
             choices: [
               { id: "a", label: "Go ahead — formatting is easier to fix" },
               { id: "b", label: "Effort is going to the wrong step — the LLM call dominates, so that’s where the time actually is" },
@@ -422,7 +422,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "Your chatbot’s latest answer is polished, on-brand, and perfectly formatted. But it cites a discount code that expired in 2023. Users are already trying it. Why didn’t ‘it reads well’ catch this?",
+              "Mitra’s latest answer is polished, on-brand, and perfectly formatted. But it cites a discount code that expired in 2023. Users are already trying it. Why didn’t ‘it reads well’ catch this?",
             choices: [
               { id: "a", label: "Because reading well is not being right — surface polish hides factual problems, which is why evaluation uses a rubric of specific checks" },
               { id: "b", label: "Because the answer passed every formatting check the team automated — and formatting was the whole checklist" },
@@ -651,7 +651,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "An on-call engineer sets the error-rate alert so sensitively it fires several times a day on normal noise. Last night a real incident started at 2 am — and she slept through the alert. What actually failed?",
+              "Nisha, on call, sets Mitra’s error-rate alert so sensitively it fires several times a day on normal noise. Last night a real incident started at 2 am — and she slept through the alert. What actually failed?",
             choices: [
               { id: "a", label: "The alert system was offline" },
               { id: "b", label: "The threshold was too low — months of false alarms taught her to ignore the page, so the real one read as noise" },
@@ -807,7 +807,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "To improve answer quality, your team switches the support bot to a bigger model. Support tickets praise the richer answers. But the monthly token bill doubles, and replies now take twice as long. What happened?",
+              "To improve answer quality, Nisha’s team switches Mitra to a bigger model. Support tickets praise the richer answers. But the monthly token bill doubles, and replies now take twice as long. What happened?",
             choices: [
               { id: "a", label: "Cost and latency travel together — a bigger, more capable call costs more tokens AND more time" },
               { id: "b", label: "The bigger model was broken" },
@@ -918,9 +918,9 @@ const course: Course = {
             "The loop ends only if you stop watching — a one-time setup can’t catch problems that **haven’t happened yet**.",
         },
         prose: [
-          "Here’s the whole course in one story. A team ships an AI feature. From day one, **logs, metrics, and traces flow quietly into a dashboard** that reads healthy.",
+          "Here’s the whole course in one story. Nisha’s team ships Mitra at Suraksha. From day one, **logs, metrics, and traces flow quietly into a dashboard** that reads healthy.",
           "Weeks later, **an alert fires** — the error rate has crept past its threshold. Nothing crashed. The dashboard caught a quiet problem before users complained.",
-          "The team opens a **trace** for a failing request and pinpoints the slow step. The **logs** reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
+          "Nisha opens a **trace** for a failing request and pinpoints the slow step. The **logs** reveal why: a knowledge source the AI depended on quietly changed. They fix the cause and watch the metric recover.",
           "That’s the loop: **watch → alert → trace → log → fix → repeat**. Every tool in this course is just a role in that loop. And where the garden analogy breaks: a garden rests in winter. An AI feature serves users every single day, so the loop never gets a season off.",
         ],
         diagram: {
@@ -938,7 +938,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "For six weeks your team’s AI feature runs smoothly: dashboards healthy, no complaints. Then one morning the error-rate alert fires — nothing crashed, nothing was deployed overnight. What turned this quiet problem into an investigation?",
+              "For six weeks Mitra runs smoothly: dashboards healthy, no complaints. Then one morning the error-rate alert fires — nothing crashed, nothing was deployed overnight. What turned this quiet problem into an investigation?",
             choices: [
               { id: "a", label: "The alert — a metric crossing its threshold — not a crash or a user email" },
               { id: "b", label: "The app crashing loudly at 3 am" },
@@ -952,7 +952,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Following the alert, the team must find the cause. Rank the loop’s next two moves: what finds the failing step, and what explains what that step actually did wrong?",
+              "Following the alert, Nisha must find the cause. Rank the loop’s next two moves: what finds the failing step, and what explains what that step actually did wrong?",
             choices: [
               { id: "a", label: "A trace finds the step; logs explain why it went wrong" },
               { id: "b", label: "A bigger server finds the step; a louder alarm explains why" },

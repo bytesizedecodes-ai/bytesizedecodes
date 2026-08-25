@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 import { PlayMark, NoPlayMark } from "./weather";
 
 /**
- * Layman course — Lesson 14: "Which split is best?".
+ * Layman course — Lesson 14: "Which split is best?" (v2 Thread retrofit).
  *
- * Picture-led rebuild of Lesson 5.pdf slides 13-23 (information gain), WITHOUT
- * the entropy formula. The intuition only: a good split leaves each side
- * mostly one class (pure); a bad split leaves the sides mixed. Shown with the
- * play/no-play picture marks from the tennis example (lesson 13), NOT a token
- * table. Brand blue + semantic good/bad only. No prose/questions (course rule).
+ * Through-line stage: the same pile of Sunday-match days, cut by one question
+ * at a time — each candidate question leaves the pile in a new state (mixed =
+ * bad ghost, pure = accented good). Beats: anchor (what a pure side looks
+ * like) → compare (two candidate questions side by side) → fade (the
+ * tree-building rule, and the name for the measure). Continues lesson 13's
+ * weather marks — same cast, same colors.
  */
 export function BestSplit() {
   return (
@@ -20,8 +21,17 @@ export function BestSplit() {
         subtitle="The best question is the one that leaves each side mostly decided"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">✅</span>, label: "Pure or mixed?" },
+          { icon: <span aria-hidden="true">⚖️</span>, label: "Two questions compared" },
+          { icon: <span aria-hidden="true">🏆</span>, label: "The pure one wins" },
+          { icon: <span aria-hidden="true">📐</span>, label: "That's the gain" },
+        ]}
+      />
+
       {/* Step 1 — the goal: pure groups, shown with pictures */}
-      <Scene caption="① After a split, we want each side to be mostly one class">
+      <Scene caption="So after a split, we want each side mostly one class">
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
             <div className="mb-2 text-sm font-bold text-good">pure side</div>
@@ -45,7 +55,7 @@ export function BestSplit() {
       </Scene>
 
       {/* Step 2 — compare two candidate splits, as picture clusters */}
-      <Scene caption="② Compare two candidate questions — pick the purer one">
+      <Scene variant="continue" caption="Then compare two candidate questions — pick the purer one">
         <Stagger className="space-y-4">
           <MotionChild>
             <SplitRow
@@ -71,7 +81,7 @@ export function BestSplit() {
       </Scene>
 
       {/* Step 3 — the rule, in words */}
-      <Scene caption="③ The tree picks the feature that makes the purest split">
+      <Scene variant="continue" caption="That's why the tree picks the feature with the purest split">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium text-ink sm:text-base">
             Try every feature, measure how pure each split is, choose the{" "}

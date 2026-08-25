@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, PictureCard, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 10: "When one feature isn't enough".
+ * Layman course — Lesson 10: "When one feature isn't enough" (v2 Thread
+ * retrofit).
  *
- * Layout: ambiguous sample → add a feature → a decision tree of splits.
- * Faithful to Lesson 2.pdf slides 17-23: wheel-count alone leaves a 2-wheel
- * sample uncertain (75/25); adding Height (High/Low) resolves it; the pair of
- * splits forms a decision tree. Picture-led: the tree branches end in car/bike
- * picture cards, not text. Brand blue only. No prose/questions (course rule).
+ * Through-line stage: the same 2-wheel sample all lesson — first wobbling
+ * between 3 cars and 1 bike (75/25), then pinned down once Height joins, then
+ * sitting as one branch of the little tree. Beats: tension (one feature,
+ * unsure) → reveal (a second feature settles it) → fade (the splits chain
+ * into a decision tree). Ghost: the mixed 3-vs-1 pile stays visible under the
+ * clean call.
  */
 export function MultipleFeatures() {
   return (
@@ -19,8 +21,17 @@ export function MultipleFeatures() {
         subtitle="Ambiguity → add a feature → a tree of decisions"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">😕</span>, label: "75% is not sure" },
+          { icon: <span aria-hidden="true">📐</span>, label: "Add Height" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Now a clean call" },
+          { icon: <span aria-hidden="true">🌳</span>, label: "A tree grows" },
+        ]}
+      />
+
       {/* Step 1 — one feature leaves you unsure */}
-      <Scene caption="① One feature can leave you unsure">
+      <Scene caption="So one feature can leave you unsure — 3 cars vs 1 bike">
         <div className="flex flex-col items-center gap-3">
           <div className="relative">
             <BikeShape className="!h-14" />
@@ -51,7 +62,7 @@ export function MultipleFeatures() {
       </Scene>
 
       {/* Step 2 — add a second feature (Height) */}
-      <Scene caption="② Add a second feature — Height (High / Low)">
+      <Scene variant="continue" caption="Then add a second feature — Height (High / Low)">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
             <PictureCard
@@ -74,7 +85,7 @@ export function MultipleFeatures() {
       </Scene>
 
       {/* Step 3 — the splits form a decision tree */}
-      <Scene caption="③ The splits chain into a decision tree">
+      <Scene variant="continue" caption="That's why the splits chain into a decision tree">
         <div className="flex flex-col items-center">
           {/* root */}
           <div className="rounded-full bg-ink px-4 py-2 text-xs font-bold text-canvas">

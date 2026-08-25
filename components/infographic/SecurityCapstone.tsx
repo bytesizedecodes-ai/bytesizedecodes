@@ -1,12 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Security Foundations — Lesson 10: capstone "The inspection walk".
- * Through-line: one walk around the AI house — every room is a component
- * from the course, every room gets its lock question. The whole course on
- * one street.
+ * AI Security Foundations — Lesson 10: capstone "The inspection walk" (v2
+ * Thread retrofit)
+ *
+ * Through-line stage: the BharatKosh AI house, same four rooms all lesson —
+ * Kabir walks it once a month. States: the house and its rooms → each room's
+ * lock question answered (lock pills accented) → the walk's four steps in
+ * order → the carry-home card. Every room's lock is a lesson the course
+ * already staged; nothing new appears that lessons 1–9 didn't set up.
  */
 export function SecurityCapstone() {
   const Room = ({
@@ -39,8 +43,17 @@ export function SecurityCapstone() {
         subtitle="One lap around the AI house — every room, every lock"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🏠</span>, label: "Four rooms, one house" },
+          { icon: <span aria-hidden="true">🔍</span>, label: "Each room's lock" },
+          { icon: <span aria-hidden="true">🚶</span>, label: "The walk, in order" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "Re-walk every month" },
+        ]}
+      />
+
       {/* SCENE 1 — the house */}
-      <Scene caption="① The AI house: four rooms you now know">
+      <Scene caption="So Kabir inspects four rooms, one house — BharatKosh's.">
         <div className="mx-auto max-w-md rounded-2xl border-2 border-ink bg-surface-elevated p-5 shadow-sm">
           <div className="grid grid-cols-2 gap-2.5">
             <div className="flex flex-col items-center rounded-xl border border-ash p-2.5 text-center">
@@ -62,12 +75,12 @@ export function SecurityCapstone() {
           </div>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink">
-          Every AI app is some arrangement of these rooms — the doors differ, the rooms don&apos;t.
+          DhanSaarthi lives in all four rooms — and every AI app arranges the same four.
         </p>
       </Scene>
 
       {/* SCENE 2 — the lock questions */}
-      <Scene caption="② Each room gets its lock question">
+      <Scene variant="continue" caption="Then each room's lock question gets an honest answer.">
         <Stagger className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           <Room icon="💬" room="the chat room" risk="hidden instructions, jailbreaks, leaks" lock="mark outside text as data; guardrails in and out; don't feed secrets" />
           <Room icon="🧠" room="the model room" risk="unknown bakery, surprises baked in" lock="named sources, sealed boxes, taste-test before serving" />
@@ -77,7 +90,7 @@ export function SecurityCapstone() {
       </Scene>
 
       {/* SCENE 3 — the walk itself */}
-      <Scene caption="③ The walk, in order">
+      <Scene variant="continue" caption="But the walk only works in order.">
         <div className="mx-auto max-w-md space-y-2">
           {[
             "Map the doors — name every way in and out",
@@ -96,8 +109,8 @@ export function SecurityCapstone() {
       </Scene>
 
       {/* SCENE 4 — the street sign */}
-      <Scene caption="④ What you now carry">
-        <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
+      <Scene caption="That's why Kabir re-walks every month — and so should you.">
+        <div className="mx-auto max-w-md rounded-xl border border-brand bg-surface-elevated p-4 text-center shadow-sm">
           <p className="text-sm font-semibold text-ink">
             You can walk into any AI product and ask the{" "}
             <span className="font-bold">four room questions</span> — and know the first three fixes to demand.

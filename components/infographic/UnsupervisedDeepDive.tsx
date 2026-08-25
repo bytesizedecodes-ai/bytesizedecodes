@@ -1,16 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, Scene } from "./scenes";
+import { CarShape, BikeShape, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "Inside unsupervised learning".
+ * Layman course — Lesson: "Inside unsupervised learning" (v2 Thread retrofit).
  *
- * Layout: no-labels → find-structure. The deck's signature visual from
- * slides 38-43: raw samples with NO labels, then the algorithm groups similar
- * items (clustering) and finds co-occurring patterns (association rules).
- * Brand blue only. No prose/questions (course rule).
- *
- * Faithful to source: Lesson 1.pdf slides 38-43.
+ * Through-line stage: the SAME sample objects all lesson; the only thing that
+ * changes is what stands beside them — first a "no labels" card (the answers
+ * that supervised learning got, left out as a ghost), then the question the
+ * machine asks itself, then the structure it finds (groups, pairs). Beats:
+ * anchor (samples only) → tension (no target answer) → reveal (structure
+ * emerges on its own).
  */
 export function UnsupervisedDeepDive() {
   return (
@@ -20,8 +20,17 @@ export function UnsupervisedDeepDive() {
         subtitle="No labels — the algorithm finds the structure on its own"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🖼️</span>, label: "Samples, no answers" },
+          { icon: <span aria-hidden="true">🚫</span>, label: "No labels given" },
+          { icon: <span aria-hidden="true">👥</span>, label: "Groups emerge" },
+          { icon: <span aria-hidden="true">🛒</span>, label: "Pairs that travel" },
+        ]}
+      />
+
       {/* Step 1 — raw samples, no labels. */}
-      <Scene caption="① Start with samples only — no answers given">
+      <Scene caption="So start with samples only — no answers given">
         <Stagger className="flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:gap-3">
           <MotionChild>
             <div className="flex-1 rounded-xl border border-ash bg-ash/40 p-3 text-center">
@@ -48,7 +57,7 @@ export function UnsupervisedDeepDive() {
       </Scene>
 
       {/* Step 2 — the task is to find structure */}
-      <Scene caption="② The algorithm looks for hidden structure">
+      <Scene variant="continue" caption="But with no target answer, it asks its own questions">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium text-ink sm:text-base">
             No target answer — instead it asks{" "}
@@ -59,7 +68,7 @@ export function UnsupervisedDeepDive() {
       </Scene>
 
       {/* Step 3 — two kinds of structure it finds */}
-      <Scene caption="③ Two patterns it can discover">
+      <Scene variant="continue" caption="Then two kinds of structure fall out — groups, and pairs">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {/* Clustering */}
           <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">

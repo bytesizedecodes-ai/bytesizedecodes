@@ -1,17 +1,18 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 import { OutlookIcon, PlayMark, NoPlayMark } from "./weather";
 
 /**
- * Layman course — Lesson 13: "Rules as a tree: the decision tree".
+ * Layman course — Lesson 13: "Rules as a tree: the decision tree" (v2 Thread
+ * retrofit).
  *
- * Picture-led rebuild of Lesson 5.pdf slides 1-12 (tennis example). Weather is
- * drawn as SVG icons (sun/overcast/rain), not emoji; the tree's leaves are
- * play/no-play picture marks, not text. A pile of if/then rule cards then the
- * same rules drawn as a tree you walk down. Many trees possible — which is
- * best? (hook for the next lesson). Brand blue + semantic good/bad only.
- * No prose/questions (course rule).
+ * Through-line stage: Asha's Sunday-match question, answered by the SAME four
+ * weather chips all lesson — first as a doubt, then as a list of if/then
+ * cards, then those exact rules redrawn as a tree (the card list stays beside
+ * it as the ghost it came from). Beats: hook (will the match happen?) → anchor
+ * (rules on cards) → reveal (the same rules, drawn as a walkable tree) →
+ * cliffhanger (many trees fit — which is best?).
  */
 export function DecisionTreeRules() {
   return (
@@ -21,8 +22,17 @@ export function DecisionTreeRules() {
         subtitle="A list of if/then rules is just a tree you walk down"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎾</span>, label: "Match day doubt" },
+          { icon: <span aria-hidden="true">📜</span>, label: "Rules on cards" },
+          { icon: <span aria-hidden="true">🌳</span>, label: "The same tree" },
+          { icon: <span aria-hidden="true">🤔</span>, label: "Which tree wins?" },
+        ]}
+      />
+
       {/* Step 1 — the prediction question, as picture chips */}
-      <Scene caption="① The question: will the tennis match happen?">
+      <Scene caption="So the question: will Asha's Sunday match happen?">
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-wrap items-center justify-center gap-2">
             <ConditionChip icon={<OutlookIcon outlook="sunny" />} label="sunny" />
@@ -38,7 +48,7 @@ export function DecisionTreeRules() {
       </Scene>
 
       {/* Step 2 — a set of if/then rules, as cards */}
-      <Scene caption="② We could answer it with a list of rules">
+      <Scene variant="continue" caption="Then answer it with a list of rules">
         <div className="mx-auto max-w-md space-y-2">
           <RuleRow icon={<OutlookIcon outlook="overcast" className="!h-5" />}>
             if <b>overcast</b> <PlayMark />
@@ -56,7 +66,7 @@ export function DecisionTreeRules() {
       </Scene>
 
       {/* Step 3 — the same rules drawn as a tree */}
-      <Scene caption="③ Those rules also draw as a tree — walk down it">
+      <Scene variant="continue" caption="But those rules also draw as a tree — walk down it">
         <div className="flex flex-col items-center overflow-x-auto">
           <Node label="outlook?" />
           <Branch />
@@ -88,7 +98,7 @@ export function DecisionTreeRules() {
       </Scene>
 
       {/* Step 4 — many trees possible */}
-      <Scene caption="④ But many trees can give the same answers — which is best?">
+      <Scene caption="Then again — many trees give the same answers. Which is best?">
         <Stagger className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-5">
           <MotionChild>
             <div className="flex h-20 w-20 items-center justify-center rounded-xl border border-ash bg-surface-elevated text-sm font-semibold text-ink shadow-sm">

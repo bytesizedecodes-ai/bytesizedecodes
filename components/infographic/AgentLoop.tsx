@@ -2,20 +2,23 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Reveal } from "./motion";
 
 /**
  * Harness Engineering Foundations — Lesson 6: "What is the Agent Loop?"
+ * (v2 Thread retrofit)
  *
- * Interactive infographic: the learner picks one of two preset tasks and steps
- * through the think → act → observe loop, watching a step budget tick down.
- * The "stuck" task never finishes — the budget stops it, which is the lesson.
- * Feedback contract: the likely wrong conclusion is "the agent broke"; the
- * widget shows the HARNESS halting the loop on purpose. Real buttons, keyboard
- * reachable, state (not motion) carries the teaching — reduced-motion safe.
- * Local state + hardcoded illustrative data only; brand accent, semantic
- * good/bad only for the two endings.
+ * Course cast: Divya's team lets Vaani loose on multi-step work — the preset
+ * task is Rohan's order #4821, carried over from earlier lessons. Through-line
+ * stage: the loop log — the same think→act→observe column filling beat by
+ * beat while the step budget drains beside it. Interactive: the learner picks
+ * one of two preset tasks and steps through the loop. The "stuck" task never
+ * finishes — the budget stops it, which is the lesson. The likely wrong
+ * conclusion is "the agent broke"; the widget shows the HARNESS halting the
+ * loop on purpose. Real buttons, keyboard reachable, state (not motion)
+ * carries the teaching — reduced-motion safe. Brand accent, semantic good/bad
+ * only for the two endings.
  */
 
 const MAX_STEPS = 6;
@@ -27,7 +30,7 @@ type Beat = {
 
 const TASKS = {
   normal: {
-    label: "Track a package",
+    label: "Track Rohan's order",
     question: "When does order #4821 arrive?",
     beats: [
       { phase: "Think", line: "I need the delivery date — I'll look up the order." },
@@ -77,8 +80,17 @@ export function AgentLoop() {
         subtitle="Pick a task, then press “Next step” — and watch the budget."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🧠</span>, label: "Think, act, observe" },
+          { icon: <span aria-hidden="true">🕹️</span>, label: "Step the loop" },
+          { icon: <span aria-hidden="true">⏳</span>, label: "Watch the budget" },
+          { icon: <span aria-hidden="true">🛑</span>, label: "Two exits, one brake" },
+        ]}
+      />
+
       {/* Scene 1 — the cycle itself, static */}
-      <Scene caption="① Three moves, repeated until done">
+      <Scene caption="So Vaani's tougher tasks run as a loop — three moves, repeated.">
         <Reveal>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <CycleCard icon="🧠" name="Think" note="what's my next step?" />
@@ -93,7 +105,7 @@ export function AgentLoop() {
       </Scene>
 
       {/* Scene 2 — the interactive stepper (the tension beat) */}
-      <Scene caption="② Step the loop yourself">
+      <Scene variant="continue" caption="Then step the loop yourself — and keep one eye on the budget.">
         <div className="rounded-2xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm">
           {/* task presets — constrained to two for beginners */}
           <div className="flex flex-wrap items-center gap-2">
@@ -197,7 +209,7 @@ export function AgentLoop() {
       </Scene>
 
       {/* Scene 3 — resolution: why every loop needs a brake */}
-      <Scene caption="③ Two exits, one brake">
+      <Scene caption="That's why every loop Vaani ships has two exits — and one brake.">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-brand bg-surface-elevated p-4 text-center shadow-sm">
             <div className="text-sm font-bold text-brand">Goal reached</div>

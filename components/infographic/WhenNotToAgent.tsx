@@ -1,16 +1,18 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild, Reveal } from "./motion";
 
 /**
- * Harness Engineering Foundations — Lesson 7: "When NOT to Build an Agent".
+ * Harness Engineering Foundations — Lesson 7: "When NOT to Build an Agent"
+ * (v2 Thread retrofit)
  *
- * The capstone judgment: three real tasks, three right-sized designs. A nightly
- * batch job (fixed pipeline), a one-shot policy question (single call), and an
- * open investigation (agent). Scenes: sort the tasks, then the trade-off dial
- * (flexibility vs cost/latency/reliability), then the ordering rule — always
- * the least machinery that works. Semantic good marks the right-sized choice;
- * brand accent carries the ladder. Beginner density throughout.
+ * Course capstone. Cast: three tickets land on Divya's desk at Team Vaani on
+ * the same Monday — one is Rohan's return-policy question. Through-line
+ * stage: the sorting desk — the same three tickets each scene, first sorted
+ * onto their designs (✓ good marks the right-sized choice), then repriced
+ * (the agent's flexibility carries the brand accent as the one costly
+ * change), then the fade to the ladder rule: always the least machinery that
+ * works. Beginner density throughout.
  */
 export function WhenNotToAgent() {
   return (
@@ -20,8 +22,16 @@ export function WhenNotToAgent() {
         subtitle="Three real tasks — only one of them deserves an agent."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">📥</span>, label: "Three Monday tickets" },
+          { icon: <span aria-hidden="true">💰</span>, label: "Price each option" },
+          { icon: <span aria-hidden="true">🪜</span>, label: "Climb the ladder" },
+        ]}
+      />
+
       {/* Scene 1 — sort three tasks to their right-sized design */}
-      <Scene caption="① Three tasks arrive on the same Monday">
+      <Scene caption="So three tickets land on Divya's desk — same Monday, three right sizes.">
         <Stagger className="flex flex-col gap-3">
           <MotionChild>
             <TaskRow
@@ -32,7 +42,7 @@ export function WhenNotToAgent() {
           </MotionChild>
           <MotionChild>
             <TaskRow
-              task="A shopper asks: “what's your return policy?”"
+              task="Rohan asks: “what's your return policy?”"
               design="single call"
               why="one question, one answer — hand the policy to the model"
             />
@@ -49,7 +59,7 @@ export function WhenNotToAgent() {
       </Scene>
 
       {/* Scene 2 — the trade-off: what flexibility costs */}
-      <Scene caption="② What you pay for flexibility">
+      <Scene variant="continue" caption="Then price the machinery before choosing — flexibility has a bill.">
         <Reveal>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <CostCard label="Fixed pipeline" cost="low" rows={["runs the same every time", "cheap and fast", "blind to surprises"]} />
@@ -64,7 +74,7 @@ export function WhenNotToAgent() {
       </Scene>
 
       {/* Scene 3 — the rule, faded to the idea */}
-      <Scene caption="③ The ladder — climb only as high as the task forces">
+      <Scene caption="That's why the ladder rule: climb only as high as the task forces.">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium leading-relaxed text-ink sm:text-base">
             <span className="font-bold">Pipeline</span> → can&apos;t? try a{" "}

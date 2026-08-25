@@ -2,27 +2,28 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
-import { Reveal } from "./motion";
+import { Scene, StoryMap } from "./scenes";
+import { ToggleGroup } from "./controls";
 
 /**
- * RAG Engineering Foundations — Lesson 5: "The RAG Pipeline, End to End".
+ * RAG Engineering Foundations — Lesson 5: "The RAG Pipeline, End to End"
+ * (v2 Thread retrofit)
  *
- * Interactive stepper (AgentLoop pattern): the learner picks one of two
- * preset questions and steps through its full journey — question → embedded
- * → ranked pages → top-3 → context → cited answer — with a running trace
- * log. Feedback contract: the tempting wrong idea is that RAG is "the model
- * searching the internet"; stepping shows the harness stages, and that the
- * model only ever sees what the pipeline put in front of it. Constrained
- * presets, real buttons, aria-pressed, state-based (reduced-motion safe).
+ * Through-line stage: the conveyor every ZapKart question rides. The stepper
+ * (the course's one primary widget) sits on the tension beat: the tempting
+ * wrong idea is "the AI searches the docs live"; stepping through exposes the
+ * stages and that the model only ever sees what reaches the envelope. The
+ * closing scene shows the envelope itself — what the model actually receives.
+ * Presets are Ravi's damaged-box refund and the Berlin delivery, both carried
+ * from earlier lessons.
  */
 
 const QUESTIONS = {
   refund: {
-    label: "Damaged box refund",
+    label: "Ravi's damaged box",
     question: "Can I get my money back if the box arrived damaged?",
     steps: [
-      { phase: "Ask", line: "the customer's question arrives — plain words, nothing else" },
+      { phase: "Ask", line: "Ravi's question arrives — plain words, nothing else" },
       { phase: "Embed", line: "the question is plotted on the meaning map — money & refunds street" },
       { phase: "Search", line: "every indexed page is measured; hundreds get ranked by distance" },
       { phase: "Top-3", line: "kept: policy-refunds p2 · faq-returns p1 · policy-payments p4" },
@@ -31,7 +32,7 @@ const QUESTIONS = {
     ],
   },
   delivery: {
-    label: "Delivery time to Berlin",
+    label: "Berlin delivery time",
     question: "How long does delivery to Berlin take?",
     steps: [
       { phase: "Ask", line: "the customer's question arrives — plain words, nothing else" },
@@ -61,48 +62,64 @@ export function RagPipeline() {
         subtitle="Pick a question, then press “Next step” — and watch what the model actually receives."
       />
 
-      {/* Scene 1 — the map recap, static */}
-      <Scene caption="① Everything you've met, now as one machine">
-        <Reveal>
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
-            {["question", "embedding", "ranked pages", "top-3", "context window", "cited answer"].map(
-              (s, i) => (
-                <span key={s} className="flex items-center gap-1.5">
-                  {i > 0 && <span aria-hidden="true" className="text-ink-faint">→</span>}
-                  <span className="rounded-full border border-ash bg-surface-elevated px-3 py-1 text-[11px] font-bold text-ink">
-                    {s}
-                  </span>
-                </span>
-              ),
-            )}
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎫</span>, label: "A question checks in" },
+          { icon: <span aria-hidden="true">🔄</span>, label: "The machine runs" },
+          { icon: <span aria-hidden="true">✉️</span>, label: "The envelope is sealed" },
+        ]}
+      />
+
+      {/* Anchor — the belt, three stations every question rides */}
+      <Scene caption="So every ZapKart question rides the same belt — question in, envelope sealed, answer out.">
+        <div className="mx-auto max-w-lg">
+          <div className="flex items-end justify-center gap-2 sm:gap-4">
+            <div className="flex flex-col items-center gap-1 rounded-xl border border-ash bg-surface-elevated px-3 py-2 shadow-sm">
+              <span className="text-xl" aria-hidden="true">💬</span>
+              <span className="text-[10px] font-bold text-ink-soft">a question checks in</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 rounded-xl border border-brand bg-brand-wash px-3 py-2 shadow-sm">
+              <span className="text-xl" aria-hidden="true">✉️</span>
+              <span className="text-[10px] font-bold text-brand-deep">3 pages tucked in</span>
+            </div>
+            <div className="flex flex-col items-center gap-1 rounded-xl border border-ash bg-surface-elevated px-3 py-2 shadow-sm">
+              <span className="text-xl" aria-hidden="true">🤖</span>
+              <span className="text-[10px] font-bold text-ink-soft">answers, with a citation</span>
+            </div>
           </div>
-        </Reveal>
+          {/* the belt itself — rollers under the stations */}
+          <div className="mt-1 flex h-3 items-center rounded-full border border-ash bg-canvas px-3" aria-hidden="true">
+            <div className="flex w-full justify-around">
+              <span className="h-1.5 w-1.5 rounded-full bg-ash" />
+              <span className="h-1.5 w-1.5 rounded-full bg-ash" />
+              <span className="h-1.5 w-1.5 rounded-full bg-ash" />
+              <span className="h-1.5 w-1.5 rounded-full bg-ash" />
+            </div>
+          </div>
+          <p className="mt-2 text-center text-[11px] font-medium text-ink-soft">
+            same stations, every question — the stepper below runs them one by one
+          </p>
+        </div>
       </Scene>
 
-      {/* Scene 2 — the stepper (the tension beat) */}
-      <Scene caption="② Step the journey yourself">
+      {/* Tension — the stepper, the course's one primary widget */}
+      <Scene variant="continue" caption="Then run one yourself — press Next step, and watch what arrives.">
         <div className="rounded-2xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm">
           {/* question presets */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="mr-1 text-[11px] font-bold uppercase tracking-wide text-ink-soft">Question:</span>
-            {(Object.keys(QUESTIONS) as QKey[]).map((key) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => {
-                  setQ(key);
-                  setStep(0);
-                }}
-                aria-pressed={q === key}
-                className={`rounded-full border px-3.5 py-1.5 text-xs font-bold transition-colors focus-ring ${
-                  q === key
-                    ? "border-brand bg-brand text-canvas"
-                    : "border-ash bg-surface-elevated text-ink hover:bg-brand-wash"
-                }`}
-              >
-                {QUESTIONS[key].label}
-              </button>
-            ))}
+            <ToggleGroup<QKey>
+              label="Which question rides the belt"
+              value={q}
+              onChange={(key) => {
+                setQ(key);
+                setStep(0);
+              }}
+              options={[
+                { value: "refund", label: QUESTIONS.refund.label },
+                { value: "delivery", label: QUESTIONS.delivery.label },
+              ]}
+            />
           </div>
 
           <p className="mt-3 rounded-xl bg-ash px-3 py-2 text-xs font-semibold text-ink sm:text-[13px]">
@@ -157,6 +174,35 @@ export function RagPipeline() {
             </p>
           )}
         </div>
+      </Scene>
+
+      {/* Reveal — the envelope: the model's entire world at answer time */}
+      <Scene variant="continue" caption="That's why the model never searches — it only ever sees the envelope.">
+        <div className="mx-auto max-w-lg rounded-2xl border border-brand bg-brand-wash px-4 py-4 text-center shadow-sm">
+            <div className="text-2xl" aria-hidden="true">✉️</div>
+            <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">
+              the envelope — the model&apos;s whole world at answer time
+            </div>
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5">
+              <span className="rounded-full border border-brand bg-surface-elevated px-2.5 py-1 font-mono text-[10px] font-bold text-ink">
+                policy-refunds p2
+              </span>
+              <span className="rounded-full border border-brand bg-surface-elevated px-2.5 py-1 font-mono text-[10px] font-bold text-ink">
+                faq-returns p1
+              </span>
+              <span className="rounded-full border border-brand bg-surface-elevated px-2.5 py-1 font-mono text-[10px] font-bold text-ink">
+                policy-payments p4
+              </span>
+              <span aria-hidden="true" className="text-ink-soft">+</span>
+              <span className="rounded-full border border-ash bg-surface-elevated px-2.5 py-1 text-[10px] font-bold text-ink">
+                Ravi&apos;s question
+              </span>
+            </div>
+            <p className="mt-3 text-[11px] font-medium leading-relaxed text-ink-soft">
+              no browsing, no memory of the shelf — the answer comes from inside the envelope,
+              and the citation points back at one of these pages
+            </p>
+          </div>
       </Scene>
 
       <Card tone="brand" rotate={0}>

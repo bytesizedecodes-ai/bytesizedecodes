@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Reveal } from "./motion";
+import { Scene, StoryMap, PersonFigure, MachineFigure } from "./scenes";
 
 /**
- * AI Observability — Lesson 10: "Alerts — knowing when to act".
+ * AI Observability — Lesson 10: "Alerts — knowing when to act"
+ * (v2 Thread retrofit)
  *
- * Interactive infographic: an alert fires when the error rate crosses a
- * threshold. The learner drags the threshold (range input) over an error-rate
- * chart and watches two counters update live:
- *   - false alarms = normal points wrongly above the threshold
- *   - missed       = real problem points below the threshold
- * Set it too low and you cry wolf; too high and you miss the fire; in between
- * is the sweet spot. Local state + illustrative data only. Brand line; the
- * problem band is the single semantic red region, consistent with the course.
+ * Through-line stage: ONE error-rate chart with a movable threshold line —
+ * the hook states the rule ("if it crosses the line, wake Nisha"), and the
+ * widget is that same chart with the line in Nisha's hand. Dragging changes
+ * only the line's state; the two counters (false alarms, missed) are the
+ * consequence, ghosting the cost of each side. Local state + illustrative
+ * data only. Brand line; the problem band is the single semantic red region.
  */
 
 // 15 normal points (with two noise spikes to 0.7), then 5 real-problem points.
@@ -49,7 +48,34 @@ export function AlertThresholdTuner() {
         subtitle="Drag the threshold. Too low and you cry wolf; too high and you miss the fire."
       />
 
-      <Reveal>
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🔔</span>, label: "A rule that wakes" },
+          { icon: <span aria-hidden="true">🎚️</span>, label: "Drag the threshold" },
+          { icon: <span aria-hidden="true">🐺</span>, label: "Too low: false alarms" },
+          { icon: <span aria-hidden="true">🔥</span>, label: "Too high: missed fires" },
+        ]}
+      />
+
+      {/* Hook — the rule itself */}
+      <Scene caption="So an alert is a rule: if Mitra’s error rate crosses the line, wake Nisha.">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
+          <MachineFigure label="Mitra" />
+          <div className="rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center shadow-sm">
+            <p className="text-sm font-bold text-ink">if error rate crosses the line</p>
+            <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-brand-deep">
+              → wake Nisha 🔔
+            </p>
+          </div>
+          <PersonFigure label="Nisha, on call" />
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink-soft">
+          Like a smoke alarm — the hard part is where the line sits.
+        </p>
+      </Scene>
+
+      {/* The widget — the same chart, the line in Nisha's hand */}
+      <Scene variant="continue" caption="Then Nisha drags the threshold — and the two counters argue back.">
         <div className="rounded-2xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm sm:px-6 sm:py-5">
           <ThresholdChart threshold={threshold} />
 
@@ -85,7 +111,7 @@ export function AlertThresholdTuner() {
             {verdict.text}
           </p>
         </div>
-      </Reveal>
+      </Scene>
 
       <Card tone="brand" rotate={0}>
         <Takeaway>

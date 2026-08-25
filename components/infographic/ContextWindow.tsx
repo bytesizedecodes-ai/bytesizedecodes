@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
  * Harness Engineering Foundations — Lesson 4: "What is a Context Window?"
+ * (v2 Thread retrofit)
  *
- * The desk anchor: the model works at a desk with limited space. Everything it
- * "knows" right now is what's ON the desk — system prompt, chat history, tool
- * results. New papers land on the desk; when it's full, the oldest slide off.
- * The SVG window fills top-to-bottom, oldest message visibly falling out as a
- * new one arrives. Brand accent on the window frame + the newest item only.
+ * Course cast: Rohan's support chat with Vaani (Divya's team's product).
+ * Through-line stage: the model's desk — the same fixed-space window every
+ * scene, seen filling (scene 1: the three things that live on it) →
+ * overflowing (scene 2: Rohan's message 9 lands, message 1 slides out as a
+ * dashed ghost in bad accent) → managed (scene 3: the harness keeps the
+ * order number pinned). Brand accent on the frame + the newest item only.
  */
 export function ContextWindow() {
   return (
@@ -19,8 +21,17 @@ export function ContextWindow() {
         subtitle="It only knows what's on the desk right now — and the desk is small."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🖥️</span>, label: "Vaani's small desk" },
+          { icon: <span aria-hidden="true">💬</span>, label: "Rohan's chat grows" },
+          { icon: <span aria-hidden="true">📉</span>, label: "Old messages slide off" },
+          { icon: <span aria-hidden="true">📌</span>, label: "Pin what matters" },
+        ]}
+      />
+
       {/* Scene 1 — anchor: everything it knows is on the desk */}
-      <Scene caption="① What the model can see, on this one turn">
+      <Scene caption="So Vaani works at a desk — only what's on it right now exists.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <MotionChild>
             <DeskItem icon="🧭" label="Instructions">the system prompt — always on the desk</DeskItem>
@@ -39,7 +50,10 @@ export function ContextWindow() {
       </Scene>
 
       {/* Scene 2 — tension: the desk is full; something slides off */}
-      <Scene caption="② Message 9 arrives — watch what happens to message 1">
+      <Scene
+        variant="continue"
+        caption="But Rohan's chat grows — message 9 arrives, and message 1 slides off."
+      >
         <WindowSvg />
         <p className="mt-3 text-center text-sm font-medium leading-relaxed text-ink sm:text-[15px]">
           Nothing was &ldquo;deleted&rdquo; — it just fell off the desk. The model didn&apos;t
@@ -48,11 +62,11 @@ export function ContextWindow() {
       </Scene>
 
       {/* Scene 3 — resolution: the harness manages the desk */}
-      <Scene caption="③ Who keeps the right things on the desk?">
+      <Scene caption="That's why the harness — not the model — manages the desk.">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium leading-relaxed text-ink sm:text-base">
             The <span className="font-bold">harness decides what goes in</span>: trim old turns,
-            summarize long chats, keep the order number pinned. The window is the model&apos;s
+            summarize long chats, keep Rohan&apos;s order number pinned. The window is the model&apos;s
             whole world — the harness is its <span className="font-bold">secretary</span>.
           </p>
         </div>

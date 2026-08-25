@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, BulletList } from "./primitives";
-import { MachineFigure, SpeechBubble, Scene } from "./scenes";
+import { MachineFigure, SpeechBubble, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 8: "Hallucination — when AI makes things up".
+ * AI Observability — Lesson 8: "Hallucination — when AI makes things up"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: a hallucination is a confident-but-wrong answer that
- * looks identical to a correct one. Scene 1 shows the phenomenon (a wrong fact
- * stated with full confidence). Scene 2 explains why — the AI predicts what
- * sounds plausible rather than looking up what’s true. Scene 3 shows how
- * observability (logs + evaluation) catches a confident lie. Red is the single
- * semantic accent marking the falsehood; brand marks the AI itself.
+ * Through-line stage: Mitra on the spot, same spot, three states — saying the
+ * false fact (confident, no warning), explaining where it came from (word
+ * prediction, not lookup), then being checked (logs + evaluation). Beats:
+ * hook (the confident falsehood) → why (not a database) → resolution
+ * (observability is what checks). Red is the single semantic accent marking
+ * the falsehood; brand marks Mitra itself.
  */
 export function HallucinationMakesThingsUp() {
   return (
@@ -20,10 +21,19 @@ export function HallucinationMakesThingsUp() {
         subtitle="A wrong answer that looks exactly like a right one"
       />
 
-      {/* ① The phenomenon */}
-      <Scene caption="① It states a false fact with total confidence">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🗣️</span>, label: "Confident, and false" },
+          { icon: <span aria-hidden="true">📚</span>, label: "Not a database" },
+          { icon: <span aria-hidden="true">🎲</span>, label: "It predicts words" },
+          { icon: <span aria-hidden="true">🛡️</span>, label: "Observability checks" },
+        ]}
+      />
+
+      {/* Hook — the phenomenon */}
+      <Scene caption="So Mitra states a false fact with total confidence.">
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-5">
-          <MachineFigure label="AI" />
+          <MachineFigure label="Mitra" />
           <div className="flex flex-col items-center gap-2">
             <SpeechBubble side="left">“The capital of Australia is Sydney.”</SpeechBubble>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-bad)] bg-[var(--color-bad-wash)] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[var(--color-bad)]">
@@ -37,8 +47,8 @@ export function HallucinationMakesThingsUp() {
         </p>
       </Scene>
 
-      {/* ② Why it happens */}
-      <Scene caption="② It guesses what sounds right — it doesn’t look up what’s true">
+      {/* Why it happens */}
+      <Scene variant="continue" caption="But Mitra isn’t a database — it predicts words, it doesn’t look up what’s true.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
           <div className="flex flex-col items-center gap-2 opacity-60">
             <DatabaseIcon struck />
@@ -47,7 +57,7 @@ export function HallucinationMakesThingsUp() {
             </span>
           </div>
           <div className="flex flex-col items-center gap-2">
-            <MachineFigure label="AI" />
+            <MachineFigure label="Mitra" />
             <span className="rounded-full bg-brand-wash px-2.5 py-0.5 text-[11px] font-semibold text-brand">
               predicts plausible words
             </span>
@@ -59,8 +69,8 @@ export function HallucinationMakesThingsUp() {
         </p>
       </Scene>
 
-      {/* ③ How observability catches it */}
-      <Scene caption="③ How you catch a confident lie">
+      {/* Resolution — how observability catches it */}
+      <Scene variant="continue" caption="That’s why observability checks — logs re-read it, evaluation flags it.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <MotionChild>
             <CatchCard title="Logs" body="Re-read the answer later and check it against the truth." />

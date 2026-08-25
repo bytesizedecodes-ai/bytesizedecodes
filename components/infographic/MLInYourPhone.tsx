@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "ML you already use every day".
+ * Layman course — Lesson: "ML you already use every day" (v2 Thread retrofit).
  *
- * The "why should I care" hook that was missing. A picture-led gallery of five
- * daily-life ML features — spam filter, recommendations, face unlock, Maps
- * ETA, autocorrect — each with a drawn icon and a one-line note on which ML
- * family it uses. Ties the abstract concepts to the learner's phone. Brand
- * blue + semantic good/bad only. No prose/questions (course rule).
+ * Through-line stage: the learner's own phone, opened once and never leaving
+ * the stage — six quiet learners found inside it, then the one loop they all
+ * run (past behaviour → model → prediction), then the loop tightening as you
+ * keep using them. Beats: hook (six features you touched today) → anchor
+ * (one shared shape) → fade (they improve with use). Ties every abstract idea
+ * of the course back to Asha's world: her customers' phones run the same
+ * skeleton her counter machine now runs.
  */
 export function MLInYourPhone() {
   return (
@@ -19,8 +21,17 @@ export function MLInYourPhone() {
         subtitle="You&apos;ve been using machine learning all day — here&apos;s where"
       />
 
-      {/* Step 1 — a gallery of five daily ML features */}
-      <Scene caption="Five features on your phone that are machine learning">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">📱</span>, label: "Open your phone" },
+          { icon: <span aria-hidden="true">🧩</span>, label: "Six quiet learners" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "One shared shape" },
+          { icon: <span aria-hidden="true">📈</span>, label: "Better with use" },
+        ]}
+      />
+
+      {/* Step 1 — a gallery of six daily ML features */}
+      <Scene caption="So open your own phone — six features that are machine learning">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
             <AppCard
@@ -74,7 +85,7 @@ export function MLInYourPhone() {
       </Scene>
 
       {/* Step 2 — one shared shape: all learn from your data */}
-      <Scene caption="They look different, but they share one shape">
+      <Scene variant="continue" caption="But they look different — and share one shape">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <div className="font-mono text-sm font-bold text-ink sm:text-base">
             your past behaviour <span className="text-brand-deep">→</span> a model{" "}
@@ -88,7 +99,7 @@ export function MLInYourPhone() {
       </Scene>
 
       {/* Step 3 — they get better the more you use them */}
-      <Scene caption="And they improve as you keep using them">
+      <Scene variant="continue" caption="That's why they improve the more you keep using them">
         <div className="grid grid-cols-3 gap-2 text-center">
           <div className="rounded-xl border border-ash bg-surface-elevated px-2 py-3 shadow-sm">
             <div className="text-2xl" aria-hidden="true">1️⃣</div>

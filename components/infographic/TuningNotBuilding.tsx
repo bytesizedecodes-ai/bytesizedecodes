@@ -1,13 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { PersonFigure, PictureCard, Scene, SpeechBubble } from "./scenes";
+import { PersonFigure, PictureCard, Scene, StoryMap, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 1: "You teach the chef, not build them".
+ * Fine-Tuning Foundations — Lesson 1: "You teach the chef, not build them"
+ * (v2 Thread retrofit).
  *
- * Through-line: one chef, two phases. The chef arrives already trained
- * (years of cooking) and only gets orientation in YOUR kitchen. The pictures
- * carry the proportions: giant prior learning, tiny personal adjustment.
+ * Through-line stage: the new chef, center stage for the whole lesson — the
+ * course cast lands here. Rasoi Express (Arjun's Pune cloud kitchen) hires a
+ * chef who already cooks; the only change per scene is what the kitchen adds
+ * to them: the quirks cards (accented), the orientation examples, then the
+ * proportions bar. The chef never moves, never gets rebuilt — orientation,
+ * not construction.
  */
 export function TuningNotBuilding() {
   return (
@@ -17,8 +21,17 @@ export function TuningNotBuilding() {
         subtitle="The expensive learning already happened — you're doing orientation day"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">👨‍🍳</span>, label: "The chef already cooks" },
+          { icon: <span aria-hidden="true">🧂</span>, label: "Arjun's kitchen differs" },
+          { icon: <span aria-hidden="true">📋</span>, label: "Orientation, not building" },
+          { icon: <span aria-hidden="true">⚖️</span>, label: "Keep the proportions" },
+        ]}
+      />
+
       {/* SCENE 1 — the chef arrives already trained */}
-      <Scene caption="① The chef you hire already knows how to cook">
+      <Scene caption="So Arjun opens Rasoi Express and hires a chef who already cooks.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-10">
           <PersonFigure label="a trained chef" />
           <SpeechBubble side="left">
@@ -31,7 +44,7 @@ export function TuningNotBuilding() {
       </Scene>
 
       {/* SCENE 2 — your kitchen is what's new */}
-      <Scene caption="② What they DON'T know is your kitchen">
+      <Scene variant="continue" caption="But the chef has never seen THIS kitchen — Arjun's salt shelf, Arjun's regulars.">
         <Stagger className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
           <MotionChild>
             <PictureCard picture={<span className="text-3xl">🧂</span>} label="where the salt lives" tone="brand" />
@@ -49,7 +62,7 @@ export function TuningNotBuilding() {
       </Scene>
 
       {/* SCENE 3 — orientation, not construction */}
-      <Scene caption="③ Orientation week: a few examples of how YOU plate">
+      <Scene variant="continue" caption="Then orientation week: a few examples of how Rasoi Express plates.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <div className="rounded-xl bg-brand-wash px-4 py-3 text-center">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">your examples</div>
@@ -64,7 +77,7 @@ export function TuningNotBuilding() {
       </Scene>
 
       {/* SCENE 4 — the proportions */}
-      <Scene caption="④ Keep the proportions — they explain everything">
+      <Scene variant="continue" caption="That's why the proportions matter — the giant slice came first.">
         <div className="flex items-stretch gap-3">
           <div className="flex-[3] rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
             <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">learning language itself</div>

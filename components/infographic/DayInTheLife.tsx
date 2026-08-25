@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 14: "A day in the life" (capstone).
+ * AI Observability — Lesson 14: "A day in the life" (capstone)
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: a single narrative ties the whole course together.
- * Four beats — launch → alert → investigate → fix — show how logs, metrics,
- * traces, dashboards, and alerts combine into one loop. The lesson earns the
- * capstone application prompt. Brand marks healthy states; red marks the single
- * problem beat (the alert), consistent with the rest of the course.
+ * Through-line stage: Mitra's dashboard wall — the four beats are four states
+ * of the same loop (healthy → alert → investigated → fixed), replaying the
+ * whole course with the course cast: Nisha on call, Mitra answering, the
+ * alert waking her, the trace and logs naming the cause. Brand marks healthy
+ * states; red marks the single problem beat (the alert), consistent with the
+ * rest of the course.
  */
 export function DayInTheLife() {
   return (
@@ -19,19 +21,28 @@ export function DayInTheLife() {
         subtitle="Everything from this course, in one story"
       />
 
-      <Scene caption="One loop: watch → alert → trace → log → fix">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🚀</span>, label: "Launch day" },
+          { icon: <span aria-hidden="true">🔔</span>, label: "The alert fires" },
+          { icon: <span aria-hidden="true">🔍</span>, label: "Trace, then logs" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "Fix and repeat" },
+        ]}
+      />
+
+      <Scene caption="So the whole course is one loop — watch it run on Mitra.">
         <Stagger className="flex flex-col gap-3">
           <MotionChild>
-            <Beat n={1} title="Launch" tone="brand" body="A team ships an AI feature. Logs, metrics, and traces flow; the dashboard reads healthy." icon="launch" />
+            <Beat n={1} title="Launch" tone="brand" body="Nisha’s team ships Mitra at Suraksha. Logs, metrics, and traces flow; the dashboard reads healthy." icon="launch" />
           </MotionChild>
           <MotionChild>
-            <Beat n={2} title="Alert" tone="bad" body="Weeks later, an alert fires: the error rate has climbed past the threshold." icon="bell" />
+            <Beat n={2} title="Alert" tone="bad" body="Weeks later, an alert fires: Mitra’s error rate has climbed past the threshold." icon="bell" />
           </MotionChild>
           <MotionChild>
             <Beat n={3} title="Investigate" tone="brand" body="A trace pinpoints the failing step. The logs reveal why — a knowledge source quietly changed." icon="trace" />
           </MotionChild>
           <MotionChild>
-            <Beat n={4} title="Fix" tone="brand" body="They fix the cause and watch the metric recover on the dashboard. The loop begins again." icon="tick" />
+            <Beat n={4} title="Fix" tone="brand" body="Nisha fixes the cause and watches the metric recover on the dashboard. The loop begins again." icon="tick" />
           </MotionChild>
         </Stagger>
       </Scene>

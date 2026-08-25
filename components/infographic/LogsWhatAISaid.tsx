@@ -1,15 +1,16 @@
 import { Infographic, InfographicHeader, Card, Takeaway, Tag } from "./primitives";
-import { MachineFigure, SpeechBubble, PersonFigure, Scene } from "./scenes";
+import { MachineFigure, SpeechBubble, PersonFigure, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 4: "Logs — what the AI said".
+ * AI Observability — Lesson 4: "Logs — what the AI said" (v2 Thread retrofit)
  *
- * Beginner calibration: logs are introduced as a diary / captain’s log — a
- * record of what was said so you can look back and ask “why did it say that?”.
- * Scene 1 establishes the problem (an odd answer, no record). Scene 2 shows the
- * fix (log every exchange). Scene 3 labels the anatomy of one log entry in
- * place (no separate legend). Brand accent only.
+ * Through-line stage: ONE odd Mitra answer — "physiotherapy isn't covered at
+ * all" — hanging over the whole lesson. Scene 1 loses it (no record), scene 2
+ * finds it again as a row in the logbook, scene 3 dissects that same 09:03
+ * entry. Same answer, same words, every scene; only what Nisha can DO with
+ * it changes. Beats: hook (odd answer, gone) → fix (the logbook) → fade
+ * (the four fields that make an entry investigable). Brand accent only.
  */
 export function LogsWhatAISaid() {
   return (
@@ -19,48 +20,56 @@ export function LogsWhatAISaid() {
         subtitle="So you can look back and ask: why did it say that?"
       />
 
-      {/* ① The problem: no record */}
-      <Scene caption="① An odd answer… and no way to investigate">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🤔</span>, label: "An odd answer" },
+          { icon: <span aria-hidden="true">📖</span>, label: "Write it all down" },
+          { icon: <span aria-hidden="true">🧩</span>, label: "Four fields each" },
+        ]}
+      />
+
+      {/* Hook — the odd answer, and no record of it */}
+      <Scene caption="So yesterday Mitra told a customer something odd — and there’s no way to investigate.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
-          <MachineFigure label="AI" />
-          <SpeechBubble side="left">“Reheat the soup for 40 minutes.”</SpeechBubble>
-          <PersonFigure label="you" />
+          <MachineFigure label="Mitra" />
+          <SpeechBubble side="left">“Physiotherapy isn’t covered at all.”</SpeechBubble>
+          <PersonFigure label="Nisha" />
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          Later you wonder <em>why</em> it said that — but the moment is gone.
+          Later Nisha wonders <em>why</em> it said that — but the moment is gone.
         </p>
       </Scene>
 
-      {/* ② The fix: log every exchange */}
-      <Scene caption="② Keep a log, like a captain’s logbook">
+      {/* Fix — the logbook: every exchange written down as it happens */}
+      <Scene variant="continue" caption="Then keep a log, like a captain’s logbook — write it all down as it happens.">
         <Stagger className="flex flex-col gap-2">
           <MotionChild>
-            <LogRow time="09:01" prompt="How long to reheat soup?" answer="“About 3 minutes.”" />
+            <LogRow time="09:01" prompt="Is physiotherapy covered?" answer="“Yes, up to 10 sessions.”" />
           </MotionChild>
           <MotionChild>
-            <LogRow time="09:03" prompt="Reheat soup?" answer="“40 minutes.”" tone="warn" />
+            <LogRow time="09:03" prompt="Is physio covered?" answer="“Not covered at all.”" tone="warn" />
           </MotionChild>
           <MotionChild>
-            <LogRow time="09:05" prompt="Reheat lentil soup?" answer="“2–3 minutes.”" />
+            <LogRow time="09:05" prompt="Physio at a network hospital?" answer="“Covered — up to 10 sessions.”" />
           </MotionChild>
         </Stagger>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          Now you can scroll back and see exactly what changed between two asks.
+          Now Nisha can scroll back and see exactly what changed between two asks.
         </p>
       </Scene>
 
-      {/* ③ Anatomy of one entry — labelled in place */}
-      <Scene caption="③ Each entry captures four things">
+      {/* Fade — the anatomy of that same 09:03 entry, labelled in place */}
+      <Scene variant="continue" caption="That’s why the odd entry is findable — four fields each, enough to reconstruct it.">
         <div className="mx-auto max-w-md rounded-xl border border-brand bg-brand-wash px-4 py-3 text-left">
           <div className="mb-2 flex items-center justify-between text-[11px] font-bold uppercase tracking-wide text-brand">
             <span>Log entry</span>
             <span>09:03 · model-v2.1</span>
           </div>
           <p className="text-sm font-semibold text-ink">
-            <Tag tone="brand" dot>Prompt</Tag> “Reheat soup?”
+            <Tag tone="brand" dot>Prompt</Tag> “Is physio covered?”
           </p>
           <p className="mt-1 text-sm font-semibold text-ink">
-            <Tag tone="brand" dot>Answer</Tag> “40 minutes.”
+            <Tag tone="brand" dot>Answer</Tag> “Not covered at all.”
           </p>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">

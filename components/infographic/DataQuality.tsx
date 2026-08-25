@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, Scene } from "./scenes";
+import { CarShape, BikeShape, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "Garbage in, garbage out" (data quality).
+ * Layman course — Lesson: "Garbage in, garbage out" (data quality) (v2 Thread
+ * retrofit).
  *
- * Teaches the foundational principle: a model is only as good as its data.
- * Biased / incomplete data → biased predictions. Shown as two datasets over
- * the same car-vs-bike task — a biased one (only red cars shown) produces a
- * wrong mental model; a balanced one produces the right one. Picture-led with
- * recolored car/bike shapes (the FeaturesAndVectors red-tint technique).
- * Brand blue + semantic good/bad only. No prose/questions (course rule).
+ * Through-line stage: the training shelf of vehicle cards, in the same spot,
+ * refilled ONCE. States: all-red cars (biased shelf) → a blue car arrives and
+ * the learned claim breaks → the shelf restocked with varied cards (the old
+ * "always red" claim left beside it as a struck-through ghost). Beats: anchor
+ * (the biased shelf) → tension (the blue car) → resolution (balanced data).
+ * Asha would say it first: the shopping matters more than the chef.
  */
 export function DataQuality() {
   return (
@@ -20,8 +21,17 @@ export function DataQuality() {
         subtitle="A model is only as good as the data it learns from"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🔴</span>, label: "Only red cars shown" },
+          { icon: <span aria-hidden="true">🔵</span>, label: "A blue car arrives" },
+          { icon: <span aria-hidden="true">❌</span>, label: "The claim breaks" },
+          { icon: <span aria-hidden="true">🌈</span>, label: "Restock the shelf" },
+        ]}
+      />
+
       {/* Step 1 — a biased dataset */}
-      <Scene caption="① A biased dataset: the model only ever saw red cars">
+      <Scene caption="So a biased dataset: the model only ever saw red cars">
         <div className="rounded-xl border border-bad bg-bad-wash p-4 text-center shadow-sm">
           <div className="mb-2 text-sm font-bold text-bad">Training data (biased)</div>
           <div className="flex flex-wrap items-center justify-center gap-1">
@@ -41,7 +51,7 @@ export function DataQuality() {
       </Scene>
 
       {/* Step 2 — the consequence on a new sample */}
-      <Scene caption="② Show it a blue car — and it may disagree">
+      <Scene variant="continue" caption="Then show it a blue car — and it may disagree">
         <Stagger className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <MotionChild>
             <div className="rounded-xl border border-dashed border-brand-deep bg-brand-wash px-4 py-3 text-center">
@@ -62,7 +72,7 @@ export function DataQuality() {
       </Scene>
 
       {/* Step 3 — a balanced dataset fixes it */}
-      <Scene caption="③ A balanced dataset: varied colours, both classes">
+      <Scene variant="continue" caption="That's why the fix is the shelf itself — restock it balanced">
         <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
           <div className="mb-2 text-sm font-bold text-good">Training data (balanced)</div>
           <div className="flex flex-wrap items-center justify-center gap-1">
@@ -75,9 +85,10 @@ export function DataQuality() {
           </div>
           <p className="mt-2 text-[11px] font-medium text-ink">varied colours, both classes — the model learns the real pattern</p>
         </div>
-        <div className="mt-3 flex items-center justify-center gap-2 text-xs font-bold text-ink">
-          <span>now a blue car:</span>
-          <span className="rounded-full bg-good px-2.5 py-1 text-canvas">&ldquo;that&apos;s a car&rdquo;</span>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
+          <span className="text-ink-faint line-through decoration-dotted">&ldquo;a car is always red&rdquo;</span>
+          <span aria-hidden="true" className="text-ink-faint">→</span>
+          <span className="rounded-full bg-good px-2.5 py-1 text-canvas">now a blue car: &ldquo;that&apos;s a car&rdquo;</span>
         </div>
       </Scene>
 

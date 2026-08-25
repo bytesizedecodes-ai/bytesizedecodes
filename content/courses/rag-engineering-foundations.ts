@@ -6,7 +6,7 @@ const course: Course = {
     subtitle:
       "How AI answers from your documents — retrieval, embeddings, and the pipeline, in plain pictures.",
     description:
-      "A beginner's map of retrieval-augmented generation. Learn why models need the right page handed to them. See how embeddings (meaning coordinates for text) turn meaning into a map. Watch search pick the top few pages. And learn when not to build RAG at all. Seven picture-led lessons end with one judgment: paste, query, or retrieve.",
+      "A beginner's map of retrieval-augmented generation. Learn why models need the right page handed to them. See how embeddings (meaning coordinates for text) turn meaning into a map. Watch search pick the top few pages. And learn when not to build RAG at all. Seven picture-led lessons follow one online store — ZapKart — and end with one judgment: paste, query, or retrieve.",
     level: "beginner",
     domain: "AI Engineering",
     access: "free",
@@ -45,7 +45,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "A model on its own is a brilliant student taking a **closed-book exam**. Ask about your refund policy. It answers from everything it ever read — including other companies' refund policies. The answer sounds right because the model is fluent. But you cannot trust it, because the source is memory.",
+          "Picture ZapKart, an online store. Ravi asks its assistant about refunds. A model on its own is a brilliant student taking a **closed-book exam** — it answers from everything it ever read, including other stores' refund policies. The answer sounds right because the model is fluent. But you cannot trust it, because the source is memory.",
           "RAG changes the exam, not the student. Before the model answers, a pipeline **retrieves** the right pages from your documents. It places them in the model's context window. Now the same model answers with an **open book**. The answer comes from the page in front of it, and the model can point to that page. Where the analogy breaks: a student with the *wrong* page will say “this doesn't cover it”. A model with the wrong page answers anyway, just as fluently. That is why lesson 6 teaches you to check which page arrived — not how confident the answer sounds.",
           "That's the whole idea. The rest of this course is the machine that makes it work. Lesson 2 asks why we don't just paste everything. Lessons 3–4 show how a search can understand a question it has never seen. Lesson 5 walks the full pipeline. Lesson 6 covers what goes wrong. Lesson 7 tells you when not to build this at all.",
         ],
@@ -54,11 +54,11 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A travel company's chatbot confidently describes a baggage policy. The policy matches a different airline. The team says 'the model is broken.' What's the more precise diagnosis?",
+              "ZapKart's chatbot confidently describes a returns policy. The policy matches a different store. The team says 'the model is broken.' What's the more precise diagnosis?",
             choices: [
               {
                 id: "a",
-                label: "The model answered closed-book — from memory, with no page in front of it. RAG hands it the company's actual policy first.",
+                label: "The model answered closed-book — from memory, with no page in front of it. RAG hands it the store's actual policy first.",
               },
               {
                 id: "b",
@@ -66,12 +66,12 @@ const course: Course = {
               },
               {
                 id: "c",
-                label: "The model just needs more training on this airline's policies so it memorizes them",
+                label: "The model just needs more training on ZapKart's own policies so it memorizes them",
               },
             ],
             answer: "a",
             explanation:
-              "Fluent-but-wrong-from-memory is the closed-book failure RAG exists to fix. The model recalled a similar policy from training — not the company's own. Put the right page in the context. The same model then quotes it instead of guessing.",
+              "Fluent-but-wrong-from-memory is the closed-book failure RAG exists to fix. The model recalled a similar policy from training — not ZapKart's own. Put the right page in the context. The same model then quotes it instead of guessing.",
           },
           {
             id: "q2",
@@ -134,7 +134,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "The obvious reply to “the model doesn't know my documents” is to paste them all in. For a two-page FAQ, that works. The trouble starts at scale. The **context window is finite**. A real corpus — thousands of policy pages, product specs, support docs — doesn't come close to fitting. Even the biggest windows fill.",
+          "The obvious reply to “the model doesn't know my documents” is to paste them all in. For a two-page FAQ, that works. ZapKart's trouble starts at scale: the team tries pasting all 300 pages of the product manual into every question. The **context window is finite**. A real corpus — thousands of policy pages, product specs, support docs — doesn't come close to fitting. Even the biggest windows fill.",
           "The costs stack up even when things do fit. Every pasted token (word-sized pieces the model reads) is **billed on every request**. You pay whether the question needed that page or not. Big contexts answer **slowly**. And strangest of all: models read the **beginning and end of a pile far better than its middle**. Bury the refund policy at page 20 of 40 and it effectively disappears. Researchers call this failure *lost in the middle*.",
           "Retrieval is the fix by subtraction. Spend the window's budget on the **few pages this question actually needs**. Where the library analogy breaks: carrying the library to the counter is a one-time effort. Pasting re-carries it on *every single question*, and each trip is billed. That's the deal RAG offers — a small window that behaves like a big one. The price is finding the right pages. Finding them is the next two lessons.",
         ],
@@ -143,7 +143,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A team pastes all 300 pages of their product manual into every support request. It fits — barely. Support reports the bot keeps missing details that are 'right there in the manual.' Which explanation fits best?",
+              "ZapKart pastes all 300 pages of its product manual into every support request. It fits — barely. Support reports the bot keeps missing details that are 'right there in the manual.' Which explanation fits best?",
             choices: [
               {
                 id: "a",
@@ -166,7 +166,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Finance asks why the AI feature's bill exploded. The team discovers every question — even 'what are your hours?' — sends the full 280-page knowledge base. What's the fix in one sentence?",
+              "ZapKart's finance team asks why the AI feature's bill exploded. The team discovers every question — even 'what are your hours?' — sends the full 280-page knowledge base. What's the fix in one sentence?",
             choices: [
               {
                 id: "a",
@@ -220,7 +220,7 @@ const course: Course = {
           ],
         },
         prose: [
-          "Search used to mean keywords: find the documents containing these words. It fails exactly when people need it most. That is when the question and the answer phrase the same idea differently. “Can I get my money back?” shares no word with “Refunds are processed within 14 days”. Keyword search never finds it. Meaning-search must.",
+          "Search used to mean keywords: find the documents containing these words. It fails exactly when people need it most. That is when the question and the answer phrase the same idea differently. “Can I get my money back?” shares no word with ZapKart's page “Refunds are processed within 14 days”. Keyword search never finds it. Meaning-search must.",
           "Here is the trick. An **embedding model** has learned, from millions of texts, to give any piece of text a location. Think of it as an address on a huge map where **distance means similarity**. Texts about money and returns land on the same street. Shipping times live on another street. Job postings live on another still. Nobody writes these addresses; the model computes them.",
           "One honest limit is saved for later. It is exactly where the map analogy breaks: embeddings match **meaning**, not **identity**. The error code “E-4821” has no meaningful neighborhood. It needs to be found literally. That gap is real, and the intermediate course's hybrid-search lesson exists to close it. For now, remember: the map is what lets search understand.",
         ],
@@ -229,7 +229,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A customer asks 'can I get my money back if it arrives broken?' The answer lives on a page titled 'Refunds and returns policy' — no overlapping words. Why does embedding-based search still find it?",
+              "A ZapKart customer asks 'can I get my money back if it arrives broken?' The answer lives on a page titled 'Refunds and returns policy' — no overlapping words. Why does embedding-based search still find it?",
             choices: [
               {
                 id: "a",
@@ -307,7 +307,7 @@ const course: Course = {
         },
         prose: [
           "Every page of your corpus was embedded in advance. Each one is a point on the meaning map. Each point sits in an index that remembers thousands of addresses. When a question arrives, the search does something beautifully simple. It **embeds the question too**, making it a point on the very same map.",
-          "Now it's arithmetic. The search measures the **distance** from the question's point to every page's point. It **sorts** the pages by that distance and hands back the top of the list. “Can I get my money back?” lands on money street. The refund pages are its nearest neighbors. They win the ranking. Where the door-to-door picture breaks: in a real town you could walk every street and be sure you checked every door. A real index holds thousands of addresses. It takes clever shortcuts that almost always — but not always — find the nearest ones.",
+          "Now it's arithmetic. The search measures the **distance** from the question's point to every page's point. It **sorts** the pages by that distance and hands back the top of the list. Ravi's “Can I get my money back?” lands on money street. The refund pages are its nearest neighbors. They win the ranking. Where the door-to-door picture breaks: in a real town you could walk every street and be sure you checked every door. A real index holds thousands of addresses. It takes clever shortcuts that almost always — but not always — find the nearest ones.",
           "One dial matters: **k** — how many of the top pages to keep. Three is a common start. Keep too few, and the right page might be left out. Keep too many, and you rebuild the pile from lesson 2, where the good page gets buried among the weaker ones. Choosing k is the first real RAG trade-off you will meet. Course two treats it seriously.",
         ],
         questions: [
@@ -315,7 +315,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A team sets k=20 to 'make sure the right page is always included.' Answers get worse, not better. What happened?",
+              "ZapKart's support team sets k=20 to 'make sure the right page is always included.' Answers get worse, not better. What happened?",
             choices: [
               {
                 id: "a",
@@ -386,7 +386,7 @@ const course: Course = {
           kind: "flow",
           steps: [
             { kind: "input", text: "Question arrives" },
-            { kind: "decision", text: "Embed + search + top-k", caption: "the retrieval stages" },
+            { kind: "process", text: "Embed + search + top-k", caption: "the retrieval stages" },
             { kind: "process", text: "Context: pages + question" },
             { kind: "output", text: "Answer with citation" },
           ],
@@ -394,7 +394,7 @@ const course: Course = {
         },
         prose: [
           "Lessons 1–4 built the pieces. This lesson is the conveyor belt that connects them. A question arrives as plain words. It's **embedded** — plotted on the meaning map. The index is **searched**: every page measured, ranked by distance. The **top few** survive. Those pages and the question are assembled into the **context window**. Only then does the model generate. Because the pages are right there, it can answer **from** them and cite them.",
-          "The stepper above runs two different questions through the same machine on purpose. Watch how the question's neighborhood changes the shortlist. The damaged-box question gathers refund pages. The Berlin delivery question gathers shipping pages. Same pipeline, same stages — different streets of the map.",
+          "The stepper above runs two ZapKart questions through the same machine on purpose. Watch how the question's neighborhood changes the shortlist. Ravi's damaged-box question gathers refund pages. The Berlin delivery question gathers shipping pages. Same pipeline, same stages — different streets of the map.",
           "Where the conveyor analogy breaks: a factory belt carries the same cargo every cycle. This belt's cargo changes with every question. And the model can't notice a jam; it answers from whatever reached the envelope. So keep the framing that matters most: **the model only ever sees what the pipeline puts in front of it**. When the answer is wrong, one of these stages missed. Lesson 6 gives you the two-question diagnostic for finding which one.",
         ],
         questions: [
@@ -402,7 +402,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "During a demo, an engineer says 'watch the AI search our docs live.' The answer arrives with a citation four seconds later. What actually happened in those four seconds?",
+              "During a demo, a ZapKart engineer says 'watch the AI search our docs live.' The answer arrives with a citation four seconds later. What actually happened in those four seconds?",
             choices: [
               {
                 id: "a",
@@ -491,7 +491,7 @@ const course: Course = {
           },
         },
         prose: [
-          "Three failures account for most wrong RAG answers. The **wrong page**: the ranking promoted a look-alike — the wholesale-returns page for a damaged-box question. The model then answered a different question, fluently. The **stale page**: the retrieval was perfect, but the page was last year's policy — still indexed after the source changed. The **ignored page**: the right page sat in the window, and the model answered from memory anyway. The page said 14 days. The answer said 30.",
+          "Three failures account for most wrong ZapKart answers. The **wrong page**: the ranking promoted a look-alike — the wholesale-returns page for Ravi's damaged-box question. The model then answered a different question, fluently. The **stale page**: the retrieval was perfect, but the page was last year's policy — still indexed after the source changed. The **ignored page**: the right page sat in the window, and the model answered from memory anyway. The page said 14 days. The answer said 30.",
           "Each failure names its fix direction. Wrong page → the ranking needs help (course two's chunking, hybrid search, and reranking lessons). Stale page → the index must track its sources, including deletions (course two's ingestion, course three's lifecycle). Ignored page → the answer must be **grounded**: only what the pages say, or a clear “the docs don't say”.",
           "And the discipline that organizes all of it: when an answer is wrong, first ask **was the right page in the window?** No → retrieval problem. Yes → grounding problem. Old version → staleness. Where the courier analogy breaks: a real courier delivers to one right address. Retrieval ranks look-alikes and can still hand over the wrong one. That is why the diagnostic asks about the package, never the wrapper. Every course-two topic — and every production debugging session you will ever run — depends on that one split.",
         ],
@@ -500,7 +500,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A docs bot cites a real page — but the price on that page doesn't match the website. The website updated last week. The team's first instinct is to retrain the model. What's the correct first move?",
+              "ZapKart's docs bot cites a real page — but the price on that page doesn't match the website. The website updated last week. The team's first instinct is to retrain the model. What's the correct first move?",
             choices: [
               {
                 id: "a",
@@ -556,7 +556,7 @@ const course: Course = {
         minutes: 5,
         concept: {
           anchor:
-            "Use the smallest tool that works — a pocket note beats a filing cabinet beats hiring a librarian for one page.",
+            "Climb the tool ladder — stop at the first rung that works: paste it, query it, only then retrieve it.",
           what: "Before building RAG, check the two simpler designs. **Paste it in**: the knowledge is small and static — it fits the window. **Query a database**: the task needs exact records or counts, not similar passages. RAG earns its machinery only for corpora **too big to paste and too alive to freeze**. Citations are the prize.",
           why: "RAG's costs are real: an index to build, sources to sync, retrieval to tune. Paying them for a 12-page handbook or a count query buys complexity without capability.",
           where: [
@@ -589,7 +589,7 @@ const course: Course = {
           },
         },
         prose: [
-          "The final judgment of this course is knowing when not to build RAG. Three tasks make the ladder concrete. The **employee handbook** — twelve pages, last edited in 2023 — belongs in the window, pasted whole. Retrieval would add an index to maintain, for nothing. “How many orders shipped Tuesday, to which cities?” is a **database question**. It wants exact rows, not similar passages. Search gives approximate results exactly where the task needs exact counting.",
+          "The final judgment of this course is knowing when not to build RAG. Three tickets land on ZapKart's desk on Monday. The **employee handbook** — twelve pages, last edited in 2023 — belongs in the window, pasted whole. Retrieval would add an index to maintain, for nothing. “How many orders shipped Tuesday, to which cities?” is a **database question**. It wants exact rows, not similar passages. Search gives approximate results exactly where the task needs exact counting.",
           "And then the genuine RAG case: **40,000 support docs, product specs, and policy pages, updated daily**. Every answer must point at its source. Too big to paste. Too alive to freeze. And citations are the product. This is the machinery lessons 1–6 built, doing the one job nothing simpler can.",
           "So climb the ladder and stop at the first rung that works: **paste** → **query** → **retrieve**. Where the analogy breaks: a ladder is climbed once. This one gets re-climbed, because the answer changes as the corpus grows. The handbook that fits the window today outgrows it after enough quarterly updates. “You don't need RAG for this” is a complete, senior answer. And if the task does need RAG, the intermediate course turns this machine into an engineered system: chunking, hybrid search, reranking, evaluation, and the ingestion pipeline that keeps the index honest.",
         ],
@@ -598,7 +598,7 @@ const course: Course = {
             id: "q1",
             kind: "mcq",
             prompt:
-              "A startup wants an assistant for their 15-page benefits guide, which HR updates once a year. A vendor pitches a full RAG platform with a vector database. What's the right call?",
+              "ZapKart's HR team wants an assistant for their 15-page benefits guide, which HR updates once a year. A vendor pitches a full RAG platform with a vector database. What's the right call?",
             choices: [
               {
                 id: "a",
@@ -621,7 +621,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Product asks for an assistant that answers 'which of our warehouses are low on SKU-4821 this week?' from a live inventory system. The team starts designing embeddings (meaning coordinates for text) and a vector index. What do you say?",
+              "ZapKart's product team asks for an assistant that answers 'which of our warehouses are low on SKU-4821 this week?' from a live inventory system. The team starts designing embeddings (meaning coordinates for text) and a vector index. What do you say?",
             choices: [
               {
                 id: "a",

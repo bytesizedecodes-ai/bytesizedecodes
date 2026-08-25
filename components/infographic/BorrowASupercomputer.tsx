@@ -1,11 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 15: "Borrow a supercomputer for free".
- * Through-line: the borrowed games console. Powerful, free, gone when you
- * hand it back — so the working rhythm is train → save to Drive → close tab.
+ * Fine-Tuning Foundations — Lesson 15: "Borrow a supercomputer for free"
+ * (v2 Thread retrofit).
+ *
+ * Through-line stage: the borrowed console — one machine, same spot, every
+ * scene. States: handed to Arjun in a browser tab (the GPU card accented) →
+ * the house rules landing (hours, disconnects, erasure — the eraser
+ * accented) → the working rhythm with the save-to-Drive step accented → the
+ * receipt: a first real tune fits the free tier.
  */
 export function BorrowASupercomputer() {
   return (
@@ -15,8 +20,17 @@ export function BorrowASupercomputer() {
         subtitle="Colab and Kaggle lend real GPUs in a browser tab — with house rules"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎮</span>, label: "Borrow the console" },
+          { icon: <span aria-hidden="true">📏</span>, label: "House rules" },
+          { icon: <span aria-hidden="true">💾</span>, label: "Save to Drive" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Free tier fits" },
+        ]}
+      />
+
       {/* SCENE 1 — the console gets lent out */}
-      <Scene caption="① A browser tab, and a real GPU appears">
+      <Scene caption="So when it's time to practice, Arjun borrows the console — a browser tab with a real GPU.">
         <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:gap-6">
           <div className="rounded-xl border border-ash bg-surface-elevated px-5 py-4 text-center shadow-sm">
             <span className="text-3xl">🎮</span>
@@ -35,7 +49,7 @@ export function BorrowASupercomputer() {
       </Scene>
 
       {/* SCENE 2 — house rules */}
-      <Scene caption="② The house rules: hours, not days — and files vanish">
+      <Scene variant="continue" caption="But the house rules: hours, not days — and files vanish.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <MotionChild>
             <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
@@ -62,7 +76,7 @@ export function BorrowASupercomputer() {
       </Scene>
 
       {/* SCENE 3 — the working rhythm */}
-      <Scene caption="③ The rhythm of free GPU work">
+      <Scene variant="continue" caption="Then the rhythm: train, save to Drive, close the tab, reload next time.">
         <div className="mx-auto grid max-w-xl grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             { s: "🖥️", t: "train in the session" },
@@ -88,7 +102,7 @@ export function BorrowASupercomputer() {
       </Scene>
 
       {/* SCENE 4 — not a compromise corner */}
-      <Scene caption="④ A first real fine-tune fits inside the free tier">
+      <Scene variant="continue" caption="That's why a first real tune — Arjun's included — fits the free tier.">
         <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
           <p className="text-sm font-semibold text-ink">Small open chat model + clip-on + a few hundred pairs</p>
           <p className="mt-1 text-xs font-medium text-ink-soft">

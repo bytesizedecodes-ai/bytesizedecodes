@@ -1,16 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, PictureCard, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, PictureCard, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 9: "Your first classifier".
+ * Layman course — Lesson 9: "Your first classifier" (v2 Thread retrofit).
  *
- * Layout: labelled picture cards → count them → probability → decision rule.
- * Faithful to Lesson 2.pdf slides 10-16: every 4-wheel sample is a car, every
- * 2-wheel sample is a bike, so all 4-wheel examples → car and all 2-wheel → bike, yielding the
- * rule "4 wheels → car, 2 wheels → bike". Picture-led throughout; the count
- * is shown as a visual tally of cards, not a table. Brand blue only.
- * No prose/questions (course rule).
+ * Through-line stage: the card pile — the same labelled car/bike cards in the
+ * same spot, gaining one layer per scene: laid out → counted (100% / 100%) →
+ * a new dashed card walks in and takes the winning label. Beats: anchor
+ * (labelled examples) → reveal (counting turns them into odds) → resolution
+ * (the rule answers a newcomer). The counting is a visual tally of Asha's
+ * cards, never a table.
  */
 export function FirstClassifier() {
   return (
@@ -20,8 +20,17 @@ export function FirstClassifier() {
         subtitle="Count the data → a probability → a decision rule"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🗃️</span>, label: "Labelled cards pile up" },
+          { icon: <span aria-hidden="true">🔢</span>, label: "Count them" },
+          { icon: <span aria-hidden="true">💯</span>, label: "Clean 100% calls" },
+          { icon: <span aria-hidden="true">✅</span>, label: "A newcomer sorted" },
+        ]}
+      />
+
       {/* Step 1 — the labelled training set as picture cards */}
-      <Scene caption="① Start with labelled examples">
+      <Scene caption="So start with labelled examples — Asha's photo cards">
         <Stagger className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-3">
           <MotionChild>
             <div className="rounded-xl border border-ash bg-surface-elevated p-3 text-center shadow-sm">
@@ -54,7 +63,7 @@ export function FirstClassifier() {
       </Scene>
 
       {/* Step 2 — count → probability, shown as a visual tally */}
-      <Scene caption="② Count them → every 4-wheel is a car, every 2-wheel is a bike">
+      <Scene variant="continue" caption="Then count them — every 4-wheel a car, every 2-wheel a bike">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <ProbCard
             picture={<CarShape className="!h-10" />}
@@ -74,7 +83,7 @@ export function FirstClassifier() {
       </Scene>
 
       {/* Step 3 — a new sample → the rule decides */}
-      <Scene caption="③ A new sample arrives — apply the rule">
+      <Scene caption="That's why a new sample gets sorted — apply the rule">
         <Stagger className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <MotionChild>
             <div className="rounded-xl border border-dashed border-brand-deep bg-brand-wash px-4 py-3 text-center">

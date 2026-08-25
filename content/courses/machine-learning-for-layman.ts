@@ -6,7 +6,7 @@ const course: Course = {
     subtitle:
       "Pictures, everyday decisions, and the numbers you already read — machine learning from zero.",
     description:
-      "This course explains what learning and machine learning really mean. It is built for recent graduates starting from zero. It uses plain words, everyday objects, and the counting and percentages you already know. Every lesson ends with a real situation to decide.",
+      "This course explains what learning and machine learning really mean. It is built for recent graduates starting from zero. It uses plain words, everyday objects, and the counting and percentages you already know. One family runs through the lessons: Asha, her son Ishaan, and Vikram the delivery helper, at Asha's tiffin service in Pune. Every lesson ends with a real situation to decide.",
     level: "beginner",
     domain: "Machine Learning",
     access: "free",
@@ -20,7 +20,7 @@ const course: Course = {
         capability: "Explain learning as using experience to improve a future decision.",
         minutes: 3,
         prose: [
-          "Watch a child meet a bike for the first time. Nobody hands them a rulebook with ‘two wheels, pedals, a handlebar’. They just see a few **examples** — and the next time a bike rolls past, they name it.",
+          "Asha runs a small tiffin service in Pune. Watch her son Ishaan meet a bike for the first time. Nobody hands him a rulebook with ‘two wheels, pedals, a handlebar’. He just sees a few **examples** — and the next time a bike rolls past, he names it.",
           "That is learning in its simplest form: **experience changes how you respond next time**. It is not memorising instructions. It is **updating yourself from examples**.",
           "Keep that picture. Every machine-learning idea in this course is an attempt to copy it: give a system examples, and let **experience improve its next decision**.",
         ],
@@ -78,7 +78,7 @@ const course: Course = {
         prose: [
           "Traditional software is a very fast clerk. A programmer writes every **fixed instruction** in advance: if this, then that. The clerk never learns, never adapts — it just executes, perfectly and blindly.",
           "That’s fine for calculators and timers. But try writing, by hand, the rule for ‘what makes this a car’. A strange **exception** breaks every rule you write — a three-wheeled car, a motorcycle with a roof.",
-          "So the missing piece was not speed. It was the child’s method: **learning the rule from examples** instead of receiving it ready-made. That change — from hand-written rules to learned rules — is what makes **machine learning** different from ordinary programming.",
+          "So the missing piece was not speed. It was Ishaan’s method: **learning the rule from examples** instead of receiving it ready-made. That change — from hand-written rules to learned rules — is what makes **machine learning** different from ordinary programming.",
         ],
         concept: {
           anchor: "Imagine a clerk who follows the posted list perfectly — one odd-shaped parcel and the list is useless.",
@@ -355,7 +355,7 @@ const course: Course = {
         },
         prose: [
           "Every classifier you've met so far answers **which one?** — car or bike, spam or genuine. But many questions aren't choices at all. “How long will the trip take?” “What will this cost?” The answer is a **number**, anywhere on a scale.",
-          "The method is the same one the whole course uses: **past examples**. Draw every past trip as a dot — distance across, minutes up — and a pattern appears: farther trips took longer. One smooth line through the middle of the dots captures the trend.",
+          "The method is the same one the whole course uses: **past examples**. Vikram, who delivers Asha’s tiffins, logs every run. Draw each past run as a dot — distance across, minutes up — and a pattern appears: farther trips took longer. One smooth line through the middle of the dots captures the trend.",
           "To answer a new question, you don't guess — you **read the line**. A 10 km trip lands on the line at about 26 minutes. The model's whole job was learning where that line sits, from thousands of past trips.",
           "Reading the line is regression's whole job: **the number comes straight off the trend**, not out of a bucket — same skeleton, different kind of answer.",
         ],
@@ -485,7 +485,7 @@ const course: Course = {
         minutes: 5,
         prose: [
           "Reinforcement learning is **learning by doing**. No labelled examples, no teacher — just an **agent** taking actions, and the world answering with **reward or penalty**.",
-          "Over many attempts, the agent learns a **strategy**: which actions, in which situations, earn the most reward. It’s how machines learned to play chess and video games beyond human level.",
+          "Over many attempts, the agent learns a **strategy**: which actions, in which situations, earn the most reward. It’s how machines learned to play chess and video games beyond human level. Ishaan learning to ride works the same way — every fall and every smooth ride shapes the strategy.",
           "The trap: the agent **optimises exactly what you reward — not what you meant**. Reward it for ‘staying upright’ and it may learn to stand perfectly still forever. Designing the reward is the hard, human part.",
         ],
         concept: {
@@ -549,7 +549,7 @@ const course: Course = {
         capability: "Represent an object as a feature vector and spot useless features.",
         minutes: 5,
         prose: [
-          "A machine can’t ‘see’ a car the way you do — it only reads **numbers**. So the first job is to describe each object with measurable **features**: number of wheels, height, weight, colour.",
+          "Asha’s machine can’t ‘see’ a vehicle the way you do — it only reads **numbers**. So the first job is to describe each object with measurable **features**: number of wheels, height, weight, colour.",
           "One object becomes a list of values, called a **vector**. The whole learning step that follows depends on this translation being right.",
           "Not every feature helps. A feature is useful only if it **separates the classes** — colour doesn’t, because cars and bikes come in every colour.",
         ],
@@ -781,7 +781,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "A vehicle lands right at the boundary between a car cluster and a bike cluster in Ravi's data. Why does kNN still give an answer?",
+              "A vehicle lands right at the boundary between a car cluster and a bike cluster in Asha's data. Why does kNN still give an answer?",
             choices: [
               { id: "a", label: "It refuses to classify boundary samples" },
               { id: "b", label: "It counts the votes of the k nearest neighbours, however close the contest — the majority still wins" },
@@ -882,7 +882,7 @@ const course: Course = {
         minutes: 5,
         prose: [
           "A **decision tree** is just a list of if/then rules, drawn as a path. Start at the top, answer each question, and you land on a prediction.",
-          "For the tennis example, the rules look like **‘if sunny and humid, no match’**. Drawn as a tree, that same rule is a branch you walk down.",
+          "For Asha’s Sunday tennis, the rules look like **‘if sunny and humid, no match’**. Drawn as a tree, that same rule is a branch you walk down.",
           "Many different trees could give the same answers on your data — so the real question is: **which tree is best?** That’s the next lesson.",
         ],
         concept: {
@@ -1231,7 +1231,7 @@ const course: Course = {
             id: "q2",
             kind: "mcq",
             prompt:
-              "Your car-vs-bike classifier keeps misjudging bikes. Before switching algorithms, what should you check first?",
+              "Asha's car-vs-bike classifier keeps misjudging bikes. Before switching algorithms, what should you check first?",
             choices: [
               { id: "a", label: "The data — are bikes under-represented, or poorly described by the features?" },
               { id: "b", label: "Nothing — a fancier algorithm always fixes it" },

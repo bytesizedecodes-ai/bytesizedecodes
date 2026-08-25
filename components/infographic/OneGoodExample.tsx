@@ -1,12 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 6: "One good example".
- * Through-line: the flashcard. One card, front and back, repeated with
- * different content across scenes — ending on the mirror warning: the model
- * learns your mistakes as faithfully as your standards.
+ * Fine-Tuning Foundations — Lesson 6: "One good example" (v2 Thread
+ * retrofit).
+ *
+ * Through-line stage: the flashcard — one card shape, same spot, every
+ * scene; only its content and tone change. Arjun's first card (Kavya's angry
+ * message, the calm house reply, accented) sets the atom; the manual
+ * comparison, the job variety, then the sloppy card (bad accent) close the
+ * mirror warning: the model learns your mistakes as faithfully as your
+ * standards.
  */
 export function OneGoodExample() {
   const Flashcard = ({
@@ -41,11 +46,20 @@ export function OneGoodExample() {
         subtitle="A flashcard for grown-ups: real request in front, ideal reply behind"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🃏</span>, label: "One flashcard" },
+          { icon: <span aria-hidden="true">📖</span>, label: "Shown, not told" },
+          { icon: <span aria-hidden="true">🔀</span>, label: "Many jobs, one atom" },
+          { icon: <span aria-hidden="true">🪞</span>, label: "The mirror" },
+        ]}
+      />
+
       {/* SCENE 1 — the atom of all tuning */}
-      <Scene caption="① The atom of every fine-tune: one pair">
+      <Scene caption="So the atom of Arjun's whole tune is one pair.">
         <Flashcard
           front="“hey my orders late AGAIN?? this is the 3rd time”"
-          back="So sorry, Arjun — I can see it. Refund started, plus a credit for the delay. Anything else I can fix?"
+          back="So sorry, Kavya — I can see it. Refund started, plus a credit for the delay. Anything else I can fix?"
           tone="brand"
         />
         <p className="mt-3 text-center text-xs font-medium text-ink">
@@ -54,7 +68,7 @@ export function OneGoodExample() {
       </Scene>
 
       {/* SCENE 2 — showing, not telling */}
-      <Scene caption="② A manual says 'be concise'. A card simply IS">
+      <Scene variant="continue" caption="But a manual could just say 'be concise' — and it never sticks like a card.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
             <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
@@ -74,7 +88,7 @@ export function OneGoodExample() {
       </Scene>
 
       {/* SCENE 3 — variety of pairs */}
-      <Scene caption="③ Different jobs, same atom">
+      <Scene variant="continue" caption="Then give the atom different jobs — tone, format, refusal.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           <MotionChild>
             <div className="h-full rounded-xl border border-ash bg-surface-elevated p-3 text-center shadow-sm">
@@ -98,7 +112,7 @@ export function OneGoodExample() {
       </Scene>
 
       {/* SCENE 4 — the mirror warning */}
-      <Scene caption="④ Every card is a vote — including the sloppy ones">
+      <Scene variant="continue" caption="That's why every card is a vote — including the sloppy ones.">
         <Flashcard
           front="“where's my stuff”"
           back="shipped. check tracking."

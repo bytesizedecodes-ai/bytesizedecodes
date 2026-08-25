@@ -1,15 +1,18 @@
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { CarShape, MachineFigure, Scene } from "./scenes";
+import { CarShape, MachineFigure, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 1: "What is observability?".
+ * AI Observability — Lesson 1: "What is observability?" (v2 Thread retrofit)
  *
- * Beginner calibration: a concreteness fade from a car's dashboard (familiar)
- * to an AI's dashboard (the new idea). The aha is that "inside state" can be
- * read from "outside signals" — the engine is hidden, the gauges reveal it,
- * and an AI is just another hidden engine. Brand blue only; red is reserved
- * for the single warning gauge that teaches "a signal going wrong".
+ * Through-line stage: the hidden engine — first the car's, then Mitra's. The
+ * car holds the stage for two scenes (bonnet shut → gauges reading inside),
+ * then hands the SAME role to Mitra, the support assistant Nisha looks after
+ * at Suraksha: another hidden engine, now given its own gauges (latency ·
+ * cost · errors). Beats: hook (Nisha drives, bonnet shut) → reveal (gauges
+ * read the inside; one flashing) → fade (Mitra gets gauges too). Brand blue
+ * only; red is reserved for the single warning gauge that teaches "a signal
+ * going wrong".
  */
 export function WhatIsObservability() {
   return (
@@ -19,8 +22,16 @@ export function WhatIsObservability() {
         subtitle="Seeing inside a machine without opening it up"
       />
 
-      {/* ① The problem: the engine is hidden */}
-      <Scene caption="① You can’t see the engine while you drive">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🚗</span>, label: "The bonnet stays shut" },
+          { icon: <span aria-hidden="true">⏱️</span>, label: "Gauges read inside" },
+          { icon: <span aria-hidden="true">🤖</span>, label: "Mitra gets gauges" },
+        ]}
+      />
+
+      {/* Hook — the stage: the engine is hidden */}
+      <Scene caption="So Nisha can’t see the engine while she drives — the bonnet stays shut.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <CarShape />
           <div className="max-w-xs text-center">
@@ -28,14 +39,14 @@ export function WhatIsObservability() {
               The engine is sealed under the bonnet.
             </p>
             <p className="mt-1 text-xs font-medium text-ink-soft">
-              So how do you know if it’s healthy?
+              So how does she know if it’s healthy?
             </p>
           </div>
         </div>
       </Scene>
 
-      {/* ② The dashboard = window inside. Gauges build one at a time. */}
-      <Scene caption="② The dashboard is your window inside">
+      {/* Reveal — the gauges read the inside; the warning gauge is the ONE change */}
+      <Scene variant="continue" caption="But the gauges read the inside anyway — and one is flashing.">
         <Stagger className="grid grid-cols-3 gap-3">
           <MotionChild>
             <Gauge label="Speed" value="ok" />
@@ -52,10 +63,10 @@ export function WhatIsObservability() {
         </p>
       </Scene>
 
-      {/* ③ Fade to AI: the AI is also a hidden engine */}
-      <Scene caption="③ An AI is just another hidden engine">
+      {/* Fade to AI: Mitra takes over the same hidden-engine role, with gauges */}
+      <Scene caption="That’s why Mitra gets gauges too — an AI is just another hidden engine.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
-          <MachineFigure label="AI system" />
+          <MachineFigure label="Mitra, Suraksha’s assistant" />
           <div className="flex flex-col items-center gap-2">
             <span className="rounded-full bg-brand-wash px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand">
               latency · cost · errors

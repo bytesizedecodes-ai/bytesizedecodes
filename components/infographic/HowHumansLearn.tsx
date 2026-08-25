@@ -6,32 +6,42 @@ import {
   SpeechBubble,
   PictureCard,
   Scene,
+  StoryMap,
 } from "./scenes";
 
 /**
- * Layman course — Lesson 1: "How a human learns".
+ * Layman course — Lesson 1: "How a human learns" (v2 Thread retrofit).
  *
- * Layout: comic-strip (a sequence of scenes that tell a story). This mirrors
- * Lesson 1.pdf slides 2-12 almost frame-for-frame: a child can't identify an
- * object → is shown labelled examples → can now identify a new one.
- *
- * v2: no "use client" (motion is inherited from Scene's Reveal); uses the
- * shared SpeechBubble primitive instead of hand-rolled motion.span.
- * ~80% of the teaching is in the pictures; text is one caption per scene.
+ * Through-line stage: Ishaan — Asha's son, the course's original learning
+ * machine — meets the same street objects all lesson (the car, the delivery
+ * bike). His state changes: blank (???) → shown labelled cards → pattern
+ * formed → nails a brand-new photo. Beats: hook (asked, no idea) → anchor
+ * (labelled examples arrive) → reveal (the pattern forms) → resolution (new
+ * photo, right answer). Course cast introduced here: Asha's tiffin service,
+ * Ishaan the learner, and the vehicles that keep stopping by.
  */
 export function HowHumansLearn() {
   return (
     <Infographic>
       <InfographicHeader
         title="How a human learns"
-        subtitle="Watch a child go from 'no idea' to 'got it' — that's learning"
+        subtitle="Watch Ishaan go from 'no idea' to 'got it' — that's learning"
       />
 
-      {/* SCENE 1 — the child doesn't know yet */}
-      <Scene caption="① Ask the child: what is this object?">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🧒</span>, label: "Ishaan doesn't know" },
+          { icon: <span aria-hidden="true">🖼️</span>, label: "Show labelled examples" },
+          { icon: <span aria-hidden="true">💡</span>, label: "Spot the pattern" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Nail a new one" },
+        ]}
+      />
+
+      {/* SCENE 1 — Ishaan doesn't know yet */}
+      <Scene caption="So ask Ishaan: what is this object?">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <CarShape />
-          <PersonFigure label="the child" />
+          <PersonFigure label="Ishaan" />
           <SpeechBubble side="left">???</SpeechBubble>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink">
@@ -40,7 +50,7 @@ export function HowHumansLearn() {
       </Scene>
 
       {/* SCENE 2 — show examples */}
-      <Scene caption="② Show some labelled examples">
+      <Scene variant="continue" caption="Then show him a few labelled examples">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           <PictureCard picture={<CarShape />} label="car" tone="brand" />
           <PictureCard picture={<CarShape />} label="car" tone="brand" />
@@ -53,7 +63,7 @@ export function HowHumansLearn() {
       </Scene>
 
       {/* SCENE 3 — the pattern forms */}
-      <Scene caption="③ The child spots the pattern">
+      <Scene variant="continue" caption="So a pattern forms — Ishaan spots it">
         <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
           <div className="flex-1 rounded-xl bg-brand-wash p-4 text-center">
             <CarShape className="mx-auto" />
@@ -74,7 +84,7 @@ export function HowHumansLearn() {
       </Scene>
 
       {/* SCENE 4 — now they can answer on a NEW example */}
-      <Scene caption="④ Show a brand-new photo — the child nails it">
+      <Scene caption="That's why a brand-new photo — and Ishaan nails it">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
           <div className="flex flex-col items-center gap-2">
             <CarShape />
@@ -82,7 +92,7 @@ export function HowHumansLearn() {
               new!
             </span>
           </div>
-          <PersonFigure label="the child" />
+          <PersonFigure label="Ishaan" />
           <SpeechBubble side="left">It&apos;s a CAR! 🎉</SpeechBubble>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink">

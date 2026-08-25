@@ -1,16 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, Operator, Scene } from "./scenes";
+import { CarShape, BikeShape, Operator, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson 5: "Inside supervised learning".
+ * Layman course — Lesson 5: "Inside supervised learning" (v2 Thread retrofit).
  *
- * Layout: structural-breakdown. The deck's signature visual from slides 29-37:
- * Samples + Labels = Training Dataset, then f(dataset, sample) → output,
- * branching into Classification (discrete) vs Regression (continuous).
- * Brand blue only. No prose/questions (course rule).
- *
- * Faithful to source: Lesson 1.pdf slides 29-37.
+ * Through-line stage: the accumulating formula — samples + labels = dataset —
+ * stays in the same spot and GROWS one box per Stagger step; then the learned
+ * function appears, then the two output shapes. Beats: anchor (build the
+ * dataset piece by piece) → reveal (the function) → fade (category vs
+ * number). The vehicles are the same street objects Asha's machine has been
+ * meeting since lesson 1 — now handed over as labelled flashcards.
  */
 export function SupervisedDeepDive() {
   return (
@@ -20,8 +20,17 @@ export function SupervisedDeepDive() {
         subtitle="Samples + labels → a function → a category or a number"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🖼️</span>, label: "Samples plus labels" },
+          { icon: <span aria-hidden="true">🗂️</span>, label: "One dataset" },
+          { icon: <span aria-hidden="true">🔮</span>, label: "A learned function" },
+          { icon: <span aria-hidden="true">🔀</span>, label: "Two answer shapes" },
+        ]}
+      />
+
       {/* Step 1 — build the dataset. Builds piece-by-piece. */}
-      <Scene caption="① Build a labelled training dataset">
+      <Scene caption="So build the labelled dataset — samples plus the answers">
         <Stagger className="flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-stretch sm:gap-3">
           {/* Samples */}
           <MotionChild>
@@ -72,7 +81,7 @@ export function SupervisedDeepDive() {
       </Scene>
 
       {/* Step 2 — the function */}
-      <Scene caption="② The algorithm learns a function (a decision rule)">
+      <Scene variant="continue" caption="Then the algorithm learns a function (a decision rule)">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <div className="font-mono text-sm font-bold text-ink sm:text-base">
             f( <span className="font-extrabold">dataset</span>,{" "}
@@ -85,7 +94,7 @@ export function SupervisedDeepDive() {
       </Scene>
 
       {/* Step 3 — two output shapes */}
-      <Scene caption="③ The prediction is one of two shapes">
+      <Scene variant="continue" caption="That's why the prediction is one of two shapes">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           {/* Classification */}
           <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">

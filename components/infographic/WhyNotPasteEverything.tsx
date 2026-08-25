@@ -1,81 +1,99 @@
-import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, Tag } from "./primitives";
-import { Scene } from "./scenes";
-import { Reveal } from "./motion";
+import { Infographic, InfographicHeader, Card, CardTitle, Takeaway } from "./primitives";
+import { Scene, StoryMap } from "./scenes";
 
 /**
  * RAG Engineering Foundations — Lesson 2: "Why Not Just Paste Everything?"
+ * (v2 Thread retrofit)
  *
- * The backpack anchor: hauling the whole library versus taking the one book
- * you need. The compare grid (reveals as one block — it's a grid, not a
- * sequence) makes the four costs visible: space, cost, speed, and the
- * skipped-middle failure. Bad marks the stuffed backpack once. Beginner
- * density; no numbers beyond "every word costs".
+ * Through-line stage: the context-window tray — one bordered box, the same
+ * spot, every scene. States: filling (neutral) → pages pressing past the
+ * edge (the ONE accented change; the caption carries the repeating bill) →
+ * the middle of the pile skimmed to ghosts → slimmed to the three pages the
+ * question needs (brand accent, the retired pile left as a ghost outline).
  */
 export function WhyNotPasteEverything() {
   return (
     <Infographic>
       <InfographicHeader
         title="Why not carry the whole library?"
-        subtitle="The obvious fix — paste in every document — works until you count what it costs."
+        subtitle="The obvious fix — paste in every page — works until you count what it costs."
       />
 
-      {/* Scene 1 — the two travelers */}
-      <Scene caption="① Two ways to be prepared for any question">
-        <Reveal>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-            <div className="rounded-xl border border-[var(--color-bad)] bg-surface-elevated p-4 text-center shadow-sm">
-              <div className="text-4xl" aria-hidden="true">🎒</div>
-              <div className="mt-1 text-sm font-bold text-ink">The whole library</div>
-              <p className="mt-1 text-[11px] font-medium leading-relaxed text-ink-soft">
-                every document you own, pasted into every single request — just in case
-              </p>
-              <ul className="mt-2 space-y-1 text-left">
-                <CostRow bad>the window runs out of room</CostRow>
-                <CostRow bad>every word costs, on every request</CostRow>
-                <CostRow bad>slow — and the model skips the middle of the pile</CostRow>
-              </ul>
-            </div>
-            <div className="rounded-xl border border-brand bg-brand-wash p-4 text-center shadow-sm">
-              <div className="text-4xl" aria-hidden="true">📖</div>
-              <div className="mt-1 text-sm font-bold text-ink">The one right book</div>
-              <p className="mt-1 text-[11px] font-medium leading-relaxed text-ink-soft">
-                fetch the few pages this question needs — then answer from them
-              </p>
-              <ul className="mt-2 space-y-1 text-left">
-                <CostRow good>fits the window with room to spare</CostRow>
-                <CostRow good>a few pages cost a few pennies</CostRow>
-                <CostRow good>fast — and nothing important hides mid-pile</CostRow>
-              </ul>
-            </div>
-          </div>
-        </Reveal>
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">📦</span>, label: "Paste every page" },
+          { icon: <span aria-hidden="true">🪟</span>, label: "The window fills" },
+          { icon: <span aria-hidden="true">🕳️</span>, label: "The middle hides" },
+          { icon: <span aria-hidden="true">📄</span>, label: "Fetch just three" },
+        ]}
+      />
+
+      {/* Anchor — the tray, filling with ZapKart's pages */}
+      <Scene caption="So ZapKart's team tries the obvious fix — paste all 300 pages into every question.">
+        <WindowTray
+          label="the window — all the model can read at once"
+          rows={[
+            { page: "policy-refunds" },
+            { page: "faq-returns" },
+            { page: "shipping-times" },
+            { page: "tracking" },
+            { page: "careers" },
+            { page: "+ 293 more pages", muted: true },
+          ]}
+        />
       </Scene>
 
-      {/* Scene 2 — the skipped middle, felt */}
-      <Scene caption="② Even when it all fits, big piles get skimmed">
-        <Reveal>
-          <div className="mx-auto max-w-lg rounded-xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm">
-            <Tag tone="neutral">the pile of pages</Tag>
-            <div className="mt-3 space-y-1">
-              <PileRow label="page 1" attention="high" />
-              <PileRow label="pages 2–38" attention="low" note="skimmed — attention fades in the middle" />
-              <PileRow label="page 39" attention="high" />
-            </div>
-            <p className="mt-3 text-center text-[11px] font-medium leading-relaxed text-ink-soft">
-              buried your refund policy at page 20? models read the ends far better than the
-              middle — <span className="font-bold text-ink">the right page, near the top, beats every page at once</span>.
-            </p>
-          </div>
-        </Reveal>
+      {/* Tension — pages press past the edge, the ONE accented change */}
+      <Scene variant="continue" caption="But the window has an edge — and the whole pile is billed again on every single question.">
+        <div className="mx-auto max-w-lg">
+          <WindowTray
+            label="the window — all the model can read at once"
+            full
+            rows={[
+              { page: "policy-refunds" },
+              { page: "faq-returns" },
+              { page: "shipping-times" },
+              { page: "tracking" },
+              { page: "careers" },
+              { page: "+ 293 more pages", muted: true },
+            ]}
+            spill={[{ page: "product-specs" }, { page: "eu-delivery-faq" }]}
+          />
+        </div>
       </Scene>
 
-      {/* Scene 3 — fade to the rule */}
-      <Scene caption="③ The trade in one line">
-        <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
-          <p className="text-sm font-medium leading-relaxed text-ink sm:text-base">
-            Retrieval is how a small window behaves like a big one: you don&apos;t pay for the
-            library — <span className="font-bold">just for the pages you actually open</span>.
+      {/* Tension peak — the middle of the pile turns to ghosts */}
+      <Scene variant="continue" caption="But even when it all fits, the middle of the pile gets skimmed.">
+        <div className="mx-auto max-w-lg">
+          <WindowTray
+            label="the window — all the model can read at once"
+            rows={[
+              { page: "pasted pile · page 1", attention: "high" },
+              { page: "pages 2–19", attention: "low" },
+              { page: "page 20 — the refund policy landed here", attention: "low", note: "effectively invisible" },
+              { page: "pages 21–38", attention: "low" },
+              { page: "page 39", attention: "high" },
+            ]}
+          />
+          <p className="mt-2 text-center text-[11px] font-medium leading-relaxed text-ink-soft">
+            models read the ends of a pile far better than its middle —{" "}
+            <span className="font-bold text-ink">the right page, near the top, beats every page at once</span>
           </p>
+        </div>
+      </Scene>
+
+      {/* Reveal — the tray slimmed to the three pages this question needs */}
+      <Scene variant="continue" caption="So fetch only what the question needs — three pages, top of the window.">
+        <div className="mx-auto max-w-lg">
+          <WindowTray
+            label="the window — all the model can read at once"
+            rows={[
+              { page: "policy-refunds · p2", attention: "high" },
+              { page: "faq-returns · p1", attention: "high" },
+              { page: "policy-payments · p4", attention: "high" },
+            ]}
+            ghost={{ label: "the other 297 pages stay on the shelf — fetched only if a question needs them" }}
+          />
         </div>
       </Scene>
 
@@ -90,30 +108,84 @@ export function WhyNotPasteEverything() {
   );
 }
 
-/** One cost row in the backpack comparison. */
-function CostRow({ bad = false, good = false, children }: { bad?: boolean; good?: boolean; children: React.ReactNode }) {
-  const mark = bad ? "text-[var(--color-bad)]" : good ? "text-good" : "text-ink";
+/**
+ * The lesson's one stage: the context-window tray. Same box in the same spot
+ * every scene — only its contents change state (filling, full, skimmed, slim).
+ */
+function WindowTray({
+  label,
+  rows,
+  full = false,
+  spill,
+  ghost,
+}: {
+  label: string;
+  rows: { page: string; muted?: boolean; attention?: "high" | "low"; note?: string }[];
+  full?: boolean;
+  spill?: { page: string }[];
+  ghost?: { label: string };
+}) {
   return (
-    <li className={`flex items-start gap-2 text-[11px] font-medium leading-relaxed text-ink ${mark}`}>
-      <span aria-hidden="true" className={mark}>{bad ? "✗" : "✓"}</span>
-      {children}
-    </li>
-  );
-}
+    <div className={`relative ${spill ? "mb-5" : ""}`}>
+      <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-3 shadow-sm">
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">{label}</span>
+          {full && (
+            <span className="rounded-full border border-dashed border-ash bg-canvas px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-ink-soft">
+              full — nothing else fits
+            </span>
+          )}
+        </div>
+        <div className="space-y-1">
+          {rows.map((r) => {
+            const low = r.attention === "low";
+            const high = r.attention === "high";
+            return (
+              <div
+                key={r.page}
+                className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-1.5 ${
+                  high
+                    ? "border-brand bg-brand-wash"
+                    : low || r.muted
+                      ? "border-dashed border-ash bg-canvas"
+                      : "border-ash bg-surface-elevated"
+                }`}
+              >
+                <span
+                  className={`text-[11px] font-bold ${
+                    high ? "text-brand-deep" : low || r.muted ? "text-ink-faint" : "text-ink"
+                  } ${low ? "line-through decoration-dotted" : ""}`}
+                >
+                  {r.page}
+                </span>
+                {r.note && <span className="text-[10px] font-medium text-ink-faint">{r.note}</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-/** One row of the page pile with its attention level. */
-function PileRow({ label, attention, note }: { label: string; attention: "high" | "low"; note?: string }) {
-  const isHigh = attention === "high";
-  return (
-    <div
-      className={`rounded-lg border px-3 py-1.5 ${
-        isHigh ? "border-brand bg-brand-wash" : "border-dashed border-ash bg-canvas"
-      }`}
-    >
-      <span className={`text-[11px] font-bold ${isHigh ? "text-brand-deep" : "text-ink-faint"}`}>
-        {label}
-      </span>
-      {note && <span className="ml-2 text-[10px] font-medium text-ink-faint">{note}</span>}
+      {/* pages pressing past the window's edge — the overflow, in bad accent */}
+      {spill && (
+        <div className="pointer-events-none absolute -bottom-3 right-2 flex gap-1">
+          {spill.map((s, i) => (
+            <span
+              key={s.page}
+              className="rounded-lg border border-dashed border-[var(--color-bad)] bg-canvas px-2 py-1 text-[10px] font-bold text-[var(--color-bad)]"
+              style={{ transform: `translateY(${i * -4}px) rotate(${i % 2 === 0 ? 3 : -2}deg)` }}
+            >
+              {s.page}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* the retired pile, left visible as a ghost */}
+      {ghost && (
+        <div className="mt-2 rounded-xl border border-dashed border-ash bg-canvas px-4 py-2 text-center">
+          <span className="text-[11px] font-medium text-ink-faint">{ghost.label}</span>
+        </div>
+      )}
     </div>
   );
 }

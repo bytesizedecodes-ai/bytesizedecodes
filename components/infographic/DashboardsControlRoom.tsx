@@ -2,19 +2,19 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { PersonFigure, Scene } from "./scenes";
+import { PersonFigure, Scene, StoryMap } from "./scenes";
 
 /**
- * AI Observability — Lesson 11: "Dashboards — the control room".
+ * AI Observability — Lesson 11: "Dashboards — the control room"
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: a dashboard is the one screen you glance at to know if a
- * system is healthy — like an airplane cockpit. The aha is that a good
- * dashboard shows the FEW numbers that matter, big and clear, not everything at
- * once. Scene 2 contrasts a cluttered dashboard (many tiny readings — a glance
- * tells you nothing) with a clear one (three big readings). Scene 3 lets the
- * learner make the glance call themselves: one tile turns bad, they commit to a
- * verdict, and the feedback names the evidence. Brand accent only, plus one
- * semantic bad tile that teaches "this is the reading that shouts".
+ * Through-line stage: the SAME three Mitra tiles (latency, errors, cost/day),
+ * the same spot, three states — healthy and glanceable (hook), crowded out by
+ * forty tiny readings then slimmed back (compare, cluttered side acting as
+ * the ghosted before), and finally one tile turned bad for Nisha to call
+ * (interaction). The aha: fewer numbers, bigger and louder, is the job.
+ * Brand accent only, plus one semantic bad tile that teaches "this is the
+ * reading that shouts".
  */
 type Verdict = "healthy" | "attention" | null;
 
@@ -28,10 +28,18 @@ export function DashboardsControlRoom() {
         subtitle="One screen you can glance at and know: are we healthy?"
       />
 
-      {/* ① The cockpit idea */}
-      <Scene caption="① A dashboard is the one screen you glance at">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">👁️</span>, label: "One glance is enough" },
+          { icon: <span aria-hidden="true">🧹</span>, label: "Few, big, clear" },
+          { icon: <span aria-hidden="true">🚨</span>, label: "Make the glance call" },
+        ]}
+      />
+
+      {/* Anchor — the cockpit idea */}
+      <Scene caption="So Nisha’s dashboard is the one screen she glances at — one glance is enough.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
-          <PersonFigure label="on call" />
+          <PersonFigure label="Nisha, on call" />
           <div className="rounded-xl border border-ash bg-canvas px-4 py-3">
             <div className="grid grid-cols-3 gap-3">
               <BigGauge label="Latency" value="1.4s" />
@@ -41,12 +49,12 @@ export function DashboardsControlRoom() {
           </div>
         </div>
         <p className="mt-3 text-center text-xs font-medium text-ink-soft">
-          Like a cockpit: every reading earns its place, and a single glance is enough.
+          Like a cockpit: every reading earns its place — it’s Mitra’s health at a glance.
         </p>
       </Scene>
 
-      {/* ② Good vs bad */}
-      <Scene caption="② Show the few things that matter — not everything">
+      {/* Compare — few and big beats everything at once; cluttered = the ghosted before */}
+      <Scene variant="continue" caption="But the common mistake is cramming — few, big, clear beats forty tiny.">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-ash bg-canvas px-3 py-3">
             <div className="mb-2 text-center text-[10px] font-bold uppercase tracking-wide text-ink-soft">
@@ -75,8 +83,8 @@ export function DashboardsControlRoom() {
         </div>
       </Scene>
 
-      {/* ③ Interactive: make the glance call yourself */}
-      <Scene caption="③ Your turn: make the glance call">
+      {/* Interaction — make the glance call yourself */}
+      <Scene variant="continue" caption="Then make the glance call yourself — one tile is shouting.">
         <p className="mb-3 text-center text-[11px] font-medium uppercase tracking-wide text-brand-deep">
           Glance once, then pick a verdict
         </p>

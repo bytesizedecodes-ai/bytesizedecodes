@@ -1,17 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "When ML gets it wrong".
+ * Layman course — Lesson: "When ML gets it wrong" (v2 Thread retrofit).
  *
- * Trust literacy — the honest &ldquo;ML isn&apos;t magic&rdquo; counterweight to the
- * &ldquo;ML you already use&rdquo; lesson. Three concrete failure cases (a self-driving
- * car misreading a stop sign, a bad recommendation, a false face-match), then
- * why it happens (the model never saw an example like this), then what careful
- * teams do about it (more diverse data, human review, confidence thresholds).
- * Picture-led with drawn icons. Brand blue + semantic good/bad only.
- * No prose/questions (course rule).
+ * Through-line stage: the same stop sign, seen two ways — the clean signs it
+ * trained on, and the dented one it never met. Beats: hook (three confident
+ * failures) → reveal (the training gap: seen vs never-seen, side by side) →
+ * resolution (the safety nets careful teams build). Closes the course arc:
+ * the machine Asha taught all course is powerful AND fallible — the tone of
+ * its answer never tells you which.
  */
 export function WhenMLFails() {
   return (
@@ -21,8 +20,17 @@ export function WhenMLFails() {
         subtitle="It&apos;s powerful — and it makes mistakes. Here&apos;s how to think about both."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">⚠️</span>, label: "Confidently wrong" },
+          { icon: <span aria-hidden="true">🕳️</span>, label: "A training gap" },
+          { icon: <span aria-hidden="true">🛡️</span>, label: "Safety nets" },
+          { icon: <span aria-hidden="true">🧑</span>, label: "Keep humans close" },
+        ]}
+      />
+
       {/* Step 1 — three real failure cases */}
-      <Scene caption="① ML can be confidently wrong — three real cases">
+      <Scene caption="So ML can be confidently wrong — three real cases">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3">
           <MotionChild>
             <FailCard
@@ -49,7 +57,7 @@ export function WhenMLFails() {
       </Scene>
 
       {/* Step 2 — why it happens: the model never saw an example like this */}
-      <Scene caption="② Usually it&apos;s a gap in the training data">
+      <Scene variant="continue" caption="Then look closer: usually it&apos;s a gap in the training data">
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
             <div className="mb-2 text-sm font-bold text-good">seen in training</div>
@@ -71,7 +79,7 @@ export function WhenMLFails() {
       </Scene>
 
       {/* Step 3 — what careful teams do about it */}
-      <Scene caption="③ Careful teams build in safety nets">
+      <Scene caption="That&apos;s why careful teams build in safety nets">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <MotionChild>
             <SafetyCard num="1" label="Diverse data" detail="train on edge cases, not just the common ones" />
@@ -124,12 +132,12 @@ function SafetyCard({ num, label, detail }: { num: string; label: string; detail
 
 function StopSignIcon({ clean = false, dented = false }: { clean?: boolean; dented?: boolean }) {
   // octagon outline; "dented" draws a dent, "clean" draws it bold/green-ish
-  const stroke = clean ? "#5f9e77" : "#c1706b";
+  const stroke = clean ? "var(--color-good)" : "var(--color-bad)";
   return (
     <svg viewBox="0 0 32 32" className="h-9 w-9" aria-hidden="true">
       <polygon
         points="11,4 21,4 28,11 28,21 21,28 11,28 4,21 4,11"
-        fill={clean ? "#edf5f0" : "#f9efee"}
+        fill={clean ? "var(--color-good-wash)" : "var(--color-bad-wash)"}
         stroke={stroke}
         strokeWidth="2"
         strokeLinejoin="round"

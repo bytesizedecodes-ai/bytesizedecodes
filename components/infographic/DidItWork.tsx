@@ -1,11 +1,14 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { MachineFigure, Scene, SpeechBubble } from "./scenes";
+import { MachineFigure, Scene, StoryMap, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 14: "Did it work?".
- * Through-line: the drawer. Locked before training, opened after —
- * before/after on the same fresh questions, re-run for every attempt.
+ * Fine-Tuning Foundations — Lesson 14: "Did it work?" (v2 Thread retrofit).
+ *
+ * Through-line stage: the drawer — locked before Arjun trains Rasoi's
+ * assistant, same box every scene. States: filled with real requests and
+ * locked → asked before and after (the before ghosts beside the accented
+ * after) → what only fresh questions can show → re-run for every attempt.
  */
 export function DidItWork() {
   return (
@@ -15,8 +18,17 @@ export function DidItWork() {
         subtitle="Never quiz the student on the exact flashcards — ask fresh questions"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🗄️</span>, label: "Lock the drawer" },
+          { icon: <span aria-hidden="true">🔍</span>, label: "Before and after" },
+          { icon: <span aria-hidden="true">🧪</span>, label: "What fresh reveals" },
+          { icon: <span aria-hidden="true">🔁</span>, label: "Every attempt" },
+        ]}
+      />
+
       {/* SCENE 1 — lock the drawer BEFORE training */}
-      <Scene caption="① Before training: real requests go into a drawer">
+      <Scene caption="So before training, Arjun locks real customer requests in a drawer.">
         <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:gap-6">
           <div className="rounded-xl border border-ash bg-surface-elevated px-5 py-4 text-center shadow-sm">
             <span className="text-2xl">🗄️</span>
@@ -31,12 +43,12 @@ export function DidItWork() {
       </Scene>
 
       {/* SCENE 2 — before / after on the same drawer */}
-      <Scene caption="② Ask the same drawer before the tune and after it">
+      <Scene variant="continue" caption="Then the same drawer gets asked before the tune and after it.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
-            <div className="h-full rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
+            <div className="h-full rounded-xl border border-dashed border-ash bg-canvas p-4">
               <p className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">before · fresh question</p>
-              <p className="mt-1 text-xs font-medium text-ink">“my stuffs late wtf”</p>
+              <p className="mt-1 text-xs font-medium text-ink-faint">“my stuffs late wtf”</p>
               <p className="mt-2 text-xs text-ink-soft">→ long formal paragraph, no fix offered</p>
             </div>
           </MotionChild>
@@ -54,7 +66,7 @@ export function DidItWork() {
       </Scene>
 
       {/* SCENE 3 — what the drawer catches */}
-      <Scene caption="③ What only fresh questions can show">
+      <Scene variant="continue" caption="But only fresh questions can show what matters.">
         <div className="mx-auto max-w-md space-y-2">
           <MotionChild>
             <div className="rounded-xl border border-ash bg-surface-elevated px-4 py-2.5 shadow-sm">
@@ -75,7 +87,7 @@ export function DidItWork() {
       </Scene>
 
       {/* SCENE 4 — the forever tool */}
-      <Scene caption="④ The drawer is a ritual, not a one-time event">
+      <Scene variant="continue" caption="That's why the drawer reruns after every attempt — better, or it isn't.">
         <div className="flex items-center justify-center gap-3 sm:gap-6">
           {["attempt 1", "attempt 2", "attempt 3"].map((a, i) => (
             <div key={a} className="flex items-center gap-3">

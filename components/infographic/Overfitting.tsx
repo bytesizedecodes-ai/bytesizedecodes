@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "Memorizing vs. understanding" (overfitting).
+ * Layman course — Lesson: "Memorizing vs. understanding" (overfitting) (v2
+ * Thread retrofit).
  *
- * Teaches the overfit/underfit intuition without any math. Three drawn curves
- * through the same scatter of points: a wiggly line hugging every point
- * (overfit), a straight line ignoring the shape (underfit), and a smooth line
- * capturing the trend (just right). Brand blue + semantic good/bad only.
- * No prose/questions (course rule).
+ * Through-line stage: the SAME scatter of points, fitted by a different curve
+ * each scene — flat and ignoring the shape (ghost of a miss), wiggly and
+ * hugging every point, smooth and just right. Beats: anchor (three learners,
+ * one exam) → tension (the memorizer's 100% collapses on new data) →
+ * resolution (the sweet spot). The dots never move; only the drawn curve
+ * changes state.
  */
 export function Overfitting() {
   return (
@@ -19,8 +21,17 @@ export function Overfitting() {
         subtitle="A model can be perfect on its training data — and still be wrong"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">〰️</span>, label: "Three curves, same dots" },
+          { icon: <span aria-hidden="true">💯</span>, label: "100% looks great" },
+          { icon: <span aria-hidden="true">📉</span>, label: "New data collapses" },
+          { icon: <span aria-hidden="true">🎯</span>, label: "The just-right line" },
+        ]}
+      />
+
       {/* Step 1 — the same data, three different models */}
-      <Scene caption="① The same data, learned three different ways">
+      <Scene caption="So the same data gets learned three different ways">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-3">
           <MotionChild>
             <CurveCard
@@ -50,7 +61,7 @@ export function Overfitting() {
       </Scene>
 
       {/* Step 2 — why overfitting is seductive and dangerous */}
-      <Scene caption="② Overfitting looks great — until new data arrives">
+      <Scene variant="continue" caption="But memorizing looks great — until new data arrives">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-good bg-good-wash p-4 text-center shadow-sm">
             <div className="text-sm font-bold text-good">On training data</div>
@@ -66,7 +77,7 @@ export function Overfitting() {
       </Scene>
 
       {/* Step 3 — the sweet spot */}
-      <Scene caption="③ The goal: capture the trend, ignore the noise">
+      <Scene caption="That's why the goal is: capture the trend, ignore the noise">
         <div className="rounded-xl border border-brand bg-brand-wash px-4 py-4 text-center">
           <p className="text-sm font-medium text-ink sm:text-base">
             A good model is{" "}
@@ -101,10 +112,10 @@ function CurveCard({
 }) {
   const tone =
     verdict === "good"
-      ? { border: "border-good", badge: "bg-good text-canvas", text: "text-good", stroke: "#5f9e77" }
+      ? { border: "border-good", badge: "bg-good text-canvas", text: "text-good", stroke: "var(--color-good)" }
       : verdict === "overfit"
-        ? { border: "border-bad", badge: "bg-bad text-canvas", text: "text-bad", stroke: "#c1706b" }
-        : { border: "border-ash", badge: "bg-ink text-canvas", text: "text-ink-soft", stroke: "#8b897f" };
+        ? { border: "border-bad", badge: "bg-bad text-canvas", text: "text-bad", stroke: "var(--color-bad)" }
+        : { border: "border-ash", badge: "bg-ink text-canvas", text: "text-ink-soft", stroke: "var(--color-ink-faint)" };
   // scatter points
   const pts = [
     [16, 62], [26, 58], [34, 60], [42, 52], [50, 54], [58, 44], [66, 46], [74, 38], [82, 34],

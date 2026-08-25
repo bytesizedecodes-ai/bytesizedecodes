@@ -1,12 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Fine-Tuning Foundations — Lesson 12: "Conversations are scripts".
- * Through-line: the radio play. One script page across scenes — speaker
- * labels, reply fences — and what happens when rehearsal and opening night
- * use different printings.
+ * Fine-Tuning Foundations — Lesson 12: "Conversations are scripts" (v2
+ * Thread retrofit).
+ *
+ * Through-line stage: the script page — one bordered page, same spot, every
+ * scene. States: Rasoi Express's conversation printed with role labels → the
+ * reply fences added (accented) → Arjun's training cards printed onto the
+ * same page → the mismatch symptom when rehearsal and the live app use
+ * different printings.
  */
 export function ConversationScripts() {
   const ScriptLine = ({
@@ -37,10 +41,19 @@ export function ConversationScripts() {
         subtitle="Under the chat window sits a radio play — speaker before every line"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🎭</span>, label: "A labeled script" },
+          { icon: <span aria-hidden="true">🚧</span>, label: "Reply fences" },
+          { icon: <span aria-hidden="true">🖨️</span>, label: "Print cards the same" },
+          { icon: <span aria-hidden="true">🐛</span>, label: "The invisible bug" },
+        ]}
+      />
+
       {/* SCENE 1 — the script page */}
-      <Scene caption="① What the model actually reads: a labeled script">
+      <Scene caption="So what Rasoi's order assistant actually reads is a labeled script.">
         <div className="mx-auto max-w-md space-y-2 rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
-          <ScriptLine role="system" text="You are FreshMart's assistant." />
+          <ScriptLine role="system" text="You are Rasoi Express's order assistant." />
           <ScriptLine role="user" text="where's my order" />
           <ScriptLine role="assistant" text="Let me check — one moment!" accent />
         </div>
@@ -50,7 +63,7 @@ export function ConversationScripts() {
       </Scene>
 
       {/* SCENE 2 — the fence around the reply */}
-      <Scene caption="② Markers fence off the assistant's lines">
+      <Scene variant="continue" caption="Then markers fence off the assistant's lines.">
         <div className="mx-auto max-w-md space-y-2 rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
           <ScriptLine role="user" text="do you deliver on Sundays?" />
           <p className="font-mono text-[11px] font-bold text-brand-deep">⟨reply starts⟩</p>
@@ -63,7 +76,7 @@ export function ConversationScripts() {
       </Scene>
 
       {/* SCENE 3 — training uses the same script */}
-      <Scene caption="③ Your training cards are printed onto the same page">
+      <Scene variant="continue" caption="But practice must print Arjun's cards onto the very same page.">
         <div className="mx-auto flex max-w-lg flex-col items-center gap-3 sm:flex-row sm:gap-5">
           <div className="rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center">
             <p className="text-[10px] font-bold uppercase tracking-wide text-ink-soft">your card</p>
@@ -81,7 +94,7 @@ export function ConversationScripts() {
       </Scene>
 
       {/* SCENE 4 — opening night, wrong printing */}
-      <Scene caption="④ Rehearsed one script, served another">
+      <Scene variant="continue" caption="That's why a rehearsal/serving mismatch is the invisible bug — check the script first.">
         <div className="mx-auto max-w-md rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
           <p className="text-xs font-semibold text-ink">
             Symptom: replies start mid-sentence, or continue the customer&apos;s message as if it were the model&apos;s own.

@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, CodePanel } from "./primitives";
-import { Scene, SpeechBubble, MachineFigure, PersonFigure } from "./scenes";
+import { Scene, StoryMap, SpeechBubble, MachineFigure, PersonFigure } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
  * Harness Engineering Foundations — Lesson 3: "What is a Prompt, Really?"
+ * (v2 Thread retrofit)
  *
- * The prompt as a control panel: same machine, two settings. A vague one-line
- * prompt gets a shrug; a structured prompt (role + rules + examples + format)
- * gets professional work from the SAME model. Scenes: the contrast, then the
- * four dials revealed as a stagger build, then the fade to the idea — the
- * prompt is the cheapest dial the engineer owns. One accent (brand blue).
+ * Course cast: Divya writes the note that Vaani's harness sends the model.
+ * Through-line stage: the babysitter's note — the same ask, two states. First
+ * the rushed one-liner (the ghosted "before", neutral card, confused
+ * machine), then the proper note (brand-accented, the ONE change of scene 1).
+ * Scene 2 opens that same note into its four dials; scene 3 fades to the
+ * idea — settings, not a spell. One accent (brand blue).
  */
 export function PromptControlSurface() {
   return (
@@ -19,12 +21,21 @@ export function PromptControlSurface() {
         subtitle="Same model, two prompts — watch the quality gap open."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">😵</span>, label: "The vague ask" },
+          { icon: <span aria-hidden="true">📝</span>, label: "Write the note" },
+          { icon: <span aria-hidden="true">🎚️</span>, label: "Set four dials" },
+          { icon: <span aria-hidden="true">✨</span>, label: "Settings, not spells" },
+        ]}
+      />
+
       {/* Scene 1 — tension: same model, vague vs structured */}
-      <Scene caption="① One model, two very different days at work">
+      <Scene caption="So Divya tries Vaani two ways — a rushed one-liner, then a proper note.">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-ash bg-surface-elevated p-4 shadow-sm">
             <div className="flex items-center justify-center gap-3">
-              <PersonFigure label="Vague ask" />
+              <PersonFigure label="Divya, rushing" />
               <MachineFigure confused />
             </div>
             <SpeechBubble side="bottom" className="mt-3 block text-center">
@@ -36,7 +47,7 @@ export function PromptControlSurface() {
           </div>
           <div className="rounded-xl border border-brand bg-brand-wash p-4 shadow-sm">
             <div className="flex items-center justify-center gap-3">
-              <PersonFigure label="Structured ask" />
+              <PersonFigure label="Divya, with a note" />
               <MachineFigure />
             </div>
             <SpeechBubble side="bottom" className="mt-3 block text-center">
@@ -50,7 +61,7 @@ export function PromptControlSurface() {
       </Scene>
 
       {/* Scene 2 — the four dials, staggered build */}
-      <Scene caption="② The four dials every good prompt sets">
+      <Scene variant="continue" caption="Then the note gets structure — four dials, one job each.">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <MotionChild>
             <DialCard icon="🎭" name="Role" asks="who should the model be?">
@@ -76,7 +87,7 @@ export function PromptControlSurface() {
       </Scene>
 
       {/* Scene 3 — the fade: dials on a panel, not magic words */}
-      <Scene caption="③ A prompt is not a spell — it's settings">
+      <Scene caption="That's why a prompt is settings, not a spell.">
         <CodePanel
           label="The same idea, as an engineer sees it"
           caption="The harness assembles this package every single turn — not just once."
@@ -85,7 +96,7 @@ export function PromptControlSurface() {
         />
         <div className="mt-3 rounded-xl border border-brand bg-brand-wash px-4 py-3 text-center">
           <p className="text-sm font-medium leading-relaxed text-ink sm:text-base">
-            You changed the <span className="font-bold">settings</span>, not the machine.
+            Divya changed the <span className="font-bold">settings</span>, not the machine.
             That&apos;s why prompting is the <span className="font-bold">cheapest dial</span> in
             the whole harness — no retraining, just words.
           </p>

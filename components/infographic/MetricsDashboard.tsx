@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { Reveal } from "./motion";
+import { Scene, StoryMap, PersonFigure, SpeechBubble } from "./scenes";
 
 /**
- * AI Observability — Lesson 5: "Metrics — counting what matters".
+ * AI Observability — Lesson 5: "Metrics — counting what matters"
+ * (v2 Thread retrofit)
  *
- * Interactive infographic (the new “interactive infographic” sub-pattern): a
- * self-contained client widget, local state only, illustrative mock data, no
- * backend. The learner toggles the time window (1h / 24h / 7d) and the three
- * metric tiles + sparklines swap. The 24h error-rate tile flashes red — the
- * single semantic accent that teaches “a metric going wrong”. Everything else
- * is brand blue on neutral surfaces, legible at rest in both themes.
+ * Through-line stage: Mitra's health panel — the SAME three tiles (latency,
+ * spend, errors) in the same spot all lesson; only the time window changes
+ * state (1h / 24h / 7d), and with it the readings. Beats: hook (one customer
+ * says "slow", another "fine" — a feeling won't settle it) → the widget
+ * (Nisha switches the window; in 24h the error tile turns red — the ONE
+ * accented change, the spike announcing itself). Local state only,
+ * illustrative data, no backend.
  */
 type Window = "1h" | "24h" | "7d";
 
@@ -54,12 +56,34 @@ export function MetricsDashboard() {
         subtitle="Toggle the time window and watch the readings change"
       />
 
-      <Reveal>
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🗣️</span>, label: "Slow, or fine?" },
+          { icon: <span aria-hidden="true">🔢</span>, label: "Count, not feel" },
+          { icon: <span aria-hidden="true">🪟</span>, label: "Switch the window" },
+          { icon: <span aria-hidden="true">🚨</span>, label: "The spike appears" },
+        ]}
+      />
+
+      {/* Hook — two feelings, no answer */}
+      <Scene caption="So is Mitra slow, or fine? One customer says each — and a feeling won’t settle it.">
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-6">
+          <SpeechBubble side="right">“Mitra feels slow lately.”</SpeechBubble>
+          <PersonFigure label="Nisha" />
+          <SpeechBubble side="left">“Seems fine to me!”</SpeechBubble>
+        </div>
+        <p className="mt-3 text-center text-xs font-medium text-ink-soft">
+          Nisha needs numbers counted over time — not two opinions.
+        </p>
+      </Scene>
+
+      {/* The widget — the same tiles, a new window state */}
+      <Scene variant="continue" caption="Then Nisha counts instead of feeling — switch the window and watch.">
         <div className="rounded-2xl border border-ash bg-surface-elevated px-4 py-4 shadow-sm sm:px-6 sm:py-5">
           {/* dashboard header + time-window toggle */}
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <span className="text-sm font-bold uppercase tracking-wide text-ink-soft">
-              Service health
+              Mitra · service health
             </span>
             <div role="group" aria-label="Time window" className="flex gap-1 rounded-full border border-ash bg-canvas p-1">
               {WINDOWS.map((w) => (
@@ -125,15 +149,15 @@ export function MetricsDashboard() {
           <p className="mt-4 text-center text-xs font-medium text-ink-soft">
             {errorSpike ? (
               <>
-                In the last 24h, <span className="font-bold text-[var(--color-bad)]">error rate spiked to 3.1%</span> — a
-                metric worth investigating.
+                In the last 24h, <span className="font-bold text-[var(--color-bad)]">error rate spiked to 3.1%</span> — the
+                spike appears, and it is worth investigating.
               </>
             ) : (
               <>All readings look steady in this window. Try 24h to see a spike.</>
             )}
           </p>
         </div>
-      </Reveal>
+      </Scene>
 
       <Card tone="brand" rotate={0}>
         <Takeaway>

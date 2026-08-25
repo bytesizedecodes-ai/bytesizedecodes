@@ -1,16 +1,17 @@
 import { Infographic, InfographicHeader, Card, CardTitle, Takeaway, CodePanel } from "./primitives";
-import { Scene, PersonFigure, MachineFigure, SpeechBubble } from "./scenes";
+import { Scene, StoryMap, PersonFigure, MachineFigure, SpeechBubble } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
  * Harness Engineering Foundations — Lesson 5: "How Do Models Use Tools?"
+ * (v2 Thread retrofit)
  *
- * The waiter-and-kitchen anchor: the model is a brilliant waiter with no
- * kitchen — it can only write down an order. The harness is the kitchen: it
- * receives the structured order (tool name + arguments), cooks (executes),
- * and hands the result back. Scenes: the no-hands tension, the four-beat
- * handshake as a staggered pipeline, then the safety fade — the model never
- * runs anything itself. Brand accent; no semantic colors needed.
+ * Course cast: Rohan asks Vaani (Divya's team's chat product) for live
+ * weather. Through-line stage: one order slip travelling the same route every
+ * scene — Rohan's question the model can't answer (no hands) → the model
+ * writing the order (text, neutral) → the harness checking and cooking it
+ * (brand accent marks the harness's two moves) → the fresh result back on the
+ * desk. The model never runs anything; the harness is the kitchen.
  */
 export function ToolCalling() {
   return (
@@ -20,14 +21,23 @@ export function ToolCalling() {
         subtitle="A model can take your order — but only the harness can cook."
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🙋</span>, label: "Rohan wants weather" },
+          { icon: <span aria-hidden="true">📝</span>, label: "Model writes order" },
+          { icon: <span aria-hidden="true">🍳</span>, label: "Harness cooks" },
+          { icon: <span aria-hidden="true">✅</span>, label: "Fresh facts back" },
+        ]}
+      />
+
       {/* Scene 1 — tension: brilliant, but no hands */}
-      <Scene caption="① A mind with no hands">
+      <Scene caption="So Rohan asks Vaani for live weather — and meets a mind with no hands.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-8">
-          <PersonFigure label="Customer" />
+          <PersonFigure label="Rohan" />
           <SpeechBubble side="right" className="max-w-[15rem] text-center">
             What&apos;s the weather in Lisbon right now?
           </SpeechBubble>
-          <MachineFigure confused label="The model" />
+          <MachineFigure confused label="Vaani's model" />
         </div>
         <p className="mt-4 text-center text-sm font-medium leading-relaxed text-ink sm:text-[15px]">
           The model can only do one thing: <span className="font-bold">produce text</span>.
@@ -37,7 +47,7 @@ export function ToolCalling() {
       </Scene>
 
       {/* Scene 2 — the handshake: four beats, staggered */}
-      <Scene caption="② The tool handshake — four beats, every time">
+      <Scene variant="continue" caption="Then the order travels to the kitchen — the tool handshake, four beats.">
         <Stagger className="flex flex-col items-stretch gap-2">
           <MotionChild>
             <BeatCard n={1} title="The model writes an order" who="model">
@@ -63,7 +73,7 @@ export function ToolCalling() {
       </Scene>
 
       {/* Scene 3 — the fade: why the split is the point */}
-      <Scene caption="③ The model never cooks — and that's the safety feature">
+      <Scene caption="That's why the model never cooks — and that's the safety feature.">
         <CodePanel
           label="What the model actually produced"
           caption="Not an action — a text request the harness is free to check, log, or refuse."

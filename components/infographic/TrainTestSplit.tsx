@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { CarShape, BikeShape, Scene } from "./scenes";
+import { CarShape, BikeShape, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "Don't grade on what you studied" (train/test split).
+ * Layman course — Lesson: "Don't grade on what you studied" (train/test
+ * split) (v2 Thread retrofit).
  *
- * Teaches the single most important evaluation idea: split your data — train
- * on one pile, grade on a separate pile you never showed it. Memorizing the
- * training data isn't learning. Picture-led with the car/bike vocabulary as
- * two piles of cards; no formulas. Brand blue + semantic good/bad only.
- * No prose/questions (course rule).
+ * Through-line stage: ONE pile of labelled cards, sitting in the same spot all
+ * lesson. States: whole → cut into two piles (train grows the accent, test
+ * takes the dashed sealed border) → the grading contrast (studied paper vs
+ * sealed paper). Beats: anchor (one full pile) → reveal (the split) → why
+ * (memory vs generalisation). The cards are the same vehicles the course has
+ * been labelling since lesson 5.
  */
 export function TrainTestSplit() {
   return (
@@ -19,8 +21,17 @@ export function TrainTestSplit() {
         subtitle="Split your data: train on one part, test on a part it's never seen"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🗃️</span>, label: "One labelled pile" },
+          { icon: <span aria-hidden="true">✂️</span>, label: "Cut it in two" },
+          { icon: <span aria-hidden="true">🔒</span>, label: "Keep test sealed" },
+          { icon: <span aria-hidden="true">🎓</span>, label: "Grade on unseen" },
+        ]}
+      />
+
       {/* Step 1 — the whole dataset */}
-      <Scene caption="① You start with one pile of labelled examples">
+      <Scene caption="So you start with one pile of labelled examples">
         <div className="flex flex-wrap items-center justify-center gap-2">
           <CarShape className="!h-9" />
           <BikeShape className="!h-9" />
@@ -37,7 +48,7 @@ export function TrainTestSplit() {
       </Scene>
 
       {/* Step 2 — split into two piles */}
-      <Scene caption="② Split it into two piles — train and test">
+      <Scene variant="continue" caption="Then cut it into two piles — train and test">
         <Stagger className="grid grid-cols-2 gap-4">
           <MotionChild>
             <div className="rounded-xl border border-brand bg-brand-wash p-4 text-center shadow-sm">
@@ -67,7 +78,7 @@ export function TrainTestSplit() {
       </Scene>
 
       {/* Step 3 — why */}
-      <Scene caption="③ Why keep them separate?">
+      <Scene variant="continue" caption="That's why they stay separate — grading on studied data measures memory">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <div className="rounded-xl border border-bad bg-bad-wash p-4 text-center shadow-sm">
             <div className="text-sm font-bold text-bad">Grade on training data</div>

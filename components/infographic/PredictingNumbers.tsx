@@ -1,15 +1,16 @@
 import { Infographic, InfographicHeader, Card } from "./primitives";
-import { Scene } from "./scenes";
+import { Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * Layman course — Lesson: "Predicting a number, not a category" (regression).
+ * Layman course — Lesson: "Predicting a number, not a category" (regression)
+ * (v2 Thread retrofit).
  *
- * Every classifier so far answers "which one?". This lesson introduces the
- * other supervised question — "how much?" — with no math: past examples as a
- * scatter, the trend as a line, and the prediction read off the line. Uses
- * the same scatter-with-curve drawing style as the overfitting lesson, so the
- * course reads as one design.
+ * Through-line stage: Vikram's delivery chart — the same scatter of his past
+ * tiffin runs, in the same spot, gaining one layer per scene: bare dots →
+ * the trend line + the dashed read-off. Beats: hook (a question that isn't a
+ * bucket) → anchor (past runs as dots) → reveal (the line; read the answer
+ * off it) → fade (the number-promises you already rely on daily).
  */
 export function PredictingNumbers() {
   return (
@@ -19,8 +20,17 @@ export function PredictingNumbers() {
         subtitle="Sometimes the answer is a bucket — sometimes it's a number"
       />
 
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🛵</span>, label: "Vikram's trips ask" },
+          { icon: <span aria-hidden="true">🔵</span>, label: "Past runs plotted" },
+          { icon: <span aria-hidden="true">📈</span>, label: "Draw the trend" },
+          { icon: <span aria-hidden="true">📏</span>, label: "Read the answer" },
+        ]}
+      />
+
       {/* Step 1 — two different questions */}
-      <Scene caption="① Two questions a machine can learn to answer">
+      <Scene caption="So far every answer was a bucket — but Vikram's trips ask 'how long?'">
         <Stagger className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
           <MotionChild>
             <div className="rounded-xl border border-ash bg-surface-elevated p-4 text-center shadow-sm">
@@ -45,7 +55,7 @@ export function PredictingNumbers() {
               <div className="text-xs font-bold uppercase tracking-wide text-ink-soft">
                 The question
               </div>
-              <p className="mt-1 text-sm font-bold text-ink">How long is the trip?</p>
+              <p className="mt-1 text-sm font-bold text-ink">How long is Vikram&apos;s trip?</p>
               <div className="mx-auto mt-3 h-px w-16 border border-brand" />
               <div className="mt-3 text-xs font-bold uppercase tracking-wide text-ink-soft">
                 The answer it learned
@@ -62,9 +72,9 @@ export function PredictingNumbers() {
       </Scene>
 
       {/* Step 2 — past examples become a picture */}
-      <Scene caption="② Past trips, drawn as dots — a pattern appears">
+      <Scene variant="continue" caption="Then plot his past runs as dots — a pattern appears">
         <TrendChart
-          caption="every past trip: distance → minutes actually taken"
+          caption="Vikram's past runs: distance → minutes actually taken"
           highlight={false}
         />
         <p className="mt-3 text-center text-xs font-medium text-ink sm:text-sm">
@@ -73,9 +83,9 @@ export function PredictingNumbers() {
       </Scene>
 
       {/* Step 3 — the trend line, and reading a prediction off it */}
-      <Scene caption="③ Draw the trend, then read new answers off it">
+      <Scene variant="continue" caption="So draw the trend — and read new answers off it">
         <TrendChart
-          caption="the line hugs the trend; a new trip reads up to the line, across to minutes"
+          caption="the line hugs the trend; a new run reads up to the line, across to minutes"
           highlight
         />
         <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
@@ -96,7 +106,7 @@ export function PredictingNumbers() {
       </Scene>
 
       {/* Step 4 — you already use this daily */}
-      <Scene caption="④ Number-predictions you already rely on">
+      <Scene variant="continue" caption="That's why apps can promise a number, not a bucket">
         <Stagger className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
           <MotionChild>
             <ExampleCard title="Delivery apps" note="“Arrives in 24 min” — learned from millions of past deliveries" />

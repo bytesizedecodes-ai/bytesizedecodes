@@ -1,15 +1,17 @@
 import { Infographic, InfographicHeader, Card, Takeaway } from "./primitives";
-import { PersonFigure, MachineFigure, Scene } from "./scenes";
+import { PersonFigure, MachineFigure, Scene, StoryMap } from "./scenes";
 import { Stagger, MotionChild } from "./motion";
 
 /**
- * AI Observability — Lesson 7: "Is the answer good?" (evaluation).
+ * AI Observability — Lesson 7: "Is the answer good?" (evaluation)
+ * (v2 Thread retrofit)
  *
- * Beginner calibration: the aha is that “is it good?” is too fuzzy to measure,
- * so we break it into a rubric of checkable parts — like a teacher’s marking
- * guide. Then we show the two ways the rubric gets applied: a human reviewer,
- * or a second AI acting as judge. Brand accent only; checkmarks are brand, not
- * green, to keep one accent per scene.
+ * Through-line stage: Mitra's two capital-of-Australia answers, side by side
+ * from scene one. The rubric scene grades THOSE same answers (four sharp
+ * checks), and the reviewer scene shows who applies them. Beats: hook (two
+ * tidy answers, Nisha unsure) → reveal (the rubric makes "good" checkable) →
+ * fade (human reviewer, AI judge, or both). Brand accent only; checkmarks
+ * are brand, not green, to keep one accent per scene.
  */
 export function IsTheAnswerGood() {
   return (
@@ -19,22 +21,30 @@ export function IsTheAnswerGood() {
         subtitle="Break it into checks, then ask a reviewer"
       />
 
-      {/* ① "good" is fuzzy by gut */}
-      <Scene caption="① Two answers. Both read well. Which is ‘good’?">
+      <StoryMap
+        steps={[
+          { icon: <span aria-hidden="true">🤷</span>, label: "Two tidy answers" },
+          { icon: <span aria-hidden="true">📋</span>, label: "Rubric of checks" },
+          { icon: <span aria-hidden="true">⚖️</span>, label: "Human or AI judge" },
+        ]}
+      />
+
+      {/* Hook — "good" is fuzzy by gut */}
+      <Scene caption="So Nisha reads two of Mitra’s answers — both read well. Which is ‘good’?">
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
           <AnswerCard text="“Sydney is the capital of Australia.”" />
           <AnswerCard text="“Canberra is the capital of Australia.”" />
         </div>
         <div className="mt-3 flex justify-center">
-          <PersonFigure label="you: unsure" />
+          <PersonFigure label="Nisha: unsure" />
         </div>
         <p className="mt-2 text-center text-xs font-medium text-ink-soft">
           Both are grammatically fine. ‘Good’ is too fuzzy to measure by feeling.
         </p>
       </Scene>
 
-      {/* ② A rubric breaks "good" into checks */}
-      <Scene caption="② A rubric turns ‘good’ into checkable parts">
+      {/* Reveal — a rubric breaks "good" into checks, for those same answers */}
+      <Scene variant="continue" caption="Then a rubric turns ‘good’ into checkable parts.">
         <Stagger className="mx-auto grid max-w-md grid-cols-2 gap-2">
           <MotionChild>
             <Check label="Correct" />
@@ -54,8 +64,8 @@ export function IsTheAnswerGood() {
         </p>
       </Scene>
 
-      {/* ③ Two reviewers: human, or AI-as-judge */}
-      <Scene caption="③ Who holds the rubric? A person — or another AI">
+      {/* Fade — two reviewers: human, or AI-as-judge */}
+      <Scene variant="continue" caption="That’s why a reviewer applies the checks — a careful human, or a fast AI judge.">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-10">
           <div className="flex flex-col items-center gap-2">
             <PersonFigure label="human reviewer" />
