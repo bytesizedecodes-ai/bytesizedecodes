@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { BrandMark } from "@/components/BrandMark";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { NavLinks } from "@/components/NavLinks";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SITE_NAME } from "@/lib/site";
@@ -29,11 +28,9 @@ export function Shell({
               <BrandMark withAccent />
               <span>{SITE_NAME}</span>
             </Link>
-            <ThemeToggle className="sm:hidden" />
           </div>
           <div className="flex items-center gap-2">
             <NavLinks active={active} variant="desktop" />
-            <ThemeToggle className="hidden sm:flex" />
           </div>
         </div>
       </header>

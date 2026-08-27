@@ -1,6 +1,6 @@
 ---
 name: infographics-interactive-matured_v1
-description: THE matured skill for authoring technical courses on ByteSizeDecodes — practitioners who already own the AI/ML vocabulary and want mechanisms, not metaphors, drawn as printed-book PLATES. Use for ANY lesson, infographic, widget, diagram, or cheat-sheet in a course carrying `pedagogy: "matured-v1"` (any level). Keeps the v2 Thread contract — lesson map, connective captions, a stable stage that changes STATE not layout, one accented delta per scene with ghosted prior states, referent stability, the scroll test — in a distinct visual grammar: thin ink strokes on open canvas, line-art glyphs, no cards/chips/shadows (`components/infographic/plate.tsx`), plus artifact anchors (trace, schema, error — never metaphors), technical referents with no fictional cast, the DECOMPOSITION RULE (diagrams over ~5 nodes render as accumulating builds, never one big picture), code as a scene element, postmortem MCQs, deterministic step-through widgets. If `pedagogy` is `matured-v1`, THIS is the skill — overrides the level skill.
+description: THE matured skill for authoring ByteSizeDecodes courses — practitioners who already own the AI/ML vocabulary and want mechanisms, not metaphors, drawn as printed-book PLATES. Use for ANY lesson, infographic, widget, diagram, or cheat-sheet in a course carrying `pedagogy: "matured-v1"` (any level) — THIS overrides the level skill. Keeps the v2 Thread contract (lesson map, connective captions, stable stage changing STATE, one accented delta with ghosted prior states, referent stability, scroll test) in a distinct grammar: thin ink strokes, open canvas, line-art glyphs, no cards/chips/shadows (`components/infographic/plate.tsx`). Artifact anchors (trace, schema, error — never metaphors), technical referents only, no fictional cast, the DECOMPOSITION RULE (>5 nodes render as accumulating builds), code as scene element, postmortem MCQs, deterministic step-through widgets.
 ---
 
 # infographics-interactive-matured_v1
@@ -286,7 +286,7 @@ discoverability: verb-led instruction). Matured calibration of the *form*:
    given a `unit()` entry in `convex/lib/dailyPlan.ts` (its coverage test
    fails on any unregistered lesson; minutes must match `lesson.minutes`).
 4. Verify: `npm run typecheck` + `npm test`; load and scroll; **run the
-   scroll test**; dark mode; reduced motion; 375px; one accent per scene
+   scroll test**; reduced motion; 375px; one accent per scene
    marking the delta; exactly 2 scenario MCQs (3–4 choices); anchor is an
    artifact; no metaphors, no cast; build accumulates (nothing disappears
    mid-build); widget earned + announced; cheat-sheet derives from

@@ -1,14 +1,12 @@
 @import "tailwindcss";
 
 /*
-  Brand palette. Twitter blue (#1D9BF0) is the accent in both themes. The light
-  theme is the default (the values in @theme); dark mode overrides these same
-  variables under [data-theme="dark"] below, so every `bg-canvas` / `text-ink` /
-  etc. utility flips automatically — no per-component changes needed.
+  Brand palette. Twitter blue (#1D9BF0) is the accent. Single light theme —
+  white canvas with a subtle dotted grid (the body rule in @layer base below).
 */
 @theme {
-  --color-canvas: #f7f5ef;
-  --color-dot: #ddd8cc;
+  --color-canvas: #ffffff;
+  --color-dot: #dcdcdc;
   --color-ash: #e7e2d7;
   --color-ink: #171713;
   --color-ink-soft: #55544d;
@@ -36,37 +34,6 @@
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
-/*
-  Dark theme overrides. Activated by data-theme="dark" on <html> (set by the
-  no-FOUC bootstrap script in app/layout.tsx + the ThemeToggle). Light is the
-  default — these only apply when the attribute is present.
-
-  We also alias --color-white and --color-black to the themed surfaces so the
-  ~50 legacy `bg-white` / `text-white` usages across the app flip correctly
-  without per-component edits.
-*/
-[data-theme="dark"] {
-  --color-canvas: #000000;
-  --color-dot: #1f1f23;
-  --color-ash: #1f1f23;
-  --color-ink: #e7e7ea;
-  --color-ink-soft: #9b9ba3;
-  --color-ink-faint: #5b5b63;
-  /* brand stays Twitter blue in both themes; washes/muted darken for dark bg */
-  --color-brand-wash: rgba(29, 155, 240, 0.14);
-  --color-brand-muted: #2a3a47;
-  --color-surface: #0d0d0f;
-  --color-surface-elevated: #161618;
-  --color-warm-wash: rgba(231, 167, 101, 0.18);
-  --color-good-wash: rgba(29, 185, 84, 0.14);
-  --color-bad-wash: rgba(244, 33, 46, 0.14);
-  /* Soften SVG structural accents in dark mode. */
-  --tire: #4a4038;
-  --hub: #6b6258;
-  --window: #2a3a47;
-  --screen: #e7e7ea;
-}
-
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
@@ -79,12 +46,6 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* Smooth theme transition — only the variables change, so a short fade reads cleanly. */
-  body,
-  body * {
-    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
   }
 
   /* Respect users who don't want motion; several reward animations are decorative. */

@@ -335,7 +335,7 @@ Recipes: `references/interactivity-patterns.md`; starters:
    `convex/lib/dailyPlan.ts` — that file's coverage test fails on any
    unregistered lesson.
 5. Verify: `npm run typecheck` + `npm test`; load and scroll; **run the
-   scroll test** (§2.4); dark mode; reduced motion; 375px; one accent per
+   scroll test** (§2.4); reduced motion; 375px; one accent per
    scene (and it marks the delta); exactly 2 scenario MCQs (3–4 choices);
    anchor first; case-so-far strip present; rail accumulates (ladder
    lessons); widget earned + announced; cheat-sheet + PNG route.

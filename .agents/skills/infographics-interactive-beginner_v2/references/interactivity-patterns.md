@@ -417,7 +417,6 @@ the useful signals.
       affordance + discoverability).
 - [ ] DevTools → Rendering → "Emulate prefers-reduced-motion: reduce" → the
       widget still communicates everything (state, not motion).
-- [ ] **Dark mode:** every tile, bar, chart line, and label is legible.
 - [ ] **Mobile (375px):** no horizontal scrollbar; panels stack; text doesn't
       overflow.
 - [ ] At least one beat is Constructive (predict-then-reveal, claim select, or

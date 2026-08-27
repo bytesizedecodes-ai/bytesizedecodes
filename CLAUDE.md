@@ -287,6 +287,12 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     must never reformat course bodies (template-literal interiors are string
     content).
 
+14. **Ask before spawning any subagent; batches cap at 4.** Every subagent
+    (course agents, deep-research, english-simplifier, general-purpose — all
+    of them) runs its own full model context and burns quota fast. Get the
+    user's explicit go-ahead before any Agent-tool dispatch, and never launch
+    more than **4 agents concurrently** — bigger batches hit rate limits.
+
 ## Where things live
 
 | Area | Path | Notes |

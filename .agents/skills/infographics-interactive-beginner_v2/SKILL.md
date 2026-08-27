@@ -296,7 +296,7 @@ Recipes: `references/interactivity-patterns.md`; starter:
    unregistered lesson.
 5. Verify: `npm run typecheck` + `npm test` (completeness contract +
    jargon gate); load the lesson and scroll; **run the scroll test** (§2.3);
-   dark mode; reduced motion; 375px; one accent per scene (marking the one
+   reduced motion; 375px; one accent per scene (marking the one
    change); exactly 2 scenario MCQs (3 choices); anchor first, no quiz
    before the brief; widget earned + announced; story check (one through-line
    stage, not a glossary); cheat-sheet renders and the PNG route matches.
@@ -321,7 +321,7 @@ Full verification checklist: v6 §7 Step 5.
 - Don't build an open sandbox; 2–3 worked presets, goal-anchored.
 - Don't explain via tables or bullet lists; the pictures carry the story.
 - Don't over-explain the aha — withhold the conclusion a beat.
-- Don't hardcode hex, `bg-white`, `text-white` — dark mode will eat them.
+- Don't hardcode hex, `bg-white`, `text-white` — every color is a token or `currentColor`.
 - Don't hand-roll sliders/toggles; use `components/infographic/controls.tsx`.
 - Don't author cheat-sheet content — it derives from `concept`.
 - Don't write dense captions — rule 12: short sentences, one idea each.

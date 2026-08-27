@@ -30,7 +30,7 @@
  * After creating it:
  *   1. Register in components/infographic/index.tsx under the lesson's slug.
  *   2. Add the lesson to content/courses/.
- *   3. Verify: npm run typecheck; then dark-mode + reduced-motion + 375px checks.
+ *   3. Verify: npm run typecheck; then reduced-motion + 375px checks.
  */
 
 "use client";

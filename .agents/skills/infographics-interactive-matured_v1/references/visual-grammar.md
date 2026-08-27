@@ -61,8 +61,8 @@ Build from `components/infographic/plate.tsx`:
   state accented, prior states dimmed. `controls.tsx` primitives remain
   for the actual knobs (a11y chrome stays) — everything around them is
   plate-styled.
-- Both themes must hold: every color is a token or `currentColor`; check
-  the plate in dark mode where the "white page" becomes a dark sheet.
+- Every color is a token or `currentColor`; nothing assumes a backdrop
+  other than the site's white dotted canvas.
 
 ## 4. The litmus test
 
