@@ -196,7 +196,9 @@ export type SkillId =
   | "ai-incident-response"
   | "security-architecture-review"
   | "continuous-red-teaming"
-  | "security-risk-governance";
+  | "security-risk-governance"
+  // AI Agents: In Practice course (intermediate)
+  | "react-loop";
 
 export interface CodeExercise {
   id: string;
@@ -362,6 +364,13 @@ export type Course = {
   description?: string;
   /** Skill depth — drives the level filter and badge on `/courses`. */
   level: CourseLevel;
+  /**
+   * Authoring-pedagogy override. When set, the course is authored with the
+   * `infographics-interactive-matured_v1` skill regardless of `level` — for
+   * practitioner audiences who already own the vocabulary: artifact anchors,
+   * technical referents, decomposed builds, postmortem MCQs.
+   */
+  pedagogy?: "matured-v1";
   /** Field of study — drives the domain filter and grouping on `/courses`. */
   domain: CourseDomain;
   /** free | paid — free courses are public SEO; paid soft-gate until checkout exists */

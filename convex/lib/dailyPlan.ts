@@ -322,6 +322,11 @@ const AI_SECURITY_AT_SCALE_UNITS = [
   unit("ai-security-at-scale", "setu-capstone", "Capstone: the Setu architecture review", 15),
 ];
 
+// AI Agents: In Practice (intermediate) — the patterns course; lesson 1 live, more to follow.
+const AI_AGENTS_PRACTICE_UNITS = [
+  unit("ai-agents-in-practice", "thought-action-observation", "Thought → Action → Observation", 8),
+];
+
 export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
   beginner: [
     ...LAYMAN_UNITS,
@@ -347,6 +352,7 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     ...RAG_PRACTICE_UNITS,
     ...AI_SECURITY_FOUNDATIONS_UNITS,
     ...AI_SECURITY_PRACTICE_UNITS,
+    ...AI_AGENTS_PRACTICE_UNITS,
   ],
   engineer: [
     unit("machine-learning", "ai-vs-ml-vs-dl", "AI vs ML vs deep learning", 5),
@@ -364,6 +370,7 @@ export const TRACK_UNITS: Record<PlanTrack, readonly PlanUnit[]> = {
     ...RAG_AT_SCALE_UNITS,
     ...AI_SECURITY_PRACTICE_UNITS,
     ...AI_SECURITY_AT_SCALE_UNITS,
+    ...AI_AGENTS_PRACTICE_UNITS,
   ],
   founder: [
     unit("machine-learning-for-layman", "humans-vs-machines", "Humans and machines", 3),

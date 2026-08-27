@@ -35,6 +35,7 @@ import fineTuningAtScale from "./fine-tuning-at-scale";
 import aiSecurityFoundations from "./ai-security-foundations";
 import aiSecurityInPractice from "./ai-security-in-practice";
 import aiSecurityAtScale from "./ai-security-at-scale";
+import aiAgentsInPractice from "./ai-agents-in-practice";
 import type { Course, CourseAccess, CourseDomain, CourseLevel, Lesson } from "../types";
 
 export type {
@@ -83,6 +84,7 @@ export const COURSES: readonly Course[] = [
   aiSecurityFoundations,
   aiSecurityInPractice,
   aiSecurityAtScale,
+  aiAgentsInPractice,
 ];
 
 export function allCourseSlugs(): string[] {

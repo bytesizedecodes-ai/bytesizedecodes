@@ -211,6 +211,8 @@ import { ComplianceGovernance } from "./ComplianceGovernance";
 import { ContinuousRedTeaming } from "./ContinuousRedTeaming";
 import { SecurityTradeoffReview } from "./SecurityTradeoffReview";
 import { SetuCapstone } from "./SetuCapstone";
+// AI Agents: In Practice course (intermediate)
+import { ThoughtActionObservation } from "./ThoughtActionObservation";
 
 /**
  * Maps an infographic slug to its React component.
@@ -447,6 +449,8 @@ export const INFOGRAPHIC_COMPONENTS: Record<string, ComponentType> = {
   "continuous-red-teaming": ContinuousRedTeaming,
   "the-security-tradeoff-review": SecurityTradeoffReview,
   "setu-capstone": SetuCapstone,
+  // AI Agents: In Practice course (intermediate)
+  "thought-action-observation": ThoughtActionObservation,
 };
 
 export function getInfographicComponent(slug: string): ComponentType | undefined {

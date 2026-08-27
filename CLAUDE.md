@@ -150,7 +150,16 @@ Vitest. Path alias `@/*` → repo root. Pyodide loads from CDN at runtime.
     `"beginner"`, `infographics-interactive-intermediate_v2` for
     `"intermediate"`, `infographics-interactive-expert_v2` for `"expert"` —
     read the course's `level` in `content/courses/` and pick accordingly;
-    fall back to v6 for cross-level work. The v1 splits
+    fall back to v6 for cross-level work. A course may also set
+    `pedagogy: "matured-v1"` (optional `Course` field) — when present,
+    **`infographics-interactive-matured_v1` overrides the level skill**
+    for that course: same v2 Thread contract, but a distinct **Plate
+    grammar** visual identity (printed-guidebook minimalism from
+    `components/infographic/plate.tsx` — thin ink strokes, line-art
+    glyphs, open canvas, NO cards/chips/shadows), artifact anchors (never
+    everyday metaphors), technical referents with no fictional cast,
+    diagrams over ~5 nodes decomposed into accumulating builds (never one
+    big picture), code as a scene element, and postmortem-style MCQs. The v1 splits
     (`*-beginner_v1` / `-intermediate_v1` / `-expert_v1`) are **retained
     legacy** — do not author new lessons with them; v6 remains the superset.
     v6 is the **latest** course-authoring skill — a superset of

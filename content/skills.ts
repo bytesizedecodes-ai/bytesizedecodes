@@ -853,6 +853,12 @@ export const SKILLS: readonly SkillDefinition[] = [
     label: "Risk governance",
     description: "Own risks in a register: evidence, price, acceptor, review date.",
   },
+  // AI Agents: In Practice course
+  {
+    id: "react-loop",
+    label: "The ReAct trace",
+    description: "Read an agent transcript — roles, tool calls, and the cost of re-sent context.",
+  },
 ] as const;
 
 export function getSkill(id: SkillId): SkillDefinition {
