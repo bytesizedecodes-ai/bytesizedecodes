@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thought → Action → Observation</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #F8F8F8;
+  --dot: #D8D8D8;
+  --blue: #7192CC;
+  --blue-deep: #6888C8;
+  --ash: #E8E8E8;
+  --white: #FFFFFF;
+  --text: #080808;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle, var(--dot) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  width: 1200px;
+  padding: 50px 60px 55px 60px;
+  color: var(--text);
+}
+
+/* ---------- header ---------- */
+.header { text-align: center; margin-bottom: 14px; }
+.kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--blue-deep); margin-bottom: 10px;
+}
+.header h1 {
+  font-size: 40px; font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+.header h1 .loop-word { color: var(--blue-deep); }
+.header .subtitle {
+  font-size: 16px; font-weight: 500; color: #444;
+  margin-top: 10px;
+}
+.header h1::after {
+  content: "";
+  display: block;
+  width: 190px; height: 4px;
+  background: var(--blue);
+  margin: 14px auto 0;
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* ---------- story strip ---------- */
+.story {
+  margin: 22px auto 26px;
+  max-width: 860px;
+  background: var(--white);
+  border: 1px solid #E8E8E8;
+  border-radius: 14px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  transform: rotate(-0.4deg);
+  padding: 16px 24px;
+  display: flex; align-items: center; gap: 14px;
+}
+.story .scene { font-size: 26px; }
+.story p { font-size: 14.5px; font-weight: 500; line-height: 1.55; }
+.story p strong { color: var(--blue-deep); }
+
+/* ---------- the loop ---------- */
+.loop-row {
+  display: flex; align-items: stretch; justify-content: center;
+  gap: 0; margin-bottom: 8px;
+}
+.stage {
+  width: 300px;
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  position: relative;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  display: flex; flex-direction: column;
+}
+.stage-1 { background: var(--blue); transform: rotate(-0.6deg); }
+.stage-2 { background: var(--white); border: 1px solid #E8E8E8; transform: rotate(0.5deg); margin: 0 26px; }
+.stage-3 { background: var(--ash); border: 1px solid #D8D8D8; transform: rotate(-0.5deg); }
+
+.stage .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+}
+.stage-1 .num { color: #F8F8F8; opacity: 0.85; }
+.stage-2 .num, .stage-3 .num { color: var(--blue-deep); }
+.stage h3 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.stage .who {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.stage-1 .who { color: #F0F0F8; }
+.stage-2 .who, .stage-3 .who { color: var(--blue-deep); }
+.stage p { font-size: 13.5px; font-weight: 500; line-height: 1.55; }
+.stage-1 p { color: #F8F8F8; }
+.stage .chip {
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11.5px; font-weight: 600;
+  border-radius: 8px; padding: 8px 10px;
+  line-height: 1.45;
+  word-break: break-all;
+}
+.stage-1 .chip { background: rgba(248,248,248,0.18); color: #F8F8F8; }
+.stage-2 .chip { background: var(--ash); color: var(--text); border: 1px dashed #B8B8B8; }
+.stage-3 .chip { background: var(--white); color: var(--text); border: 1px solid #D8D8D8; }
+
+.arrow {
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; flex-shrink: 0;
+}
+
+/* ---------- loop-back band ---------- */
+.loopback {
+  margin: 4px auto 0;
+  max-width: 960px;
+  text-align: center;
+}
+.loopback svg { display: block; margin: 0 auto; }
+.loopback .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--blue-deep);
+  margin-top: 2px;
+}
+
+/* ---------- insight row ---------- */
+.insight-row {
+  display: flex; gap: 24px; justify-content: center;
+  margin-top: 26px;
+}
+.insight {
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  width: 460px;
+}
+.insight-1 { background: var(--white); border: 1px solid #E8E8E8; transform: rotate(0.6deg); }
+.insight-2 { background: var(--ash); border: 1px solid #D8D8D8; transform: rotate(-0.5deg); }
+.insight h4 {
+  font-size: 15.5px; font-weight: 800; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.insight ul { list-style: none; }
+.insight li {
+  font-size: 13px; font-weight: 500; line-height: 1.6;
+  padding-left: 18px; position: relative;
+}
+.insight li::before {
+  content: "✦"; position: absolute; left: 0;
+  font-size: 12px; color: var(--blue-deep);
+}
+.insight .mono {
+  font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+}
+.growth { display: flex; align-items: flex-end; gap: 18px; margin-top: 10px; }
+.growth .col { display: flex; flex-direction: column; align-items: center; }
+.growth .col .bar {
+  width: 52px; border-radius: 6px 6px 0 0;
+  background: var(--blue);
+  position: relative;
+}
+.growth .col .bar span {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700; color: var(--blue-deep);
+}
+.growth .col .cap {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; font-weight: 700; color: #666;
+  margin-top: 4px;
+}
+.growth .h1 { height: 14px; } .growth .h2 { height: 26px; }
+.growth .h3 { height: 40px; } .growth .h4 { height: 52px; }
+
+/* ---------- footer ---------- */
+.footer {
+  margin-top: 34px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid #D8D8D8;
+  padding-top: 16px;
+}
+.footer-left { font-size: 13px; font-weight: 500; color: #444; }
+.footer-brand { display: flex; align-items: center; gap: 10px; }
+.stamp {
+  background: var(--blue);
+  color: #F8F8F8;
+  font-weight: 900; font-size: 13px; letter-spacing: 1px;
+  border-radius: 8px; padding: 6px 10px;
+  transform: rotate(-4deg);
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.12);
+}
+.brand-name { font-size: 14px; font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="kicker">AI Agents in Practice · Lesson 01</div>
+    <h1>How an AI Agent Thinks: <span class="loop-word">Thought → Action → Observation</span></h1>
+    <div class="subtitle">The ReAct loop — every agent you'll ever debug runs on these three words</div>
+  </div>
+
+  <div class="story">
+    <div class="scene">💳</div>
+    <p><strong>The story:</strong> A customer asks a support agent — <em>"Why did my payment pay_9x2f decline?"</em> The agent can't know. But it knows how to find out. Watch it think:</p>
+  </div>
+
+  <div class="loop-row">
+    <div class="stage stage-1">
+      <div class="num">STEP 1 · THE MODEL</div>
+      <h3>💭 Thought</h3>
+      <div class="who">the agent reasons</div>
+      <p>"I can't explain a decline without the payment record. Fetch it first."</p>
+      <div class="chip">Plan before you act — the thought steers the next move.</div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 50 24" width="46" fill="none">
+        <path d="M2 12 C 15 4, 30 20, 45 11" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M39 5 L 46 10.5 L 38.5 16" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+
+    <div class="stage stage-2">
+      <div class="num">STEP 2 · THE MODEL</div>
+      <h3>⚡ Action</h3>
+      <div class="who">the agent asks — it cannot run</div>
+      <p>The reply is a tool call: a structured request your code must execute.</p>
+      <div class="chip">get_payment("pay_9x2f")</div>
+    </div>
+
+    <div class="arrow">
+      <svg viewBox="0 0 50 24" width="46" fill="none">
+        <path d="M2 12 C 15 4, 30 20, 45 11" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M39 5 L 46 10.5 L 38.5 16" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+    </div>
+
+    <div class="stage stage-3">
+      <div class="num">STEP 3 · YOUR CODE</div>
+      <h3>👁 Observation</h3>
+      <div class="who">the harness answers</div>
+      <p>Your code runs the tool and appends the result to the transcript.</p>
+      <div class="chip">{ status: declined, reason: insufficient_funds }</div>
+    </div>
+  </div>
+
+  <div class="loopback">
+    <svg width="560" height="40" viewBox="0 0 560 40" fill="none">
+      <path d="M510 6 C 430 38, 130 38, 55 8" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 5"/>
+      <path d="M66 2 L 53 7.5 L 63 17" stroke="#6888C8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="label">↻ loop again — thought, act, observe — until the model can answer</div>
+  </div>
+
+  <div class="insight-row">
+    <div class="insight insight-1">
+      <h4>💬 Final Answer</h4>
+      <ul>
+        <li>"pay_9x2f declined — <strong>insufficient funds (₹2,450)</strong>."</li>
+        <li>3 turns · 2 tool calls · every turn re-read the full transcript</li>
+        <li>The transcript <em>is</em> the agent's only memory</li>
+      </ul>
+    </div>
+    <div class="insight insight-2">
+      <h4>📈 Why agents cost more than you expect</h4>
+      <div class="growth">
+        <div class="col"><div class="bar h1"><span>180</span></div><div class="cap">turn 1</div></div>
+        <div class="col"><div class="bar h2"><span>480</span></div><div class="cap">turn 2</div></div>
+        <div class="col"><div class="bar h3"><span>830</span></div><div class="cap">turn 3</div></div>
+        <div class="col"><div class="bar h4"><span>1.2k</span></div><div class="cap">turn 4</div></div>
+      </div>
+      <ul style="margin-top:18px;">
+        <li>Each turn <span class="mono"><strong>re-sends</strong></span> the whole conversation — tokens grow every loop</li>
+        <li>Fix the transcript (caching, compaction), not the model</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">Making AI simple, one byte at a time</div>
+    <div class="footer-brand">
+      <span class="stamp">BSD</span>
+      <span class="brand-name">ByteSized Decodes</span>
+    </div>
+  </div>
+
+</body>
+</html>
